@@ -1,131 +1,131 @@
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '../utils';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Lock, TrendingUp, DollarSign, TrendingDown } from 'lucide-react';
+import { Link } from "react-router-dom";
+import { createPageUrl } from "../utils";
+import { Lock, Settings, TrendingDown, TrendingUp, Home, FileText, Shield, Landmark, ArrowRight } from "lucide-react";
+
+const rateOptions = [
+  {
+    icon: Lock,
+    title: "Fixed Rate",
+    desc: "The most common type of loan option, the traditional fixed-rate mortgage includes monthly principal and interest payments which never change during the loan's lifetime.",
+  },
+  {
+    icon: Settings,
+    title: "Adjustable ARM",
+    desc: "Adjustable-rate mortgages include interest payments which shift during the loan's term, depending on current market conditions.",
+  },
+  {
+    icon: TrendingDown,
+    title: "Interest Only",
+    desc: "Interest only mortgages are home loans in which borrowers make monthly payments solely toward the interest accruing on the loan, rather than the principal.",
+  },
+  {
+    icon: TrendingUp,
+    title: "Graduated Payments",
+    desc: "Graduated Payment Mortgages are loans in which mortgage payments increase annually for a predetermined period of time.",
+  },
+];
+
+const loanPrograms = [
+  {
+    icon: Home,
+    title: "Conventional Loans",
+    desc: "A conventional loan is a type of loan that is not insured by the government. Conventional loans offer more flexibility and fewer restrictions for borrowers, especially those borrowers with good credit and steady income.",
+    color: "blue",
+  },
+  {
+    icon: FileText,
+    title: "FHA Home Loans",
+    desc: "FHA home loans are mortgages which are insured by the Federal Housing Administration (FHA), allowing borrowers to get low mortgage rates with a minimal down payment.",
+    color: "indigo",
+  },
+  {
+    icon: Shield,
+    title: "VA Loans",
+    desc: "VA loans are mortgages guaranteed by the Department of Veteran Affairs. These loans offer military veterans exceptional benefits, including low interest rates and no down payment.",
+    color: "green",
+  },
+  {
+    icon: Landmark,
+    title: "Jumbo Loans",
+    desc: "A jumbo loan is a mortgage used to finance properties that are too expensive for a conventional conforming loan. The maximum amount for a conforming loan is $766,550.",
+    color: "amber",
+  },
+];
 
 export default function LoanPrograms() {
-  const rateOptions = [
-    {
-      icon: Lock,
-      title: "Fixed Rate",
-      description: "The most common type of loan option, the traditional fixed-rate mortgage includes monthly principal and interest payments which never change during the loan's lifetime."
-    },
-    {
-      icon: TrendingUp,
-      title: "Adjustable ARM",
-      description: "Adjustable-rate mortgages include interest payments which shift during the loan's term, depending on current market conditions. Typically, these loans carry a fixed-interest rate for a set period."
-    },
-    {
-      icon: DollarSign,
-      title: "Interest Only",
-      description: "Interest only mortgages are home loans in which borrowers make monthly payments solely toward the interest accruing on the loan, rather than the principle, for a specified period of time."
-    },
-    {
-      icon: TrendingDown,
-      title: "Graduated Payments",
-      description: "Graduated Payment Mortgages are loans in which mortgage payments increase annually for a predetermined period of time (e.g. five or ten years)."
-    }
-  ];
-
-  const loanPrograms = [
-    {
-      title: "Conventional Loans",
-      description: "A conventional loan is a type of loan that is not insured by the government. Conventional loans offer more flexibility and fewer restrictions for borrowers, especially those borrowers with good credit and steady income.",
-      image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&h=300&fit=crop"
-    },
-    {
-      title: "FHA Home Loans",
-      description: "FHA home loans are mortgages which are insured by the Federal Housing Administration (FHA), allowing borrowers to get low mortgage rates with a minimal down payment.",
-      image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=400&h=300&fit=crop"
-    },
-    {
-      title: "VA Loans",
-      description: "VA loans are mortgages guaranteed by the Department of Veteran Affairs. These loans offer military veterans exceptional benefits, including low interest rates and no down payment requirements.",
-      image: "https://images.unsplash.com/photo-1541795795328-f073b763494e?w=400&h=300&fit=crop"
-    },
-    {
-      title: "Jumbo Loans",
-      description: "A jumbo loan is a mortgage used to finance properties that are too expensive for a conventional conforming loan. The maximum amount for a conforming loan is $766,550 in most counties.",
-      image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
-    }
-  ];
-
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="relative h-64 bg-gradient-to-r from-blue-400 to-purple-300">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-900/20" />
-      </section>
+    <div>
+      {/* Banner */}
+      <div
+        className="h-56 bg-cover bg-center relative"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=1600&q=80')" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/70 to-slate-800/50" />
+      </div>
 
-      {/* Header Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl">
-            <p className="text-green-600 font-semibold text-lg mb-2">LOAN PROGRAMS</p>
-            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Which Mortgage is Right for You?
-            </h1>
-            <p className="text-lg text-gray-700 mb-8">
-              There are a number of different types of home loans available to you, and it can pay to familiarize yourself with them. Luckily we're here to help you choose the best type of home loan for your needs.
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+        {/* Intro */}
+        <div className="flex flex-col lg:flex-row items-start gap-12 mb-16">
+          <div className="flex-1">
+            <p className="text-green-600 font-semibold text-sm uppercase tracking-wider mb-2">Loan Programs</p>
+            <h1 className="text-4xl font-bold text-slate-800 mb-4">Which Mortgage is Right for You?</h1>
+            <p className="text-slate-600 text-lg leading-relaxed mb-6">
+              There are a number of different types of home loans available to you, and it can pay to 
+              familiarize yourself with them. Luckily we're here to help you choose the best type of 
+              home loan for your needs.
             </p>
-            <Link to={createPageUrl('Purchase')}>
-              <Button size="lg" className="bg-green-600 hover:bg-green-700">
-                GET STARTED
-              </Button>
+            <Link
+              to={createPageUrl("ApplyNow")}
+              className="inline-flex items-center gap-2 border-2 border-green-600 text-green-600 font-semibold px-6 py-2.5 rounded-full hover:bg-green-50 transition-colors"
+            >
+              GET STARTED
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+          <div className="flex-1">
+            <img
+              src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80"
+              alt="Loan consultation"
+              className="rounded-2xl shadow-xl w-full max-w-md mx-auto border-4 border-green-100"
+            />
+          </div>
         </div>
-      </section>
 
-      {/* Mortgage Rate Options */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">
-            Mortgage Rate Options
-          </h2>
-
+        {/* Mortgage Rate Options */}
+        <div className="bg-slate-50 rounded-3xl p-8 md:p-12 mb-16">
+          <h2 className="text-3xl font-bold text-slate-800 text-center mb-10">Mortgage Rate Options</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {rateOptions.map((option, index) => (
-              <Card key={index} className="border-t-4 border-t-green-600 hover:shadow-lg transition-all">
-                <CardContent className="p-6">
-                  <option.icon className="h-12 w-12 text-green-600 mb-4" />
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{option.title}</h3>
-                  <p className="text-gray-600 text-sm">{option.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Loan Program Options */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center">
-            Loan Program Options
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {loanPrograms.map((program, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-xl transition-all">
-                <div className="h-48 bg-gradient-to-br from-blue-500 to-green-500 overflow-hidden">
-                  <img 
-                    src={program.image}
-                    alt={program.title}
-                    className="w-full h-full object-cover opacity-80"
-                  />
+            {rateOptions.map((option) => (
+              <div key={option.title} className="bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-lg transition-shadow">
+                <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-4">
+                  <option.icon className="h-6 w-6 text-green-600" />
                 </div>
-                <CardContent className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">{program.title}</h3>
-                  <hr className="border-green-600 border-t-2 w-16 mb-4" />
-                  <p className="text-gray-700 leading-relaxed">{program.description}</p>
-                </CardContent>
-              </Card>
+                <h3 className="font-bold text-slate-800 text-lg mb-2">{option.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed">{option.desc}</p>
+              </div>
             ))}
           </div>
         </div>
-      </section>
+
+        {/* Loan Program Options */}
+        <h2 className="text-3xl font-bold text-slate-800 text-center mb-10">Loan Program Options</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {loanPrograms.map((prog) => (
+            <div key={prog.title} className="bg-white border border-slate-200 rounded-2xl p-6 hover:shadow-lg transition-shadow group">
+              <div className="flex items-start gap-4">
+                <div className="w-14 h-14 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
+                  <prog.icon className="h-7 w-7 text-green-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg text-slate-800 mb-1">{prog.title}</h3>
+                  <div className="h-0.5 w-12 bg-green-500 mb-3" />
+                  <p className="text-slate-500 text-sm leading-relaxed">{prog.desc}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

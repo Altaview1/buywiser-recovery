@@ -49,22 +49,20 @@
  */
 import Home from './pages/Home';
 import About from './pages/About';
+import ContactUs from './pages/ContactUs';
 import LoanPrograms from './pages/LoanPrograms';
-import Calculators from './pages/Calculators';
-import Contact from './pages/Contact';
-import Purchase from './pages/Purchase';
-import Refinance from './pages/Refinance';
+import MortgageCalculators from './pages/MortgageCalculators';
+import ApplyNow from './pages/ApplyNow';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "Home": Home,
     "About": About,
+    "ContactUs": ContactUs,
     "LoanPrograms": LoanPrograms,
-    "Calculators": Calculators,
-    "Contact": Contact,
-    "Purchase": Purchase,
-    "Refinance": Refinance,
+    "MortgageCalculators": MortgageCalculators,
+    "ApplyNow": ApplyNow,
 }
 
 export const pagesConfig = {
