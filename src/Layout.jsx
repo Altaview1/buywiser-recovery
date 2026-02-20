@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Home, Menu, X } from 'lucide-react';
 import { useState } from 'react';
+import ChatWidget from './components/ChatWidget';
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -166,6 +167,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
       </footer>
+      <ChatWidget />
     </div>
   );
 }
