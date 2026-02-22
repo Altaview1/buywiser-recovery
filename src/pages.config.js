@@ -47,30 +47,18 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import About from './pages/About';
 import ApplyNow from './pages/ApplyNow';
-import Calculators from './pages/Calculators';
-import Contact from './pages/Contact';
 import ContactUs from './pages/ContactUs';
 import Home from './pages/Home';
-import LoanPrograms from './pages/LoanPrograms';
 import MortgageCalculators from './pages/MortgageCalculators';
-import Purchase from './pages/Purchase';
-import Refinance from './pages/Refinance';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "About": About,
     "ApplyNow": ApplyNow,
-    "Calculators": Calculators,
-    "Contact": Contact,
     "ContactUs": ContactUs,
     "Home": Home,
-    "LoanPrograms": LoanPrograms,
     "MortgageCalculators": MortgageCalculators,
-    "Purchase": Purchase,
-    "Refinance": Refinance,
 }
 
 export const pagesConfig = {
