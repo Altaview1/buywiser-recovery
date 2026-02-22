@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Home, Menu, X } from 'lucide-react';
 import { useState } from 'react';
-import ChatWidget from './components/ChatWidget';
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -28,37 +27,25 @@ export default function Layout({ children, currentPageName }) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
-              <Link to={createPageUrl('Home')} className="text-gray-700 hover:text-green-600 transition">
-                Home
-              </Link>
-              <Link to={createPageUrl('Purchase')} className="text-gray-700 hover:text-green-600 transition">
-                Buy a Home
-              </Link>
-              <Link to={createPageUrl('Refinance')} className="text-gray-700 hover:text-green-600 transition">
-                Refinance
-              </Link>
-              <Link to={createPageUrl('Calculators')} className="text-gray-700 hover:text-green-600 transition">
-                Mortgage Calculators
-              </Link>
-              <Link to={createPageUrl('LoanPrograms')} className="text-gray-700 hover:text-green-600 transition">
-                Loan Programs
-              </Link>
-              <Link to={createPageUrl('About')} className="text-gray-700 hover:text-green-600 transition">
+              <a href="#about" className="text-gray-700 hover:text-green-600 transition">
                 About
-              </Link>
-              <Link to={createPageUrl('Contact')} className="text-gray-700 hover:text-green-600 transition">
+              </a>
+              <a href="#services" className="text-gray-700 hover:text-green-600 transition">
+                Services
+              </a>
+              <a href="#testimonials" className="text-gray-700 hover:text-green-600 transition">
+                Testimonials
+              </a>
+              <a href="#contact" className="text-gray-700 hover:text-green-600 transition">
                 Contact
-              </Link>
+              </a>
             </nav>
 
-            {/* CTA Buttons */}
-            <div className="hidden lg:flex items-center space-x-3">
-              <Link to={createPageUrl('Contact')} className="px-4 py-2 border border-green-600 text-green-600 rounded-lg hover:bg-green-50 transition">
-                Request an Appointment
-              </Link>
-              <Link to={createPageUrl('Purchase')} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                Apply Now
-              </Link>
+            {/* CTA Button */}
+            <div className="hidden lg:flex items-center">
+              <a href="#contact" className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-sm">
+                Get Started
+              </a>
             </div>
 
             {/* Mobile menu button */}
@@ -74,30 +61,21 @@ export default function Layout({ children, currentPageName }) {
           {mobileMenuOpen && (
             <div className="lg:hidden py-4 border-t border-gray-200">
               <div className="flex flex-col space-y-3">
-                <Link to={createPageUrl('Home')} className="text-gray-700 hover:text-green-600 py-2">
-                  Home
-                </Link>
-                <Link to={createPageUrl('Purchase')} className="text-gray-700 hover:text-green-600 py-2">
-                  Buy a Home
-                </Link>
-                <Link to={createPageUrl('Refinance')} className="text-gray-700 hover:text-green-600 py-2">
-                  Refinance
-                </Link>
-                <Link to={createPageUrl('Calculators')} className="text-gray-700 hover:text-green-600 py-2">
-                  Mortgage Calculators
-                </Link>
-                <Link to={createPageUrl('LoanPrograms')} className="text-gray-700 hover:text-green-600 py-2">
-                  Loan Programs
-                </Link>
-                <Link to={createPageUrl('About')} className="text-gray-700 hover:text-green-600 py-2">
+                <a href="#about" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
                   About
-                </Link>
-                <Link to={createPageUrl('Contact')} className="text-gray-700 hover:text-green-600 py-2">
+                </a>
+                <a href="#services" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Services
+                </a>
+                <a href="#testimonials" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Testimonials
+                </a>
+                <a href="#contact" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
                   Contact
-                </Link>
-                <Link to={createPageUrl('Purchase')} className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg text-center">
-                  Apply Now
-                </Link>
+                </a>
+                <a href="#contact" className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg text-center" onClick={() => setMobileMenuOpen(false)}>
+                  Get Started
+                </a>
               </div>
             </div>
           )}
@@ -135,29 +113,24 @@ export default function Layout({ children, currentPageName }) {
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Resources</h3>
+              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <div className="flex flex-col space-y-2 text-green-50 text-sm">
-                <Link to={createPageUrl('LoanPrograms')} className="hover:text-white transition">
-                  Loan Programs
-                </Link>
-                <Link to={createPageUrl('Calculators')} className="hover:text-white transition">
-                  Mortgage Calculators
-                </Link>
-                <Link to={createPageUrl('About')} className="hover:text-white transition">
+                <a href="#about" className="hover:text-white transition">
                   About Us
-                </Link>
+                </a>
+                <a href="#services" className="hover:text-white transition">
+                  Our Services
+                </a>
+                <a href="#contact" className="hover:text-white transition">
+                  Get Started
+                </a>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+              <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
               <div className="flex flex-col space-y-2 text-green-50 text-sm">
-                <Link to={createPageUrl('Purchase')} className="hover:text-white transition">
-                  Apply Now
-                </Link>
-                <Link to={createPageUrl('Contact')} className="hover:text-white transition">
-                  Contact Us
-                </Link>
+                <p>Stay connected for mortgage tips and updates</p>
               </div>
             </div>
           </div>
@@ -167,7 +140,6 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
       </footer>
-      <ChatWidget />
     </div>
   );
 }
