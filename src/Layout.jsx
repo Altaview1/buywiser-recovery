@@ -27,25 +27,22 @@ export default function Layout({ children, currentPageName }) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-8">
-              <a href="#about" className="text-gray-700 hover:text-green-600 transition">
-                About
-              </a>
-              <a href="#services" className="text-gray-700 hover:text-green-600 transition">
-                Services
-              </a>
-              <a href="#testimonials" className="text-gray-700 hover:text-green-600 transition">
-                Testimonials
-              </a>
-              <a href="#contact" className="text-gray-700 hover:text-green-600 transition">
+              <Link to={createPageUrl('Home')} className="text-gray-700 hover:text-green-600 transition">
+                Home
+              </Link>
+              <Link to={createPageUrl('MortgageCalculators')} className="text-gray-700 hover:text-green-600 transition">
+                Calculators
+              </Link>
+              <Link to={createPageUrl('ContactUs')} className="text-gray-700 hover:text-green-600 transition">
                 Contact
-              </a>
+              </Link>
             </nav>
 
             {/* CTA Button */}
             <div className="hidden lg:flex items-center">
-              <a href="#contact" className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-sm">
-                Get Started
-              </a>
+              <Link to={createPageUrl('ApplyNow')} className="px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition shadow-sm">
+                Apply Now
+              </Link>
             </div>
 
             {/* Mobile menu button */}
@@ -61,21 +58,18 @@ export default function Layout({ children, currentPageName }) {
           {mobileMenuOpen && (
             <div className="lg:hidden py-4 border-t border-gray-200">
               <div className="flex flex-col space-y-3">
-                <a href="#about" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
-                  About
-                </a>
-                <a href="#services" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
-                  Services
-                </a>
-                <a href="#testimonials" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
-                  Testimonials
-                </a>
-                <a href="#contact" className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
+                <Link to={createPageUrl('Home')} className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Home
+                </Link>
+                <Link to={createPageUrl('MortgageCalculators')} className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
+                  Calculators
+                </Link>
+                <Link to={createPageUrl('ContactUs')} className="text-gray-700 hover:text-green-600 py-2" onClick={() => setMobileMenuOpen(false)}>
                   Contact
-                </a>
-                <a href="#contact" className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg text-center" onClick={() => setMobileMenuOpen(false)}>
-                  Get Started
-                </a>
+                </Link>
+                <Link to={createPageUrl('ApplyNow')} className="mt-2 px-4 py-2 bg-green-600 text-white rounded-lg text-center" onClick={() => setMobileMenuOpen(false)}>
+                  Apply Now
+                </Link>
               </div>
             </div>
           )}
