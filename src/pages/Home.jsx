@@ -1,45 +1,7 @@
-import { useState } from "react";
-import { base44 } from "@/api/base44Client";
-import { useMutation } from "@tanstack/react-query";
-import { Home, Award, Clock, Shield, CheckCircle, Star, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Home, Award, Clock, Shield, CheckCircle, Star, ArrowRight, Mail, Phone as PhoneIcon, MapPin } from "lucide-react";
 
 export default function HomePage() {
-  const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    comments: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
-
-  const submitMutation = useMutation({
-    mutationFn: (data) =>
-      base44.entities.ContactSubmission.create({
-        ...data,
-        form_type: "contact",
-        status: "new",
-      }),
-    onSuccess: () => {
-      setSubmitted(true);
-      setFormData({
-        first_name: "",
-        last_name: "",
-        email: "",
-        phone: "",
-        comments: "",
-      });
-      setTimeout(() => setSubmitted(false), 5000);
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    submitMutation.mutate(formData);
-  };
+  const mailtoLink = `mailto:bennett@buywiser.com?subject=Mortgage Inquiry from Website`;
 
   return (
     <div className="bg-white">
@@ -270,117 +232,40 @@ export default function HomePage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-12">
-            {submitted ? (
-              <div className="text-center py-12">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <a
+                href={mailtoLink}
+                className="flex flex-col items-center text-center p-6 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition group"
+              >
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-200 transition">
+                  <Mail className="h-8 w-8 text-green-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h3>
-                <p className="text-gray-600">
-                  We've received your message and will get back to you within 24 hours.
-                </p>
+                <h3 className="font-semibold text-gray-900 mb-2">Email Us</h3>
+                <p className="text-gray-600 text-sm">bennett@buywiser.com</p>
+              </a>
+
+              <a
+                href="tel:+18183002642"
+                className="flex flex-col items-center text-center p-6 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition group"
+              >
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:bg-green-200 transition">
+                  <PhoneIcon className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Call Us</h3>
+                <p className="text-gray-600 text-sm">(818) 300-2642</p>
+              </a>
+
+              <div className="flex flex-col items-center text-center p-6 rounded-xl border border-gray-200">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <MapPin className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="font-semibold text-gray-900 mb-2">Visit Us</h3>
+                <p className="text-gray-600 text-sm">5115 Lankershim Blvd #705<br />North Hollywood, CA 91601</p>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <Input
-                      required
-                      value={formData.first_name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, first_name: e.target.value })
-                      }
-                      placeholder="John"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <Input
-                      required
-                      value={formData.last_name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, last_name: e.target.value })
-                      }
-                      placeholder="Doe"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <Input
-                      required
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) =>
-                        setFormData({ ...formData, email: e.target.value })
-                      }
-                      placeholder="john@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Phone *
-                    </label>
-                    <Input
-                      required
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) =>
-                        setFormData({ ...formData, phone: e.target.value })
-                      }
-                      placeholder="(818) 300-2642"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message
-                  </label>
-                  <Textarea
-                    value={formData.comments}
-                    onChange={(e) =>
-                      setFormData({ ...formData, comments: e.target.value })
-                    }
-                    placeholder="Tell us about your mortgage needs..."
-                    rows={4}
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={submitMutation.isPending}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-lg"
-                >
-                  {submitMutation.isPending ? "Sending..." : "Send Message"}
-                </Button>
-              </form>
-            )}
-          </div>
-
-          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-            <div>
-              <p className="font-semibold text-gray-900 mb-1">Call Us</p>
-              <p className="text-gray-600">(818) 300-2642</p>
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900 mb-1">Email Us</p>
-              <p className="text-gray-600">bennett@buywiser.com</p>
-            </div>
-            <div>
-              <p className="font-semibold text-gray-900 mb-1">Visit Us</p>
-              <p className="text-gray-600">5115 Lankershim Blvd #705</p>
             </div>
           </div>
+
+
         </div>
       </section>
 
