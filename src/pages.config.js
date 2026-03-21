@@ -1,64 +1,32 @@
-/**
- * pages.config.js - Page routing configuration
- * 
- * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
- * Pages are auto-registered when you create files in the ./pages/ folder.
- * 
- * THE ONLY EDITABLE VALUE: mainPage
- * This controls which page is the landing page (shown when users visit the app).
- * 
- * Example file structure:
- * 
- *   import HomePage from './pages/HomePage';
- *   import Dashboard from './pages/Dashboard';
- *   import Settings from './pages/Settings';
- *   
- *   export const PAGES = {
- *       "HomePage": HomePage,
- *       "Dashboard": Dashboard,
- *       "Settings": Settings,
- *   }
- *   
- *   export const pagesConfig = {
- *       mainPage: "HomePage",
- *       Pages: PAGES,
- *   };
- * 
- * Example with Layout (wraps all pages):
- *
- *   import Home from './pages/Home';
- *   import Settings from './pages/Settings';
- *   import __Layout from './Layout.jsx';
- *
- *   export const PAGES = {
- *       "Home": Home,
- *       "Settings": Settings,
- *   }
- *
- *   export const pagesConfig = {
- *       mainPage: "Home",
- *       Pages: PAGES,
- *       Layout: __Layout,
- *   };
- *
- * To change the main page from HomePage to Dashboard, use find_replace:
- *   Old: mainPage: "HomePage",
- *   New: mainPage: "Dashboard",
- *
- * The mainPage value must match a key in the PAGES object exactly.
- */
 import ApplyNow from './pages/ApplyNow';
 import ContactUs from './pages/ContactUs';
 import Home from './pages/Home';
 import MortgageCalculators from './pages/MortgageCalculators';
+import Refinance from './pages/Refinance';
+import FHAStreamline from './pages/FHAStreamline';
+import VAStreamline from './pages/VAStreamline';
+import CashOut from './pages/CashOut';
+import Purchase from './pages/Purchase';
+import About from './pages/About';
+import Reviews from './pages/Reviews';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Disclosures from './pages/Disclosures';
 import __Layout from './Layout.jsx';
-
 
 export const PAGES = {
     "ApplyNow": ApplyNow,
     "ContactUs": ContactUs,
     "Home": Home,
     "MortgageCalculators": MortgageCalculators,
+    "Refinance": Refinance,
+    "FHAStreamline": FHAStreamline,
+    "VAStreamline": VAStreamline,
+    "CashOut": CashOut,
+    "Purchase": Purchase,
+    "About": About,
+    "Reviews": Reviews,
+    "PrivacyPolicy": PrivacyPolicy,
+    "Disclosures": Disclosures,
 }
 
 export const pagesConfig = {
