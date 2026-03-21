@@ -14,10 +14,10 @@ import Disclosures from './pages/Disclosures';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
-    "ApplyNow": ApplyNow,
-    "ContactUs": ContactUs,
+    "Apply": ApplyNow,
+    "Contact": ContactUs,
     "Home": Home,
-    "MortgageCalculators": MortgageCalculators,
+    "Calculators": MortgageCalculators,
     "Refinance": Refinance,
     "FHAStreamline": FHAStreamline,
     "VAStreamline": VAStreamline,
