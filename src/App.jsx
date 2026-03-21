@@ -1,25 +1,34 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import NavigationTracker from '@/lib/NavigationTracker'
-import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
+import Layout from './Layout.jsx';
 
-const { Pages, Layout, mainPage } = pagesConfig;
-const mainPageKey = mainPage ?? Object.keys(Pages)[0];
-const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
+// Page imports
+import Home from './pages/Home';
+import ApplyNow from './pages/ApplyNow';
+import ContactUs from './pages/ContactUs';
+import MortgageCalculators from './pages/MortgageCalculators';
+import Refinance from './pages/Refinance';
+import FHAStreamline from './pages/FHAStreamline';
+import VAStreamline from './pages/VAStreamline';
+import CashOut from './pages/CashOut';
+import Purchase from './pages/Purchase';
+import About from './pages/About';
+import Reviews from './pages/Reviews';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Disclosures from './pages/Disclosures';
 
-const LayoutWrapper = ({ children, currentPageName }) => Layout ?
+const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
-  : <>{children}</>;
+);
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
       <div className="fixed inset-0 flex items-center justify-center">
@@ -28,37 +37,31 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
   if (authError) {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
       navigateToLogin();
       return null;
     }
   }
 
-  // Render the main app
   return (
     <Routes>
-      <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
-      } />
-      {Object.entries(Pages).map(([path, Page]) => (
-        <Route
-          key={path}
-          path={`/${path}`}
-          element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
-          }
-        />
-      ))}
-      {/* Redirect old page key URLs to new consumer-friendly paths */}
+      <Route path="/" element={<LayoutWrapper currentPageName="Home"><Home /></LayoutWrapper>} />
+      <Route path="/Apply" element={<LayoutWrapper currentPageName="Apply"><ApplyNow /></LayoutWrapper>} />
+      <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><ContactUs /></LayoutWrapper>} />
+      <Route path="/Calculators" element={<LayoutWrapper currentPageName="Calculators"><MortgageCalculators /></LayoutWrapper>} />
+      <Route path="/Refinance" element={<LayoutWrapper currentPageName="Refinance"><Refinance /></LayoutWrapper>} />
+      <Route path="/FHAStreamline" element={<LayoutWrapper currentPageName="FHAStreamline"><FHAStreamline /></LayoutWrapper>} />
+      <Route path="/VAStreamline" element={<LayoutWrapper currentPageName="VAStreamline"><VAStreamline /></LayoutWrapper>} />
+      <Route path="/CashOut" element={<LayoutWrapper currentPageName="CashOut"><CashOut /></LayoutWrapper>} />
+      <Route path="/Purchase" element={<LayoutWrapper currentPageName="Purchase"><Purchase /></LayoutWrapper>} />
+      <Route path="/About" element={<LayoutWrapper currentPageName="About"><About /></LayoutWrapper>} />
+      <Route path="/Reviews" element={<LayoutWrapper currentPageName="Reviews"><Reviews /></LayoutWrapper>} />
+      <Route path="/PrivacyPolicy" element={<LayoutWrapper currentPageName="PrivacyPolicy"><PrivacyPolicy /></LayoutWrapper>} />
+      <Route path="/Disclosures" element={<LayoutWrapper currentPageName="Disclosures"><Disclosures /></LayoutWrapper>} />
+      {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
       <Route path="/MortgageCalculators" element={<Navigate to="/Calculators" replace />} />
@@ -67,20 +70,17 @@ const AuthenticatedApp = () => {
   );
 };
 
-
 function App() {
-
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <NavigationTracker />
           <AuthenticatedApp />
         </Router>
         <Toaster />
       </QueryClientProvider>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
