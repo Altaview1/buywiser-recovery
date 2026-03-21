@@ -9,9 +9,9 @@ import Layout from './Layout.jsx';
 
 // Page imports
 import Home from './pages/Home';
-import ApplyNow from './pages/ApplyNow';
-import ContactUs from './pages/ContactUs';
-import MortgageCalculators from './pages/MortgageCalculators';
+import MortgageReview from './pages/MortgageReview';
+import Contact from './pages/Contact';
+import Calculators from './pages/Calculators';
 import Refinance from './pages/Refinance';
 import FHAStreamline from './pages/FHAStreamline';
 import VAStreamline from './pages/VAStreamline';
