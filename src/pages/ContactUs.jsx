@@ -47,6 +47,7 @@ export default function ContactUs() {
 
   return (
     <div className="bg-white">
+      <title>Contact BuyWiser | Mortgage Review Request</title>
       {/* Hero */}
       <section className="bg-slate-950 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

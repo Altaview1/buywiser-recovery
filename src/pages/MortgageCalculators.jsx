@@ -149,11 +149,11 @@ function AffordabilityCalc() {
 }
 
 export default function MortgageCalculators() {
-  // Title set via document title below
   const [activeCalc, setActiveCalc] = useState("mortgage");
 
   return (
     <div>
+      <title>Mortgage Calculators | BuyWiser Home Loans</title>
       {/* Banner */}
       <div
         className="h-56 bg-cover bg-center relative"
