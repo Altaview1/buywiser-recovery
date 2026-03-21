@@ -53,14 +53,14 @@ export default function Layout({ children, currentPageName }) {
 
               <Link to={createPageUrl('About')} className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-gray-50 rounded-md transition">About</Link>
               <Link to={createPageUrl('Reviews')} className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-gray-50 rounded-md transition">Reviews</Link>
-              <Link to={createPageUrl('MortgageCalculators')} className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-gray-50 rounded-md transition">Calculators</Link>
+              <Link to={createPageUrl('Calculators')} className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-gray-50 rounded-md transition">Calculators</Link>
             </nav>
 
             <div className="hidden lg:flex items-center gap-4">
               <a href="tel:+18183002642" className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-green-600 transition font-medium">
                 <Phone className="h-4 w-4" />(818) 300-2642
               </a>
-              <Link to={createPageUrl('ContactUs')} className="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition shadow-sm">
+              <Link to={createPageUrl('Contact')} className="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition shadow-sm">
                 Request a Review
               </Link>
             </div>
@@ -96,9 +96,9 @@ export default function Layout({ children, currentPageName }) {
               </div>
               <Link to={createPageUrl('About')} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>About</Link>
               <Link to={createPageUrl('Reviews')} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>Reviews</Link>
-              <Link to={createPageUrl('MortgageCalculators')} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>Calculators</Link>
+              <Link to={createPageUrl('Calculators')} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>Calculators</Link>
               <div className="pt-2">
-                <Link to={createPageUrl('ContactUs')} className="block px-3 py-3 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
+                <Link to={createPageUrl('Contact')} className="block px-3 py-3 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
                   Request a Mortgage Review
                 </Link>
               </div>
@@ -114,7 +114,7 @@ export default function Layout({ children, currentPageName }) {
         <a href="tel:+18183002642" className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-green-600 text-green-700 rounded-xl font-bold text-sm">
           <Phone className="h-4 w-4" /> Call Now
         </a>
-        <Link to={createPageUrl('ContactUs')} className="flex-1 flex items-center justify-center gap-1 py-3 bg-green-600 text-white rounded-xl font-bold text-sm">
+        <Link to={createPageUrl('Contact')} className="flex-1 flex items-center justify-center gap-1 py-3 bg-green-600 text-white rounded-xl font-bold text-sm">
           Request a Review <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -155,8 +155,8 @@ export default function Layout({ children, currentPageName }) {
               <div className="space-y-2">
                 <Link to={createPageUrl('About')} className="block text-sm text-slate-400 hover:text-white transition">About</Link>
                 <Link to={createPageUrl('Reviews')} className="block text-sm text-slate-400 hover:text-white transition">Reviews</Link>
-                <Link to={createPageUrl('ContactUs')} className="block text-sm text-slate-400 hover:text-white transition">Contact</Link>
-                <Link to={createPageUrl('MortgageCalculators')} className="block text-sm text-slate-400 hover:text-white transition">Calculators</Link>
+                <Link to={createPageUrl('Contact')} className="block text-sm text-slate-400 hover:text-white transition">Contact</Link>
+                <Link to={createPageUrl('Calculators')} className="block text-sm text-slate-400 hover:text-white transition">Calculators</Link>
                 <Link to={createPageUrl('PrivacyPolicy')} className="block text-sm text-slate-400 hover:text-white transition">Privacy Policy</Link>
                 <Link to={createPageUrl('Disclosures')} className="block text-sm text-slate-400 hover:text-white transition">Licensing & Disclosures</Link>
               </div>
@@ -169,7 +169,7 @@ export default function Layout({ children, currentPageName }) {
                 <a href="tel:+18183002642" className="block hover:text-white transition">(818) 300-2642</a>
                 <a href="mailto:bennett@buywiser.com" className="block hover:text-white transition">bennett@buywiser.com</a>
               </div>
-              <Link to={createPageUrl('ContactUs')} className="inline-block px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
+              <Link to={createPageUrl('Contact')} className="inline-block px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
                 Request a Review →
               </Link>
             </div>
