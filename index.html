@@ -11,6 +11,26 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BuyWiser Home Loans" />
     <meta name="robots" content="index, follow" />
+    <!-- Title guardian: runs immediately, before any platform script -->
+    <script>
+      (function() {
+        var BANNED = ['clone', 'applynow', 'mortgagecalculators', 'contactus'];
+        var BRAND = 'BuyWiser Home Loans';
+        function clean() {
+          var t = document.title;
+          var lower = t.toLowerCase();
+          if (BANNED.some(function(w) { return lower.indexOf(w) !== -1; })) {
+            var parts = t.split('|').map(function(s) { return s.trim(); });
+            var good = parts.filter(function(p) {
+              return !BANNED.some(function(w) { return p.toLowerCase().indexOf(w) !== -1; });
+            });
+            document.title = good.length > 0 ? good.join(' | ') : BRAND + ' | California Mortgage Guidance';
+          }
+        }
+        var obs = new MutationObserver(clean);
+        obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
