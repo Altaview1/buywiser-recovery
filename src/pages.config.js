@@ -14,23 +14,23 @@ import Disclosures from './pages/Disclosures';
 import __Layout from './Layout.jsx';
 
 export const PAGES = {
-    "BuyWiser Home Loans": Home,
-    "Request a Mortgage Review": ApplyNow,
-    "Contact BuyWiser": ContactUs,
-    "Mortgage Calculators": MortgageCalculators,
+    "Home": Home,
+    "Apply": ApplyNow,
+    "Contact": ContactUs,
+    "Calculators": MortgageCalculators,
     "Refinance": Refinance,
-    "FHA Streamline": FHAStreamline,
-    "VA Streamline": VAStreamline,
-    "Cash-Out Options": CashOut,
-    "Home Purchase": Purchase,
+    "FHAStreamline": FHAStreamline,
+    "VAStreamline": VAStreamline,
+    "CashOut": CashOut,
+    "Purchase": Purchase,
     "About": About,
     "Reviews": Reviews,
-    "Privacy Policy": PrivacyPolicy,
-    "Licensing & Disclosures": Disclosures,
+    "PrivacyPolicy": PrivacyPolicy,
+    "Disclosures": Disclosures,
 }
 
 export const pagesConfig = {
-    mainPage: "BuyWiser Home Loans",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
