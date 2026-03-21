@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
-import { Phone, ChevronDown, Menu, X, Home } from 'lucide-react';
+import { Phone, ChevronDown, Menu, X, Home, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
 const serviceLinks = [
