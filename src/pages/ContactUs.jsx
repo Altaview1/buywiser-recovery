@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePageTitle } from "@/lib/usePageTitle";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

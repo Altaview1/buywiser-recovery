@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { usePageTitle } from "@/lib/usePageTitle";
 import { CheckCircle, DollarSign, TrendingUp, ArrowRight, AlertCircle, Phone } from "lucide-react";
 
 const cashOutUses = [

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { usePageTitle } from "@/lib/usePageTitle";
 import { CheckCircle, Key, ArrowRight, Shield, Phone, Users } from "lucide-react";
 
 const loanTypes = [
