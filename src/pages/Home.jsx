@@ -3,87 +3,103 @@ import { base44 } from "@/api/base44Client";
 import { useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { CheckCircle, ArrowRight, Shield, Award, Clock, Users, Phone, Star, TrendingDown, DollarSign, Key, RefreshCw, Home } from "lucide-react";
+import {
+  CheckCircle, ArrowRight, Phone, Star,
+  TrendingDown, DollarSign, Key, Shield, Award, Zap
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const services = [
+const refinanceOptions = [
   {
     icon: TrendingDown,
-    title: "Refinance",
-    desc: "Lower your monthly payment or change your loan term. We evaluate whether refinancing actually improves your situation.",
+    title: "Lower Your Monthly Payment",
+    desc: "We calculate your actual break-even, model your real savings, and tell you whether the numbers make sense before you commit to anything.",
     path: "Refinance",
-    color: "text-blue-600",
-    bg: "bg-blue-50",
+    badge: "Most Requested",
   },
   {
     icon: Shield,
-    title: "FHA Streamline",
-    desc: "Already have an FHA loan? A streamlined refinance may reduce your payment with less documentation.",
+    title: "FHA Streamline Refinance",
+    desc: "Already have an FHA loan? You may qualify to reduce your payment with minimal documentation — no appraisal required in most cases.",
     path: "FHAStreamline",
-    color: "text-green-600",
-    bg: "bg-green-50",
+    badge: "Fast Path",
   },
   {
     icon: Award,
-    title: "VA Streamline",
-    desc: "Eligible VA borrowers may qualify for a simplified IRRRL refinance with reduced documentation requirements.",
+    title: "VA Streamline / IRRRL",
+    desc: "Eligible veterans may be able to lower their rate with a simplified process. Less paperwork, no appraisal in most cases.",
     path: "VAStreamline",
-    color: "text-purple-600",
-    bg: "bg-purple-50",
+    badge: "Veteran Benefit",
   },
   {
     icon: DollarSign,
-    title: "Cash-Out Options",
-    desc: "Your equity can work for you. We help you compare cash-out refinance vs. home equity options strategically.",
+    title: "Cash-Out / Equity Access",
+    desc: "Your equity can work for you — remodeling, debt consolidation, reserves. We compare options and explain the trade-offs honestly.",
     path: "CashOut",
-    color: "text-orange-600",
-    bg: "bg-orange-50",
+    badge: null,
   },
   {
     icon: Key,
     title: "Home Purchase",
-    desc: "Preapproval guidance and loan strategy for buyers who want clear answers before making an offer.",
+    desc: "Preapproval guidance and loan strategy for California buyers who want clear answers before making an offer.",
     path: "Purchase",
-    color: "text-slate-600",
-    bg: "bg-slate-50",
+    badge: null,
   },
 ];
 
-const whyPoints = [
-  { icon: CheckCircle, text: "Clear explanations in plain language — no jargon" },
-  { icon: CheckCircle, text: "Personalized guidance based on your actual numbers" },
-  { icon: CheckCircle, text: "Experience with complex scenarios, self-employed borrowers, and equity situations" },
-  { icon: CheckCircle, text: "Responsive communication — you get real answers, not voicemail" },
-  { icon: CheckCircle, text: "California-focused expertise across purchase and refinance" },
+const trustPoints = [
+  "No pressure, ever",
+  "Straight answers in plain language",
+  "Real numbers, not estimates",
+  "NMLS Licensed in California",
 ];
 
 const testimonials = [
   {
     name: "Sandra K.",
-    situation: "FHA Streamline Refinance",
-    text: "I had been paying too much on my FHA loan for years and didn't realize I could refinance so easily. Bennett walked me through the whole process and we closed faster than I expected. My payment dropped over $200 a month.",
+    situation: "FHA Streamline — Van Nuys, CA",
     stars: 5,
+    text: "My payment dropped over $200 a month. Bennett walked me through every step and we closed faster than I expected. Wish I had done it sooner.",
+  },
+  {
+    name: "Patricia L.",
+    situation: "VA IRRRL — Burbank, CA",
+    stars: 5,
+    text: "As a veteran I've dealt with lenders who treat VA loans like a hassle. Bennett was the opposite — clear, direct, and got it done with minimal paperwork.",
   },
   {
     name: "Marcus & Denise T.",
-    situation: "Cash-Out Refinance",
-    text: "We had a lot of equity built up but weren't sure what to do with it. Bennett explained our options honestly — including some we weren't considering. He didn't push us toward anything and we ended up making the right call.",
+    situation: "Cash-Out Refinance — Encino, CA",
     stars: 5,
+    text: "He didn't push us toward anything. Explained our options, showed us the math, and helped us make a decision we feel really good about.",
+  },
+];
+
+const refiBrief = [
+  {
+    q: "Rates are higher than when I bought. Should I refinance?",
+    a: "Probably not for a rate reduction — but you may still have options worth reviewing, including equity access or loan restructuring.",
   },
   {
-    name: "Jorge R.",
-    situation: "Home Purchase",
-    text: "First-time buyer, and I had no idea where to start. Bennett got us preapproved quickly and explained what we actually qualified for and why. We closed in 28 days. Couldn't have asked for better guidance.",
-    stars: 5,
+    q: "I have an FHA loan I haven't touched in years.",
+    a: "If you haven't reviewed it recently, there's a real chance a Streamline refinance could lower your payment with minimal documentation.",
+  },
+  {
+    q: "I'm a veteran with a VA loan. Should I look at an IRRRL?",
+    a: "If your current rate is above market, the answer is likely yes — and the process is simpler than most people expect.",
+  },
+  {
+    q: "I have a lot of equity. Should I cash-out?",
+    a: "That depends on what you'd use it for and what it would cost you. We'll walk through the actual numbers, not a sales pitch.",
   },
 ];
 
 const steps = [
-  { num: "1", title: "Request a Mortgage Review", desc: "Share some basic details about your situation — current loan, goals, and property info." },
-  { num: "2", title: "We Analyze Your Options", desc: "We run the actual numbers and present the scenarios that make sense — and the ones that don't." },
-  { num: "3", title: "You Decide With Confidence", desc: "No pressure, no confusion. You'll have the information to make the right move for your situation." },
+  { num: "1", title: "Request a Review", desc: "Share your situation — current loan, goals, property city." },
+  { num: "2", title: "We Run the Numbers", desc: "Real analysis: break-even, monthly savings, total cost. No estimates." },
+  { num: "3", title: "You Decide", desc: "No pressure. You'll have everything you need to make the right call." },
 ];
 
 export default function HomePage() {
@@ -100,184 +116,207 @@ export default function HomePage() {
 
   return (
     <div className="bg-white">
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")" }} />
+      {/* ── HERO ── */}
+      <section className="bg-slate-950 text-white relative overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: "url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1800&q=60')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-900/80" />
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 bg-green-600/20 border border-green-500/30 text-green-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6 uppercase tracking-wide">
-              California Mortgage Experts
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Lower Your Payment.<br />
-              <span className="text-green-400">Access Your Equity.</span><br />
-              Get Straight Answers.
-            </h1>
-            <p className="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed max-w-2xl">
-              California mortgage guidance for refinancing, FHA and VA Streamlines, cash-out options, and home purchase financing. We tell you what actually makes sense for your situation.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link to={createPageUrl('ContactUs')} className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition shadow-lg text-base">
-                Request a Mortgage Review <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link to={createPageUrl('Refinance')} className="inline-flex items-center justify-center px-8 py-4 border-2 border-slate-600 text-slate-200 rounded-lg font-semibold hover:bg-white/10 hover:border-slate-400 transition text-base">
-                Explore Refinance Options
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust Strip */}
-      <section className="bg-green-600 text-white py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            {[
-              { label: "California Mortgage Expertise" },
-              { label: "Personalized Guidance" },
-              { label: "Responsive Communication" },
-              { label: "Real Human Help" },
-            ].map((item) => (
-              <div key={item.label} className="flex items-center justify-center gap-2 text-sm font-medium">
-                <CheckCircle className="h-4 w-4 text-green-200 flex-shrink-0" />
-                <span>{item.label}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+            {/* Left: Copy */}
+            <div className="lg:col-span-3">
+              <div className="inline-flex items-center gap-2 bg-green-600/20 border border-green-500/30 text-green-300 text-xs font-bold px-3 py-1.5 rounded-full mb-6 uppercase tracking-widest">
+                California Mortgage · Straight Answers · No Pressure
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* What We Help With */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">What We Help With</h2>
-            <p className="text-lg text-slate-600 max-w-xl mx-auto">Whether you're looking to refinance or buy, we help you evaluate your options clearly.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {services.map((s) => (
-              <Link key={s.path} to={createPageUrl(s.path)} className="group bg-white border border-gray-200 rounded-2xl p-6 hover:border-green-300 hover:shadow-md transition-all">
-                <div className={`w-12 h-12 ${s.bg} rounded-xl flex items-center justify-center mb-4`}>
-                  <s.icon className={`h-6 w-6 ${s.color}`} />
-                </div>
-                <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-green-700 transition">{s.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed mb-3">{s.desc}</p>
-                <span className="text-green-600 text-sm font-semibold flex items-center gap-1">Learn more <ArrowRight className="h-3.5 w-3.5" /></span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why BuyWiser */}
-      <section className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Why Borrowers Choose BuyWiser</h2>
-              <p className="text-slate-600 mb-8 leading-relaxed">
-                Most borrowers don't need more confusing options. They need someone who can look at their specific situation and tell them what actually makes sense. That's what we do.
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-none tracking-tight mb-5">
+                Lower Your Payment.<br />
+                <span className="text-green-400">Access Your Equity.</span><br />
+                Get a Straight Answer.
+              </h1>
+              <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-4 max-w-xl">
+                We help California homeowners evaluate refinance options — FHA Streamline, VA Streamline, rate-and-term, and cash-out — with real numbers and no sales pressure.
               </p>
-              <div className="space-y-4">
-                {whyPoints.map((point, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-slate-700">{point.text}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-8">
-                <Link to={createPageUrl('About')} className="inline-flex items-center gap-1 text-green-700 font-semibold hover:text-green-800 transition">
-                  Learn about our approach <ArrowRight className="h-4 w-4" />
+              <p className="text-sm text-slate-400 mb-8">
+                Not sure if refinancing makes sense? That's exactly why we're here. We'll tell you honestly.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link
+                  to={createPageUrl('ContactUs')}
+                  className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition shadow-lg text-base"
+                >
+                  Request a Mortgage Review <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
+                <a
+                  href="tel:+18183002642"
+                  className="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-200 rounded-xl font-semibold hover:bg-white/5 transition text-base gap-2"
+                >
+                  <Phone className="h-4 w-4" /> (818) 300-2642
+                </a>
               </div>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-200 p-8">
-              <div className="grid grid-cols-2 gap-5">
-                {[
-                  { label: "NMLS Licensed", sub: "California Regulated", icon: Shield },
-                  { label: "Experience", sub: "Complex Scenarios Welcome", icon: Award },
-                  { label: "Response Time", sub: "Real Answers, Not Voicemail", icon: Clock },
-                  { label: "Borrower-First", sub: "No Pressure, Ever", icon: Users },
-                ].map((item) => (
-                  <div key={item.label} className="bg-slate-50 rounded-xl p-4">
-                    <item.icon className="h-5 w-5 text-green-600 mb-2" />
-                    <p className="font-bold text-slate-900 text-sm">{item.label}</p>
-                    <p className="text-slate-500 text-xs mt-0.5">{item.sub}</p>
+
+            {/* Right: Trust Card */}
+            <div className="lg:col-span-2">
+              <div className="bg-white/5 border border-white/10 backdrop-blur rounded-2xl p-6">
+                <p className="text-xs text-slate-400 uppercase tracking-widest font-semibold mb-4">Why borrowers choose us</p>
+                <div className="space-y-3">
+                  {trustPoints.map((point) => (
+                    <div key={point} className="flex items-center gap-3">
+                      <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle className="h-3 w-3 text-white" />
+                      </div>
+                      <span className="text-slate-200 text-sm font-medium">{point}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-5 pt-5 border-t border-white/10">
+                  <div className="flex items-center gap-2 mb-1">
+                    {[...Array(5)].map((_, i) => <Star key={i} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />)}
+                    <span className="text-xs text-slate-400 ml-1">California borrowers</span>
                   </div>
-                ))}
-              </div>
-              <div className="mt-5 pt-5 border-t border-gray-100 text-xs text-slate-500">
-                <p>NMLS Company: 1887767 · Personal: 1524446</p>
-                <p className="mt-0.5">Licensed in California — DFPI / CRMLA</p>
+                  <p className="text-xs text-slate-400 italic">"He told us honestly when it didn't make sense and helped us when it did."</p>
+                </div>
+                <div className="mt-4 pt-4 border-t border-white/10 text-xs text-slate-500 space-y-0.5">
+                  <p>Company NMLS: 1887767 · Personal NMLS: 1524446</p>
+                  <p>Licensed · California DFPI / CRMLA</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Refinance Honest Section */}
-      <section className="py-20 bg-white">
+      {/* ── TRUST STRIP ── */}
+      <section className="bg-slate-900 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-xs text-slate-400 font-medium">
+            <span className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> FHA Streamline Specialist</span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> VA IRRRL Eligible Lender</span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> California Cash-Out Options</span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> NMLS #1887767 · Licensed in CA</span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="h-3.5 w-3.5 text-green-500" /> No Pressure · No Obligation</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── SHOULD YOU REFINANCE? ── */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
-              Not Every Refinance Makes Sense.<br />
-              <span className="text-green-600">We'll Tell You Honestly.</span>
+          <div className="max-w-2xl mb-10">
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-green-700 uppercase tracking-widest mb-3">
+              <Zap className="h-3.5 w-3.5" /> Straight Answers
+            </div>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">
+              Should You Refinance Right Now?
             </h2>
-            <p className="text-slate-600 text-lg leading-relaxed mb-6">
-              Some borrowers should refinance now. Some should wait for rates to move. Others are better served using their equity strategically rather than chasing a rate reduction alone.
+            <p className="text-slate-600 leading-relaxed">
+              Depends on your loan type, current rate, how long you'll stay, and what you're trying to accomplish. Here's a quick read on common situations.
             </p>
-            <p className="text-slate-600 leading-relaxed mb-8">
-              We run the actual numbers for your situation — break-even timelines, total cost comparison, payment impact — so you can make an informed decision rather than guessing.
-            </p>
-            <Link to={createPageUrl('Refinance')} className="inline-flex items-center gap-2 px-7 py-3.5 bg-slate-900 text-white rounded-lg font-semibold hover:bg-slate-800 transition">
-              Review My Refinance Options <ArrowRight className="h-4 w-4" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {refiBrief.map((item, i) => (
+              <div key={i} className="bg-slate-50 border border-gray-200 rounded-2xl p-5 hover:border-green-300 transition">
+                <p className="font-bold text-slate-900 text-sm mb-2">{item.q}</p>
+                <p className="text-slate-600 text-sm leading-relaxed">{item.a}</p>
+              </div>
+            ))}
+          </div>
+          <div className="mt-6">
+            <Link to={createPageUrl('ContactUs')} className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition text-sm">
+              Request a Mortgage Review <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Process */}
-      <section className="py-20 bg-slate-50">
+      {/* ── LOAN OPTIONS ── */}
+      <section className="py-16 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">How It Works</h2>
-            <p className="text-slate-600">Three straightforward steps from inquiry to decision.</p>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-3">Refinance & Loan Options</h2>
+            <p className="text-slate-600 max-w-xl mx-auto">We specialize in helping California homeowners find the right path — whether that's a rate reduction, streamline refinance, equity access, or a new purchase.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {steps.map((step, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-200 p-8 relative">
-                <div className="w-10 h-10 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-4">{step.num}</div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{step.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{step.desc}</p>
-                {i < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-9 -right-4 z-10 text-slate-300">
-                    <ArrowRight className="h-6 w-6" />
-                  </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {refinanceOptions.map((opt) => (
+              <Link
+                key={opt.path}
+                to={createPageUrl(opt.path)}
+                className="group relative bg-white border border-gray-200 rounded-2xl p-6 hover:border-green-400 hover:shadow-lg transition-all"
+              >
+                {opt.badge && (
+                  <span className="absolute top-4 right-4 text-xs font-bold px-2.5 py-1 rounded-full bg-green-100 text-green-700">
+                    {opt.badge}
+                  </span>
                 )}
-              </div>
+                <div className="w-11 h-11 bg-slate-100 group-hover:bg-green-100 rounded-xl flex items-center justify-center mb-4 transition">
+                  <opt.icon className="h-5 w-5 text-slate-500 group-hover:text-green-700 transition" />
+                </div>
+                <h3 className="font-bold text-slate-900 mb-2 text-base group-hover:text-green-700 transition">{opt.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-4">{opt.desc}</p>
+                <span className="text-green-700 text-sm font-semibold flex items-center gap-1">
+                  Learn more <ArrowRight className="h-3.5 w-3.5" />
+                </span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-white">
+      {/* ── HOW IT WORKS ── */}
+      <section className="py-16 bg-white border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">What Borrowers Say</h2>
-            <Link to={createPageUrl('Reviews')} className="text-green-600 text-sm font-semibold hover:underline">View all reviews →</Link>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-extrabold text-slate-900 mb-2">How a Mortgage Review Works</h2>
+            <p className="text-slate-600 text-sm">Three steps. No fluff.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {steps.map((step, i) => (
+              <div key={i} className="text-center relative">
+                <div className="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-extrabold mx-auto mb-4">
+                  {step.num}
+                </div>
+                <h3 className="font-bold text-slate-900 mb-2">{step.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to={createPageUrl('ContactUs')} className="inline-flex items-center gap-2 px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-md">
+              Request a Mortgage Review <ArrowRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIALS ── */}
+      <section className="py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+            <div>
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-1">What Borrowers Say</h2>
+              <p className="text-slate-500 text-sm">Real California homeowners. Real results.</p>
+            </div>
+            <Link to={createPageUrl('Reviews')} className="text-green-700 text-sm font-semibold hover:underline flex items-center gap-1">
+              All reviews <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {testimonials.map((t, i) => (
               <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                 <div className="flex gap-0.5 mb-3">
                   {[...Array(t.stars)].map((_, j) => <Star key={j} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
                 </div>
                 <p className="text-slate-700 text-sm leading-relaxed mb-4">"{t.text}"</p>
-                <div>
+                <div className="pt-3 border-t border-gray-100">
                   <p className="font-bold text-slate-900 text-sm">{t.name}</p>
-                  <p className="text-slate-500 text-xs">{t.situation}</p>
+                  <p className="text-green-700 text-xs font-medium mt-0.5">{t.situation}</p>
                 </div>
               </div>
             ))}
@@ -285,72 +324,98 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Contact Form */}
-      <section id="contact" className="py-20 bg-slate-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-3">Request a Mortgage Review</h2>
-            <p className="text-slate-600">No obligation. No pressure. Just a clear conversation about your options.</p>
-          </div>
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 md:p-10">
-            {submitted ? (
-              <div className="text-center py-10">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">Thank You</h3>
-                <p className="text-slate-600">We'll be in touch shortly — typically within one business day.</p>
+      {/* ── CONTACT FORM ── */}
+      <section id="request" className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-start">
+            {/* Copy */}
+            <div className="lg:col-span-2">
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-green-700 uppercase tracking-widest mb-3">
+                <Zap className="h-3.5 w-3.5" /> No Obligation
               </div>
-            ) : (
-              <form onSubmit={(e) => { e.preventDefault(); submitMutation.mutate(formData); }} className="space-y-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">First Name *</label>
-                    <Input required value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} placeholder="First name" />
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-3">Request a Mortgage Review</h2>
+              <p className="text-slate-600 text-sm leading-relaxed mb-5">
+                Tell us about your situation and what you're trying to accomplish. We'll review it and come back with a straight answer — what makes sense, what doesn't, and why.
+              </p>
+              <div className="space-y-3 text-sm text-slate-600">
+                <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" /> No cost, no obligation</div>
+                <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" /> Respond within one business day</div>
+                <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" /> Real numbers, not estimates</div>
+                <div className="flex items-center gap-2"><CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" /> No pressure, ever</div>
+              </div>
+              <div className="mt-6 pt-6 border-t border-gray-200">
+                <p className="text-xs text-slate-500 font-semibold mb-2">Prefer to call?</p>
+                <a href="tel:+18183002642" className="flex items-center gap-2 text-green-700 font-bold hover:text-green-800 transition">
+                  <Phone className="h-4 w-4" /> (818) 300-2642
+                </a>
+                <a href="mailto:bennett@buywiser.com" className="block text-xs text-slate-500 mt-1 hover:text-slate-700">bennett@buywiser.com</a>
+              </div>
+            </div>
+
+            {/* Form */}
+            <div className="lg:col-span-3 bg-white border border-gray-200 rounded-2xl shadow-sm p-6 md:p-8">
+              {submitted ? (
+                <div className="text-center py-10">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Last Name *</label>
-                    <Input required value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} placeholder="Last name" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Email *</label>
-                    <Input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="your@email.com" />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1.5">Phone *</label>
-                    <Input required type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="(818) 555-0100" />
-                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Received</h3>
+                  <p className="text-slate-600 text-sm">We'll review your information and follow up within one business day with a clear, direct response.</p>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1.5">What are you looking to do?</label>
-                  <Textarea value={formData.comments} onChange={(e) => setFormData({ ...formData, comments: e.target.value })} placeholder="Tell us briefly about your current situation and what you're hoping to accomplish." rows={3} />
-                </div>
-                <Button type="submit" disabled={submitMutation.isPending} className="w-full bg-green-600 hover:bg-green-700 text-white py-6 text-base font-semibold">
-                  {submitMutation.isPending ? "Sending..." : "Request My Mortgage Review"}
-                </Button>
-                <p className="text-xs text-slate-500 text-center">By submitting, you agree to be contacted regarding your mortgage inquiry. No spam, ever.</p>
-              </form>
-            )}
-          </div>
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center text-sm">
-            <div><p className="font-semibold text-slate-900 mb-0.5">Call Direct</p><a href="tel:+18183002642" className="text-slate-600 hover:text-green-600">(818) 300-2642</a></div>
-            <div><p className="font-semibold text-slate-900 mb-0.5">Email</p><a href="mailto:bennett@buywiser.com" className="text-slate-600 hover:text-green-600">bennett@buywiser.com</a></div>
-            <div><p className="font-semibold text-slate-900 mb-0.5">Office</p><p className="text-slate-600">North Hollywood, CA 91601</p></div>
+              ) : (
+                <form onSubmit={(e) => { e.preventDefault(); submitMutation.mutate(formData); }} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">First Name *</label>
+                      <Input required value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} placeholder="First name" className="h-11" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Last Name *</label>
+                      <Input required value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} placeholder="Last name" className="h-11" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Email *</label>
+                      <Input required type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} placeholder="you@email.com" className="h-11" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Phone *</label>
+                      <Input required type="tel" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} placeholder="(818) 555-0100" className="h-11" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">What are you looking to accomplish?</label>
+                    <Textarea
+                      value={formData.comments}
+                      onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
+                      placeholder="e.g. I have an FHA loan and want to know if I can lower my payment. Or: I have equity and want to explore cash-out options."
+                      rows={3}
+                    />
+                  </div>
+                  <Button type="submit" disabled={submitMutation.isPending} className="w-full bg-green-600 hover:bg-green-500 text-white py-5 text-base font-bold rounded-xl">
+                    {submitMutation.isPending ? "Sending..." : "Request a Mortgage Review →"}
+                  </Button>
+                  <p className="text-xs text-slate-400 text-center">No cost. No obligation. No pressure. Ever.</p>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Final CTA Banner */}
-      <section className="bg-green-600 text-white py-14">
+      {/* ── FINAL CTA BANNER ── */}
+      <section className="bg-slate-950 text-white py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-3">Ready to Review Your Options?</h2>
-          <p className="text-green-100 mb-6 text-lg">No pressure. No obligation. Just a direct conversation about what makes sense for you.</p>
+          <p className="text-green-400 text-xs font-bold uppercase tracking-widest mb-3">Straight Answers · No Pressure · No Obligation</p>
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-3">Ready to See What Your Options Look Like?</h2>
+          <p className="text-slate-400 mb-7 text-lg max-w-xl mx-auto">
+            We look at real numbers and tell you honestly what makes sense — whether that's refinancing now, waiting, or using your equity differently.
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('ContactUs')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition shadow-md">
+            <Link to={createPageUrl('ContactUs')} className="px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition shadow-md text-base">
               Request a Mortgage Review
             </Link>
-            <a href="tel:+18183002642" className="px-8 py-3.5 border-2 border-green-400 text-white rounded-lg font-bold hover:bg-green-500 transition flex items-center justify-center gap-2">
-              <Phone className="h-4 w-4" />(818) 300-2642
+            <a href="tel:+18183002642" className="px-8 py-4 border border-slate-700 text-slate-200 rounded-xl font-bold hover:bg-white/5 transition flex items-center justify-center gap-2 text-base">
+              <Phone className="h-4 w-4" /> (818) 300-2642
             </a>
           </div>
         </div>
