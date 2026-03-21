@@ -58,6 +58,10 @@ const AuthenticatedApp = () => {
           }
         />
       ))}
+      {/* Redirect old page key URLs to new consumer-friendly paths */}
+      <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
+      <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
+      <Route path="/MortgageCalculators" element={<Navigate to="/Calculators" replace />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
