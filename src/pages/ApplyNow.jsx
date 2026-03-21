@@ -73,6 +73,8 @@ export default function ApplyNow() {
     setSubmitted(true);
   };
 
+  usePageTitle('Request a Mortgage Review | BuyWiser Home Loans');
+
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
@@ -84,8 +86,6 @@ export default function ApplyNow() {
       </div>
     );
   }
-
-  usePageTitle('Request a Mortgage Review | BuyWiser Home Loans');
   return (
     <div>
       {/* Banner */}
