@@ -107,7 +107,7 @@ export default function Reviews() {
           <h2 className="text-3xl font-bold mb-3">Ready to See What's Possible?</h2>
           <p className="text-green-100 mb-6">Request a no-obligation mortgage review. We'll look at your situation and give you a straight answer.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('ContactUs')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition">
+            <Link to={createPageUrl('Contact')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition">
               Request a Mortgage Review
             </Link>
             <a href="tel:+18183002642" className="px-8 py-3.5 border-2 border-green-400 text-white rounded-lg font-bold hover:bg-green-500 transition flex items-center justify-center gap-2">

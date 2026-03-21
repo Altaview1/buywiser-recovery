@@ -121,7 +121,7 @@ export default function CashOut() {
           <h2 className="text-3xl font-bold mb-3">Review My Equity Options</h2>
           <p className="text-green-100 mb-6">Let's look at what you've built up and whether accessing it makes sense for your goals right now.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('ContactUs')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition">
+            <Link to={createPageUrl('Contact')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition">
               Request a Mortgage Review
             </Link>
             <a href="tel:+18183002642" className="px-8 py-3.5 border-2 border-green-400 text-white rounded-lg font-bold hover:bg-green-500 transition flex items-center justify-center gap-2">

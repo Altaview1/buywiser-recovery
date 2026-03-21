@@ -151,7 +151,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
-                  to={createPageUrl('ContactUs')}
+                  to={createPageUrl('Contact')}
                   className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition shadow-lg text-base"
                 >
                   Request a Mortgage Review <ArrowRight className="ml-2 h-5 w-5" />
@@ -232,7 +232,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="mt-6">
-            <Link to={createPageUrl('ContactUs')} className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition text-sm">
+            <Link to={createPageUrl('Contact')} className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition text-sm">
               Request a Mortgage Review <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -291,7 +291,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="text-center mt-8">
-            <Link to={createPageUrl('ContactUs')} className="inline-flex items-center gap-2 px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-md">
+            <Link to={createPageUrl('Contact')} className="inline-flex items-center gap-2 px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-700 transition shadow-md">
               Request a Mortgage Review <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
@@ -414,7 +414,7 @@ export default function HomePage() {
             We look at real numbers and tell you honestly what makes sense — whether that's refinancing now, waiting, or using your equity differently.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('ContactUs')} className="px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition shadow-md text-base">
+            <Link to={createPageUrl('Contact')} className="px-8 py-4 bg-green-600 text-white rounded-xl font-bold hover:bg-green-500 transition shadow-md text-base">
               Request a Mortgage Review
             </Link>
             <a href="tel:+18183002642" className="px-8 py-4 border border-slate-700 text-slate-200 rounded-xl font-bold hover:bg-white/5 transition flex items-center justify-center gap-2 text-base">
