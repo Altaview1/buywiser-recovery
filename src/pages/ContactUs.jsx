@@ -25,6 +25,7 @@ const trustItems = [
 ];
 
 export default function ContactUs() {
+  usePageTitle('Contact BuyWiser | BuyWiser Home Loans');
   const [form, setForm] = useState({
     first_name: "", last_name: "", phone: "", email: "",
     loan_type: "", comments: "",

@@ -37,9 +37,9 @@ const whenItMayNot = [
 ];
 
 export default function Refinance() {
+  usePageTitle('Refinance Review | BuyWiser Home Loans');
   return (
     <div className="bg-white">
-      <title>Refinance Review | BuyWiser Home Loans</title>
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-slate-700 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

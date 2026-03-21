@@ -85,9 +85,9 @@ export default function ApplyNow() {
     );
   }
 
+  usePageTitle('Request a Mortgage Review | BuyWiser Home Loans');
   return (
     <div>
-      <title>Request a Mortgage Review | BuyWiser Home Loans</title>
       {/* Banner */}
       <div
         className="h-56 bg-cover bg-center relative"

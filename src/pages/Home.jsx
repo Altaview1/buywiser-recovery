@@ -115,9 +115,10 @@ export default function HomePage() {
     },
   });
 
+  usePageTitle('BuyWiser Home Loans | California Mortgage Guidance');
+
   return (
     <div className="bg-white">
-      <title>BuyWiser Home Loans | California Mortgage Guidance</title>
       {/* ── HERO ── */}
       <section className="bg-slate-950 text-white relative overflow-hidden">
         <div
