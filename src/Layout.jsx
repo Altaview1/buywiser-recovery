@@ -109,6 +109,16 @@ export default function Layout({ children, currentPageName }) {
 
       <main className="flex-1">{children}</main>
 
+      {/* Mobile Sticky CTA */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 shadow-lg px-4 py-3 flex gap-3">
+        <a href="tel:+18183002642" className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-green-600 text-green-700 rounded-xl font-bold text-sm">
+          <Phone className="h-4 w-4" /> Call Now
+        </a>
+        <Link to={createPageUrl('ContactUs')} className="flex-1 flex items-center justify-center gap-1 py-3 bg-green-600 text-white rounded-xl font-bold text-sm">
+          Request a Review <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
       <footer className="bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
