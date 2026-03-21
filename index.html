@@ -11,22 +11,27 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="BuyWiser Home Loans" />
     <meta name="robots" content="index, follow" />
-    <!-- Title guardian: runs immediately, before any platform script -->
+    <!-- Title guardian: rewrites developer-style route names to consumer-friendly titles -->
     <script>
       (function() {
-        var BANNED = ['clone', 'applynow', 'mortgagecalculators', 'contactus', ' copy'];
-        var BRAND = 'BuyWiser Home Loans';
+        var MAP = {
+          'applynow': 'Request a Mortgage Review | BuyWiser Home Loans',
+          'mortgagecalculators': 'Mortgage Calculators | BuyWiser Home Loans',
+          'contactus': 'Contact BuyWiser | BuyWiser Home Loans',
+          'clone': 'BuyWiser Home Loans | California Mortgage Guidance',
+          ' copy': 'BuyWiser Home Loans | California Mortgage Guidance'
+        };
         function clean() {
           var t = document.title;
           var lower = t.toLowerCase();
-          if (BANNED.some(function(w) { return lower.indexOf(w) !== -1; })) {
-            var parts = t.split('|').map(function(s) { return s.trim(); });
-            var good = parts.filter(function(p) {
-              return !BANNED.some(function(w) { return p.toLowerCase().indexOf(w) !== -1; });
-            });
-            document.title = good.length > 0 ? good.join(' | ') : BRAND + ' | California Mortgage Guidance';
+          for (var key in MAP) {
+            if (lower.indexOf(key) !== -1) {
+              document.title = MAP[key];
+              return;
+            }
           }
         }
+        clean();
         var obs = new MutationObserver(clean);
         obs.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
       })();
