@@ -49,9 +49,9 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<LayoutWrapper currentPageName="Home"><Home /></LayoutWrapper>} />
-      <Route path="/Apply" element={<LayoutWrapper currentPageName="Apply"><ApplyNow /></LayoutWrapper>} />
-      <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><ContactUs /></LayoutWrapper>} />
-      <Route path="/Calculators" element={<LayoutWrapper currentPageName="Calculators"><MortgageCalculators /></LayoutWrapper>} />
+      <Route path="/Apply" element={<LayoutWrapper currentPageName="Apply"><MortgageReview /></LayoutWrapper>} />
+      <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><Contact /></LayoutWrapper>} />
+      <Route path="/Calculators" element={<LayoutWrapper currentPageName="Calculators"><Calculators /></LayoutWrapper>} />
       <Route path="/Refinance" element={<LayoutWrapper currentPageName="Refinance"><Refinance /></LayoutWrapper>} />
       <Route path="/FHAStreamline" element={<LayoutWrapper currentPageName="FHAStreamline"><FHAStreamline /></LayoutWrapper>} />
       <Route path="/VAStreamline" element={<LayoutWrapper currentPageName="VAStreamline"><VAStreamline /></LayoutWrapper>} />
