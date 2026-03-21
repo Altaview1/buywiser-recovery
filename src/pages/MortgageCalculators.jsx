@@ -150,6 +150,7 @@ function AffordabilityCalc() {
 }
 
 export default function MortgageCalculators() {
+  usePageTitle('Mortgage Calculators | BuyWiser Home Loans');
   const [activeCalc, setActiveCalc] = useState("mortgage");
 
   usePageTitle('Mortgage Calculators | BuyWiser Home Loans');

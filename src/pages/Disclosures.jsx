@@ -1,9 +1,10 @@
 import { Shield } from "lucide-react";
+import { usePageTitle } from "@/lib/usePageTitle";
 
 export default function Disclosures() {
+  usePageTitle('Licensing & Disclosures | BuyWiser Home Loans');
   return (
     <div className="bg-white py-16">
-      <title>Licensing &amp; Disclosures | BuyWiser Home Loans</title>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 bg-green-100 rounded-lg flex items-center justify-center">
