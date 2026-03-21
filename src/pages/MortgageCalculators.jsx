@@ -149,6 +149,7 @@ function AffordabilityCalc() {
 }
 
 export default function MortgageCalculators() {
+  // Title set via document title below
   const [activeCalc, setActiveCalc] = useState("mortgage");
 
   return (

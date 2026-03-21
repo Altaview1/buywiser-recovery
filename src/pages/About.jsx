@@ -28,6 +28,7 @@ const values = [
 export default function About() {
   return (
     <div className="bg-white">
+      <title>About BuyWiser Home Loans | California Mortgage</title>
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-slate-700 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
