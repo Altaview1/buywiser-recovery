@@ -54,7 +54,7 @@ export default function About() {
                 At BuyWiser, the model is simple but powerful: you get a dedicated advisor personally assigned to your loan. Not a call center. Not a rotating team. One expert who knows your file, knows your goals, and shops your loan against over 40 competing banks and lenders to find the best rate and structure available to you.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
-                That's what separates a boutique from a big bank. Large lenders offer you their rate. BuyWiser offers you the market's best rate — then gets it done.
+                That's the difference between going directly to a bank and working with a mortgage broker. A bank offers you their one rate. As your broker, BuyWiser shops your loan across 40+ competing lenders to find the market's best rate — then gets it done.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
                 He's worked with clients across a wide range of situations — first-time buyers, long-term homeowners considering their first refinance, self-employed borrowers with complex income documentation, and homeowners with significant equity who needed help thinking through whether and how to access it.
