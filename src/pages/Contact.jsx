@@ -95,10 +95,7 @@ export default function Contact() {
                   </div>
                 </div>
               </div>
-              <div className="bg-white rounded-2xl border border-gray-200 p-5">
-                <div className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4 text-green-600" /><p className="font-bold text-slate-900 text-sm">Response Time</p></div>
-                <p className="text-sm text-slate-600 leading-relaxed">We typically respond within one business day. For time-sensitive questions, call direct.</p>
-              </div>
+
               <div className="bg-slate-50 border border-gray-200 rounded-2xl p-5">
                 <div className="flex items-center gap-1.5 mb-3"><Shield className="h-4 w-4 text-green-600" /><p className="font-bold text-slate-900 text-xs uppercase tracking-widest">Licensing</p></div>
                 <div className="space-y-1 text-xs text-slate-600">
