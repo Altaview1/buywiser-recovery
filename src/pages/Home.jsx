@@ -122,6 +122,12 @@ export default function Home() {
                 </span>
               ))}
             </div>
+            <div className="mt-10 border-l-4 border-green-500 pl-5">
+              <p className="text-slate-300 text-sm leading-relaxed italic">
+                "Thank goodness BuyWiser locked us in right before the war started — frankly I could point to 10 amazing experiences but getting locked in on time tops everything."
+              </p>
+              <p className="text-green-400 text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
+            </div>
           </div>
         </div>
       </section>
