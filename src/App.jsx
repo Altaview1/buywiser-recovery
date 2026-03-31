@@ -21,6 +21,7 @@ import About from './pages/About';
 import Reviews from './pages/Reviews';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Disclosures from './pages/Disclosures';
+import MortgageAI from './pages/MortgageAI';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -61,6 +62,7 @@ const AuthenticatedApp = () => {
       <Route path="/Reviews" element={<LayoutWrapper currentPageName="Reviews"><Reviews /></LayoutWrapper>} />
       <Route path="/PrivacyPolicy" element={<LayoutWrapper currentPageName="PrivacyPolicy"><PrivacyPolicy /></LayoutWrapper>} />
       <Route path="/Disclosures" element={<LayoutWrapper currentPageName="Disclosures"><Disclosures /></LayoutWrapper>} />
+      <Route path="/MortgageAI" element={<MortgageAI />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />

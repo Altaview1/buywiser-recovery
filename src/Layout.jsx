@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import StickyBanner from './components/StickyBanner';
 import { createPageUrl } from './utils';
 import { Phone, Menu, X, Home, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
@@ -29,6 +30,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-white pb-16 lg:pb-0">
+      <StickyBanner />
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

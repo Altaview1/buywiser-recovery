@@ -1,0 +1,92 @@
+{
+  "name": "MortgageApplication",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "loan_purpose": {
+      "type": "string"
+    },
+    "property_type": {
+      "type": "string"
+    },
+    "property_city": {
+      "type": "string"
+    },
+    "property_value": {
+      "type": "number"
+    },
+    "loan_amount": {
+      "type": "number"
+    },
+    "annual_income": {
+      "type": "string"
+    },
+    "employment_type": {
+      "type": "string"
+    },
+    "employer_name": {
+      "type": "string"
+    },
+    "years_employed": {
+      "type": "string"
+    },
+    "monthly_debts": {
+      "type": "string"
+    },
+    "liquid_assets": {
+      "type": "string"
+    },
+    "credit_score_range": {
+      "type": "string"
+    },
+    "bankruptcies": {
+      "type": "string"
+    },
+    "foreclosures": {
+      "type": "string"
+    },
+    "document_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "document_names": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ai_summary": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "submitted",
+        "reviewing",
+        "qualified",
+        "not_qualified",
+        "closed"
+      ],
+      "default": "submitted"
+    }
+  },
+  "required": [
+    "first_name",
+    "email",
+    "phone"
+  ]
+}
