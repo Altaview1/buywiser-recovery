@@ -92,13 +92,13 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
           <div className="max-w-3xl">
             <div className="inline-block text-xs font-semibold tracking-widest uppercase text-green-400 mb-6">
-              California Mortgage · NMLS #1887767
+              Serving California Since 1991 · NMLS #1887767
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6 text-white">
-              Refinance Review for<br />California Homeowners
+              Your Personal Mortgage Expert.<br />California's Refinance Specialists.
             </h1>
             <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl">
-              See whether refinancing could lower your payment, reduce interest, remove mortgage insurance, or unlock equity — with real numbers and no pressure.
+              At BuyWiser, you get a dedicated mortgage expert — not a call center. We've been serving California homeowners since 1991, and we shop your loan against 40+ banks and lenders to secure the lowest rate available.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mb-12">
               <Link
@@ -151,17 +151,17 @@ export default function Home() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-5">
-              Straight Answers. Real Numbers. No Sales Pressure.
+              Private Banking Access. Street-Level Expertise.
             </h2>
             <p className="text-slate-300 leading-relaxed text-base mb-4">
-              At BuyWiser, the goal is simple: help you determine whether refinancing actually makes sense.
+              Since 1991, we've operated as a boutique mortgage firm — meaning you work directly with your advisor, not a processing queue. When you come to BuyWiser, a dedicated expert is assigned to your file personally.
             </p>
             <p className="text-slate-300 leading-relaxed text-base mb-4">
-              You will get a practical review based on your current mortgage, your goals, and today's available options. That may include side-by-side payment comparisons, estimated closing costs, break-even analysis, cash-out scenarios, or a review of whether staying with your current loan is the better move.
+              We then go to work on your behalf — shopping your loan against over 40 competing banks and lenders to find the lowest rate and best structure for your specific situation. Large banks give you their rate. We give you the market's best rate.
             </p>
             <p className="text-slate-200 font-medium text-base">
-              If refinancing helps, we will show you why.<br />
-              If it does not, we will tell you that too.
+              If refinancing helps, we will show you exactly why and by how much.<br />
+              If it doesn't, we will tell you that too.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

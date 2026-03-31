@@ -34,9 +34,9 @@ export default function About() {
       <section className="bg-gradient-to-br from-slate-900 to-slate-700 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="inline-block bg-green-600/20 border border-green-500/30 text-green-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wide">About BuyWiser Home Loans</div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">California Mortgage Guidance — Without the Runaround</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Boutique Mortgage Expertise Since 1991</h1>
           <p className="text-xl text-slate-300 leading-relaxed max-w-2xl">
-            We're a California mortgage firm built around clarity, experience, and borrower-first thinking. Not transaction volume.
+            Over three decades of serving California homeowners and buyers — with a personal advisor model, 40+ competing lenders, and a commitment to straight talk over sales pressure.
           </p>
         </div>
       </section>
@@ -48,13 +48,16 @@ export default function About() {
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">About Bennett</h2>
               <p className="text-slate-600 leading-relaxed mb-4">
-                Bennett has worked in California mortgage lending for many years, helping homeowners and buyers navigate decisions that have a lasting impact on their finances. His approach is direct and practical: explain the options clearly, run the real numbers, and let borrowers decide without pressure.
+                Bennett has been working in California mortgage lending since 1991 — over three decades of helping homeowners and buyers navigate decisions that have a lasting impact on their finances. That longevity isn't just a number. It means he's seen multiple rate cycles, market crashes, and regulatory overhauls firsthand. He knows what works.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                At BuyWiser, the model is simple but powerful: you get a dedicated advisor personally assigned to your loan. Not a call center. Not a rotating team. One expert who knows your file, knows your goals, and shops your loan against over 40 competing banks and lenders to find the best rate and structure available to you.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                That's what separates a boutique from a big bank. Large lenders offer you their rate. BuyWiser offers you the market's best rate — then gets it done.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
                 He's worked with clients across a wide range of situations — first-time buyers, long-term homeowners considering their first refinance, self-employed borrowers with complex income documentation, and homeowners with significant equity who needed help thinking through whether and how to access it.
-              </p>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                California's mortgage market is not simple. Property values vary dramatically by market. Loan limits differ across counties. FHA, VA, conventional, and jumbo programs each have specific qualification requirements that change regularly. Bennett's value to borrowers is in knowing how these pieces interact and which combination of options makes the most sense for a specific person at a specific moment.
               </p>
               <p className="text-slate-600 leading-relaxed">
                 If you've been told no elsewhere, had a confusing experience with a large lender, or simply want someone who will give you a straight answer — that's what we're here for.

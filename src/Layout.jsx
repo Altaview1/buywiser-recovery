@@ -39,7 +39,7 @@ export default function Layout({ children, currentPageName }) {
               </div>
               <div className="leading-tight">
                 <div className="text-base font-bold text-slate-900">BuyWiser Home Loans</div>
-                <div className="text-xs text-slate-500 hidden sm:block">California Mortgage Experts</div>
+                <div className="text-xs text-slate-500 hidden sm:block">California's Boutique Mortgage Experts Since 1991</div>
               </div>
             </Link>
 
@@ -112,7 +112,7 @@ export default function Layout({ children, currentPageName }) {
                 </div>
                 <div>
                   <div className="font-bold text-white text-sm leading-tight">BuyWiser Home Loans</div>
-                  <div className="text-xs text-slate-400">California Mortgage Experts</div>
+                  <div className="text-xs text-slate-400">Boutique Mortgage Experts Since 1991</div>
                 </div>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
