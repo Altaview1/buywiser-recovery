@@ -88,6 +88,13 @@ export default function About() {
                       <p className="text-slate-600">California — DFPI / CRMLA</p>
                     </div>
                   </div>
+                  <div className="flex items-start gap-2">
+                    <Shield className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-medium text-slate-800">CA RE License</p>
+                      <p className="text-slate-600">#01107013</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-slate-600">
                   <p>5115 Lankershim Blvd #705</p>

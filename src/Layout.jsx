@@ -121,6 +121,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="space-y-1">
                 <p className="text-xs text-slate-500">Company NMLS: 1887767</p>
                 <p className="text-xs text-slate-500">Personal NMLS: 1524446</p>
+                <p className="text-xs text-slate-500">CA RE License: 01107013</p>
               </div>
             </div>
 

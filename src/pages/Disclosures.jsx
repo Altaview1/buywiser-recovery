@@ -31,6 +31,7 @@ export default function Disclosures() {
             <div className="space-y-1.5">
               <p><span className="font-medium text-slate-800">Company NMLS ID:</span> 1887767</p>
               <p><span className="font-medium text-slate-800">Personal NMLS ID:</span> 1524446</p>
+              <p><span className="font-medium text-slate-800">CA RE License:</span> #01107013</p>
               <p className="mt-3 text-xs text-slate-500">
                 You can verify licensing information at the Nationwide Multistate Licensing System (NMLS) consumer access portal at{" "}
                 <a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener noreferrer" className="text-green-700 underline hover:text-green-800">nmlsconsumeraccess.org</a>.
