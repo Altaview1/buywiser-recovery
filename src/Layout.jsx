@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { createPageUrl } from './utils';
 import { Phone, Menu, X, Home, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import ChatWidget from './components/ChatWidget';
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -89,6 +90,7 @@ export default function Layout({ children, currentPageName }) {
       </header>
 
       <main className="flex-1">{children}</main>
+      <ChatWidget />
 
       {/* Mobile Sticky CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 shadow-lg px-4 py-3 flex gap-3">
