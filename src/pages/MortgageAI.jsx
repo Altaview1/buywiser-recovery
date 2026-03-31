@@ -8,12 +8,13 @@ import ReactMarkdown from "react-markdown";
 
 const STEPS = [
   { key: "intro",         question: null },
-  { key: "loan_purpose",  question: "What's the purpose of your loan?\n\n**Options:**\n- Purchase a home\n- Refinance my current mortgage\n- Cash-out refinance\n- FHA Streamline\n- VA Streamline (IRRRL)" },
+  { key: "purchase_or_refi", question: "First things first — are you **purchasing a home** or looking to **refinance** your current mortgage?\n\n- 🏡 Purchasing a home\n- 🔄 Refinancing my current mortgage" },
+  { key: "loan_purpose",  question: "Great! What best describes what you're trying to accomplish?\n\n**Purchase options:**\n- Primary residence\n- Second home / vacation home\n- Investment property\n\n**Refinance options:**\n- Lower my rate / payment\n- Cash-out (access equity)\n- FHA Streamline\n- VA Streamline (IRRRL)\n- Remove mortgage insurance" },
   { key: "property_type", question: "What type of property is this?\n\n- Single family home\n- Condo / townhome\n- Multi-unit (2–4 units)\n- Investment property" },
   { key: "property_city", question: "What city is the property located in?" },
   { key: "property_value",question: "What is the estimated **property value** (or purchase price)? Please enter a dollar amount." },
   { key: "loan_amount",   question: "How much are you looking to **borrow**?" },
-  { key: "contact",       question: "Let's get your contact info.\n\nPlease share your **full name, email address, and phone number**." },
+  { key: "contact",       question: "Let's get your contact info so Bennett can follow up personally.\n\nPlease share your **full name, email address, and phone number**." },
   { key: "employment_type", question: "What best describes your **employment status**?\n\n- W-2 employee (full time)\n- Self-employed / 1099\n- Retired\n- Other" },
   { key: "employer_name", question: "What is the name of your **employer or business**? And how many years have you been there?" },
   { key: "annual_income", question: "What is your **gross annual income** (before taxes)? Please give a dollar range or exact amount." },
@@ -21,12 +22,12 @@ const STEPS = [
   { key: "liquid_assets", question: "How much do you have in **liquid assets** (checking, savings, investments)? A rough range is fine." },
   { key: "credit_score",  question: "What is your approximate **credit score range**?\n\n- Excellent (740+)\n- Good (700–739)\n- Fair (660–699)\n- Below 660\n- I'm not sure" },
   { key: "credit_history",question: "Have you had any **bankruptcies or foreclosures** in the past 7 years? If yes, please briefly describe." },
-  { key: "documents",     question: "Almost done! Please **upload your supporting documents**. Common docs include:\n\n- Last 2 years W-2s or tax returns\n- Last 2 months pay stubs\n- Last 2 months bank statements\n- Most recent mortgage statement (if refinancing)\n\nYou can upload multiple files." },
+  { key: "documents",     question: "Almost there! Please **upload your supporting documents**. Common docs include:\n\n- Last 2 years W-2s or tax returns\n- Last 2 months pay stubs\n- Last 2 months bank statements\n- Most recent mortgage statement (if refinancing)\n\nYou can upload multiple files." },
   { key: "review",        question: null },
 ];
 
 function getBotGreeting() {
-  return "Hi! I'm the **BuyWiser Mortgage AI**. I'll guide you through a complete application — it takes about 5–10 minutes.\n\nWe'll cover your loan goal, income, assets, credit, and document uploads. At the end, Bennett will personally review everything.\n\nReady to start? Just type **\"Yes\"** or **\"Let's go!\"**";
+  return "Welcome! I'm the **BuyWiser Mortgage AI** — and I'm here to help you get this done right.\n\nI'll be collecting your information for **Bennett**, BuyWiser's California Licensed Mortgage Broker with over **30 years** of experience helping people buy homes and navigate refinances across the state. Once you're done here, Bennett personally reviews every application — no handoffs, no call centers.\n\nThis guided application takes about 5–10 minutes. We'll cover your goal, income, assets, credit, and document uploads — everything Bennett needs to give you a real, honest answer.\n\nReady? Just type **\"Let's go!\"** to start."
 }
 
 function extractContactInfo(text) {
@@ -168,7 +169,7 @@ export default function MortgageAI() {
     let ack = "";
     try {
       ack = await base44.integrations.Core.InvokeLLM({
-        prompt: `You are a friendly, professional mortgage application assistant at BuyWiser Home Loans. The applicant just answered a question about "${key.replace(/_/g, " ")}" with: "${text}". Give a brief (1 sentence) warm, professional acknowledgment. Do NOT ask another question — just acknowledge. Keep it under 15 words.`,
+        prompt: `You are a sharp, experienced mortgage application assistant representing Bennett at BuyWiser Home Loans — a California Licensed Mortgage Broker with 30+ years of experience. The applicant just answered a question about "${key.replace(/_/g, " ")}" with: "${text}". Give a brief (1 sentence) warm but confident acknowledgment. No fluff, no over-the-top praise. Do NOT ask another question. Keep it under 15 words.`,
       });
     } catch {
       ack = "Got it, thank you!";
@@ -198,8 +199,9 @@ export default function MortgageAI() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Application Submitted!</h2>
           <p className="text-slate-600 leading-relaxed mb-4">
-            Bennett will personally review your application and follow up within one business day with a clear, honest assessment.
+            Bennett will personally review your application. With over 30 years as a California Licensed Mortgage Broker, he'll come back to you with a clear, honest assessment of your options — no pressure, no runaround.
           </p>
+          <p className="text-xs text-slate-400 mb-4">CA RE License #01107013 &middot; NMLS #1524446 &middot; Company NMLS #1887767</p>
           <p className="text-sm text-slate-500">Questions? Call <a href="tel:+18183002642" className="text-green-700 font-semibold">(818) 300-2642</a></p>
         </div>
       </div>
