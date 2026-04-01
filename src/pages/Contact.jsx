@@ -49,6 +49,9 @@ export default function Contact() {
       subject: `New Mortgage Review Request — ${form.first_name} ${form.last_name}`,
       body: `A new mortgage review request was submitted.\n\nName: ${form.first_name} ${form.last_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nCity: ${city || "Not provided"}\nLoan Goal: ${form.loan_type || "Not specified"}\n\nComments:\n${form.comments}`,
     });
+    await base44.functions.invoke('sendSMS', {
+      message: `New BuyWiser inquiry: ${form.first_name} ${form.last_name} | ${form.phone} | ${form.email} | ${form.loan_type || 'No goal specified'}`,
+    }).catch(() => {});
     setLoading(false);
     setSubmitted(true);
   };
