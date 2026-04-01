@@ -100,8 +100,6 @@ export default function About() {
                   </div>
                 </div>
                 <div className="mt-4 pt-4 border-t border-gray-200 text-sm text-slate-600">
-                  <p>5115 Lankershim Blvd #705</p>
-                  <p>North Hollywood, CA 91601</p>
                   <a href="tel:+18183002642" className="block mt-1 text-green-700 font-medium">(818) 300-2642</a>
                   <a href="mailto:bennett@buywiser.com" className="block mt-0.5 text-green-700 font-medium">bennett@buywiser.com</a>
                 </div>

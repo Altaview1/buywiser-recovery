@@ -43,7 +43,6 @@ export default function PrivacyPolicy() {
             <h2 className="text-lg font-bold text-slate-900 mb-2">Contact</h2>
             <div className="space-y-1">
               <p>BuyWiser Technology, Inc. DBA BuyWiser Home Loans</p>
-              <p>5115 Lankershim Blvd #705, North Hollywood, CA 91601</p>
               <p>Phone: (818) 300-2642</p>
               <p>Email: bennett@buywiser.com</p>
             </div>

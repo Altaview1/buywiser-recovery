@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle, Loader2, MapPin, Phone, Mail, Shield, Clock, Zap, ArrowRight } from "lucide-react";
+import { CheckCircle, Loader2, Phone, Mail, Shield, Zap, ArrowRight } from "lucide-react";
 
 const loanGoals = [
   "Lower my monthly payment",
@@ -89,10 +89,6 @@ export default function Contact() {
                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"><Mail className="h-4 w-4 text-green-700" /></div>
                     <div><p className="text-xs text-slate-500 font-medium mb-0.5">Email</p><p className="text-sm font-bold text-green-700 group-hover:text-green-800 transition">bennett@buywiser.com</p></div>
                   </a>
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"><MapPin className="h-4 w-4 text-green-700" /></div>
-                    <div><p className="text-xs text-slate-500 font-medium mb-0.5">Office</p><p className="text-sm text-slate-700">5115 Lankershim Blvd #705<br />North Hollywood, CA 91601</p></div>
-                  </div>
                 </div>
               </div>
 

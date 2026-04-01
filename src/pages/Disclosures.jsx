@@ -20,7 +20,6 @@ export default function Disclosures() {
             <div className="space-y-1.5">
               <p><span className="font-medium text-slate-800">Legal Name:</span> BuyWiser Technology, Inc.</p>
               <p><span className="font-medium text-slate-800">DBA:</span> BuyWiser Home Loans</p>
-              <p><span className="font-medium text-slate-800">Address:</span> 5115 Lankershim Blvd #705, North Hollywood, CA 91601</p>
               <p><span className="font-medium text-slate-800">Phone:</span> (818) 300-2642</p>
               <p><span className="font-medium text-slate-800">Email:</span> bennett@buywiser.com</p>
             </div>

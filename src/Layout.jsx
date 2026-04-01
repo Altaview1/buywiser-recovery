@@ -151,7 +151,6 @@ export default function Layout({ children, currentPageName }) {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Contact</h4>
               <div className="space-y-2 text-sm text-slate-400 mb-4">
-                <p>5115 Lankershim Blvd #705<br />North Hollywood, CA 91601</p>
                 <a href="tel:+18183002642" className="block hover:text-white transition">(818) 300-2642</a>
                 <a href="mailto:bennett@buywiser.com" className="block hover:text-white transition">bennett@buywiser.com</a>
               </div>
