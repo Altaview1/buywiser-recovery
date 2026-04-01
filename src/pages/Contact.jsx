@@ -43,6 +43,12 @@ export default function Contact() {
       status: "new",
       comments: `Property City: ${city || "Not provided"}\nLoan Goal: ${form.loan_type || "Not specified"}\n\n${form.comments}`,
     });
+    await base44.integrations.Core.SendEmail({
+      to: "bennett@buywiser.com",
+      from_name: "BuyWiser Home Loans",
+      subject: `New Mortgage Review Request — ${form.first_name} ${form.last_name}`,
+      body: `A new mortgage review request was submitted.\n\nName: ${form.first_name} ${form.last_name}\nEmail: ${form.email}\nPhone: ${form.phone}\nCity: ${city || "Not provided"}\nLoan Goal: ${form.loan_type || "Not specified"}\n\nComments:\n${form.comments}`,
+    });
     setLoading(false);
     setSubmitted(true);
   };
