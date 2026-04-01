@@ -48,7 +48,7 @@ export default function About() {
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-bold text-slate-900 mb-4">About Bennett Liss — Broker &amp; CEO</h2>
               <p className="text-slate-600 leading-relaxed mb-4">
-                Remember when you pulled into a gas station and an attendant came out, filled your tank, wiped your windshield, and checked your oil — without you even having to ask? That kind of personal care and attention used to be the standard. Somewhere along the way, most industries traded it in for automation, self-service kiosks, and 1-800 numbers. At BuyWiser, we never did.
+                Few people remember — and even fewer ever experienced — a time when you pulled into a gas station and an attendant came out, filled your tank, wiped your windshield, and checked your oil without you even having to ask. It sounds almost hard to believe today. And now, with AI replacing more and more of the human touch, it's fair to ask: where is the experienced person who will actually guide you, look out for your interests, and take care of your needs? At BuyWiser, that person is still here.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
                 Bennett Liss has been working in California mortgage lending since 1991 — over three decades of helping homeowners and buyers navigate decisions that have a lasting impact on their finances. That longevity isn't just a number. It means he's personally lived through multiple rate cycles, market crashes, and regulatory overhauls. He knows what works — and he knows what doesn't.
