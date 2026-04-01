@@ -46,21 +46,24 @@ export default function About() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
             <div className="lg:col-span-2">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">About Bennett</h2>
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">About Bennett Liss — Broker &amp; CEO</h2>
               <p className="text-slate-600 leading-relaxed mb-4">
-                Bennett has been working in California mortgage lending since 1991 — over three decades of helping homeowners and buyers navigate decisions that have a lasting impact on their finances. That longevity isn't just a number. It means he's seen multiple rate cycles, market crashes, and regulatory overhauls firsthand. He knows what works.
+                Remember when you pulled into a gas station and an attendant came out, filled your tank, wiped your windshield, and checked your oil — without you even having to ask? That kind of personal care and attention used to be the standard. Somewhere along the way, most industries traded it in for automation, self-service kiosks, and 1-800 numbers. At BuyWiser, we never did.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
-                At BuyWiser, the model is simple but powerful: you get a dedicated advisor personally assigned to your loan. Not a call center. Not a rotating team. One expert who knows your file, knows your goals, and shops your loan against over 40 competing banks and lenders to find the best rate and structure available to you.
+                Bennett Liss has been working in California mortgage lending since 1991 — over three decades of helping homeowners and buyers navigate decisions that have a lasting impact on their finances. That longevity isn't just a number. It means he's personally lived through multiple rate cycles, market crashes, and regulatory overhauls. He knows what works — and he knows what doesn't.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
-                That's the difference between going directly to a bank and working with a mortgage broker. A bank offers you their one rate. As your broker, BuyWiser shops your loan across 40+ competing lenders to find the market's best rate — then gets it done.
+                At BuyWiser, the model is simple but powerful: you get Bennett personally assigned to your loan. Not a call center. Not a rotating team. One expert who knows your file, knows your goals, and shops your loan against over 40 competing banks and lenders to find the best rate and structure available to you.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                That's the difference between going directly to a bank and working with a mortgage broker. A bank offers you their one rate. As your broker, Bennett shops your loan across 40+ competing lenders to find the market's best rate — then rolls up his sleeves and gets it done.
               </p>
               <p className="text-slate-600 leading-relaxed mb-4">
                 He's worked with clients across a wide range of situations — first-time buyers, long-term homeowners considering their first refinance, self-employed borrowers with complex income documentation, and homeowners with significant equity who needed help thinking through whether and how to access it.
               </p>
               <p className="text-slate-600 leading-relaxed">
-                If you've been told no elsewhere, had a confusing experience with a large lender, or simply want someone who will give you a straight answer — that's what we're here for.
+                If you've been told no elsewhere, had a confusing experience with a large lender, or simply want someone who will actually pick up the phone and give you a straight answer — that's exactly what BuyWiser is here for.
               </p>
             </div>
             <div>
