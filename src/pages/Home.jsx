@@ -93,8 +93,15 @@ export default function Home() {
         <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20" style={{background: 'radial-gradient(circle, #bae6fd, transparent)', transform: 'translate(30%, -30%)'}} />
         <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-15" style={{background: 'radial-gradient(circle, #e0f2fe, transparent)', transform: 'translate(-30%, 30%)'}} />
         <div className="absolute top-1/2 right-8 w-48 h-48 rounded-full opacity-10" style={{background: 'radial-gradient(circle, #f0f9ff, transparent)'}} />
-        {/* House graphic */}
-        <div className="absolute right-0 bottom-0 opacity-10 hidden lg:block" style={{fontSize: '18rem', lineHeight: 1}}>🏡</div>
+        {/* Couple image */}
+        <div className="absolute right-0 bottom-0 hidden lg:block h-full w-1/2 overflow-hidden">
+          <img
+            src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/cae92ce2f_generated_image.png"
+            alt="Happy couple signing loan documents"
+            className="object-cover object-left h-full w-full opacity-30"
+          />
+          <div className="absolute inset-0" style={{background: 'linear-gradient(to right, #0ea5e9 20%, transparent 80%)'}} />
+        </div>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-sky-100 bg-white/15 px-4 py-2 rounded-full mb-6">
