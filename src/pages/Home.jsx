@@ -88,45 +88,51 @@ export default function Home() {
     <div className="bg-white">
 
       {/* ── SECTION 1: HERO ── */}
-      <section className="bg-slate-950 text-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <section className="relative overflow-hidden text-white" style={{background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 40%, #0369a1 100%)'}}>
+        {/* Decorative circles */}
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20" style={{background: 'radial-gradient(circle, #bae6fd, transparent)', transform: 'translate(30%, -30%)'}} />
+        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-15" style={{background: 'radial-gradient(circle, #e0f2fe, transparent)', transform: 'translate(-30%, 30%)'}} />
+        <div className="absolute top-1/2 right-8 w-48 h-48 rounded-full opacity-10" style={{background: 'radial-gradient(circle, #f0f9ff, transparent)'}} />
+        {/* House graphic */}
+        <div className="absolute right-0 bottom-0 opacity-10 hidden lg:block" style={{fontSize: '18rem', lineHeight: 1}}>🏡</div>
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10">
           <div className="max-w-3xl">
-            <div className="inline-block text-xs font-semibold tracking-widest uppercase text-green-400 mb-6">
-              Serving California Since 1991 · NMLS #1887767
+            <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-widest uppercase text-sky-100 bg-white/15 px-4 py-2 rounded-full mb-6">
+              🏠 Serving California Since 1991 · NMLS #1887767
             </div>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6 text-white">
               Your Personal Mortgage Expert.<br />California's Refinance Specialists.
             </h1>
-            <p className="text-lg md:text-xl text-slate-300 leading-relaxed mb-10 max-w-2xl">
+            <p className="text-lg md:text-xl text-sky-100 leading-relaxed mb-10 max-w-2xl">
               At BuyWiser, you get a dedicated mortgage expert — not a call center. We've been serving California homeowners since 1991, and we shop your loan against 40+ banks and lenders to secure the lowest rate available.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mb-12">
               <Link
                 to={createPageUrl("Contact")}
-                className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition text-base"
+                className="inline-flex items-center justify-center px-8 py-4 bg-white text-sky-700 rounded-xl font-bold hover:bg-sky-50 transition text-base shadow-lg"
               >
                 Request My Review <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
                 href="tel:+18183002642"
-                className="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-200 rounded-lg font-semibold hover:bg-white/5 transition text-base gap-2"
+                className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/40 text-white rounded-xl font-semibold hover:bg-white/10 transition text-base gap-2"
               >
                 <Phone className="h-4 w-4" /> Call Now
               </a>
             </div>
             <div className="flex flex-wrap gap-x-8 gap-y-2">
               {loanTypes.map((item) => (
-                <span key={item} className="flex items-center gap-2 text-sm text-slate-400">
-                  <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />
+                <span key={item} className="flex items-center gap-2 text-sm text-sky-100">
+                  <CheckCircle className="h-3.5 w-3.5 text-white flex-shrink-0" />
                   {item}
                 </span>
               ))}
             </div>
-            <div className="mt-10 border-l-4 border-green-500 pl-5">
-              <p className="text-slate-300 text-sm leading-relaxed italic">
+            <div className="mt-10 border-l-4 border-white/40 pl-5 bg-white/10 rounded-r-xl py-4">
+              <p className="text-sky-50 text-sm leading-relaxed italic">
                 "Thank goodness BuyWiser locked us in right before the war started — frankly I could point to 10 amazing experiences but getting locked in on time tops everything."
               </p>
-              <p className="text-green-400 text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
+              <p className="text-white text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
             </div>
           </div>
         </div>
@@ -153,28 +159,28 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 3: WHY BUYWISER ── */}
-      <section className="py-20 bg-slate-950 text-white">
+      <section className="py-20 text-white" style={{background: 'linear-gradient(135deg, #0369a1 0%, #0284c7 100%)'}}>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-5">
               Private Banking Access. Street-Level Expertise.
             </h2>
-            <p className="text-slate-300 leading-relaxed text-base mb-4">
+            <p className="text-sky-100 leading-relaxed text-base mb-4">
               Since 1991, we've operated as a boutique mortgage firm — meaning you work directly with your advisor, not a processing queue. When you come to BuyWiser, a dedicated expert is assigned to your file personally.
             </p>
-            <p className="text-slate-300 leading-relaxed text-base mb-4">
+            <p className="text-sky-100 leading-relaxed text-base mb-4">
               We then go to work on your behalf — shopping your loan against over 40 competing banks and lenders to find the lowest rate and best structure for your specific situation. Large banks give you their rate. We give you the market's best rate.
             </p>
-            <p className="text-slate-200 font-medium text-base">
+            <p className="text-white font-medium text-base">
               If refinancing helps, we will show you exactly why and by how much.<br />
               If it doesn't, we will tell you that too.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {pillars.map((p) => (
-              <div key={p.title} className="border border-slate-800 rounded-xl p-6 bg-slate-900">
+              <div key={p.title} className="border border-white/20 rounded-xl p-6 bg-white/10 backdrop-blur">
                 <h3 className="font-semibold text-white mb-2">{p.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed">{p.text}</p>
+                <p className="text-sky-100 text-sm leading-relaxed">{p.text}</p>
               </div>
             ))}
           </div>
@@ -293,27 +299,28 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 7: FINAL CTA ── */}
-      <section className="py-20 bg-slate-950 text-white">
+      <section className="py-20 text-white" style={{background: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)'}}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="text-5xl mb-4">🏡</div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Request Your Mortgage Review</h2>
-          <p className="text-slate-300 text-base leading-relaxed mb-10 max-w-xl mx-auto">
+          <p className="text-sky-100 text-base leading-relaxed mb-10 max-w-xl mx-auto">
             If you want to know whether refinancing could help, start with a straightforward review of your current loan and options.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to={createPageUrl("Contact")}
-              className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition text-base"
+              className="inline-flex items-center justify-center px-8 py-4 bg-white text-sky-700 rounded-xl font-bold hover:bg-sky-50 transition text-base shadow-lg"
             >
               Request My Review <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <a
               href="tel:+18183002642"
-              className="inline-flex items-center justify-center px-8 py-4 border border-slate-700 text-slate-200 rounded-lg font-semibold hover:bg-white/5 transition text-base gap-2"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/40 text-white rounded-xl font-semibold hover:bg-white/10 transition text-base gap-2"
             >
               <Phone className="h-4 w-4" /> Call Now
             </a>
           </div>
-          <div className="mt-10 pt-8 border-t border-slate-800 text-xs text-slate-500 space-y-1">
+          <div className="mt-10 pt-8 border-t border-white/20 text-xs text-sky-200 space-y-1">
             <p>BuyWiser Technology, Inc. DBA BuyWiser Home Loans · NMLS #1887767 · Personal NMLS #1524446</p>
             <p>Licensed by the California DFPI under the CRMLA · Equal Housing Opportunity</p>
           </div>
