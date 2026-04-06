@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Shield } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { usePageTitle } from "@/lib/usePageTitle";
 import { CheckCircle, ArrowRight, Phone } from "lucide-react";
@@ -140,6 +141,42 @@ export default function Home() {
                 "Thank goodness BuyWiser locked us in right before the war started — frankly I could point to 10 amazing experiences but getting locked in on time tops everything."
               </p>
               <p className="text-white text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── VA LOAN BANNER ── */}
+      <section className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+          <div className="flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-shrink-0 flex items-center justify-center w-20 h-20 rounded-full bg-red-600/20 border-2 border-red-500/40">
+              <Shield className="h-10 w-10 text-red-400" />
+            </div>
+            <div className="flex-grow text-center md:text-left">
+              <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/30 text-red-300 text-xs font-bold px-3 py-1 rounded-full mb-2 uppercase tracking-widest">
+                🎖️ Veterans &amp; Active Duty
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                VA Streamline Refinance — Lower Your Rate With Zero Hassle
+              </h2>
+              <p className="text-slate-300 text-base leading-relaxed max-w-2xl">
+                If you have an existing VA loan, the VA IRRRL (Interest Rate Reduction Refinance Loan) may let you refinance to a lower rate with no appraisal, no income verification, and minimal paperwork. A benefit you've earned — let's see if it applies to you.
+              </p>
+            </div>
+            <div className="flex-shrink-0 flex flex-col gap-3 w-full md:w-auto">
+              <Link
+                to="/VAStreamline"
+                className="inline-flex items-center justify-center px-6 py-3.5 bg-red-600 hover:bg-red-500 text-white rounded-xl font-bold transition text-sm whitespace-nowrap shadow-lg"
+              >
+                See VA Streamline Details →
+              </Link>
+              <Link
+                to="/Contact"
+                className="inline-flex items-center justify-center px-6 py-3.5 border-2 border-slate-500 hover:border-slate-400 text-slate-200 rounded-xl font-semibold transition text-sm whitespace-nowrap"
+              >
+                Request a VA Review
+              </Link>
             </div>
           </div>
         </div>
