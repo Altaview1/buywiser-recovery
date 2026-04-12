@@ -38,13 +38,8 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex items-center justify-between h-16">
 
             <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="w-9 h-9 bg-blue-900 rounded-lg flex items-center justify-center border border-amber-400/30">
-                <Home className="h-5 w-5 text-amber-300" />
-              </div>
-              <div className="leading-tight">
-                <div className="text-base font-bold text-slate-900">BuyWiser Home Loans</div>
-                <div className="text-xs text-slate-500 hidden sm:block">California's Boutique Mortgage Experts Since 1991</div>
-              </div>
+              <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-10 w-auto" />
+              <div className="text-xs text-slate-500 hidden sm:block leading-tight">California's Boutique Mortgage Experts Since 1991</div>
             </Link>
 
             <nav className="hidden xl:flex items-center gap-0.5">
@@ -111,13 +106,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0 border border-amber-400/30">
-                  <Home className="h-4 w-4 text-amber-300" />
-                </div>
-                <div>
-                  <div className="font-bold text-white text-sm leading-tight">BuyWiser Home Loans</div>
-                  <div className="text-xs text-slate-400">Boutique Mortgage Experts Since 1991</div>
-                </div>
+                <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-9 w-auto brightness-0 invert" />
               </div>
               <p className="text-slate-400 text-sm leading-relaxed mb-4">
                 Helping California homeowners evaluate refinance options with clarity and no pressure.

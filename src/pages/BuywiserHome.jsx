@@ -477,8 +477,8 @@ export default function BuywiserHome() {
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          <a href="#" className="text-xl font-black text-slate-900 tracking-tight">
-            Buy<span className="text-blue-700">Wiser</span>
+          <a href="#">
+            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-10 w-auto" />
           </a>
           <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-500">
             <a href="#how" className="hover:text-slate-900 transition">How It Works</a>
@@ -823,7 +823,7 @@ export default function BuywiserHome() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-start gap-10 mb-10">
             <div>
-              <div className="text-2xl font-black mb-3">Buy<span className="text-amber-400">Wiser</span></div>
+              <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-10 w-auto brightness-0 invert mb-3" />
               <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
                 The smarter way to buy and finance a home. Use the coupon first.
               </p>
