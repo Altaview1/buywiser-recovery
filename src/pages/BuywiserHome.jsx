@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { CheckCircle, ArrowRight, Home, Users, DollarSign, Shield, Star, TrendingUp, Ticket, Zap, Lock } from "lucide-react";
 
 function formatCurrency(val) {
@@ -42,9 +42,62 @@ function CouponGraphic({ value, className = "" }) {
 // ── Calculator ─────────────────────────────────────────────────────────────────
 function CouponCalculator() {
   const [price, setPrice] = useState("");
+  const [spinning, setSpinning] = useState(false);
+  const [revealed, setRevealed] = useState(false);
+  const [displayValue, setDisplayValue] = useState("$0");
+  const [glowing, setGlowing] = useState(false);
+  const spinRef = useRef(null);
+
   const numeric = parseFloat(price.replace(/[^0-9.]/g, "")) || 0;
-  const rebate = numeric * 0.01;
+  const realRebate = numeric * 0.01;
   const displayPrice = price ? Number(price).toLocaleString("en-US") : "";
+
+  const handleSpin = () => {
+    if (!numeric || spinning) return;
+    setSpinning(true);
+    setRevealed(false);
+    setGlowing(false);
+
+    let ticks = 0;
+    const totalTicks = 28;
+    // Speed schedule: fast → slow
+    const getDelay = (t) => {
+      if (t < 10) return 40;
+      if (t < 18) return 70;
+      if (t < 24) return 120;
+      return 200;
+    };
+
+    const tick = () => {
+      ticks++;
+      if (ticks < totalTicks) {
+        // Random value near the real rebate for drama
+        const jitter = realRebate * (0.4 + Math.random() * 1.2);
+        const rounded = Math.round(jitter / 100) * 100;
+        setDisplayValue(formatCurrency(rounded));
+        spinRef.current = setTimeout(tick, getDelay(ticks));
+      } else {
+        // Land on real value
+        setDisplayValue(formatCurrency(realRebate));
+        setSpinning(false);
+        setRevealed(true);
+        setGlowing(true);
+        setTimeout(() => setGlowing(false), 1800);
+      }
+    };
+    spinRef.current = setTimeout(tick, 40);
+  };
+
+  useEffect(() => () => clearTimeout(spinRef.current), []);
+
+  // Reset when price changes
+  useEffect(() => {
+    setRevealed(false);
+    setDisplayValue("$0");
+    clearTimeout(spinRef.current);
+    setSpinning(false);
+    setGlowing(false);
+  }, [price]);
 
   return (
     <section id="calculator" className="py-24 bg-slate-50">
@@ -52,7 +105,7 @@ function CouponCalculator() {
         <div className="text-center mb-10">
           <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">Coupon Calculator</p>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">What's Your Buywiser Coupon Worth?</h2>
-          <p className="text-slate-500 text-lg">Enter the purchase price and see your estimated 1% rebate instantly.</p>
+          <p className="text-slate-500 text-lg">Enter the purchase price, then reveal your estimated 1% rebate.</p>
         </div>
 
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8 md:p-10">
@@ -69,14 +122,98 @@ function CouponCalculator() {
             />
           </div>
 
-          {/* Result */}
-          <div className={`rounded-2xl p-7 mb-6 text-center transition-all duration-300 ${numeric > 0 ? "bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300" : "bg-slate-50 border-2 border-slate-200"}`}>
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Your Buywiser Coupon Value</p>
-            <p className={`font-black transition-all duration-300 ${numeric > 0 ? "text-emerald-600" : "text-slate-200"}`} style={{ fontSize: "clamp(2.5rem, 8vw, 4.5rem)" }}>
-              {numeric > 0 ? formatCurrency(rebate) : "$0"}
+          {/* Slot machine result window */}
+          <div
+            className="relative rounded-2xl p-7 mb-6 text-center overflow-hidden transition-all duration-500"
+            style={{
+              background: spinning || revealed
+                ? "linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)"
+                : "#f8fafc",
+              border: glowing ? "2px solid #34d399" : spinning ? "2px solid #059669" : "2px solid #e2e8f0",
+              boxShadow: glowing
+                ? "0 0 40px 12px rgba(52,211,153,0.35), 0 0 80px 20px rgba(16,185,129,0.15)"
+                : spinning
+                ? "0 0 20px 4px rgba(16,185,129,0.2)"
+                : "none",
+              transition: "all 0.3s ease",
+            }}
+          >
+            {/* Scanline overlay when spinning */}
+            {spinning && (
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background: "repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(255,255,255,0.03) 3px, rgba(255,255,255,0.03) 4px)",
+                }}
+              />
+            )}
+
+            {/* Corner stars when revealed */}
+            {glowing && (
+              <>
+                <span className="absolute top-3 left-4 text-amber-300 text-lg animate-bounce">✦</span>
+                <span className="absolute top-3 right-4 text-amber-300 text-lg animate-bounce" style={{animationDelay:"0.15s"}}>✦</span>
+                <span className="absolute bottom-3 left-6 text-emerald-300 text-base animate-bounce" style={{animationDelay:"0.3s"}}>✦</span>
+                <span className="absolute bottom-3 right-6 text-emerald-300 text-base animate-bounce" style={{animationDelay:"0.1s"}}>✦</span>
+              </>
+            )}
+
+            <p
+              className="text-xs font-bold uppercase tracking-widest mb-2"
+              style={{ color: spinning || revealed ? "rgba(167,243,208,0.8)" : "#94a3b8" }}
+            >
+              Your Buywiser Coupon Value
             </p>
-            {numeric > 0 && <p className="text-emerald-600/70 text-sm font-semibold mt-2">Estimated 1% buyer rebate</p>}
+
+            <p
+              className="font-black leading-none transition-none"
+              style={{
+                fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
+                color: spinning ? "#6ee7b7" : revealed ? "#ffffff" : "#e2e8f0",
+                letterSpacing: spinning ? "0.05em" : "0",
+                textShadow: glowing ? "0 0 30px rgba(52,211,153,0.8), 0 0 60px rgba(52,211,153,0.4)" : spinning ? "0 0 15px rgba(110,231,183,0.5)" : "none",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {spinning || revealed ? displayValue : numeric > 0 ? "?????" : "$0"}
+            </p>
+
+            {revealed && (
+              <p className="text-emerald-300 text-sm font-bold mt-3 tracking-wide">✓ Estimated 1% buyer rebate — yours to use</p>
+            )}
+            {!spinning && !revealed && numeric > 0 && (
+              <p className="text-slate-400 text-sm font-medium mt-2">Hit reveal to see your coupon value</p>
+            )}
           </div>
+
+          {/* Reveal button */}
+          <button
+            onClick={handleSpin}
+            disabled={!numeric || spinning}
+            className="w-full py-5 text-base font-black rounded-2xl mb-4 transition-all duration-200 relative overflow-hidden"
+            style={{
+              background: !numeric
+                ? "#e2e8f0"
+                : spinning
+                ? "linear-gradient(135deg, #059669, #0d9488)"
+                : "linear-gradient(135deg, #059669 0%, #0d9488 100%)",
+              color: !numeric ? "#94a3b8" : "#ffffff",
+              boxShadow: numeric && !spinning ? "0 4px 24px rgba(5,150,105,0.4)" : "none",
+              transform: spinning ? "scale(0.98)" : "scale(1)",
+              cursor: !numeric ? "not-allowed" : "pointer",
+            }}
+          >
+            {spinning ? (
+              <span className="flex items-center justify-center gap-3">
+                <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Calculating your rebate...
+              </span>
+            ) : revealed ? (
+              "🎉 Reveal Again"
+            ) : (
+              "🎰 Reveal My Coupon Value"
+            )}
+          </button>
 
           <a
             href="#dashboard"
