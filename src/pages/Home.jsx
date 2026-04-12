@@ -130,11 +130,11 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-x-8 gap-y-2">
               {loanTypes.map((item) => (
-                <span key={item} className="flex items-center gap-2 text-sm text-sky-100">
-                  <CheckCircle className="h-3.5 w-3.5 text-white flex-shrink-0" />
-                  {item}
-                </span>
-              ))}
+              <span key={item} className="flex items-center gap-2 text-sm text-sky-100">
+                <CheckCircle className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
+                {item}
+              </span>
+            ))}
             </div>
             <div className="mt-10 border-l-4 border-white/40 pl-5 bg-white/10 rounded-r-xl py-4">
               <p className="text-sky-50 text-sm leading-relaxed italic">
@@ -193,26 +193,26 @@ export default function Home() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {reasons.map((item) => (
-              <div key={item.title} className="bg-slate-50 border border-gray-200 rounded-xl p-6">
-                <h3 className="font-semibold text-slate-900 mb-2 text-base">{item.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{item.text}</p>
-              </div>
-            ))}
+            <div key={item.title} className="bg-slate-50 border border-gray-200 rounded-xl p-6">
+              <h3 className="font-semibold text-slate-900 mb-2 text-base">{item.title}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">{item.text}</p>
+            </div>
+          ))}
           </div>
         </div>
       </section>
 
       {/* ── SECTION 3: WHY BUYWISER ── */}
-      <section className="py-20 text-white" style={{background: 'linear-gradient(135deg, #0369a1 0%, #0284c7 100%)'}}>
+      <section className="py-20 bg-blue-900 text-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-12">
             <h2 className="text-2xl md:text-3xl font-bold mb-5">
               Private Banking Access. Street-Level Expertise.
             </h2>
-            <p className="text-sky-100 leading-relaxed text-base mb-4">
+            <p className="text-blue-200 leading-relaxed text-base mb-4">
               Since 1991, we've operated as a boutique mortgage firm — meaning you work directly with your advisor, not a processing queue. When you come to BuyWiser, a dedicated expert is assigned to your file personally.
             </p>
-            <p className="text-sky-100 leading-relaxed text-base mb-4">
+            <p className="text-blue-200 leading-relaxed text-base mb-4">
               We then go to work on your behalf — shopping your loan against over 40 competing banks and lenders to find the lowest rate and best structure for your specific situation. Large banks give you their rate. We give you the market's best rate.
             </p>
             <p className="text-white font-medium text-base">
@@ -224,7 +224,7 @@ export default function Home() {
             {pillars.map((p) => (
               <div key={p.title} className="border border-white/20 rounded-xl p-6 bg-white/10 backdrop-blur">
                 <h3 className="font-semibold text-white mb-2">{p.title}</h3>
-                <p className="text-sky-100 text-sm leading-relaxed">{p.text}</p>
+                <p className="text-blue-200 text-sm leading-relaxed">{p.text}</p>
               </div>
             ))}
           </div>
@@ -241,16 +241,16 @@ export default function Home() {
               </h2>
               <ul className="space-y-3">
                 {bulletPoints.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-slate-700 text-base">
-                    <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
+            <li key={item} className="flex items-center gap-3 text-slate-700 text-base">
+              <CheckCircle className="h-4 w-4 text-blue-700 flex-shrink-0" />
+              {item}
+            </li>
+          ))}
               </ul>
               <div className="mt-8">
                 <Link
                   to={createPageUrl("Contact")}
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition text-sm"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-800 text-white rounded-lg font-semibold hover:bg-blue-900 transition text-sm"
                 >
                   Request My Review <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -265,7 +265,7 @@ export default function Home() {
               </div>
               <div className="mt-5 pt-5 border-t border-gray-200">
                 <p className="text-sm font-medium text-slate-800 mb-3">Get in touch</p>
-                <a href="tel:+18183002642" className="flex items-center gap-2 text-green-700 font-semibold text-sm hover:text-green-800 transition mb-1">
+                <a href="tel:+18183002642" className="flex items-center gap-2 text-blue-700 font-semibold text-sm hover:text-blue-800 transition mb-1">
                   <Phone className="h-4 w-4" />(818) 300-2642
                 </a>
                 <a href="mailto:bennett@buywiser.com" className="text-xs text-slate-500 hover:text-slate-700 transition">
@@ -308,11 +308,11 @@ export default function Home() {
               </p>
               <ul className="space-y-2 mb-6">
                 {clarityItems.map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-slate-700 text-sm">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-600 flex-shrink-0" />
-                    {item}
-                  </li>
-                ))}
+                <li key={item} className="flex items-center gap-2 text-slate-700 text-sm">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-700 flex-shrink-0" />
+                  {item}
+                </li>
+              ))}
               </ul>
               <p className="text-slate-600 text-sm leading-relaxed italic">
                 Our job is to help you evaluate the tradeoffs clearly so you can make an informed decision.
@@ -326,7 +326,7 @@ export default function Home() {
               <div className="space-y-3">
                 <Link
                   to={createPageUrl("Contact")}
-                  className="block w-full text-center px-6 py-3.5 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-500 transition text-sm"
+                  className="block w-full text-center px-6 py-3.5 bg-amber-500 text-blue-900 rounded-lg font-bold hover:bg-amber-400 transition text-sm"
                 >
                   Request My Review
                 </Link>
@@ -343,28 +343,28 @@ export default function Home() {
       </section>
 
       {/* ── SECTION 7: FINAL CTA ── */}
-      <section className="py-20 text-white" style={{background: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)'}}>
+      <section className="py-20 bg-blue-900 text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="text-5xl mb-4">🏡</div>
           <h2 className="text-3xl md:text-4xl font-bold mb-4">Request Your Mortgage Review</h2>
-          <p className="text-sky-100 text-base leading-relaxed mb-10 max-w-xl mx-auto">
+          <p className="text-blue-200 text-base leading-relaxed mb-10 max-w-xl mx-auto">
             If you want to know whether refinancing could help, start with a straightforward review of your current loan and options.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to={createPageUrl("Contact")}
-              className="inline-flex items-center justify-center px-8 py-4 bg-white text-sky-700 rounded-xl font-bold hover:bg-sky-50 transition text-base shadow-lg"
+              className="inline-flex items-center justify-center px-8 py-4 bg-amber-400 text-blue-900 rounded-xl font-bold hover:bg-amber-300 transition text-base shadow-lg"
             >
               Request My Review <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
             <a
               href="tel:+18183002642"
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/40 text-white rounded-xl font-semibold hover:bg-white/10 transition text-base gap-2"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-white/30 text-white rounded-xl font-semibold hover:bg-white/10 transition text-base gap-2"
             >
               <Phone className="h-4 w-4" /> Call Now
             </a>
           </div>
-          <div className="mt-10 pt-8 border-t border-white/20 text-xs text-sky-200 space-y-1">
+          <div className="mt-10 pt-8 border-t border-white/20 text-xs text-blue-300 space-y-1">
             <p>BuyWiser Technology, Inc. DBA BuyWiser Home Loans · NMLS #1887767 · Personal NMLS #1524446</p>
             <p>Licensed by the California DFPI under the CRMLA · Equal Housing Opportunity</p>
           </div>

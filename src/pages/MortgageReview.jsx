@@ -78,8 +78,8 @@ export default function MortgageReview() {
   if (submitted) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center px-4">
-        <div className="bg-green-50 border border-green-200 rounded-2xl p-10 text-center max-w-md">
-          <CheckCircle className="h-14 w-14 text-green-600 mx-auto mb-4" />
+        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-10 text-center max-w-md">
+          <CheckCircle className="h-14 w-14 text-blue-700 mx-auto mb-4" />
           <h3 className="text-2xl font-bold text-slate-800 mb-2">Application Submitted!</h3>
           <p className="text-slate-600">Thank you! A member of our team will contact you shortly.</p>
         </div>
@@ -103,7 +103,7 @@ export default function MortgageReview() {
             <span className="text-xs text-slate-500">{Math.round(progress)}%</span>
           </div>
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+            <div className="h-full bg-blue-700 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
@@ -118,8 +118,8 @@ export default function MortgageReview() {
                   onClick={() => { selectAnswer(option); goNext(); }}
                   className={`px-6 py-3 rounded-xl border-2 font-medium text-sm transition-all ${
                     answers[currentStep.id] === option
-                      ? "border-green-500 bg-green-50 text-green-700"
-                      : "border-slate-200 text-slate-600 hover:border-green-300 hover:bg-green-50/50"
+                      ? "border-blue-700 bg-blue-50 text-blue-800"
+                      : "border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50/50"
                   }`}
                 >
                   {option}
@@ -130,7 +130,7 @@ export default function MortgageReview() {
 
           {currentStep.type === "slider" && (
             <div className="flex-1 flex flex-col items-center justify-center">
-              <p className="text-3xl font-bold text-green-600 mb-6">
+              <p className="text-3xl font-bold text-blue-700 mb-6">
                 ${(answers[currentStep.id] || currentStep.default).toLocaleString()}
               </p>
               <input
@@ -140,7 +140,7 @@ export default function MortgageReview() {
                 step={currentStep.step}
                 value={answers[currentStep.id] || currentStep.default}
                 onChange={(e) => selectAnswer(Number(e.target.value))}
-                className="w-full max-w-md accent-green-600"
+                className="w-full max-w-md accent-blue-700"
               />
               <div className="flex justify-between w-full max-w-md mt-2">
                 <span className="text-xs text-slate-400">${currentStep.min.toLocaleString()}</span>
@@ -206,12 +206,12 @@ export default function MortgageReview() {
               <Button
                 onClick={handleSubmit}
                 disabled={loading || !agreed || !contact.first_name || !contact.email || !contact.phone}
-                className="bg-green-600 hover:bg-green-700 text-white px-8"
+                className="bg-blue-800 hover:bg-blue-900 text-white px-8"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Submit"}
               </Button>
             ) : currentStep.type !== "choice" ? (
-              <Button onClick={goNext} className="bg-green-600 hover:bg-green-700 text-white px-8">
+              <Button onClick={goNext} className="bg-blue-800 hover:bg-blue-900 text-white px-8">
                 Continue <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             ) : (

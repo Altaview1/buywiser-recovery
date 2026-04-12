@@ -36,7 +36,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="w-9 h-9 bg-green-600 rounded-lg flex items-center justify-center">
+              <div className="w-9 h-9 bg-blue-800 rounded-lg flex items-center justify-center">
                 <Home className="h-5 w-5 text-white" />
               </div>
               <div className="leading-tight">
@@ -54,10 +54,10 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="hidden xl:flex items-center gap-4">
-              <a href="tel:+18183002642" className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-green-600 transition font-medium">
+              <a href="tel:+18183002642" className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-blue-700 transition font-medium">
                 <Phone className="h-4 w-4" />(818) 300-2642
               </a>
-              <Link to={createPageUrl('Contact')} className="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition shadow-sm">
+              <Link to={createPageUrl('Contact')} className="px-5 py-2 bg-blue-800 text-white text-sm font-semibold rounded-lg hover:bg-blue-900 transition shadow-sm">
                 Request My Review
               </Link>
             </div>
@@ -82,7 +82,7 @@ export default function Layout({ children, currentPageName }) {
                 </Link>
               ))}
               <div className="pt-2">
-                <Link to={createPageUrl('Contact')} className="block px-3 py-3 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
+                <Link to={createPageUrl('Contact')} className="block px-3 py-3 text-sm font-semibold text-white bg-blue-800 hover:bg-blue-900 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
                   Request My Review
                 </Link>
               </div>
@@ -96,10 +96,10 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile Sticky CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 shadow-lg px-4 py-3 flex gap-3">
-        <a href="tel:+18183002642" className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-green-600 text-green-700 rounded-xl font-bold text-sm">
+        <a href="tel:+18183002642" className="flex-1 flex items-center justify-center gap-2 py-3 border-2 border-blue-700 text-blue-800 rounded-xl font-bold text-sm">
           <Phone className="h-4 w-4" /> Call Now
         </a>
-        <Link to={createPageUrl('Contact')} className="flex-1 flex items-center justify-center gap-1 py-3 bg-green-600 text-white rounded-xl font-bold text-sm">
+        <Link to={createPageUrl('Contact')} className="flex-1 flex items-center justify-center gap-1 py-3 bg-blue-800 text-white rounded-xl font-bold text-sm">
           Request a Review <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -109,7 +109,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
                   <Home className="h-4 w-4 text-white" />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ export default function Layout({ children, currentPageName }) {
                 <a href="tel:+18183002642" className="block hover:text-white transition">(818) 300-2642</a>
                 <a href="mailto:bennett@buywiser.com" className="block hover:text-white transition">bennett@buywiser.com</a>
               </div>
-              <Link to={createPageUrl('Contact')} className="inline-block px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition">
+              <Link to={createPageUrl('Contact')} className="inline-block px-4 py-2 bg-amber-500 text-blue-900 text-sm font-bold rounded-lg hover:bg-amber-400 transition">
                 Request a Review →
               </Link>
             </div>

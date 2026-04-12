@@ -32,7 +32,7 @@ export default function Purchase() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-slate-900 to-slate-700 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="inline-block bg-green-600/20 border border-green-500/30 text-green-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wide">California Home Purchase</div>
+          <div className="inline-block bg-amber-500/20 border border-amber-400/30 text-amber-400 text-xs font-semibold px-3 py-1.5 rounded-full mb-5 uppercase tracking-wide">California Home Purchase</div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">California Home Purchase Financing</h1>
           <p className="text-xl text-slate-300 leading-relaxed max-w-2xl">
             Preapproval guidance and loan strategy for buyers who want clear answers before making an offer.
@@ -61,8 +61,8 @@ export default function Purchase() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {loanTypes.map((type) => (
               <div key={type.title} className="bg-white rounded-2xl border border-gray-200 p-6">
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mb-3">
-                  <Key className="h-4 w-4 text-green-700" />
+                <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                  <Key className="h-4 w-4 text-blue-700" />
                 </div>
                 <h3 className="font-bold text-slate-900 mb-1.5">{type.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed">{type.desc}</p>
@@ -80,7 +80,7 @@ export default function Purchase() {
             {preapprovalProcess.map((item) => (
               <div key={item.step} className="relative">
                 <div className="bg-slate-50 rounded-2xl border border-gray-200 p-6">
-                  <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-sm mb-4">{item.step}</div>
+                  <div className="w-8 h-8 bg-blue-800 text-white rounded-full flex items-center justify-center font-bold text-sm mb-4">{item.step}</div>
                   <h3 className="font-bold text-slate-900 mb-2 text-sm">{item.title}</h3>
                   <p className="text-slate-600 text-sm leading-relaxed">{item.desc}</p>
                 </div>
@@ -97,7 +97,7 @@ export default function Purchase() {
           <div className="space-y-3">
             {buyerPoints.map((point) => (
               <div key={point} className="flex items-start gap-3 bg-white rounded-xl p-4 border border-gray-200">
-                <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                <CheckCircle className="h-4 w-4 text-blue-700 flex-shrink-0 mt-0.5" />
                 <span className="text-slate-700 text-sm leading-relaxed">{point}</span>
               </div>
             ))}
@@ -106,15 +106,15 @@ export default function Purchase() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 bg-green-600 text-white">
+      <section className="py-16 bg-blue-900 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold mb-3">Get Preapproval Guidance</h2>
-          <p className="text-green-100 mb-6">Tell us about your situation and we'll walk through your options — before you start making offers.</p>
+          <p className="text-blue-200 mb-6">Tell us about your situation and we'll walk through your options — before you start making offers.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={createPageUrl('Contact')} className="px-8 py-3.5 bg-white text-green-700 rounded-lg font-bold hover:bg-green-50 transition">
+            <Link to={createPageUrl('Contact')} className="px-8 py-3.5 bg-amber-400 text-blue-900 rounded-lg font-bold hover:bg-amber-300 transition">
               Request a Mortgage Review
             </Link>
-            <a href="tel:+18183002642" className="px-8 py-3.5 border-2 border-green-400 text-white rounded-lg font-bold hover:bg-green-500 transition flex items-center justify-center gap-2">
+            <a href="tel:+18183002642" className="px-8 py-3.5 border-2 border-white/30 text-white rounded-lg font-bold hover:bg-white/10 transition flex items-center justify-center gap-2">
               <Phone className="h-4 w-4" />(818) 300-2642
             </a>
           </div>

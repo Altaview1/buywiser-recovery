@@ -60,7 +60,7 @@ export default function Contact() {
     <div className="bg-white">
       <section className="bg-slate-950 text-white py-20 lg:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="inline-flex items-center gap-2 bg-green-600/20 border border-green-500/30 text-green-300 text-xs font-bold px-3 py-1.5 rounded-full mb-5 uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 bg-amber-500/20 border border-amber-400/30 text-amber-400 text-xs font-bold px-3 py-1.5 rounded-full mb-5 uppercase tracking-widest">
             Straight Answers · No Pressure
           </div>
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
@@ -81,7 +81,7 @@ export default function Contact() {
                 <div className="space-y-3">
                   {trustItems.map((item) => (
                     <div key={item} className="flex items-start gap-2.5">
-                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="h-4 w-4 text-blue-700 flex-shrink-0 mt-0.5" />
                       <span className="text-slate-700 text-sm">{item}</span>
                     </div>
                   ))}
@@ -91,18 +91,18 @@ export default function Contact() {
                 <h2 className="text-base font-bold text-slate-900 mb-4">Contact Directly</h2>
                 <div className="space-y-4">
                   <a href="tel:+18183002642" className="flex items-start gap-3 group">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"><Phone className="h-4 w-4 text-green-700" /></div>
-                    <div><p className="text-xs text-slate-500 font-medium mb-0.5">Phone</p><p className="text-sm font-bold text-green-700 group-hover:text-green-800 transition">(818) 300-2642</p></div>
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"><Phone className="h-4 w-4 text-blue-700" /></div>
+                    <div><p className="text-xs text-slate-500 font-medium mb-0.5">Phone</p><p className="text-sm font-bold text-blue-700 group-hover:text-blue-800 transition">(818) 300-2642</p></div>
                   </a>
                   <a href="mailto:bennett@buywiser.com" className="flex items-start gap-3 group">
-                    <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0"><Mail className="h-4 w-4 text-green-700" /></div>
-                    <div><p className="text-xs text-slate-500 font-medium mb-0.5">Email</p><p className="text-sm font-bold text-green-700 group-hover:text-green-800 transition">bennett@buywiser.com</p></div>
+                    <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"><Mail className="h-4 w-4 text-blue-700" /></div>
+                    <div><p className="text-xs text-slate-500 font-medium mb-0.5">Email</p><p className="text-sm font-bold text-blue-700 group-hover:text-blue-800 transition">bennett@buywiser.com</p></div>
                   </a>
                 </div>
               </div>
 
               <div className="bg-slate-50 border border-gray-200 rounded-2xl p-5">
-                <div className="flex items-center gap-1.5 mb-3"><Shield className="h-4 w-4 text-green-600" /><p className="font-bold text-slate-900 text-xs uppercase tracking-widest">Licensing</p></div>
+                <div className="flex items-center gap-1.5 mb-3"><Shield className="h-4 w-4 text-blue-700" /><p className="font-bold text-slate-900 text-xs uppercase tracking-widest">Licensing</p></div>
                 <div className="space-y-1 text-xs text-slate-600">
                   <p>BuyWiser Technology, Inc.</p>
                   <p>DBA BuyWiser Home Loans</p>
@@ -116,19 +116,19 @@ export default function Contact() {
             <div className="lg:col-span-2">
               {submitted ? (
                 <div className="bg-white border border-gray-200 rounded-2xl p-10 text-center shadow-sm">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-blue-700" />
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 mb-2">Request Received</h3>
                   <p className="text-slate-600 leading-relaxed max-w-sm mx-auto">
                     Thank you. We'll review your information and follow up within one business day with a clear, honest response about your options.
                   </p>
-                  <p className="text-sm text-slate-500 mt-4">Questions in the meantime? Call <a href="tel:+18183002642" className="text-green-700 font-semibold">(818) 300-2642</a></p>
+                  <p className="text-sm text-slate-500 mt-4">Questions in the meantime? Call <a href="tel:+18183002642" className="text-blue-700 font-semibold">(818) 300-2642</a></p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
                   <div className="px-6 md:px-8 pt-6 md:pt-8 pb-5 border-b border-gray-100">
-                    <div className="flex items-center gap-2 mb-1"><Zap className="h-4 w-4 text-green-600" /><p className="text-xs font-bold text-green-700 uppercase tracking-widest">No Cost · No Obligation</p></div>
+                    <div className="flex items-center gap-2 mb-1"><Zap className="h-4 w-4 text-blue-700" /><p className="text-xs font-bold text-blue-700 uppercase tracking-widest">No Cost · No Obligation</p></div>
                     <h2 className="text-xl font-bold text-slate-900">Your Mortgage Review Request</h2>
                   </div>
                   <div className="px-6 md:px-8 py-6 space-y-4">
@@ -166,10 +166,10 @@ export default function Contact() {
                       <Textarea value={form.comments} onChange={(e) => setForm({ ...form, comments: e.target.value })} placeholder="Current loan type, approximate balance, how long you've been in the home, or any questions you have." rows={4} className="resize-none" />
                     </div>
                     <div className="bg-slate-50 border border-gray-200 rounded-xl p-3 flex items-start gap-2">
-                      <Shield className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <Shield className="h-4 w-4 text-blue-700 flex-shrink-0 mt-0.5" />
                       <p className="text-xs text-slate-500 leading-relaxed">Your information is used only to respond to your inquiry. We don't sell data. By submitting, you consent to be contacted about your mortgage request.</p>
                     </div>
-                    <Button type="submit" disabled={loading} className="w-full bg-green-600 hover:bg-green-500 text-white py-5 text-base font-bold rounded-xl">
+                    <Button type="submit" disabled={loading} className="w-full bg-blue-800 hover:bg-blue-900 text-white py-5 text-base font-bold rounded-xl">
                       {loading ? <><Loader2 className="h-4 w-4 animate-spin mr-2" />Sending...</> : <>Request a Mortgage Review <ArrowRight className="h-4 w-4 ml-2" /></>}
                     </Button>
                     <p className="text-xs text-slate-400 text-center pb-1">No cost. No obligation. Straight answers.</p>
