@@ -289,19 +289,51 @@ function LiveDashboard() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
           <div className="lg:pt-4">
-            <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-4">Buyer Dashboard</p>
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-5">It all starts on the Buywiser Buyer Dashboard</h2>
-            <p className="text-slate-400 text-base leading-relaxed mb-8">
-              Found a home on Zillow or Redfin? Paste the listing URL below. Buywiser instantly pulls the property details, calculates your estimated coupon, and activates your smarter buying path.
-            </p>
-            <ol className="space-y-4">
-              {["Paste your Zillow or Redfin listing link", "Buywiser fetches property details automatically", "Reveal your estimated 1% coupon value", "Move forward with showing, agent pairing, and financing"].map((step, i) => (
-                <li key={step} className="flex items-start gap-4">
-                  <span className="w-7 h-7 rounded-full bg-blue-700 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                  <span className="text-slate-300 text-sm leading-relaxed">{step}</span>
-                </li>
-              ))}
-            </ol>
+            <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-4">3 Steps to Secure Your Rebate</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-10">It all starts on the<br />Buywiser Buyer Dashboard</h2>
+
+            <div className="space-y-0">
+              {/* Step 1 */}
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <span className="text-white font-black text-lg">1</span>
+                  </div>
+                  <div className="w-0.5 h-10 bg-slate-700 mt-2" />
+                </div>
+                <div className="pb-10">
+                  <h3 className="text-white font-black text-lg mb-1">Enter the Property URL</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">Paste a listing link from Zillow, Redfin, or Realtor.com. Buywiser instantly pulls the property details and calculates your estimated 1% rebate coupon.</p>
+                </div>
+              </div>
+
+              {/* Step 2 */}
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <span className="text-white font-black text-lg">2</span>
+                  </div>
+                  <div className="w-0.5 h-10 bg-slate-700 mt-2" />
+                </div>
+                <div className="pb-10">
+                  <h3 className="text-white font-black text-lg mb-1">Get Paired with a Concierge Agent</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">Buywiser matches you with the right local agent for the property — coordinated, not random. Your rebate is already locked in before you ever speak to them.</p>
+                </div>
+              </div>
+
+              {/* Step 3 */}
+              <div className="flex gap-5">
+                <div className="flex flex-col items-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-800 flex items-center justify-center flex-shrink-0 shadow-lg">
+                    <span className="text-white font-black text-lg">3</span>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="text-white font-black text-lg mb-1">View the Property</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed">Tour the home knowing your rebate is already secured. No scrambling after the fact — your Buywiser Coupon is activated from step one.</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
