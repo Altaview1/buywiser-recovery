@@ -12,7 +12,7 @@ function CouponGraphic({ value, className = "" }) {
   return (
     <div className={`relative select-none ${className}`}>
       {/* Outer card */}
-      <div className="relative bg-gradient-to-br from-emerald-600 via-emerald-500 to-teal-500 rounded-3xl shadow-2xl overflow-hidden" style={{ minWidth: 280 }}>
+      <div className="relative bg-gradient-to-br from-blue-800 via-blue-700 to-amber-600 rounded-3xl shadow-2xl overflow-hidden" style={{ minWidth: 280 }}>
         {/* Dashed left edge notch */}
         <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full" />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 bg-white rounded-full" />
@@ -104,7 +104,7 @@ function CouponCalculator() {
     <section id="calculator" className="py-24 bg-slate-50">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
-          <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">Coupon Calculator</p>
+          <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">Coupon Calculator</p>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-3">What's Your Buywiser Coupon Worth?</h2>
           <p className="text-slate-500 text-lg">Enter the purchase price, then reveal your estimated 1% rebate.</p>
         </div>
@@ -119,7 +119,7 @@ function CouponCalculator() {
               value={displayPrice}
               onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ""))}
               placeholder="1,000,000"
-              className="w-full pl-12 pr-6 py-5 text-3xl font-black text-slate-900 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-emerald-500 bg-white transition"
+              className="w-full pl-12 pr-6 py-5 text-3xl font-black text-slate-900 border-2 border-slate-200 rounded-2xl focus:outline-none focus:border-blue-500 bg-white transition"
             />
           </div>
 
@@ -128,13 +128,13 @@ function CouponCalculator() {
             className="relative rounded-2xl p-7 mb-6 text-center overflow-hidden transition-all duration-500"
             style={{
               background: spinning || revealed
-                ? "linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)"
+                ? "linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #1d4ed8 100%)"
                 : "#f8fafc",
-              border: glowing ? "2px solid #34d399" : spinning ? "2px solid #059669" : "2px solid #e2e8f0",
+              border: glowing ? "2px solid #f59e0b" : spinning ? "2px solid #2563eb" : "2px solid #e2e8f0",
               boxShadow: glowing
-                ? "0 0 40px 12px rgba(52,211,153,0.35), 0 0 80px 20px rgba(16,185,129,0.15)"
+                ? "0 0 40px 12px rgba(245,158,11,0.35), 0 0 80px 20px rgba(251,191,36,0.15)"
                 : spinning
-                ? "0 0 20px 4px rgba(16,185,129,0.2)"
+                ? "0 0 20px 4px rgba(37,99,235,0.2)"
                 : "none",
               transition: "all 0.3s ease",
             }}
@@ -154,14 +154,14 @@ function CouponCalculator() {
               <>
                 <span className="absolute top-3 left-4 text-amber-300 text-lg animate-bounce">✦</span>
                 <span className="absolute top-3 right-4 text-amber-300 text-lg animate-bounce" style={{animationDelay:"0.15s"}}>✦</span>
-                <span className="absolute bottom-3 left-6 text-emerald-300 text-base animate-bounce" style={{animationDelay:"0.3s"}}>✦</span>
-                <span className="absolute bottom-3 right-6 text-emerald-300 text-base animate-bounce" style={{animationDelay:"0.1s"}}>✦</span>
+                <span className="absolute bottom-3 left-6 text-amber-300 text-base animate-bounce" style={{animationDelay:"0.3s"}}>✦</span>
+                <span className="absolute bottom-3 right-6 text-amber-300 text-base animate-bounce" style={{animationDelay:"0.1s"}}>✦</span>
               </>
             )}
 
             <p
               className="text-xs font-bold uppercase tracking-widest mb-2"
-              style={{ color: spinning || revealed ? "rgba(167,243,208,0.8)" : "#94a3b8" }}
+              style={{ color: spinning || revealed ? "rgba(253,230,138,0.9)" : "#94a3b8" }}
             >
               Your Buywiser Coupon Value
             </p>
@@ -170,9 +170,9 @@ function CouponCalculator() {
               className="font-black leading-none transition-none"
               style={{
                 fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
-                color: spinning ? "#6ee7b7" : revealed ? "#ffffff" : "#e2e8f0",
+                color: spinning ? "#fcd34d" : revealed ? "#ffffff" : "#e2e8f0",
                 letterSpacing: spinning ? "0.05em" : "0",
-                textShadow: glowing ? "0 0 30px rgba(52,211,153,0.8), 0 0 60px rgba(52,211,153,0.4)" : spinning ? "0 0 15px rgba(110,231,183,0.5)" : "none",
+                textShadow: glowing ? "0 0 30px rgba(245,158,11,0.8), 0 0 60px rgba(245,158,11,0.4)" : spinning ? "0 0 15px rgba(252,211,77,0.5)" : "none",
                 fontVariantNumeric: "tabular-nums",
               }}
             >
@@ -180,7 +180,7 @@ function CouponCalculator() {
             </p>
 
             {revealed && (
-              <p className="text-emerald-300 text-sm font-bold mt-3 tracking-wide">✓ Estimated 1% buyer rebate — yours to use</p>
+              <p className="text-amber-300 text-sm font-bold mt-3 tracking-wide">✓ Estimated 1% buyer rebate — yours to use</p>
             )}
             {!spinning && !revealed && numeric > 0 && (
               <p className="text-slate-400 text-sm font-medium mt-2">Hit reveal to see your coupon value</p>
@@ -196,10 +196,10 @@ function CouponCalculator() {
               background: !numeric
                 ? "#e2e8f0"
                 : spinning
-                ? "linear-gradient(135deg, #059669, #0d9488)"
-                : "linear-gradient(135deg, #059669 0%, #0d9488 100%)",
+                ? "linear-gradient(135deg, #1d4ed8, #1e40af)"
+                : "linear-gradient(135deg, #b45309 0%, #d97706 100%)",
               color: !numeric ? "#94a3b8" : "#ffffff",
-              boxShadow: numeric && !spinning ? "0 4px 24px rgba(5,150,105,0.4)" : "none",
+              boxShadow: numeric && !spinning ? "0 4px 24px rgba(180,83,9,0.4)" : "none",
               transform: spinning ? "scale(0.98)" : "scale(1)",
               cursor: !numeric ? "not-allowed" : "pointer",
             }}
@@ -289,7 +289,7 @@ function LiveDashboard() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
           <div className="lg:pt-4">
-            <p className="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-4">Buyer Dashboard</p>
+            <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-4">Buyer Dashboard</p>
             <h2 className="text-3xl md:text-4xl font-black text-white mb-5">It all starts on the Buywiser Buyer Dashboard</h2>
             <p className="text-slate-400 text-base leading-relaxed mb-8">
               Found a home on Zillow or Redfin? Paste the listing URL below. Buywiser instantly pulls the property details, calculates your estimated coupon, and activates your smarter buying path.
@@ -297,7 +297,7 @@ function LiveDashboard() {
             <ol className="space-y-4">
               {["Paste your Zillow or Redfin listing link", "Buywiser fetches property details automatically", "Reveal your estimated 1% coupon value", "Move forward with showing, agent pairing, and financing"].map((step, i) => (
                 <li key={step} className="flex items-start gap-4">
-                  <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                  <span className="w-7 h-7 rounded-full bg-blue-700 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
                   <span className="text-slate-300 text-sm leading-relaxed">{step}</span>
                 </li>
               ))}
@@ -315,7 +315,7 @@ function LiveDashboard() {
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="font-black text-slate-900">Buyer Dashboard</span>
-                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${property ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${property ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-500"}`}>
                   {property ? "Property Loaded ✓" : "Ready"}
                 </span>
               </div>
@@ -329,7 +329,7 @@ function LiveDashboard() {
                     onChange={(e) => { setUrl(e.target.value); setProperty(null); setCouponRevealed(false); setError(""); }}
                     onKeyDown={(e) => e.key === "Enter" && isListing && handleFetch()}
                     placeholder="Paste listing URL here..."
-                    className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-400 text-slate-700 min-w-0"
+                    className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-blue-400 text-slate-700 min-w-0"
                   />
                   <button
                     onClick={handleFetch}
@@ -377,7 +377,7 @@ function LiveDashboard() {
                         {property.baths && <span className="text-xs text-slate-500">{property.baths} ba</span>}
                         {property.sqft && <span className="text-xs text-slate-500">{Number(property.sqft).toLocaleString()} sqft</span>}
                         {property.year_built && <span className="text-xs text-slate-500">Built {property.year_built}</span>}
-                        {property.status && <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">{property.status}</span>}
+                        {property.status && <span className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">{property.status}</span>}
                       </div>
                     </div>
                   </div>
@@ -390,15 +390,15 @@ function LiveDashboard() {
                     <div
                       className="rounded-xl p-3 transition-all duration-500"
                       style={{
-                        background: couponRevealed ? "linear-gradient(135deg,#064e3b,#047857)" : "#f8fafc",
-                        border: couponRevealed ? "2px solid #34d399" : "2px solid #e2e8f0",
-                        boxShadow: couponRevealed ? "0 0 20px 4px rgba(52,211,153,0.3)" : "none",
+                        background: couponRevealed ? "linear-gradient(135deg,#1e3a8a,#1d4ed8)" : "#f8fafc",
+                        border: couponRevealed ? "2px solid #f59e0b" : "2px solid #e2e8f0",
+                        boxShadow: couponRevealed ? "0 0 20px 4px rgba(245,158,11,0.3)" : "none",
                       }}
                     >
-                      <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#a7f3d0" : "#94a3b8" }}>Coupon Value</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#fde68a" : "#94a3b8" }}>Coupon Value</p>
                       <p className="font-black text-xl" style={{
-                        color: couponSpinning ? "#6ee7b7" : couponRevealed ? "#ffffff" : "#e2e8f0",
-                        textShadow: couponRevealed ? "0 0 20px rgba(52,211,153,0.6)" : "none",
+                        color: couponSpinning ? "#fcd34d" : couponRevealed ? "#ffffff" : "#e2e8f0",
+                        textShadow: couponRevealed ? "0 0 20px rgba(245,158,11,0.6)" : "none",
                         fontVariantNumeric: "tabular-nums",
                       }}>
                         {couponSpinning || couponRevealed ? couponDisplay : "?????"}
@@ -423,9 +423,9 @@ function LiveDashboard() {
                       disabled={couponSpinning || !property.price}
                       className="w-full py-4 text-base font-black rounded-2xl transition-all duration-200"
                       style={{
-                        background: "linear-gradient(135deg,#059669 0%,#0d9488 100%)",
+                        background: "linear-gradient(135deg,#b45309 0%,#d97706 100%)",
                         color: "#ffffff",
-                        boxShadow: "0 4px 24px rgba(5,150,105,0.45)",
+                        boxShadow: "0 4px 24px rgba(180,83,9,0.45)",
                         opacity: couponSpinning ? 0.85 : 1,
                       }}
                     >
@@ -439,13 +439,13 @@ function LiveDashboard() {
                       )}
                     </button>
                   ) : (
-                    <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", border: "2px solid #34d399", boxShadow: "0 0 30px 8px rgba(52,211,153,0.2)" }}>
-                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-1">✨ Your Buywiser Coupon Is Ready</p>
+                    <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "2px solid #f59e0b", boxShadow: "0 0 30px 8px rgba(245,158,11,0.2)" }}>
+                      <p className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">✨ Your Buywiser Coupon Is Ready</p>
                       <p className="text-white font-black text-3xl mb-1">{formatCurrency(rebate)}</p>
-                      <p className="text-emerald-300/80 text-xs mb-4">Estimated 1% rebate • {property.address}</p>
+                      <p className="text-amber-200/80 text-xs mb-4">Estimated 1% rebate • {property.address}</p>
                       <a
                         href={`mailto:hello@buywiser.com?subject=Buywiser Coupon Request&body=Property: ${property.address}%0AList Price: ${formatCurrency(property.price)}%0AEstimated Rebate: ${formatCurrency(rebate)}`}
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-800 font-black rounded-xl text-sm hover:bg-emerald-50 transition"
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-900 font-black rounded-xl text-sm hover:bg-blue-50 transition"
                       >
                         Activate My Coupon →
                       </a>
@@ -478,7 +478,7 @@ export default function BuywiserHome() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
           <a href="#" className="text-xl font-black text-slate-900 tracking-tight">
-            Buy<span className="text-emerald-600">Wiser</span>
+            Buy<span className="text-blue-700">Wiser</span>
           </a>
           <div className="hidden md:flex items-center gap-7 text-sm font-medium text-slate-500">
             <a href="#how" className="hover:text-slate-900 transition">How It Works</a>
@@ -486,17 +486,17 @@ export default function BuywiserHome() {
             <a href="#dashboard" className="hover:text-slate-900 transition">Buyer Dashboard</a>
             <a href="#testimonials" className="hover:text-slate-900 transition">Stories</a>
           </div>
-          <a href="#calculator" className="px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition shadow-sm">
+          <a href="#calculator" className="px-5 py-2.5 bg-blue-800 text-white text-sm font-bold rounded-xl hover:bg-blue-900 transition shadow-sm">
             See My Coupon
           </a>
         </div>
       </nav>
 
       {/* ── SECTION 1: HERO ── */}
-      <section className="relative pt-24 min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-slate-50 to-emerald-50/30">
+      <section className="relative pt-24 min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-slate-50 to-blue-50/30">
         {/* Background coupon watermark */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/4 opacity-[0.07] pointer-events-none hidden lg:block" style={{ width: 700, height: 700 }}>
-          <div className="w-full h-full bg-gradient-to-br from-emerald-600 to-teal-500 rounded-[80px] flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-blue-700 to-amber-500 rounded-[80px] flex items-center justify-center">
             <p className="text-white font-black text-center leading-none" style={{ fontSize: 160 }}>$10,000</p>
           </div>
         </div>
@@ -506,12 +506,12 @@ export default function BuywiserHome() {
 
             {/* Left */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full mb-8 uppercase tracking-widest">
+              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold px-3 py-1.5 rounded-full mb-8 uppercase tracking-widest">
                 <Ticket className="h-3.5 w-3.5" /> The Smart Buyer's Move
               </div>
               <h1 className="text-5xl md:text-6xl lg:text-[4.5rem] font-black text-slate-900 leading-[1.0] tracking-tight mb-6">
                 Found a Home?<br />
-                <span className="text-emerald-600">Use Your Buywiser<br />Coupon First</span>
+                <span className="text-blue-700">Use Your Buywiser<br />Coupon First</span>
               </h1>
               <p className="text-xl text-slate-600 leading-relaxed mb-8 max-w-lg">
                 Search anywhere. Enter the home price and instantly see your estimated 1% rebate before you request a tour.
@@ -526,7 +526,7 @@ export default function BuywiserHome() {
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-500 transition text-base shadow-lg">
+                <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
                   See My Coupon <ArrowRight className="h-4 w-4" />
                 </a>
                 <a href="#how" className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-200 text-slate-700 font-bold rounded-2xl hover:border-slate-300 hover:bg-slate-50 transition text-base">
@@ -569,7 +569,7 @@ export default function BuywiserHome() {
               { icon: DollarSign, label: "Save Real Money" },
             ].map((item) => (
               <div key={item.label} className="flex items-center justify-center gap-3 bg-white border border-slate-200 rounded-2xl px-5 py-4 shadow-sm">
-                <item.icon className="h-5 w-5 text-emerald-600" />
+                <item.icon className="h-5 w-5 text-blue-700" />
                 <span className="font-bold text-slate-800 text-sm">{item.label}</span>
               </div>
             ))}
@@ -584,7 +584,7 @@ export default function BuywiserHome() {
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">The Smarter Move</p>
+            <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">The Smarter Move</p>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-5">
               Most buyers click first and think later.<br />Smart buyers use the coupon first.
             </h2>
@@ -612,17 +612,17 @@ export default function BuywiserHome() {
             </div>
 
             {/* Buywiser */}
-            <div className="bg-gradient-to-br from-emerald-950 to-teal-950 border-2 border-emerald-700/40 rounded-3xl p-8">
+            <div className="bg-gradient-to-br from-blue-950 to-blue-900 border-2 border-amber-500/40 rounded-3xl p-8">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-emerald-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                  <CheckCircle className="h-5 w-5 text-emerald-400" />
+                <div className="w-8 h-8 bg-amber-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="h-5 w-5 text-amber-400" />
                 </div>
                 <h3 className="text-xl font-black text-white">What Buywiser Buyers Do</h3>
               </div>
               <ul className="space-y-3">
                 {["Find a home online", "Use the Buywiser Coupon first", "See the estimated 1% rebate", "Get paired with the right path", "Save more and stay in control"].map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-emerald-100 text-sm">
-                    <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{item}
+                  <li key={item} className="flex items-center gap-3 text-blue-100 text-sm">
+                    <CheckCircle className="h-4 w-4 text-amber-400 flex-shrink-0" />{item}
                   </li>
                 ))}
               </ul>
@@ -635,7 +635,7 @@ export default function BuywiserHome() {
       <section id="how" className="py-24 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">How It Works</p>
+            <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">How It Works</p>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900">Coupon first. Tour second.<br />Smarter all the way through.</h2>
           </div>
 
@@ -673,7 +673,7 @@ export default function BuywiserHome() {
             ))}
           </div>
 
-          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-8 py-6 text-center max-w-2xl mx-auto">
+          <div className="bg-blue-50 border border-blue-200 rounded-2xl px-8 py-6 text-center max-w-2xl mx-auto">
             <p className="text-slate-700 font-semibold leading-relaxed">
               The coupon is simple. The savings strategy behind it is where Buywiser does the real work.
             </p>
@@ -688,7 +688,7 @@ export default function BuywiserHome() {
       <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">The Advantage</p>
+            <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">The Advantage</p>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900">Why smart buyers use the coupon first</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -699,8 +699,8 @@ export default function BuywiserHome() {
               { icon: TrendingUp, title: "Real Buyer Advantage", text: "Behind the simple coupon is a smarter, more strategic way to buy and finance a home." },
             ].map((card) => (
               <div key={card.title} className="bg-slate-50 border border-slate-200 rounded-3xl p-7 hover:shadow-md transition">
-                <div className="w-11 h-11 bg-emerald-100 rounded-2xl flex items-center justify-center mb-5">
-                  <card.icon className="h-5 w-5 text-emerald-700" />
+                <div className="w-11 h-11 bg-amber-100 rounded-2xl flex items-center justify-center mb-5">
+                  <card.icon className="h-5 w-5 text-amber-700" />
                 </div>
                 <h3 className="font-black text-slate-900 mb-2">{card.title}</h3>
                 <p className="text-slate-500 text-sm leading-relaxed">{card.text}</p>
@@ -714,13 +714,13 @@ export default function BuywiserHome() {
       <section id="testimonials" className="py-24 bg-slate-50">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-3">Client Stories</p>
+            <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">Client Stories</p>
             <h2 className="text-3xl md:text-4xl font-black text-slate-900">What Buywiser buyers say</h2>
           </div>
 
           {/* Featured testimonial */}
           <div className="bg-slate-900 text-white rounded-3xl p-10 md:p-14 mb-6 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-600/10 rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-600/10 rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none" />
             <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
               <div className="md:col-span-2">
                 <div className="flex gap-1 mb-6">
@@ -731,7 +731,7 @@ export default function BuywiserHome() {
                 </p>
                 <div>
                   <p className="font-black text-white text-base">Ami and Allen K.</p>
-                  <p className="text-emerald-400 text-sm font-medium">Thousand Oaks, CA</p>
+                  <p className="text-amber-400 text-sm font-medium">Thousand Oaks, CA</p>
                 </div>
               </div>
               <div className="hidden md:block">
@@ -770,7 +770,7 @@ export default function BuywiserHome() {
                   <p className="text-slate-700 text-base leading-relaxed flex-1 mb-5 italic">"{t.quote}"</p>
                   <div>
                     <p className="font-black text-slate-900 text-sm">{t.name}</p>
-                    <p className="text-emerald-600 text-xs font-medium">{t.location}</p>
+                    <p className="text-blue-600 text-xs font-medium">{t.location}</p>
                   </div>
                 </div>
               </div>
@@ -782,7 +782,7 @@ export default function BuywiserHome() {
       {/* ── SECTION 8: POSITIONING ── */}
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-xs font-bold tracking-widest text-emerald-600 uppercase mb-4">The Buywiser Difference</p>
+          <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-4">The Buywiser Difference</p>
           <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-6">A simple coupon.<br />A smarter homebuying system.</h2>
           <p className="text-slate-500 text-lg leading-relaxed mb-8">
             The Buywiser Coupon makes the idea easy to understand: use it before you tour and see your savings opportunity first. But behind that simplicity is a smarter system designed to help buyers take control before the wrong click, the wrong agent path, or the wrong financing structure costs them money.
@@ -797,17 +797,17 @@ export default function BuywiserHome() {
       <section className="py-24 bg-gradient-to-br from-slate-900 to-slate-950 text-white relative overflow-hidden">
         {/* Background coupon watermark */}
         <div className="absolute right-0 bottom-0 translate-x-1/3 translate-y-1/3 opacity-[0.05] pointer-events-none">
-          <div className="w-96 h-96 bg-emerald-400 rounded-[60px] flex items-center justify-center">
+          <div className="w-96 h-96 bg-amber-400 rounded-[60px] flex items-center justify-center">
             <p className="text-white font-black text-8xl">$10K</p>
           </div>
         </div>
 
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <p className="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-4">Ready?</p>
+          <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-4">Ready?</p>
           <h2 className="text-4xl md:text-5xl font-black mb-5">Ready to use your<br />Buywiser Coupon?</h2>
           <p className="text-slate-400 text-lg mb-10">Find the home anywhere. Then use Buywiser before you tour.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-500 transition text-base shadow-lg">
+            <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
               See My Coupon <ArrowRight className="h-4 w-4" />
             </a>
             <a href="mailto:hello@buywiser.com" className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-600 text-white font-bold rounded-2xl hover:border-slate-400 transition text-base">
@@ -823,7 +823,7 @@ export default function BuywiserHome() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex flex-col md:flex-row justify-between items-start gap-10 mb-10">
             <div>
-              <div className="text-2xl font-black mb-3">Buy<span className="text-emerald-500">Wiser</span></div>
+              <div className="text-2xl font-black mb-3">Buy<span className="text-amber-400">Wiser</span></div>
               <p className="text-slate-500 text-sm max-w-xs leading-relaxed">
                 The smarter way to buy and finance a home. Use the coupon first.
               </p>
