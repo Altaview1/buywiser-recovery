@@ -7,34 +7,89 @@ function formatCurrency(val) {
   return Number(val).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-// ── Premium Coupon Graphic ─────────────────────────────────────────────────────
+function generateSerial() {
+  const seg = () => Math.random().toString(36).toUpperCase().slice(2, 6);
+  return `BW-${seg()}-${seg()}-${seg()}`;
+}
+
+// ── Official Activated Coupon ─────────────────────────────────────────────────
+function OfficialCoupon({ value, serial, className = "", compact = false }) {
+  return (
+    <div className={`relative select-none ${className}`} style={{ fontFamily: "serif" }}>
+      {/* Outer frame with double border */}
+      <div
+        className="relative overflow-hidden"
+        style={{
+          background: "linear-gradient(160deg, #0f1f5c 0%, #1a2f7a 40%, #0d1a4a 100%)",
+          borderRadius: compact ? 16 : 20,
+          border: "2px solid #c9a84c",
+          boxShadow: "0 0 0 1px #0f1f5c, 0 0 0 5px #c9a84c, 0 8px 48px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)",
+          minWidth: compact ? 240 : 320,
+        }}
+      >
+        {/* Guilloche pattern background */}
+        <div className="absolute inset-0 opacity-[0.04]" style={{
+          backgroundImage: "repeating-radial-gradient(circle at 50% 50%, transparent 0, transparent 8px, rgba(201,168,76,0.6) 8px, rgba(201,168,76,0.6) 9px)",
+        }} />
+        {/* Inner border line */}
+        <div className="absolute inset-2 rounded-xl pointer-events-none" style={{ border: "1px solid rgba(201,168,76,0.3)" }} />
+        {/* Corner ornaments */}
+        <div className="absolute top-3 left-3 w-5 h-5 opacity-60" style={{ borderTop: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c", borderRadius: "3px 0 0 0" }} />
+        <div className="absolute top-3 right-3 w-5 h-5 opacity-60" style={{ borderTop: "2px solid #c9a84c", borderRight: "2px solid #c9a84c", borderRadius: "0 3px 0 0" }} />
+        <div className="absolute bottom-3 left-3 w-5 h-5 opacity-60" style={{ borderBottom: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c", borderRadius: "0 0 0 3px" }} />
+        <div className="absolute bottom-3 right-3 w-5 h-5 opacity-60" style={{ borderBottom: "2px solid #c9a84c", borderRight: "2px solid #c9a84c", borderRadius: "0 0 3px 0" }} />
+        {/* Notches */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full" style={{ background: "#f8fafc" }} />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full" style={{ background: "#f8fafc" }} />
+        <div className="absolute top-1/2 left-6 right-6 border-t border-dashed" style={{ borderColor: "rgba(201,168,76,0.25)" }} />
+
+        <div className={`relative z-10 ${compact ? "px-8 py-6" : "px-10 py-9"}`}>
+          {/* Header row */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-6 w-auto brightness-0 invert opacity-80" />
+            </div>
+            <div className="text-right">
+              <p className="text-xs font-bold uppercase tracking-widest" style={{ color: "#c9a84c", fontSize: 9 }}>OFFICIAL COUPON</p>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)", fontSize: 8, fontFamily: "monospace" }}>{serial || "BW-XXXX-XXXX-XXXX"}</p>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="mb-4" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
+
+          {/* Label */}
+          <p className="text-center uppercase tracking-[0.25em] mb-2" style={{ color: "rgba(201,168,76,0.7)", fontSize: 10, fontFamily: "sans-serif" }}>Activated Savings</p>
+
+          {/* Amount */}
+          <p className="text-center font-black leading-none mb-1" style={{
+            fontSize: compact ? "clamp(2rem,8vw,2.8rem)" : "clamp(2.8rem,8vw,4rem)",
+            color: "#ffffff",
+            textShadow: "0 0 40px rgba(201,168,76,0.5), 0 2px 4px rgba(0,0,0,0.5)",
+            letterSpacing: "-0.02em",
+          }}>
+            {value || "$10,000"}
+          </p>
+
+          {/* Divider */}
+          <div className="mt-4 mb-4" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
+
+          {/* Footer row */}
+          <div className="flex items-center justify-between">
+            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Est. 1% Buyer Rebate</p>
+            <p style={{ color: "rgba(201,168,76,0.6)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Qualifying Purchase</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Legacy Coupon Graphic (hero) ───────────────────────────────────────────────
 function CouponGraphic({ value, className = "" }) {
   return (
     <div className={`relative select-none ${className}`}>
-      <div className="relative rounded-3xl shadow-2xl overflow-hidden" style={{
-        background: "linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #b45309 100%)",
-        minWidth: 280,
-        border: "1.5px solid rgba(245,158,11,0.4)"
-      }}>
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-8 h-8 bg-white rounded-full" />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-8 h-8 bg-white rounded-full" />
-        <div className="absolute top-1/2 left-8 right-8 border-t-2 border-dashed border-white/20" />
-        <div className="absolute top-0 right-0 w-40 h-40 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-400/10 rounded-full translate-y-1/2 -translate-x-1/4" />
-        <div className="px-10 py-8 relative z-10">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 bg-amber-400/20 rounded-lg flex items-center justify-center">
-              <Ticket className="h-3.5 w-3.5 text-amber-300" />
-            </div>
-            <span className="text-amber-200/80 text-xs font-bold uppercase tracking-widest">Buywiser Coupon</span>
-          </div>
-          <p className="text-white/60 text-sm font-medium mb-1">Activated Savings</p>
-          <p className="text-white font-black leading-none" style={{ fontSize: "clamp(2.5rem, 6vw, 4rem)" }}>
-            {value || "$10,000"}
-          </p>
-          <p className="text-amber-300/70 text-xs mt-3 font-medium tracking-wide">On qualifying home purchase</p>
-        </div>
-      </div>
+      <OfficialCoupon value={value} serial="BW-DEMO-0000-0000" />
     </div>
   );
 }
@@ -170,8 +225,20 @@ function CouponCalculator() {
                 <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
                 Activating your coupon...
               </span>
-            ) : revealed ? "🎉 Check Again" : "⚡ Activate My Coupon"}
+            ) : revealed ? "🎉 Activate Again" : "⚡ Activate My Coupon"}
           </button>
+
+          {/* Official coupon reveal */}
+          {revealed && (
+            <div className="mb-4">
+              <OfficialCoupon
+                value={displayValue}
+                serial={generateSerial()}
+                className="w-full"
+              />
+              <p className="text-center text-xs text-slate-400 mt-3 leading-relaxed">This is your official Buywiser Coupon. Save it, share it, or present it when you're ready to move forward.</p>
+            </div>
+          )}
 
           <a href="#dashboard" className="block w-full py-4 bg-slate-900 text-white text-base font-bold rounded-2xl hover:bg-slate-800 transition text-center mb-3">
             Start My Buywiser Path →
@@ -420,13 +487,17 @@ function LiveDashboard() {
                       ) : "⚡ Activate My Buywiser Coupon"}
                     </button>
                   ) : (
-                    <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "2px solid #f59e0b", boxShadow: "0 0 30px 8px rgba(245,158,11,0.2)" }}>
-                      <p className="text-amber-300 text-xs font-bold uppercase tracking-widest mb-1">✨ Your Buywiser Coupon Is Activated</p>
-                      <p className="text-white font-black text-3xl mb-1">{formatCurrency(rebate)}</p>
-                      <p className="text-amber-200/80 text-xs mb-4">Activated savings • {property.address}</p>
+                    <div className="space-y-3">
+                      <OfficialCoupon
+                        value={formatCurrency(rebate)}
+                        serial={generateSerial()}
+                        compact={true}
+                        className="w-full"
+                      />
                       <a
                         href={`mailto:hello@buywiser.com?subject=Buywiser Coupon Activation&body=Property: ${property.address}%0AList Price: ${formatCurrency(property.price)}%0AActivated Savings: ${formatCurrency(rebate)}`}
-                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-blue-900 font-black rounded-xl text-sm hover:bg-blue-50 transition"
+                        className="block w-full py-3.5 text-center font-black rounded-2xl text-sm text-white transition"
+                        style={{ background: "linear-gradient(135deg,#b45309 0%,#d97706 100%)", boxShadow: "0 4px 20px rgba(180,83,9,0.4)" }}
                       >
                         Start My Buywiser Path →
                       </a>
