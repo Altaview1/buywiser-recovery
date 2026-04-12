@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, Home, Users, DollarSign, Shield, Star, TrendingUp, Ticket, Zap, Lock } from "lucide-react";
 
 function formatCurrency(val) {
@@ -229,6 +230,245 @@ function CouponCalculator() {
   );
 }
 
+// ── Live Dashboard ───────────────────────────────────────────────────────────
+function LiveDashboard() {
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [property, setProperty] = useState(null);
+  const [error, setError] = useState("");
+  const [couponRevealed, setCouponRevealed] = useState(false);
+  const [couponSpinning, setCouponSpinning] = useState(false);
+  const [couponDisplay, setCouponDisplay] = useState("");
+  const spinRef2 = useRef(null);
+
+  const rebate = property?.price ? property.price * 0.01 : 0;
+
+  const handleFetch = async () => {
+    if (!url.trim()) return;
+    setLoading(true);
+    setError("");
+    setProperty(null);
+    setCouponRevealed(false);
+    try {
+      const res = await base44.functions.invoke("fetchPropertyFromUrl", { url: url.trim() });
+      setProperty(res.data.property);
+    } catch (e) {
+      setError(e?.response?.data?.error || "Couldn't fetch that listing. Try pasting the full URL.");
+    }
+    setLoading(false);
+  };
+
+  const handleRevealCoupon = () => {
+    if (!rebate || couponSpinning) return;
+    setCouponSpinning(true);
+    setCouponRevealed(false);
+    let ticks = 0;
+    const totalTicks = 26;
+    const getDelay = (t) => t < 10 ? 40 : t < 18 ? 75 : t < 23 ? 130 : 210;
+    const tick = () => {
+      ticks++;
+      if (ticks < totalTicks) {
+        const jitter = rebate * (0.4 + Math.random() * 1.2);
+        setCouponDisplay(formatCurrency(Math.round(jitter / 100) * 100));
+        spinRef2.current = setTimeout(tick, getDelay(ticks));
+      } else {
+        setCouponDisplay(formatCurrency(rebate));
+        setCouponSpinning(false);
+        setCouponRevealed(true);
+      }
+    };
+    spinRef2.current = setTimeout(tick, 40);
+  };
+
+  useEffect(() => () => clearTimeout(spinRef2.current), []);
+
+  const isListing = url.includes("zillow.com") || url.includes("redfin.com") || url.includes("realtor.com") || url.includes("trulia.com");
+
+  return (
+    <section id="dashboard" className="py-24 bg-slate-950">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-start">
+          <div className="lg:pt-4">
+            <p className="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-4">Buyer Dashboard</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-5">It all starts on the Buywiser Buyer Dashboard</h2>
+            <p className="text-slate-400 text-base leading-relaxed mb-8">
+              Found a home on Zillow or Redfin? Paste the listing URL below. Buywiser instantly pulls the property details, calculates your estimated coupon, and activates your smarter buying path.
+            </p>
+            <ol className="space-y-4">
+              {["Paste your Zillow or Redfin listing link", "Buywiser fetches property details automatically", "Reveal your estimated 1% coupon value", "Move forward with showing, agent pairing, and financing"].map((step, i) => (
+                <li key={step} className="flex items-start gap-4">
+                  <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                  <span className="text-slate-300 text-sm leading-relaxed">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="bg-slate-900 px-5 py-3.5 flex items-center gap-2.5">
+              <div className="w-3 h-3 rounded-full bg-red-400" />
+              <div className="w-3 h-3 rounded-full bg-amber-400" />
+              <div className="w-3 h-3 rounded-full bg-green-400" />
+              <span className="ml-3 text-slate-400 text-xs font-mono truncate">buywiser.com/dashboard</span>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="font-black text-slate-900">Buyer Dashboard</span>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${property ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                  {property ? "Property Loaded ✓" : "Ready"}
+                </span>
+              </div>
+
+              <div>
+                <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1.5">Zillow / Redfin / Realtor.com Listing URL</p>
+                <div className="flex gap-2">
+                  <input
+                    type="url"
+                    value={url}
+                    onChange={(e) => { setUrl(e.target.value); setProperty(null); setCouponRevealed(false); setError(""); }}
+                    onKeyDown={(e) => e.key === "Enter" && isListing && handleFetch()}
+                    placeholder="Paste listing URL here..."
+                    className="flex-1 text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-emerald-400 text-slate-700 min-w-0"
+                  />
+                  <button
+                    onClick={handleFetch}
+                    disabled={!isListing || loading}
+                    className="px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed transition whitespace-nowrap"
+                  >
+                    {loading ? (
+                      <span className="flex items-center gap-1.5">
+                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />
+                        Fetching...
+                      </span>
+                    ) : "Fetch"}
+                  </button>
+                </div>
+                {error && <p className="text-red-500 text-xs mt-1.5 font-medium">{error}</p>}
+                {!isListing && url.length > 10 && <p className="text-amber-500 text-xs mt-1.5">Please paste a Zillow, Redfin, or Realtor.com URL</p>}
+              </div>
+
+              {loading && (
+                <div className="space-y-3 animate-pulse">
+                  <div className="h-28 bg-slate-100 rounded-2xl" />
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="h-16 bg-slate-100 rounded-xl" />
+                    <div className="h-16 bg-slate-100 rounded-xl" />
+                  </div>
+                </div>
+              )}
+
+              {property && !loading && (
+                <>
+                  <div className="rounded-2xl overflow-hidden border border-slate-200">
+                    {property.image_url ? (
+                      <img src={property.image_url} alt="Property" className="w-full h-40 object-cover" onError={(e) => { e.target.style.display = "none"; }} />
+                    ) : (
+                      <div className="w-full h-32 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                        <Home className="h-10 w-10 text-slate-300" />
+                      </div>
+                    )}
+                    <div className="p-3 bg-slate-50">
+                      <p className="font-bold text-slate-900 text-sm leading-tight">
+                        {property.address}{property.city ? `, ${property.city}` : ""}{property.state ? `, ${property.state}` : ""}
+                      </p>
+                      <div className="flex gap-3 mt-1.5 flex-wrap">
+                        {property.beds && <span className="text-xs text-slate-500">{property.beds} bd</span>}
+                        {property.baths && <span className="text-xs text-slate-500">{property.baths} ba</span>}
+                        {property.sqft && <span className="text-xs text-slate-500">{Number(property.sqft).toLocaleString()} sqft</span>}
+                        {property.year_built && <span className="text-xs text-slate-500">Built {property.year_built}</span>}
+                        {property.status && <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2 py-0.5 rounded-full">{property.status}</span>}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                      <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">List Price</p>
+                      <p className="text-slate-900 font-black text-lg">{property.price ? formatCurrency(property.price) : "—"}</p>
+                    </div>
+                    <div
+                      className="rounded-xl p-3 transition-all duration-500"
+                      style={{
+                        background: couponRevealed ? "linear-gradient(135deg,#064e3b,#047857)" : "#f8fafc",
+                        border: couponRevealed ? "2px solid #34d399" : "2px solid #e2e8f0",
+                        boxShadow: couponRevealed ? "0 0 20px 4px rgba(52,211,153,0.3)" : "none",
+                      }}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#a7f3d0" : "#94a3b8" }}>Coupon Value</p>
+                      <p className="font-black text-xl" style={{
+                        color: couponSpinning ? "#6ee7b7" : couponRevealed ? "#ffffff" : "#e2e8f0",
+                        textShadow: couponRevealed ? "0 0 20px rgba(52,211,153,0.6)" : "none",
+                        fontVariantNumeric: "tabular-nums",
+                      }}>
+                        {couponSpinning || couponRevealed ? couponDisplay : "?????"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 flex items-center justify-between">
+                      <div className="flex items-center gap-2"><Users className="h-4 w-4 text-slate-400" /><span className="text-xs text-slate-700 font-semibold">Agent</span></div>
+                      <span className="text-xs bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">Pairing</span>
+                    </div>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 flex items-center justify-between">
+                      <div className="flex items-center gap-2"><DollarSign className="h-4 w-4 text-slate-400" /><span className="text-xs text-slate-700 font-semibold">Financing</span></div>
+                      <span className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">In Review</span>
+                    </div>
+                  </div>
+
+                  {!couponRevealed ? (
+                    <button
+                      onClick={handleRevealCoupon}
+                      disabled={couponSpinning || !property.price}
+                      className="w-full py-4 text-base font-black rounded-2xl transition-all duration-200"
+                      style={{
+                        background: "linear-gradient(135deg,#059669 0%,#0d9488 100%)",
+                        color: "#ffffff",
+                        boxShadow: "0 4px 24px rgba(5,150,105,0.45)",
+                        opacity: couponSpinning ? 0.85 : 1,
+                      }}
+                    >
+                      {couponSpinning ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                          Calculating your coupon...
+                        </span>
+                      ) : (
+                        "🎰 Get My Buywiser Coupon"
+                      )}
+                    </button>
+                  ) : (
+                    <div className="rounded-2xl p-5 text-center" style={{ background: "linear-gradient(135deg,#064e3b,#065f46)", border: "2px solid #34d399", boxShadow: "0 0 30px 8px rgba(52,211,153,0.2)" }}>
+                      <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-1">✨ Your Buywiser Coupon Is Ready</p>
+                      <p className="text-white font-black text-3xl mb-1">{formatCurrency(rebate)}</p>
+                      <p className="text-emerald-300/80 text-xs mb-4">Estimated 1% rebate • {property.address}</p>
+                      <a
+                        href={`mailto:hello@buywiser.com?subject=Buywiser Coupon Request&body=Property: ${property.address}%0AList Price: ${formatCurrency(property.price)}%0AEstimated Rebate: ${formatCurrency(rebate)}`}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-white text-emerald-800 font-black rounded-xl text-sm hover:bg-emerald-50 transition"
+                      >
+                        Activate My Coupon →
+                      </a>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {!property && !loading && (
+                <div className="text-center py-6">
+                  <Ticket className="h-10 w-10 mx-auto mb-3 text-slate-700" />
+                  <p className="font-semibold text-slate-400 text-sm">Paste a Zillow or Redfin URL above</p>
+                  <p className="text-slate-500 text-xs mt-1">We'll pull the property details and calculate your coupon instantly</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Main ───────────────────────────────────────────────────────────────────────
 export default function BuywiserHome() {
   return (
@@ -442,85 +682,7 @@ export default function BuywiserHome() {
       </section>
 
       {/* ── SECTION 5: BUYER DASHBOARD ── */}
-      <section id="dashboard" className="py-24 bg-slate-950">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-            <div>
-              <p className="text-xs font-bold tracking-widest text-emerald-400 uppercase mb-4">Buyer Dashboard</p>
-              <h2 className="text-3xl md:text-4xl font-black text-white mb-5">It all starts on the Buywiser Buyer Dashboard</h2>
-              <p className="text-slate-400 text-base leading-relaxed mb-8">
-                Instead of clicking the property button on a search site, enter the property address or listing link into Buywiser first. We show your estimated coupon value, coordinate the next steps, and help pair you with the right showing path, agent, and financing strategy.
-              </p>
-
-              <ol className="space-y-4 mb-8">
-                {["Enter home price — see your coupon value instantly", "Enter property address or listing link", "Get your showing path, agent pairing, and financing strategy", "Move forward smarter with real buyer advantage"].map((step, i) => (
-                  <li key={step} className="flex items-start gap-4">
-                    <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-xs font-black flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                    <span className="text-slate-300 text-sm leading-relaxed">{step}</span>
-                  </li>
-                ))}
-              </ol>
-
-              <a href="#calculator" className="inline-flex items-center gap-2 px-7 py-4 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-500 transition text-base shadow-lg">
-                See My Coupon <ArrowRight className="h-4 w-4" />
-              </a>
-            </div>
-
-            {/* Dashboard mockup */}
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-              <div className="bg-slate-900 px-5 py-3.5 flex items-center gap-2.5">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-amber-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
-                <span className="ml-3 text-slate-400 text-xs font-mono">buywiser.com/dashboard</span>
-              </div>
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-black text-slate-900">Buyer Dashboard</span>
-                  <span className="text-xs bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full">Active</span>
-                </div>
-
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Property Address / Listing URL</p>
-                  <p className="text-slate-700 text-sm font-medium">1842 Hillcrest Ave, Thousand Oaks, CA 91360</p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">Home Price</p>
-                    <p className="text-slate-900 font-black text-lg">$1,250,000</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-300 rounded-xl p-3">
-                    <p className="text-xs text-emerald-600 font-semibold uppercase tracking-wide mb-1">Coupon Value</p>
-                    <p className="text-emerald-700 font-black text-xl">$12,500</p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-slate-400" />
-                      <span className="text-xs text-slate-700 font-semibold">Agent</span>
-                    </div>
-                    <span className="text-xs bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">Pairing</span>
-                  </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-slate-400" />
-                      <span className="text-xs text-slate-700 font-semibold">Financing</span>
-                    </div>
-                    <span className="text-xs bg-blue-100 text-blue-700 font-bold px-2 py-0.5 rounded-full">In Review</span>
-                  </div>
-                </div>
-
-                <button className="w-full py-3 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition flex items-center justify-center gap-2">
-                  Continue My Buywiser Path <ArrowRight className="h-4 w-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LiveDashboard />
 
       {/* ── SECTION 6: WHY THE COUPON MATTERS ── */}
       <section className="py-24 bg-white">
