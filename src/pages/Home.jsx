@@ -89,11 +89,10 @@ export default function Home() {
     <div className="bg-white">
 
       {/* ── SECTION 1: HERO ── */}
-      <section className="relative overflow-hidden text-white" style={{background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 40%, #0369a1 100%)'}}>
+      <section className="relative overflow-hidden text-white bg-blue-900">
         {/* Decorative circles */}
-        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-20" style={{background: 'radial-gradient(circle, #bae6fd, transparent)', transform: 'translate(30%, -30%)'}} />
-        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-15" style={{background: 'radial-gradient(circle, #e0f2fe, transparent)', transform: 'translate(-30%, 30%)'}} />
-        <div className="absolute top-1/2 right-8 w-48 h-48 rounded-full opacity-10" style={{background: 'radial-gradient(circle, #f0f9ff, transparent)'}} />
+        <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10" style={{background: 'radial-gradient(circle, #93c5fd, transparent)', transform: 'translate(30%, -30%)'}} />
+        <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full opacity-10" style={{background: 'radial-gradient(circle, #bfdbfe, transparent)', transform: 'translate(-30%, 30%)'}} />
         {/* Couple image */}
         <div className="absolute right-0 bottom-0 hidden lg:block h-full w-1/2 overflow-hidden">
           <img
@@ -101,7 +100,7 @@ export default function Home() {
             alt="Happy couple signing loan documents"
             className="object-cover object-left h-full w-full opacity-30"
           />
-          <div className="absolute inset-0" style={{background: 'linear-gradient(to right, #0ea5e9 20%, transparent 80%)'}} />
+          <div className="absolute inset-0" style={{background: 'linear-gradient(to right, #1e3a8a 20%, transparent 80%)'}} />
         </div>
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative z-10">
           <div className="max-w-3xl">
@@ -111,13 +110,13 @@ export default function Home() {
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight mb-6 text-white">
               Your Personal Mortgage Expert.<br />California's Refinance Specialists.
             </h1>
-            <p className="text-lg md:text-xl text-sky-100 leading-relaxed mb-10 max-w-2xl">
+            <p className="text-lg md:text-xl text-blue-200 leading-relaxed mb-10 max-w-2xl">
               At BuyWiser, you get a dedicated mortgage expert — not a call center. We've been serving California homeowners since 1991, and we shop your loan against 40+ banks and lenders to secure the lowest rate available.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 mb-12">
               <Link
                 to={createPageUrl("Contact")}
-                className="inline-flex items-center justify-center px-8 py-4 bg-white text-sky-700 rounded-xl font-bold hover:bg-sky-50 transition text-base shadow-lg"
+                className="inline-flex items-center justify-center px-8 py-4 bg-amber-400 text-blue-900 rounded-xl font-bold hover:bg-amber-300 transition text-base shadow-lg"
               >
                 Request My Review <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
@@ -130,17 +129,17 @@ export default function Home() {
             </div>
             <div className="flex flex-wrap gap-x-8 gap-y-2">
               {loanTypes.map((item) => (
-              <span key={item} className="flex items-center gap-2 text-sm text-sky-100">
+              <span key={item} className="flex items-center gap-2 text-sm text-blue-200">
                 <CheckCircle className="h-3.5 w-3.5 text-amber-400 flex-shrink-0" />
                 {item}
               </span>
             ))}
             </div>
             <div className="mt-10 border-l-4 border-white/40 pl-5 bg-white/10 rounded-r-xl py-4">
-              <p className="text-sky-50 text-sm leading-relaxed italic">
+              <p className="text-blue-100 text-sm leading-relaxed italic">
                 "Thank goodness BuyWiser locked us in right before the war started — frankly I could point to 10 amazing experiences but getting locked in on time tops everything."
               </p>
-              <p className="text-white text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
+              <p className="text-amber-300 text-xs font-semibold mt-2">— Nithesh & Payal · Cerritos, CA</p>
             </div>
           </div>
         </div>
@@ -319,7 +318,7 @@ export default function Home() {
               </p>
             </div>
             <div className="bg-slate-950 text-white rounded-xl p-8">
-              <p className="text-xs font-semibold text-green-400 uppercase tracking-widest mb-4">No Obligation</p>
+              <p className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-4">No Obligation</p>
               <p className="text-slate-200 leading-relaxed text-base mb-6">
                 A mortgage review gives you information. It does not commit you to anything. There is no cost and no pressure to proceed.
               </p>

@@ -7,7 +7,7 @@ export default function StickyBanner() {
   if (dismissed) return null;
 
   return (
-    <div className="bg-gradient-to-r from-green-700 to-green-600 text-white py-2.5 px-4 relative z-50">
+    <div className="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-2.5 px-4 relative z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-center gap-3 text-sm font-medium">
         <Sparkles className="h-4 w-4 text-yellow-300 flex-shrink-0" />
         <span>
@@ -20,13 +20,13 @@ export default function StickyBanner() {
         </span>
         <Link
           to="/MortgageAI"
-          className="hidden sm:inline-flex ml-2 px-3 py-1 bg-white text-green-700 rounded-full text-xs font-bold hover:bg-yellow-50 transition flex-shrink-0"
+          className="hidden sm:inline-flex ml-2 px-3 py-1 bg-amber-400 text-blue-900 rounded-full text-xs font-bold hover:bg-amber-300 transition flex-shrink-0"
         >
           Start Now →
         </Link>
         <button
           onClick={() => setDismissed(true)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-green-200 hover:text-white transition"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-blue-300 hover:text-white transition"
         >
           <X className="h-4 w-4" />
         </button>

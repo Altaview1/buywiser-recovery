@@ -31,13 +31,15 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen flex flex-col bg-white pb-16 lg:pb-0">
       <StickyBanner />
+
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
+
             <Link to="/" className="flex items-center gap-2.5 flex-shrink-0">
-              <div className="w-9 h-9 bg-blue-800 rounded-lg flex items-center justify-center">
-                <Home className="h-5 w-5 text-white" />
+              <div className="w-9 h-9 bg-blue-900 rounded-lg flex items-center justify-center border border-amber-400/30">
+                <Home className="h-5 w-5 text-amber-300" />
               </div>
               <div className="leading-tight">
                 <div className="text-base font-bold text-slate-900">BuyWiser Home Loans</div>
@@ -63,7 +65,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
 
             <div className="flex items-center gap-3 xl:hidden">
-              <a href="tel:+18183002642" className="flex items-center gap-1 text-sm font-semibold text-green-600">
+              <a href="tel:+18183002642" className="flex items-center gap-1 text-sm font-semibold text-blue-700">
                 <Phone className="h-4 w-4" />Call
               </a>
               <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-slate-700 rounded-md">
@@ -109,8 +111,8 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-blue-800 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Home className="h-4 w-4 text-white" />
+                <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0 border border-amber-400/30">
+                  <Home className="h-4 w-4 text-amber-300" />
                 </div>
                 <div>
                   <div className="font-bold text-white text-sm leading-tight">BuyWiser Home Loans</div>
@@ -154,7 +156,7 @@ export default function Layout({ children, currentPageName }) {
                 <a href="tel:+18183002642" className="block hover:text-white transition">(818) 300-2642</a>
                 <a href="mailto:bennett@buywiser.com" className="block hover:text-white transition">bennett@buywiser.com</a>
               </div>
-              <Link to={createPageUrl('Contact')} className="inline-block px-4 py-2 bg-amber-500 text-blue-900 text-sm font-bold rounded-lg hover:bg-amber-400 transition">
+              <Link to={createPageUrl('Contact')} className="inline-block px-4 py-2 bg-amber-400 text-blue-900 text-sm font-bold rounded-lg hover:bg-amber-300 transition">
                 Request a Review →
               </Link>
             </div>
