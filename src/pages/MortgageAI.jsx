@@ -194,15 +194,15 @@ export default function MortgageAI() {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl p-10 max-w-lg w-full text-center shadow-2xl">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="h-9 w-9 text-green-600" />
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="h-9 w-9 text-blue-700" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Application Submitted!</h2>
           <p className="text-slate-600 leading-relaxed mb-4">
             Bennett will personally review your application. With over 30 years as a California Licensed Mortgage Broker, he'll come back to you with a clear, honest assessment of your options — no pressure, no runaround.
           </p>
           <p className="text-xs text-slate-400 mb-4">CA RE License #01107013 &middot; NMLS #1524446 &middot; Company NMLS #1887767</p>
-          <p className="text-sm text-slate-500">Questions? Call <a href="tel:+18183002642" className="text-green-700 font-semibold">(818) 300-2642</a></p>
+          <p className="text-sm text-slate-500">Questions? Call <a href="tel:+18183002642" className="text-blue-700 font-semibold">(818) 300-2642</a></p>
         </div>
       </div>
     );
@@ -218,7 +218,7 @@ export default function MortgageAI() {
       <div className="bg-slate-900 border-b border-slate-800 px-4 py-4">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-blue-800 rounded-xl flex items-center justify-center">
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <div>
@@ -231,7 +231,7 @@ export default function MortgageAI() {
               <p className="text-xs text-slate-400">Step {Math.min(currentStepNum, totalSteps)} of {totalSteps}</p>
               <div className="w-32 h-1.5 bg-slate-700 rounded-full mt-1">
                 <div
-                  className="h-1.5 bg-green-500 rounded-full transition-all"
+                  className="h-1.5 bg-amber-400 rounded-full transition-all"
                   style={{ width: `${Math.min((currentStepNum / totalSteps) * 100, 100)}%` }}
                 />
               </div>
@@ -246,13 +246,13 @@ export default function MortgageAI() {
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               {msg.role === "bot" && (
-                <div className="w-7 h-7 bg-green-700 rounded-lg flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
+                <div className="w-7 h-7 bg-blue-800 rounded-lg flex items-center justify-center mr-2 mt-0.5 flex-shrink-0">
                   <Sparkles className="h-3.5 w-3.5 text-white" />
                 </div>
               )}
               <div className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-green-600 text-white"
+                  ? "bg-blue-700 text-white"
                   : "bg-slate-800 text-slate-100"
               }`}>
                 {msg.role === "bot" ? (
@@ -274,11 +274,11 @@ export default function MortgageAI() {
           ))}
           {(loading || uploadingDocs) && (
             <div className="flex justify-start">
-              <div className="w-7 h-7 bg-green-700 rounded-lg flex items-center justify-center mr-2 mt-0.5">
+              <div className="w-7 h-7 bg-blue-800 rounded-lg flex items-center justify-center mr-2 mt-0.5">
                 <Sparkles className="h-3.5 w-3.5 text-white" />
               </div>
               <div className="bg-slate-800 rounded-2xl px-4 py-3">
-                <Loader2 className="h-4 w-4 text-green-400 animate-spin" />
+                <Loader2 className="h-4 w-4 text-amber-400 animate-spin" />
               </div>
             </div>
           )}
@@ -289,7 +289,7 @@ export default function MortgageAI() {
                 <p className="text-xs text-slate-400 mb-2 font-semibold">Uploaded Documents</p>
                 <div className="space-y-1">
                   {uploadedDocs.map((doc, i) => (
-                    <div key={i} className="flex items-center gap-2 text-xs text-green-300">
+                    <div key={i} className="flex items-center gap-2 text-xs text-amber-300">
                       <CheckCircle className="h-3 w-3" />
                       <span>{doc.name}</span>
                     </div>
@@ -330,13 +330,13 @@ export default function MortgageAI() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={isDocStep ? 'Upload files above, then type "Done"...' : "Type your answer..."}
-              className="flex-1 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-green-500 rounded-xl h-12"
+              className="flex-1 bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-blue-500 rounded-xl h-12"
               disabled={loading || uploadingDocs}
             />
             <Button
               onClick={handleSend}
               disabled={!input.trim() || loading || uploadingDocs}
-              className="bg-green-600 hover:bg-green-500 text-white rounded-xl h-12 w-12 p-0 flex-shrink-0"
+              className="bg-blue-700 hover:bg-blue-600 text-white rounded-xl h-12 w-12 p-0 flex-shrink-0"
             >
               <Send className="h-4 w-4" />
             </Button>
