@@ -722,6 +722,159 @@ export default function BuywiserHome() {
               </div>
             ))}
           </div>
+
+          {/* ── Process Visual ── */}
+          <div className="mt-16 max-w-4xl mx-auto">
+            <p className="text-center text-xs font-bold tracking-widest text-slate-400 uppercase mb-8">How it works in 3 steps</p>
+            <div className="flex flex-col md:flex-row items-stretch gap-3">
+
+              {/* Step 1: Zillow listing */}
+              <div className="flex-1 rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-white">
+                {/* Browser chrome */}
+                <div className="bg-slate-100 border-b border-slate-200 px-3 py-2 flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                  </div>
+                  <div className="flex-1 bg-white rounded-md px-2.5 py-1 flex items-center gap-1.5 border border-slate-200">
+                    <div className="w-3 h-3 rounded-full bg-blue-500 flex-shrink-0" />
+                    <span className="text-slate-500 text-xs font-mono truncate">zillow.com/homedetails/123-maple-st</span>
+                  </div>
+                </div>
+                {/* Zillow listing mockup */}
+                <div className="p-3">
+                  <div className="w-full h-28 rounded-xl overflow-hidden mb-2 bg-slate-100">
+                    <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&q=80" alt="House" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex items-start justify-between mb-1">
+                    <div>
+                      <p className="font-black text-slate-900 text-sm">$1,250,000</p>
+                      <p className="text-slate-500 text-xs">123 Maple St, Glendale, CA</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-slate-500">4 bd · 3 ba</p>
+                      <p className="text-xs text-slate-500">2,400 sqft</p>
+                    </div>
+                  </div>
+                  {/* Zillow CTA buttons — with red X */}
+                  <div className="flex gap-2 mt-2 relative">
+                    <button className="flex-1 py-1.5 text-xs font-bold rounded-lg text-white" style={{ background: "#006aff" }}>Contact Agent</button>
+                    <button className="flex-1 py-1.5 text-xs font-bold rounded-lg border border-blue-600 text-blue-600">Request Tour</button>
+                    {/* Red X over the buttons */}
+                    <div className="absolute inset-0 flex items-center justify-center rounded-lg" style={{ background: "rgba(220,38,38,0.12)", border: "2px solid rgba(220,38,38,0.5)" }}>
+                      <div className="flex items-center gap-1.5 bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-lg">
+                        <X className="h-3 w-3" /> Don't click yet
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex md:flex-col items-center justify-center gap-1 py-2 md:py-0 px-1">
+                <div className="hidden md:block w-px h-6 bg-amber-300" />
+                <div className="flex items-center gap-2 md:flex-col md:gap-1">
+                  <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-md flex-shrink-0">
+                    <ArrowRight className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <span className="text-amber-600 font-black text-xs uppercase tracking-wide whitespace-nowrap">Activate first</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-amber-300" />
+              </div>
+
+              {/* Step 2: Paste into Buywiser */}
+              <div className="flex-1 rounded-2xl overflow-hidden shadow-lg border-2 border-amber-400/60 bg-white" style={{ boxShadow: "0 0 0 2px rgba(251,191,36,0.3), 0 8px 24px rgba(0,0,0,0.1)" }}>
+                {/* Browser chrome */}
+                <div className="border-b border-slate-200 px-3 py-2 flex items-center gap-2" style={{ background: "#0f1f5c" }}>
+                  <div className="flex gap-1">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                  </div>
+                  <div className="flex-1 bg-white/10 rounded-md px-2.5 py-1 flex items-center gap-1.5 border border-white/20">
+                    <Ticket className="w-3 h-3 text-amber-400 flex-shrink-0" />
+                    <span className="text-white/80 text-xs font-mono truncate">buywiser.com/activate</span>
+                  </div>
+                </div>
+                {/* Buywiser input UI */}
+                <div className="p-3 space-y-2">
+                  <p className="text-xs font-black text-slate-700 uppercase tracking-wide">Activation Dashboard</p>
+                  {/* URL input with pasted value */}
+                  <div className="relative">
+                    <div className="w-full rounded-xl border-2 border-amber-400 px-3 py-2 text-xs font-mono text-slate-600 bg-amber-50 flex items-center gap-1.5 shadow-sm">
+                      <span className="text-amber-500 flex-shrink-0">⎘</span>
+                      <span className="truncate text-slate-700">zillow.com/homedetails/123-maple-st</span>
+                    </div>
+                    <span className="absolute -top-2 -right-1 bg-amber-500 text-white text-xs font-black px-1.5 py-0.5 rounded-full shadow">Pasted ✓</span>
+                  </div>
+                  {/* Price + instant calc */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-2">
+                      <p className="text-xs text-slate-400 font-semibold mb-0.5">List Price</p>
+                      <p className="font-black text-slate-900 text-sm">$1,250,000</p>
+                    </div>
+                    <div className="rounded-xl p-2" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "2px solid #f59e0b" }}>
+                      <p className="text-xs font-semibold mb-0.5" style={{ color: "#fde68a" }}>Coupon Value</p>
+                      <p className="font-black text-white text-sm">$12,500</p>
+                    </div>
+                  </div>
+                  <button className="w-full py-2 text-xs font-black rounded-xl text-white" style={{ background: "linear-gradient(135deg,#b45309,#d97706)" }}>
+                    ⚡ Activate My Coupon
+                  </button>
+                </div>
+              </div>
+
+              {/* Arrow */}
+              <div className="flex md:flex-col items-center justify-center gap-1 py-2 md:py-0 px-1">
+                <div className="hidden md:block w-px h-6 bg-amber-300" />
+                <div className="flex items-center gap-2 md:flex-col md:gap-1">
+                  <div className="w-7 h-7 rounded-full bg-amber-500 flex items-center justify-center shadow-md flex-shrink-0">
+                    <ArrowRight className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <span className="text-amber-600 font-black text-xs uppercase tracking-wide whitespace-nowrap">Get the rebate</span>
+                </div>
+                <div className="hidden md:block w-px h-6 bg-amber-300" />
+              </div>
+
+              {/* Step 3: Activated coupon */}
+              <div className="flex-1 rounded-2xl overflow-hidden shadow-lg flex flex-col" style={{ background: "linear-gradient(160deg, #0f1f5c 0%, #1a2f7a 40%, #0d1a4a 100%)", border: "2px solid #c9a84c", boxShadow: "0 0 0 1px #0f1f5c, 0 0 0 4px #c9a84c, 0 8px 32px rgba(0,0,0,0.5)" }}>
+                {/* Inner border */}
+                <div className="absolute inset-1 rounded-xl pointer-events-none" style={{ border: "1px solid rgba(201,168,76,0.25)" }} />
+                {/* Corner ornaments */}
+                <div className="relative flex-1 p-5 flex flex-col justify-between">
+                  <div className="absolute top-2 left-2 w-4 h-4" style={{ borderTop: "1.5px solid #c9a84c", borderLeft: "1.5px solid #c9a84c" }} />
+                  <div className="absolute top-2 right-2 w-4 h-4" style={{ borderTop: "1.5px solid #c9a84c", borderRight: "1.5px solid #c9a84c" }} />
+                  <div className="absolute bottom-2 left-2 w-4 h-4" style={{ borderBottom: "1.5px solid #c9a84c", borderLeft: "1.5px solid #c9a84c" }} />
+                  <div className="absolute bottom-2 right-2 w-4 h-4" style={{ borderBottom: "1.5px solid #c9a84c", borderRight: "1.5px solid #c9a84c" }} />
+
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-80" />
+                      <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "#c9a84c", fontSize: 9 }}>OFFICIAL COUPON</span>
+                    </div>
+                    <div style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} className="mb-3" />
+                    <p className="text-center uppercase tracking-widest mb-1" style={{ color: "rgba(201,168,76,0.7)", fontSize: 9, letterSpacing: "0.2em" }}>Activated Savings</p>
+                    <p className="text-center font-black text-white leading-none mb-1" style={{ fontSize: "clamp(1.8rem,5vw,2.5rem)", textShadow: "0 0 30px rgba(201,168,76,0.6)" }}>$12,500</p>
+                    <p className="text-center" style={{ color: "rgba(201,168,76,0.5)", fontSize: 9 }}>On qualifying home purchase</p>
+                  </div>
+
+                  <div>
+                    <div style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} className="mt-3 mb-2" />
+                    <div className="flex items-center justify-between">
+                      <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 8, fontFamily: "monospace" }}>BW-8K2X-9PYZ-4MNQ</span>
+                      <div className="flex items-center gap-1">
+                        <CheckCircle className="h-3 w-3 text-amber-400" />
+                        <span style={{ color: "#c9a84c", fontSize: 8 }} className="font-bold uppercase tracking-wide">Activated</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <p className="text-center text-slate-400 text-xs mt-5">Copy the Zillow URL → Paste into Buywiser before clicking → Your coupon activates instantly</p>
+          </div>
         </div>
       </section>
 
