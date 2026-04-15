@@ -48,8 +48,70 @@ function generateSerial() {
   return `BW-${seg()}-${seg()}-${seg()}`;
 }
 
+// ── CA State Seal SVG ──────────────────────────────────────────────────────────
+function CASealEmblem({ size = 64 }) {
+  const r = size / 2;
+  const rings = [r - 1, r - 5, r - 9];
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
+      {/* Outer ring */}
+      <circle cx={r} cy={r} r={rings[0]} fill="none" stroke="#c9a84c" strokeWidth="1.2" />
+      <circle cx={r} cy={r} r={rings[1]} fill="none" stroke="#c9a84c" strokeWidth="0.6" strokeDasharray="2 2" />
+      {/* Sunburst rays */}
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i * 360) / 24;
+        const rad = (angle * Math.PI) / 180;
+        const inner = rings[1] - 1;
+        const outer = rings[0] - 1;
+        const x1 = r + inner * Math.cos(rad);
+        const y1 = r + inner * Math.sin(rad);
+        const x2 = r + outer * Math.cos(rad);
+        const y2 = r + outer * Math.sin(rad);
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c9a84c" strokeWidth={i % 3 === 0 ? "1.2" : "0.5"} opacity="0.7" />;
+      })}
+      {/* Inner fill circle */}
+      <circle cx={r} cy={r} r={rings[2]} fill="rgba(201,168,76,0.08)" stroke="#c9a84c" strokeWidth="0.8" />
+      {/* Bear silhouette (simple grizzly shape) */}
+      <g transform={`translate(${r - 10}, ${r - 9}) scale(0.62)`}>
+        {/* body */}
+        <ellipse cx="16" cy="22" rx="12" ry="9" fill="#c9a84c" opacity="0.85" />
+        {/* head */}
+        <circle cx="16" cy="12" r="7" fill="#c9a84c" opacity="0.85" />
+        {/* ears */}
+        <circle cx="11" cy="7" r="2.5" fill="#c9a84c" opacity="0.85" />
+        <circle cx="21" cy="7" r="2.5" fill="#c9a84c" opacity="0.85" />
+        {/* legs */}
+        <rect x="7" y="28" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
+        <rect x="13" y="29" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
+        <rect x="19" y="29" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
+        <rect x="25" y="28" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
+        {/* snout */}
+        <ellipse cx="16" cy="14.5" rx="3.5" ry="2.5" fill="#b8923a" opacity="0.9" />
+        {/* eye */}
+        <circle cx="13.5" cy="11" r="1" fill="#0f1f5c" />
+        <circle cx="18.5" cy="11" r="1" fill="#0f1f5c" />
+      </g>
+      {/* STATE OF CALIFORNIA arc text */}
+      <path id="topArc" d={`M ${r - rings[1] + 7},${r} A ${rings[1] - 7},${rings[1] - 7} 0 0,1 ${r + rings[1] - 7},${r}`} fill="none" />
+      <text style={{ fontSize: size * 0.095, fontFamily: "sans-serif", fontWeight: 800, letterSpacing: "0.08em" }} fill="#c9a84c" opacity="0.9">
+        <textPath href="#topArc" startOffset="50%" textAnchor="middle">STATE OF CALIFORNIA</textPath>
+      </text>
+      {/* HOMEBUYERS COUPON arc bottom */}
+      <path id="botArc" d={`M ${r - rings[1] + 7},${r} A ${rings[1] - 7},${rings[1] - 7} 0 0,0 ${r + rings[1] - 7},${r}`} fill="none" />
+      <text style={{ fontSize: size * 0.085, fontFamily: "sans-serif", fontWeight: 700, letterSpacing: "0.06em" }} fill="#c9a84c" opacity="0.75">
+        <textPath href="#botArc" startOffset="50%" textAnchor="middle">HOMEBUYERS COUPON</textPath>
+      </text>
+      {/* Stars left and right of bear */}
+      {[-1, 1].map((side) => (
+        <text key={side} x={r + side * (rings[2] - 5)} y={r + 3} textAnchor="middle" style={{ fontSize: size * 0.13, fontFamily: "serif" }} fill="#c9a84c" opacity="0.7">★</text>
+      ))}
+    </svg>
+  );
+}
+
 // ── Official Coupon ────────────────────────────────────────────────────────────
 function OfficialCoupon({ value, serial, compact = false }) {
+  const sealSize = compact ? 56 : 72;
   return (
     <div className="relative select-none" style={{ fontFamily: "serif" }}>
       <div className="relative overflow-hidden" style={{
@@ -66,21 +128,30 @@ function OfficialCoupon({ value, serial, compact = false }) {
         <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-slate-50" />
         <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-slate-50" />
         <div className={`relative z-10 ${compact ? "px-8 py-6" : "px-10 py-9"}`}>
-          <div className="flex items-center justify-between mb-4">
+          {/* Header row: logo + serial */}
+          <div className="flex items-center justify-between mb-3">
             <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-6 w-auto brightness-0 invert opacity-80" />
             <div className="text-right">
               <p style={{ color: "#c9a84c", fontSize: 9 }} className="font-bold uppercase tracking-widest">OFFICIAL COUPON</p>
               <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 8, fontFamily: "monospace" }}>{serial || "BW-XXXX-XXXX-XXXX"}</p>
             </div>
           </div>
-          <div className="mb-4" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
-          <p className="text-center uppercase tracking-[0.25em] mb-2" style={{ color: "rgba(201,168,76,0.7)", fontSize: 10, fontFamily: "sans-serif" }}>CA Homebuyers Coupon</p>
-          <p className="text-center font-black leading-none mb-1" style={{
-            fontSize: compact ? "clamp(2rem,8vw,2.8rem)" : "clamp(2.8rem,8vw,4rem)",
-            color: "#ffffff",
-            textShadow: "0 0 40px rgba(201,168,76,0.5)",
-          }}>{value || "$10,000"}</p>
-          <div className="mt-4 mb-4" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
+          <div className="mb-3" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
+          {/* Seal + value side by side */}
+          <div className="flex items-center gap-4 mb-3">
+            <div className="flex-shrink-0">
+              <CASealEmblem size={sealSize} />
+            </div>
+            <div className="flex-1 text-center">
+              <p className="uppercase tracking-[0.2em] mb-1" style={{ color: "rgba(201,168,76,0.7)", fontSize: 9, fontFamily: "sans-serif" }}>CA Homebuyers Coupon</p>
+              <p className="font-black leading-none" style={{
+                fontSize: compact ? "clamp(1.8rem,7vw,2.4rem)" : "clamp(2.4rem,7vw,3.4rem)",
+                color: "#ffffff",
+                textShadow: "0 0 40px rgba(201,168,76,0.5)",
+              }}>{value || "$10,000"}</p>
+            </div>
+          </div>
+          <div className="mb-3" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
           <div className="flex items-center justify-between">
             <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Est. 1% Buyer Rebate</p>
             <p style={{ color: "rgba(201,168,76,0.6)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Qualifying Purchase</p>
