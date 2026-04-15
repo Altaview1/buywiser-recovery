@@ -194,7 +194,7 @@ function OfficialCoupon({ value, serial, compact = false }) {
 
               {/* Footer disclaimer */}
               <p style={{ fontSize: 7, color: "#aaa", fontFamily: "sans-serif", lineHeight: 1.4 }} className="text-center mt-2">
-                Valid for qualifying CA purchase transactions only. Subject to program availability and lender approval.
+                Valid for qualifying CA purchase transactions only. Subject to program availability and lender approval. This is not a state-administered or state-funded program.
               </p>
             </div>
 
