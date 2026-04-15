@@ -48,115 +48,161 @@ function generateSerial() {
   return `BW-${seg()}-${seg()}-${seg()}`;
 }
 
-// ── CA State Seal SVG ──────────────────────────────────────────────────────────
-function CASealEmblem({ size = 64 }) {
+// ── CA State Seal SVG (Gold) ───────────────────────────────────────────────────
+function CASealGold({ size = 88 }) {
   const r = size / 2;
-  const rings = [r - 1, r - 5, r - 9];
+  const outerR = r - 2;
+  const midR = r - 8;
+  const innerR = r - 14;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
-      {/* Outer ring */}
-      <circle cx={r} cy={r} r={rings[0]} fill="none" stroke="#c9a84c" strokeWidth="1.2" />
-      <circle cx={r} cy={r} r={rings[1]} fill="none" stroke="#c9a84c" strokeWidth="0.6" strokeDasharray="2 2" />
-      {/* Sunburst rays */}
-      {Array.from({ length: 24 }).map((_, i) => {
-        const angle = (i * 360) / 24;
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block", filter: "drop-shadow(0 2px 8px rgba(180,130,20,0.5))" }}>
+      <defs>
+        <radialGradient id="sealBg" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#f5d87a" />
+          <stop offset="60%" stopColor="#c9a84c" />
+          <stop offset="100%" stopColor="#a07830" />
+        </radialGradient>
+        <radialGradient id="bearFill" cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#7a5a10" />
+          <stop offset="100%" stopColor="#4a3508" />
+        </radialGradient>
+      </defs>
+      {/* Outer solid ring */}
+      <circle cx={r} cy={r} r={outerR} fill="url(#sealBg)" stroke="#a07830" strokeWidth="1.5" />
+      {/* Sunburst rays between outerR and midR */}
+      {Array.from({ length: 36 }).map((_, i) => {
+        const angle = (i * 360) / 36 - 90;
         const rad = (angle * Math.PI) / 180;
-        const inner = rings[1] - 1;
-        const outer = rings[0] - 1;
-        const x1 = r + inner * Math.cos(rad);
-        const y1 = r + inner * Math.sin(rad);
-        const x2 = r + outer * Math.cos(rad);
-        const y2 = r + outer * Math.sin(rad);
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#c9a84c" strokeWidth={i % 3 === 0 ? "1.2" : "0.5"} opacity="0.7" />;
+        const x1 = r + (midR + 1) * Math.cos(rad);
+        const y1 = r + (midR + 1) * Math.sin(rad);
+        const x2 = r + (outerR - 2) * Math.cos(rad);
+        const y2 = r + (outerR - 2) * Math.sin(rad);
+        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#7a5a10" strokeWidth={i % 3 === 0 ? "1.5" : "0.7"} opacity="0.8" />;
       })}
-      {/* Inner fill circle */}
-      <circle cx={r} cy={r} r={rings[2]} fill="rgba(201,168,76,0.08)" stroke="#c9a84c" strokeWidth="0.8" />
-      {/* Bear silhouette (simple grizzly shape) */}
-      <g transform={`translate(${r - 10}, ${r - 9}) scale(0.62)`}>
-        {/* body */}
-        <ellipse cx="16" cy="22" rx="12" ry="9" fill="#c9a84c" opacity="0.85" />
-        {/* head */}
-        <circle cx="16" cy="12" r="7" fill="#c9a84c" opacity="0.85" />
-        {/* ears */}
-        <circle cx="11" cy="7" r="2.5" fill="#c9a84c" opacity="0.85" />
-        <circle cx="21" cy="7" r="2.5" fill="#c9a84c" opacity="0.85" />
-        {/* legs */}
-        <rect x="7" y="28" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
-        <rect x="13" y="29" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
-        <rect x="19" y="29" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
-        <rect x="25" y="28" width="4" height="6" rx="2" fill="#c9a84c" opacity="0.85" />
-        {/* snout */}
-        <ellipse cx="16" cy="14.5" rx="3.5" ry="2.5" fill="#b8923a" opacity="0.9" />
-        {/* eye */}
-        <circle cx="13.5" cy="11" r="1" fill="#0f1f5c" />
-        <circle cx="18.5" cy="11" r="1" fill="#0f1f5c" />
+      {/* Inner circle background */}
+      <circle cx={r} cy={r} r={innerR} fill="#e8c050" stroke="#a07830" strokeWidth="1" />
+      {/* Bear body */}
+      <g transform={`translate(${r}, ${r + 2})`}>
+        <ellipse cx="0" cy="7" rx="9" ry="7" fill="url(#bearFill)" />
+        <circle cx="0" cy="-1" r="6" fill="url(#bearFill)" />
+        <circle cx="-4" cy="-6" r="2.2" fill="url(#bearFill)" />
+        <circle cx="4" cy="-6" r="2.2" fill="url(#bearFill)" />
+        <rect x="-7" y="12" width="3.5" height="5" rx="1.5" fill="url(#bearFill)" />
+        <rect x="-2" y="13" width="3.5" height="5" rx="1.5" fill="url(#bearFill)" />
+        <rect x="3" y="13" width="3.5" height="5" rx="1.5" fill="url(#bearFill)" />
+        <rect x="8" y="12" width="3.5" height="5" rx="1.5" fill="url(#bearFill)" />
+        <ellipse cx="0" cy="1" rx="2.8" ry="2" fill="#5a3f08" />
+        <circle cx="-2.2" cy="-2.5" r="0.9" fill="#1a0f00" />
+        <circle cx="2.2" cy="-2.5" r="0.9" fill="#1a0f00" />
       </g>
-      {/* STATE OF CALIFORNIA arc text */}
-      <path id="topArc" d={`M ${r - rings[1] + 7},${r} A ${rings[1] - 7},${rings[1] - 7} 0 0,1 ${r + rings[1] - 7},${r}`} fill="none" />
-      <text style={{ fontSize: size * 0.095, fontFamily: "sans-serif", fontWeight: 800, letterSpacing: "0.08em" }} fill="#c9a84c" opacity="0.9">
-        <textPath href="#topArc" startOffset="50%" textAnchor="middle">STATE OF CALIFORNIA</textPath>
+      {/* Arc text: STATE OF CALIFORNIA (top) */}
+      <path id="topArcG" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,1 ${r + midR - 4},${r}`} fill="none" />
+      <text style={{ fontSize: size * 0.1, fontFamily: "sans-serif", fontWeight: 900, letterSpacing: "0.05em" }} fill="#4a3508">
+        <textPath href="#topArcG" startOffset="50%" textAnchor="middle">STATE OF CALIFORNIA</textPath>
       </text>
-      {/* HOMEBUYERS COUPON arc bottom */}
-      <path id="botArc" d={`M ${r - rings[1] + 7},${r} A ${rings[1] - 7},${rings[1] - 7} 0 0,0 ${r + rings[1] - 7},${r}`} fill="none" />
-      <text style={{ fontSize: size * 0.085, fontFamily: "sans-serif", fontWeight: 700, letterSpacing: "0.06em" }} fill="#c9a84c" opacity="0.75">
-        <textPath href="#botArc" startOffset="50%" textAnchor="middle">HOMEBUYERS COUPON</textPath>
+      {/* Arc text: HOMEBUYERS COUPON (bottom) */}
+      <path id="botArcG" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,0 ${r + midR - 4},${r}`} fill="none" />
+      <text style={{ fontSize: size * 0.088, fontFamily: "sans-serif", fontWeight: 800, letterSpacing: "0.04em" }} fill="#4a3508">
+        <textPath href="#botArcG" startOffset="50%" textAnchor="middle">HOMEBUYERS COUPON</textPath>
       </text>
-      {/* Stars left and right of bear */}
-      {[-1, 1].map((side) => (
-        <text key={side} x={r + side * (rings[2] - 5)} y={r + 3} textAnchor="middle" style={{ fontSize: size * 0.13, fontFamily: "serif" }} fill="#c9a84c" opacity="0.7">★</text>
-      ))}
+      {/* Dots between arcs and inner circle */}
+      {[0, 60, 120, 180, 240, 300].map((deg) => {
+        const rad = (deg * Math.PI) / 180;
+        return <circle key={deg} cx={r + (midR - 3) * Math.cos(rad)} cy={r + (midR - 3) * Math.sin(rad)} r="1.2" fill="#7a5a10" opacity="0.7" />;
+      })}
     </svg>
   );
 }
 
+function getExpirationDate() {
+  const d = new Date();
+  d.setDate(d.getDate() + 90);
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
+
 // ── Official Coupon ────────────────────────────────────────────────────────────
 function OfficialCoupon({ value, serial, compact = false }) {
-  const sealSize = compact ? 56 : 72;
+  const sealSize = compact ? 72 : 96;
+  const expDate = getExpirationDate();
+  const issuedDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
   return (
-    <div className="relative select-none" style={{ fontFamily: "serif" }}>
+    <div className="relative select-none" style={{ fontFamily: "'Georgia', serif" }}>
       <div className="relative overflow-hidden" style={{
-        background: "linear-gradient(160deg, #0f1f5c 0%, #1a2f7a 40%, #0d1a4a 100%)",
-        borderRadius: compact ? 16 : 20,
-        border: "2px solid #c9a84c",
-        boxShadow: "0 0 0 1px #0f1f5c, 0 0 0 5px #c9a84c, 0 8px 48px rgba(0,0,0,0.6)",
+        background: "#ffffff",
+        borderRadius: compact ? 12 : 16,
+        border: "3px solid #111",
+        boxShadow: "0 4px 0 #111, 4px 0 0 #111, 4px 4px 0 #111, 0 8px 32px rgba(0,0,0,0.25)",
       }}>
-        <div className="absolute inset-2 rounded-xl pointer-events-none" style={{ border: "1px solid rgba(201,168,76,0.3)" }} />
-        <div className="absolute top-3 left-3 w-5 h-5 opacity-60" style={{ borderTop: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c" }} />
-        <div className="absolute top-3 right-3 w-5 h-5 opacity-60" style={{ borderTop: "2px solid #c9a84c", borderRight: "2px solid #c9a84c" }} />
-        <div className="absolute bottom-3 left-3 w-5 h-5 opacity-60" style={{ borderBottom: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c" }} />
-        <div className="absolute bottom-3 right-3 w-5 h-5 opacity-60" style={{ borderBottom: "2px solid #c9a84c", borderRight: "2px solid #c9a84c" }} />
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-slate-50" />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-slate-50" />
-        <div className={`relative z-10 ${compact ? "px-8 py-6" : "px-10 py-9"}`}>
-          {/* Header row: logo + serial */}
-          <div className="flex items-center justify-between mb-3">
-            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-6 w-auto brightness-0 invert opacity-80" />
-            <div className="text-right">
-              <p style={{ color: "#c9a84c", fontSize: 9 }} className="font-bold uppercase tracking-widest">OFFICIAL COUPON</p>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: 8, fontFamily: "monospace" }}>{serial || "BW-XXXX-XXXX-XXXX"}</p>
+        {/* Top black header band */}
+        <div className="px-6 py-2.5 flex items-center justify-between" style={{ background: "#111" }}>
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-90" />
+          <p style={{ color: "#c9a84c", fontSize: 9, fontFamily: "sans-serif", letterSpacing: "0.18em" }} className="font-black uppercase">Official Certificate · State of California</p>
+        </div>
+
+        {/* Inner border frame */}
+        <div className="mx-3 my-2" style={{ border: "1.5px solid #111", borderRadius: 8 }}>
+          <div className="mx-1 my-1" style={{ border: "0.5px solid #888", borderRadius: 6 }}>
+
+            <div className={`px-5 ${compact ? "py-4" : "py-6"}`}>
+
+              {/* Title row */}
+              <div className="text-center mb-3">
+                <p style={{ fontSize: 9, letterSpacing: "0.3em", color: "#555", fontFamily: "sans-serif" }} className="uppercase font-bold mb-0.5">California Homebuyers Program</p>
+                <p style={{ fontSize: compact ? 18 : 22, letterSpacing: "0.15em", color: "#111" }} className="font-black uppercase tracking-widest">Rebate Coupon</p>
+              </div>
+
+              <div className="mb-3" style={{ borderTop: "1px solid #ddd" }} />
+
+              {/* Seal + value */}
+              <div className="flex items-center gap-4 mb-3">
+                <div className="flex-shrink-0">
+                  <CASealGold size={sealSize} />
+                </div>
+                <div className="flex-1 text-center">
+                  <p style={{ fontSize: 8, letterSpacing: "0.2em", color: "#888", fontFamily: "sans-serif" }} className="uppercase font-bold mb-1">Estimated Savings Value</p>
+                  <p style={{
+                    fontSize: compact ? "clamp(1.6rem,6vw,2.2rem)" : "clamp(2.2rem,6vw,3rem)",
+                    color: "#111",
+                    fontFamily: "'Georgia', serif",
+                    letterSpacing: "0.02em",
+                  }} className="font-black leading-none">{value || "$10,000"}</p>
+                  <p style={{ fontSize: 8, color: "#888", fontFamily: "sans-serif" }} className="mt-1">Approx. 1% of Purchase Price</p>
+                </div>
+              </div>
+
+              <div className="mb-3" style={{ borderTop: "1px solid #ddd" }} />
+
+              {/* Serial + dates row */}
+              <div className="grid grid-cols-3 gap-2 text-center">
+                <div>
+                  <p style={{ fontSize: 7, letterSpacing: "0.15em", color: "#999", fontFamily: "sans-serif" }} className="uppercase font-bold">Issued</p>
+                  <p style={{ fontSize: 8, color: "#333", fontFamily: "sans-serif" }} className="font-bold">{issuedDate}</p>
+                </div>
+                <div style={{ borderLeft: "1px solid #ddd", borderRight: "1px solid #ddd" }}>
+                  <p style={{ fontSize: 7, letterSpacing: "0.15em", color: "#999", fontFamily: "sans-serif" }} className="uppercase font-bold">Coupon No.</p>
+                  <p style={{ fontSize: 8, color: "#333", fontFamily: "monospace" }} className="font-bold">{serial || "BW-XXXX-XXXX"}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: 7, letterSpacing: "0.15em", color: "#c00", fontFamily: "sans-serif" }} className="uppercase font-bold">Expires</p>
+                  <p style={{ fontSize: 8, color: "#c00", fontFamily: "sans-serif" }} className="font-black">{expDate}</p>
+                </div>
+              </div>
+
+              <div className="mt-3" style={{ borderTop: "1px solid #ddd" }} />
+
+              {/* Footer disclaimer */}
+              <p style={{ fontSize: 7, color: "#aaa", fontFamily: "sans-serif", lineHeight: 1.4 }} className="text-center mt-2">
+                Valid for qualifying CA purchase transactions only. Subject to program availability and lender approval.
+              </p>
             </div>
-          </div>
-          <div className="mb-3" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
-          {/* Seal + value side by side */}
-          <div className="flex items-center gap-4 mb-3">
-            <div className="flex-shrink-0">
-              <CASealEmblem size={sealSize} />
-            </div>
-            <div className="flex-1 text-center">
-              <p className="uppercase tracking-[0.2em] mb-1" style={{ color: "rgba(201,168,76,0.7)", fontSize: 9, fontFamily: "sans-serif" }}>CA Homebuyers Coupon</p>
-              <p className="font-black leading-none" style={{
-                fontSize: compact ? "clamp(1.8rem,7vw,2.4rem)" : "clamp(2.4rem,7vw,3.4rem)",
-                color: "#ffffff",
-                textShadow: "0 0 40px rgba(201,168,76,0.5)",
-              }}>{value || "$10,000"}</p>
-            </div>
-          </div>
-          <div className="mb-3" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
-          <div className="flex items-center justify-between">
-            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Est. 1% Buyer Rebate</p>
-            <p style={{ color: "rgba(201,168,76,0.6)", fontSize: 8, fontFamily: "sans-serif", textTransform: "uppercase", letterSpacing: "0.1em" }}>Qualifying Purchase</p>
+
           </div>
         </div>
+
+        {/* Punch holes */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-5 h-5 rounded-full" style={{ background: "#f0f0f0", border: "1.5px solid #ccc" }} />
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-5 h-5 rounded-full" style={{ background: "#f0f0f0", border: "1.5px solid #ccc" }} />
       </div>
     </div>
   );
