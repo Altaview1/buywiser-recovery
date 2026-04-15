@@ -442,7 +442,7 @@ export default function BuywiserHome() {
                 Coupon & Save Thousands.
               </h1>
               <p className="text-lg text-slate-500 leading-relaxed mb-8 max-w-lg">
-                Find a home on Zillow. Paste the URL into Buywiser before you click. Get your coupon. It's that simple.
+                Locate a home on any search site, paste the URL, and see if it qualifies for a <span className="font-black text-slate-800">CALIFORNIA COUPON</span>.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a href="#how" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
