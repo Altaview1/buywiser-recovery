@@ -1,0 +1,58 @@
+{
+  "name": "AppointmentRequest",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "Customer first name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Customer last name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Customer email"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Customer phone"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Property address"
+    },
+    "property_price": {
+      "type": "number",
+      "description": "Property price"
+    },
+    "coupon_value": {
+      "type": "number",
+      "description": "Coupon value (1% of price)"
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Requested appointment date and time"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Appointment status"
+    }
+  },
+  "required": [
+    "first_name",
+    "email",
+    "phone",
+    "property_address",
+    "appointment_date"
+  ]
+}
