@@ -321,7 +321,7 @@ function LiveDashboard() {
                 ) : (
                   <div className="space-y-3">
                     <OfficialCoupon value={formatCurrency(rebate)} serial={generateSerial()} compact />
-                    <a href={`mailto:hello@buywiser.com?subject=Buywiser Coupon&body=Property: ${property.address}%0APrice: ${formatCurrency(property.price)}%0ASavings: ${formatCurrency(rebate)}`}
+                    <a href={`mailto:hello@buywiser.com?subject=Buywiser CA Coupon&body=Property: ${property.address}%0APrice: ${formatCurrency(property.price)}%0ASavings: ${formatCurrency(rebate)}`}
                       className="block w-full py-3.5 text-center font-black rounded-2xl text-sm text-white transition"
                       style={{ background: "linear-gradient(135deg,#b45309,#d97706)", boxShadow: "0 4px 20px rgba(180,83,9,0.4)" }}>
                       Start My Buywiser Path →
@@ -439,10 +439,10 @@ export default function BuywiserHome() {
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.05] tracking-tight mb-5">
                 Tap Into The<br />
                 <span style={{ color: "#1e3a8a" }}>California Homebuyers</span><br />
-                Coupon & Save Thousands.
+                CA Coupon & Save Thousands.
               </h1>
               <p className="text-lg text-slate-500 leading-relaxed mb-8 max-w-lg">
-                Locate a home on any search site, paste the URL, and see if it qualifies for a <span className="font-black text-slate-800">CALIFORNIA COUPON</span>.
+                Locate a home on any search site, paste the URL, and see if it qualifies for a <span className="font-black text-slate-800">CA COUPON</span>.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a href="#how" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
