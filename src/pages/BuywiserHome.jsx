@@ -1,6 +1,73 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, Home, Users, DollarSign, Shield, Star, TrendingUp, Ticket, Zap, Lock, X, Clock } from "lucide-react";
+import { CheckCircle, ArrowRight, Home, Users, DollarSign, Shield, Star, TrendingUp, Ticket, Zap, Lock, X, Clock, Play } from "lucide-react";
+
+const HEYGEN_VIDEO_ID = "a9339c11582d4bacb2274163f199d778";
+const HEYGEN_EMBED_URL = `https://app.heygen.com/embeds/${HEYGEN_VIDEO_ID}`;
+
+// ── Video Modal ────────────────────────────────────────────────────────────────
+function VideoModal({ onClose }) {
+  useEffect(() => {
+    const handleKey = (e) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", handleKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+      style={{ background: "rgba(0,0,0,0.85)", backdropFilter: "blur(8px)" }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-3xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute -top-12 right-0 flex items-center gap-2 text-white/70 hover:text-white transition text-sm font-medium"
+        >
+          <X className="h-5 w-5" /> Close
+        </button>
+
+        {/* Regal border frame */}
+        <div
+          className="relative rounded-2xl overflow-hidden"
+          style={{
+            border: "2px solid #c9a84c",
+            boxShadow: "0 0 0 1px #0f1f5c, 0 0 0 5px #c9a84c, 0 32px 80px rgba(0,0,0,0.8)",
+          }}
+        >
+          {/* Corner ornaments */}
+          <div className="absolute top-2 left-2 w-5 h-5 z-10 pointer-events-none" style={{ borderTop: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c" }} />
+          <div className="absolute top-2 right-2 w-5 h-5 z-10 pointer-events-none" style={{ borderTop: "2px solid #c9a84c", borderRight: "2px solid #c9a84c" }} />
+          <div className="absolute bottom-2 left-2 w-5 h-5 z-10 pointer-events-none" style={{ borderBottom: "2px solid #c9a84c", borderLeft: "2px solid #c9a84c" }} />
+          <div className="absolute bottom-2 right-2 w-5 h-5 z-10 pointer-events-none" style={{ borderBottom: "2px solid #c9a84c", borderRight: "2px solid #c9a84c" }} />
+
+          <div className="aspect-video bg-slate-950">
+            <iframe
+              src={HEYGEN_EMBED_URL}
+              title="Buywiser — Activate Your Coupon"
+              allow="autoplay; fullscreen"
+              allowFullScreen
+              className="w-full h-full"
+              style={{ border: "none", display: "block" }}
+            />
+          </div>
+        </div>
+
+        <p className="text-center text-amber-400/70 text-xs mt-4 tracking-widest uppercase font-semibold">
+          Buywiser · Activate The Coupon First
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function formatCurrency(val) {
   if (!val) return "$0";
@@ -525,8 +592,11 @@ function LiveDashboard() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function BuywiserHome() {
+  const [videoOpen, setVideoOpen] = useState(true); // auto-open on load
+
   return (
     <div className="bg-white text-slate-900 font-sans">
+      {videoOpen && <VideoModal onClose={() => setVideoOpen(false)} />}
 
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-slate-100">
@@ -590,24 +660,51 @@ export default function BuywiserHome() {
               </div>
             </div>
 
-            {/* Right: Coupon + photo */}
+            {/* Right: Video + Coupon */}
             <div className="relative hidden lg:flex flex-col gap-5 items-end">
-              <div className="relative w-full max-w-md">
+              {/* Video thumbnail card */}
+              <div className="relative w-full max-w-md group cursor-pointer" onClick={() => setVideoOpen(true)}>
                 <img
-                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80"
-                  alt="Couple celebrating home purchase"
-                  className="w-full h-80 object-cover rounded-3xl shadow-2xl"
+                  src={`https://dynamic.heygen.ai/aws_pacific/avatar_tmp/0f383ecff85b43989c86627a5acc78fb/vHxkOtNVhD4T93gOtDdfsGIgVKf5JxaF5/a9339c11582d4bacb2274163f199d778.jpeg`}
+                  alt="Watch the Buywiser video"
+                  className="w-full h-80 object-cover rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]"
+                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80"; }}
                 />
+                {/* Gold frame overlay */}
+                <div className="absolute inset-0 rounded-3xl pointer-events-none transition-opacity duration-300"
+                  style={{ border: "2px solid rgba(201,168,76,0.5)", boxShadow: "inset 0 0 0 1px rgba(201,168,76,0.2)" }}
+                />
+                {/* Dark overlay on hover */}
+                <div className="absolute inset-0 rounded-3xl bg-black/20 group-hover:bg-black/30 transition-colors duration-300" />
+                {/* Play button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex flex-col items-center gap-3">
+                    <div
+                      className="w-20 h-20 rounded-full flex items-center justify-center shadow-2xl transition-transform duration-200 group-hover:scale-110"
+                      style={{ background: "linear-gradient(135deg, #b45309, #d97706)", border: "3px solid #c9a84c", boxShadow: "0 0 40px rgba(201,168,76,0.5)" }}
+                    >
+                      <Play className="h-8 w-8 text-white fill-white ml-1" />
+                    </div>
+                    <span className="text-white font-bold text-sm tracking-wide px-4 py-1.5 rounded-full" style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.2)" }}>
+                      Watch How It Works
+                    </span>
+                  </div>
+                </div>
+                {/* Coupon overlaid */}
                 <div className="absolute -bottom-6 -left-8">
                   <CouponGraphic value="$12,500" />
                 </div>
               </div>
-              <div className="w-48 h-36 ml-auto mt-10">
-                <img
-                  src="https://images.unsplash.com/photo-1484981138541-3d074aa97716?w=500&q=80"
-                  alt="Couple reviewing rebate on laptop"
-                  className="w-full h-full object-cover rounded-2xl shadow-lg border-4 border-white"
-                />
+              <div className="mt-10 w-full max-w-md flex justify-end">
+                <button
+                  onClick={() => setVideoOpen(true)}
+                  className="flex items-center gap-2.5 text-slate-500 hover:text-slate-800 transition text-sm font-semibold"
+                >
+                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                    <Play className="h-3.5 w-3.5 text-amber-700 fill-amber-700 ml-0.5" />
+                  </div>
+                  See the full Buywiser explanation
+                </button>
               </div>
             </div>
           </div>
