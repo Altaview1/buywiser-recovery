@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "BuyWiser Rebates <noreply@myrebate.house>",
+        from: "BuyWiser Rebates <onboarding@resend.dev>",
         to: [email],
         subject: "Your CA Homebuyers Coupon — Email Verification Code",
         html,
