@@ -232,6 +232,21 @@ function HeroWithPaste({ onVideoOpen }) {
   const [loading, setLoading] = useState(false);
   const [property, setProperty] = useState(null);
   const [error, setError] = useState("");
+
+  // Contact info step
+  const [showContact, setShowContact] = useState(false);
+  const [contact, setContact] = useState({ firstName: "", lastName: "", phone: "", email: "" });
+  const [contactError, setContactError] = useState("");
+  const [sendingCode, setSendingCode] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState("");
+
+  // Verification step
+  const [showVerify, setShowVerify] = useState(false);
+  const [verifyInput, setVerifyInput] = useState("");
+  const [verifyError, setVerifyError] = useState("");
+  const [verified, setVerified] = useState(false);
+
+  // Coupon reveal
   const [couponRevealed, setCouponRevealed] = useState(false);
   const [couponSpinning, setCouponSpinning] = useState(false);
   const [couponDisplay, setCouponDisplay] = useState("");
@@ -242,14 +257,43 @@ function HeroWithPaste({ onVideoOpen }) {
 
   const handleFetch = async () => {
     if (!url.trim() || !isListing) return;
-    setLoading(true); setError(""); setProperty(null); setCouponRevealed(false);
+    setLoading(true); setError(""); setProperty(null); setCouponRevealed(false); setShowContact(false); setVerified(false); setShowVerify(false);
     try {
       const res = await base44.functions.invoke("fetchPropertyFromUrl", { url: url.trim() });
       setProperty(res.data.property);
+      setShowContact(true);
     } catch (e) {
       setError("Couldn't fetch that listing. Try pasting the full URL.");
     }
     setLoading(false);
+  };
+
+  const handleSendCode = async () => {
+    if (!contact.firstName || !contact.lastName || !contact.email || !contact.phone) {
+      setContactError("All fields are required."); return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact.email)) {
+      setContactError("Please enter a valid email address."); return;
+    }
+    setContactError(""); setSendingCode(true);
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setGeneratedCode(code);
+    try {
+      await base44.functions.invoke("sendVerificationEmail", { email: contact.email, firstName: contact.firstName, code });
+      setShowVerify(true);
+    } catch (e) {
+      setContactError("Failed to send verification email. Please try again.");
+    }
+    setSendingCode(false);
+  };
+
+  const handleVerify = () => {
+    if (verifyInput.trim() !== generatedCode) {
+      setVerifyError("Incorrect code. Please check your email and try again."); return;
+    }
+    setVerifyError(""); setVerified(true);
+    // Auto-reveal coupon after verification
+    handleRevealCoupon();
   };
 
   const handleRevealCoupon = () => {
@@ -386,39 +430,145 @@ function HeroWithPaste({ onVideoOpen }) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3" style={{ background: GOV.offWhite, border: `1.5px solid ${GOV.navy}`, borderRadius: 2 }}>
-                    <p style={{ fontSize: 10, color: GOV.textLt, fontFamily: "sans-serif", letterSpacing: "0.1em" }} className="uppercase font-bold mb-1">List Price</p>
-                    <p className="font-bold text-lg" style={{ color: GOV.navy, fontFamily: "'Georgia', serif" }}>{property.price ? formatCurrency(property.price) : "—"}</p>
-                  </div>
-                  <div className="p-3 transition-all duration-500" style={{
-                    background: couponRevealed ? GOV.navy : GOV.offWhite,
-                    border: `1.5px solid ${couponRevealed ? GOV.gold : GOV.navy}`,
-                    borderRadius: 2,
-                  }}>
-                    <p style={{ fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.1em", color: couponRevealed ? GOV.gold : GOV.textLt }} className="uppercase font-bold mb-1">Coupon Value</p>
-                    <p className="font-bold text-xl" style={{ color: couponSpinning ? GOV.gold : couponRevealed ? GOV.white : "#ccc", fontFamily: "'Georgia', serif", fontVariantNumeric: "tabular-nums" }}>
-                      {couponSpinning || couponRevealed ? couponDisplay : "—"}
-                    </p>
-                  </div>
-                </div>
+                {/* ── STEP 2: Contact Info ── */}
+                {showContact && !verified && (
+                  <div className="overflow-hidden" style={{ border: `2px solid ${GOV.navy}`, borderRadius: 2 }}>
+                    <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: GOV.navy }}>
+                      <BadgeCheck className="h-3.5 w-3.5" style={{ color: GOV.gold }} />
+                      <p style={{ color: GOV.gold, fontFamily: "sans-serif", fontSize: 11, letterSpacing: "0.15em" }} className="font-black uppercase">
+                        Step 2 — Register to Receive Your Coupon
+                      </p>
+                    </div>
+                    <div style={{ height: 2, background: `linear-gradient(90deg, ${GOV.gold}, ${GOV.goldLt}, ${GOV.gold})` }} />
 
-                {!couponRevealed ? (
-                  <button onClick={handleRevealCoupon} disabled={couponSpinning || !property.price}
-                    className="w-full py-4 font-bold tracking-wide transition-all"
-                    style={{ background: GOV.navy, color: GOV.white, border: `2px solid ${GOV.gold}`, borderRadius: 2, fontFamily: "sans-serif", letterSpacing: "0.08em", fontSize: 14 }}>
-                    {couponSpinning
-                      ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Generating Certificate...</span>
-                      : "Generate Official Rebate Coupon →"}
-                  </button>
-                ) : (
+                    {!showVerify ? (
+                      <div className="p-4 space-y-3" style={{ background: GOV.offWhite }}>
+                        <p style={{ fontSize: 12, color: GOV.textMd, fontFamily: "sans-serif", lineHeight: 1.5 }}>
+                          To issue your official rebate coupon, we need to verify your identity. Please complete the form below.
+                        </p>
+                        <div className="grid grid-cols-2 gap-3">
+                          {[
+                            { label: "First Name", key: "firstName", type: "text", placeholder: "Jane" },
+                            { label: "Last Name", key: "lastName", type: "text", placeholder: "Smith" },
+                          ].map(({ label, key, type, placeholder }) => (
+                            <div key={key}>
+                              <label style={{ fontSize: 10, color: GOV.textMd, letterSpacing: "0.1em", fontFamily: "sans-serif" }} className="block font-bold uppercase mb-1">{label}</label>
+                              <input
+                                type={type}
+                                value={contact[key]}
+                                onChange={(e) => setContact(c => ({ ...c, [key]: e.target.value }))}
+                                placeholder={placeholder}
+                                className="w-full px-3 py-2.5 text-sm transition"
+                                style={{ border: `2px solid ${GOV.navy}`, borderRadius: 2, fontFamily: "sans-serif", outline: "none", background: GOV.white }}
+                                onFocus={(e) => e.target.style.borderColor = GOV.gold}
+                                onBlur={(e) => e.target.style.borderColor = GOV.navy}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <div>
+                          <label style={{ fontSize: 10, color: GOV.textMd, letterSpacing: "0.1em", fontFamily: "sans-serif" }} className="block font-bold uppercase mb-1">Email Address</label>
+                          <input
+                            type="email"
+                            value={contact.email}
+                            onChange={(e) => setContact(c => ({ ...c, email: e.target.value }))}
+                            placeholder="jane.smith@email.com"
+                            className="w-full px-3 py-2.5 text-sm transition"
+                            style={{ border: `2px solid ${GOV.navy}`, borderRadius: 2, fontFamily: "sans-serif", outline: "none", background: GOV.white }}
+                            onFocus={(e) => e.target.style.borderColor = GOV.gold}
+                            onBlur={(e) => e.target.style.borderColor = GOV.navy}
+                          />
+                        </div>
+                        <div>
+                          <label style={{ fontSize: 10, color: GOV.textMd, letterSpacing: "0.1em", fontFamily: "sans-serif" }} className="block font-bold uppercase mb-1">Phone Number</label>
+                          <input
+                            type="tel"
+                            value={contact.phone}
+                            onChange={(e) => setContact(c => ({ ...c, phone: e.target.value }))}
+                            placeholder="(818) 555-1234"
+                            className="w-full px-3 py-2.5 text-sm transition"
+                            style={{ border: `2px solid ${GOV.navy}`, borderRadius: 2, fontFamily: "sans-serif", outline: "none", background: GOV.white }}
+                            onFocus={(e) => e.target.style.borderColor = GOV.gold}
+                            onBlur={(e) => e.target.style.borderColor = GOV.navy}
+                          />
+                        </div>
+                        {contactError && <p style={{ color: "#b22234", fontSize: 12, fontFamily: "sans-serif" }} className="font-semibold">{contactError}</p>}
+                        <button onClick={handleSendCode} disabled={sendingCode}
+                          className="w-full py-3.5 font-bold transition"
+                          style={{ background: GOV.navy, color: GOV.white, border: `2px solid ${GOV.gold}`, borderRadius: 2, fontFamily: "sans-serif", letterSpacing: "0.08em", fontSize: 13, cursor: sendingCode ? "not-allowed" : "pointer" }}>
+                          {sendingCode
+                            ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Sending Verification Code...</span>
+                            : "Send Verification Code →"}
+                        </button>
+                        <p style={{ fontSize: 10, color: GOV.textLt, fontFamily: "sans-serif" }}>
+                          A 6-digit verification code will be sent to your email address.
+                        </p>
+                      </div>
+                    ) : (
+                      /* ── STEP 3: Verify Code ── */
+                      <div className="p-4 space-y-3" style={{ background: GOV.offWhite }}>
+                        <p style={{ fontSize: 12, color: GOV.textMd, fontFamily: "sans-serif", lineHeight: 1.5 }}>
+                          A 6-digit verification code was sent to <strong>{contact.email}</strong>. Enter it below to receive your coupon.
+                        </p>
+                        <div>
+                          <label style={{ fontSize: 10, color: GOV.textMd, letterSpacing: "0.1em", fontFamily: "sans-serif" }} className="block font-bold uppercase mb-1">Verification Code</label>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={6}
+                            value={verifyInput}
+                            onChange={(e) => { setVerifyInput(e.target.value.replace(/\D/g, "")); setVerifyError(""); }}
+                            onKeyDown={(e) => e.key === "Enter" && verifyInput.length === 6 && handleVerify()}
+                            placeholder="000000"
+                            className="w-full px-4 py-3 text-2xl font-bold text-center tracking-widest transition"
+                            style={{ border: `2px solid ${GOV.navy}`, borderRadius: 2, fontFamily: "monospace", outline: "none", background: GOV.white }}
+                            onFocus={(e) => e.target.style.borderColor = GOV.gold}
+                            onBlur={(e) => e.target.style.borderColor = GOV.navy}
+                          />
+                        </div>
+                        {verifyError && <p style={{ color: "#b22234", fontSize: 12, fontFamily: "sans-serif" }} className="font-semibold">{verifyError}</p>}
+                        <button onClick={handleVerify} disabled={verifyInput.length !== 6}
+                          className="w-full py-3.5 font-bold transition"
+                          style={{ background: verifyInput.length === 6 ? GOV.navy : "#ccc", color: verifyInput.length === 6 ? GOV.white : "#999", border: `2px solid ${verifyInput.length === 6 ? GOV.gold : "#ccc"}`, borderRadius: 2, fontFamily: "sans-serif", letterSpacing: "0.08em", fontSize: 13, cursor: verifyInput.length !== 6 ? "not-allowed" : "pointer" }}>
+                          Verify &amp; Generate My Coupon →
+                        </button>
+                        <button onClick={() => { setShowVerify(false); setVerifyInput(""); setVerifyError(""); }}
+                          style={{ background: "none", border: "none", color: GOV.textLt, fontSize: 12, fontFamily: "sans-serif", cursor: "pointer", padding: 0 }}>
+                          ← Re-enter contact information
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Coupon Display (after verified) ── */}
+                {couponRevealed && (
                   <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3" style={{ background: GOV.offWhite, border: `1.5px solid ${GOV.navy}`, borderRadius: 2 }}>
+                        <p style={{ fontSize: 10, color: GOV.textLt, fontFamily: "sans-serif", letterSpacing: "0.1em" }} className="uppercase font-bold mb-1">List Price</p>
+                        <p className="font-bold text-lg" style={{ color: GOV.navy, fontFamily: "'Georgia', serif" }}>{property.price ? formatCurrency(property.price) : "—"}</p>
+                      </div>
+                      <div className="p-3" style={{ background: GOV.navy, border: `1.5px solid ${GOV.gold}`, borderRadius: 2 }}>
+                        <p style={{ fontSize: 10, fontFamily: "sans-serif", letterSpacing: "0.1em", color: GOV.gold }} className="uppercase font-bold mb-1">Your Coupon Value</p>
+                        <p className="font-bold text-xl" style={{ color: couponSpinning ? GOV.gold : GOV.white, fontFamily: "'Georgia', serif", fontVariantNumeric: "tabular-nums" }}>
+                          {couponSpinning ? couponDisplay : formatCurrency(rebate)}
+                        </p>
+                      </div>
+                    </div>
                     <OfficialCoupon value={formatCurrency(rebate)} serial={generateSerial()} compact />
-                    <a href={`mailto:bennett@buywiser.com?subject=CA Rebate Coupon&body=Property: ${property.address}%0APrice: ${formatCurrency(property.price)}%0ASavings: ${formatCurrency(rebate)}`}
+                    <a href={`mailto:bennett@buywiser.com?subject=CA Rebate Coupon — ${contact.firstName} ${contact.lastName}&body=Name: ${contact.firstName} ${contact.lastName}%0AEmail: ${contact.email}%0APhone: ${contact.phone}%0AProperty: ${property.address}%0APrice: ${formatCurrency(property.price)}%0ASavings: ${formatCurrency(rebate)}`}
                       className="block w-full py-3.5 text-center font-bold transition"
                       style={{ background: GOV.navy, color: GOV.white, border: `2px solid ${GOV.gold}`, borderRadius: 2, fontFamily: "sans-serif", letterSpacing: "0.06em", fontSize: 13 }}>
                       Submit My Coupon to BuyWiser →
                     </a>
+                  </div>
+                )}
+
+                {couponSpinning && !couponRevealed && (
+                  <div className="p-6 text-center" style={{ background: GOV.navy, border: `2px solid ${GOV.gold}`, borderRadius: 2 }}>
+                    <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block mb-2" />
+                    <p style={{ color: GOV.gold, fontFamily: "sans-serif", fontSize: 13 }} className="font-bold">Generating your official certificate...</p>
                   </div>
                 )}
               </div>
