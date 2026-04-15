@@ -759,20 +759,40 @@ export default function BuywiserHome() {
         </div>
       </section>
 
-      {/* ── FINAL CTA ── */}
+      {/* ── TESTIMONIALS GRID ── */}
       <section className="py-20 bg-gradient-to-br from-slate-900 to-slate-950 text-white">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-black mb-4">Found a home on Zillow?<br />Get your CA Coupon first.</h2>
-          <p className="text-slate-400 text-lg mb-10">Tap into the CA Homebuyers Coupon and save thousands. Simple as 1, 2, 3.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
-              Get My CA Coupon <ArrowRight className="h-4 w-4" />
-            </a>
-            <button onClick={() => setVideoOpen(true)} className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-600 text-white font-bold rounded-2xl hover:border-slate-400 transition text-base">
-              <Play className="h-4 w-4 fill-white" /> Watch Video
-            </button>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
+            <p className="text-amber-400 font-black uppercase tracking-widest text-sm mb-3">What Our Clients Say</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white">Real Savings. Real Homeowners.</h2>
           </div>
-          <p className="mt-8 text-xs text-slate-600">Available on qualifying purchases. Terms and availability may vary.</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { name: "Ami & Allen K.", location: "Thousand Oaks, CA", saved: "$100,000+", quote: "My husband Allen and I saved a minimum of $100,000 between the rebates and the credits we received. Thank you, BuyWiser." },
+              { name: "Maria & José R.", location: "Pasadena, CA", saved: "$14,500", quote: "We had no idea this program existed. We found our home on Redfin, pasted the link into BuyWiser, and got our coupon the same day. Closing was seamless." },
+              { name: "David L.", location: "Glendale, CA", saved: "$11,200", quote: "I'm a first-time buyer and was nervous about everything. BuyWiser explained the coupon in two minutes and it showed up as a credit on my closing disclosure. Simple." },
+              { name: "Sandra & Tom H.", location: "Burbank, CA", saved: "$17,800", quote: "We were already under contract before someone told us about this. Luckily we hadn't closed yet. Got the coupon applied at the last minute — saved nearly $18k." },
+              { name: "Priya N.", location: "Irvine, CA", saved: "$22,500", quote: "My agent didn't even know this existed. BuyWiser walked me through it step by step. The rebate came directly off my closing costs. Highly recommend." },
+              { name: "Kevin & Lisa M.", location: "Sherman Oaks, CA", saved: "$13,000", quote: "We used Zillow to find our home, copied the link, and within minutes had our CA Coupon confirmed. I wish every part of buying a home was this easy." },
+            ].map((t) => (
+              <div key={t.name} className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-4">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => <Star key={i} className="h-4 w-4 fill-amber-400 text-amber-400" />)}
+                </div>
+                <p className="text-slate-300 text-sm leading-relaxed flex-1">"{t.quote}"</p>
+                <div className="flex items-center justify-between pt-3 border-t border-white/10">
+                  <div>
+                    <p className="font-black text-white text-sm">{t.name}</p>
+                    <p className="text-slate-500 text-xs">{t.location}</p>
+                  </div>
+                  <div className="bg-amber-500/20 border border-amber-500/40 rounded-xl px-3 py-1.5 text-center">
+                    <p className="text-amber-400 font-black text-sm">{t.saved}</p>
+                    <p className="text-amber-600 text-xs font-medium">saved</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
