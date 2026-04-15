@@ -520,7 +520,7 @@ function HeroWithPaste({ onVideoOpen }) {
         </div>
 
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05] tracking-tight mb-4">
-          Found a Home?<br />
+          Searching for a Home?<br />
           <span className="text-amber-400">Get Your CA Coupon.</span>
         </h1>
         <p className="text-blue-200 text-lg mb-10 max-w-xl mx-auto">
