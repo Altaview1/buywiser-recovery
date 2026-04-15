@@ -285,7 +285,7 @@ function HeroWithPaste({ onVideoOpen }) {
           </div>
           <div className="text-center md:text-left">
             <p style={{ color: GOV.gold, fontSize: 11, letterSpacing: "0.3em", fontFamily: "sans-serif" }} className="font-black uppercase mb-2">
-              Official Program · State of California
+              Official California Homebuyers Rebate Coupon Program
             </p>
             <h1 style={{ fontFamily: "'Georgia', serif", color: GOV.white, lineHeight: 1.15 }} className="text-3xl md:text-5xl font-bold mb-3">
               California Homebuyers<br />
