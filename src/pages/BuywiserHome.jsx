@@ -624,8 +624,8 @@ export default function BuywiserHome() {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0" style={{ background: "#006aff" }}>1</div>
                   <div>
-                    <p className="font-black text-slate-900 text-sm">Enter Listing URL</p>
-                    <p className="text-slate-400 text-xs">Any listing, anywhere in CA</p>
+                    <p className="font-black text-slate-900 text-sm">Find a Property You Want to See</p>
+                    <p className="text-slate-400 text-xs">On Zillow, Redfin, Realtor.com — any site</p>
                   </div>
                 </div>
                 {/* Mini browser mockup */}
@@ -643,28 +643,26 @@ export default function BuywiserHome() {
                   <div className="px-3 py-2 bg-white">
                     <p className="font-black text-slate-900 text-sm">$1,250,000</p>
                     <p className="text-slate-400 text-xs">123 Maple St, Glendale, CA</p>
-                    {/* Blocked Zillow buttons */}
-                    <div className="relative mt-2">
-                      <div className="flex gap-1.5">
-                        <div className="flex-1 py-1.5 rounded-lg text-xs font-bold text-center text-white" style={{ background: "#006aff" }}>Contact Agent</div>
-                        <div className="flex-1 py-1.5 rounded-lg text-xs font-bold text-center border" style={{ color: "#006aff", borderColor: "#006aff" }}>Request Tour</div>
-                      </div>
-                      <div className="absolute inset-0 rounded-lg flex items-center justify-center" style={{ background: "rgba(220,38,38,0.1)", border: "1.5px solid rgba(220,38,38,0.6)" }}>
-                        <span className="bg-red-600 text-white text-xs font-black px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <X className="h-2.5 w-2.5" /> Not yet
-                        </span>
-                      </div>
+                    <p className="text-slate-400 mt-2 mb-1" style={{ fontSize: 8 }}>Copy this URL from your browser address bar:</p>
+                    <div className="rounded-lg border-2 border-amber-400 bg-amber-50 px-2 py-1.5 flex items-center gap-1.5">
+                      <span className="text-slate-500 font-mono truncate flex-1" style={{ fontSize: 8 }}>zillow.com/homedetails/123-maple...</span>
+                      <span className="bg-amber-500 text-white font-black px-1.5 py-0.5 rounded flex-shrink-0" style={{ fontSize: 7 }}>COPY</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Arrow */}
+            {/* Double-headed Copy → Paste arrow */}
             <div className="hidden md:flex items-center justify-center">
-              <div className="flex flex-col items-center gap-2">
-                <ArrowRight className="h-8 w-8 text-amber-400" />
-                <span className="text-amber-500 font-black text-xs uppercase tracking-widest">Paste URL</span>
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-amber-600 font-black uppercase tracking-widest" style={{ fontSize: 9 }}>COPY</span>
+                <div className="flex items-center">
+                  <svg width="10" height="14" viewBox="0 0 10 14" fill="none"><path d="M9 7H1M1 7L5 3M1 7L5 11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <div style={{ width: 44, height: 2, background: "#f59e0b" }} />
+                  <svg width="10" height="14" viewBox="0 0 10 14" fill="none"><path d="M1 7H9M9 7L5 3M9 7L5 11" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <span className="text-amber-600 font-black uppercase tracking-widest" style={{ fontSize: 9 }}>PASTE</span>
               </div>
             </div>
 
