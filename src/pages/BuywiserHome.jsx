@@ -32,7 +32,7 @@ function VideoModal({ onClose }) {
             <iframe src={HEYGEN_EMBED_URL} title="Buywiser" allow="autoplay; fullscreen" allowFullScreen className="w-full h-full" style={{ border: "none", display: "block" }} />
           </div>
         </div>
-        <p className="text-center text-amber-400/70 text-xs mt-4 tracking-widest uppercase font-semibold">Buywiser · Tap Into The California Homebuyers Coupon</p>
+        <p className="text-center text-amber-400/70 text-xs mt-4 tracking-widest uppercase font-semibold">Buywiser · Tap Into The CA Coupon</p>
       </div>
     </div>
   );
@@ -74,7 +74,7 @@ function OfficialCoupon({ value, serial, compact = false }) {
             </div>
           </div>
           <div className="mb-4" style={{ borderTop: "1px solid rgba(201,168,76,0.3)" }} />
-          <p className="text-center uppercase tracking-[0.25em] mb-2" style={{ color: "rgba(201,168,76,0.7)", fontSize: 10, fontFamily: "sans-serif" }}>California Homebuyers Coupon</p>
+          <p className="text-center uppercase tracking-[0.25em] mb-2" style={{ color: "rgba(201,168,76,0.7)", fontSize: 10, fontFamily: "sans-serif" }}>CA Homebuyers Coupon</p>
           <p className="text-center font-black leading-none mb-1" style={{
             fontSize: compact ? "clamp(2rem,8vw,2.8rem)" : "clamp(2.8rem,8vw,4rem)",
             color: "#ffffff",
@@ -131,7 +131,7 @@ function CouponCalculator() {
       <div className="max-w-xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-8">
           <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">Step 2 — See Your Savings</p>
-          <h2 className="text-3xl font-black text-slate-900">What's Your Coupon Worth?</h2>
+          <h2 className="text-3xl font-black text-slate-900">What's Your CA Coupon Worth?</h2>
         </div>
         <div className="bg-white rounded-3xl shadow-xl border border-slate-100 p-8">
           <label className="block text-sm font-bold text-slate-700 uppercase tracking-wide mb-2">Purchase Price</label>
@@ -155,7 +155,7 @@ function CouponCalculator() {
                 <span className="absolute top-3 right-4 text-amber-300 text-lg animate-bounce" style={{ animationDelay: "0.15s" }}>✦</span>
               </>
             )}
-            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: spinning || revealed ? "rgba(253,230,138,0.9)" : "#94a3b8" }}>Your Coupon Value</p>
+            <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: spinning || revealed ? "rgba(253,230,138,0.9)" : "#94a3b8" }}>Your CA Coupon Value</p>
             <p className="font-black leading-none" style={{
               fontSize: "clamp(2.5rem, 8vw, 4.5rem)",
               color: spinning ? "#fcd34d" : revealed ? "#ffffff" : "#e2e8f0",
@@ -175,7 +175,7 @@ function CouponCalculator() {
               cursor: !numeric ? "not-allowed" : "pointer",
             }}>
             {spinning ? <span className="flex items-center justify-center gap-3"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin inline-block" />Activating...</span>
-              : revealed ? "🎉 Activate Again" : "⚡ Activate My Coupon"}
+              : revealed ? "🎉 Activate Again" : "⚡ Activate My CA Coupon"}
           </button>
           {revealed && (
             <div className="mb-4">
@@ -244,7 +244,7 @@ function LiveDashboard() {
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-8">
           <p className="text-xs font-bold tracking-widest text-amber-400 uppercase mb-3">Step 3 — Paste Your Listing</p>
-          <h2 className="text-3xl font-black text-white">Paste The URL, Get Your Coupon</h2>
+          <h2 className="text-3xl font-black text-white">Paste The URL, Get Your CA Coupon</h2>
           <p className="text-slate-400 mt-2">Zillow · Redfin · Realtor.com — any listing works</p>
         </div>
 
@@ -306,7 +306,7 @@ function LiveDashboard() {
                     border: couponRevealed ? "2px solid #f59e0b" : "2px solid #e2e8f0",
                     boxShadow: couponRevealed ? "0 0 20px 4px rgba(245,158,11,0.3)" : "none",
                   }}>
-                    <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#fde68a" : "#94a3b8" }}>Coupon Value</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#fde68a" : "#94a3b8" }}>CA Coupon Value</p>
                     <p className="font-black text-xl" style={{ color: couponSpinning ? "#fcd34d" : couponRevealed ? "#ffffff" : "#e2e8f0", fontVariantNumeric: "tabular-nums" }}>
                       {couponSpinning || couponRevealed ? couponDisplay : "?????"}
                     </p>
@@ -316,7 +316,7 @@ function LiveDashboard() {
                   <button onClick={handleRevealCoupon} disabled={couponSpinning || !property.price}
                     className="w-full py-4 text-base font-black rounded-2xl transition-all duration-200"
                     style={{ background: "linear-gradient(135deg,#b45309,#d97706)", color: "#ffffff", boxShadow: "0 4px 24px rgba(180,83,9,0.45)" }}>
-                    {couponSpinning ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Activating...</span> : "⚡ Activate My Coupon"}
+                    {couponSpinning ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Activating...</span> : "⚡ Activate My CA Coupon"}
                   </button>
                 ) : (
                   <div className="space-y-3">
@@ -363,11 +363,11 @@ export default function BuywiserHome() {
           </a>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-500">
             <a href="#how" className="hover:text-slate-900 transition">How It Works</a>
-            <a href="#calculator" className="hover:text-slate-900 transition">Coupon Value</a>
+            <a href="#calculator" className="hover:text-slate-900 transition">CA Coupon Value</a>
             <a href="#dashboard" className="hover:text-slate-900 transition">Activate</a>
           </div>
           <a href="#calculator" className="px-5 py-2.5 bg-amber-500 text-white text-sm font-bold rounded-xl hover:bg-amber-400 transition shadow-sm">
-            Get My Coupon
+            Get My CA Coupon
           </a>
         </div>
       </nav>
@@ -381,7 +381,7 @@ export default function BuywiserHome() {
             <div>
               <div className="flex flex-wrap gap-2 mb-6">
                 <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                  <Ticket className="h-3.5 w-3.5" /> California Homebuyers Coupon
+                  <Ticket className="h-3.5 w-3.5" /> CA Homebuyers Coupon
                 </div>
                 <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
@@ -458,7 +458,7 @@ export default function BuywiserHome() {
                 <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center group-hover:bg-amber-100 transition">
                   <Volume2 className="h-4 w-4 text-amber-500" />
                 </div>
-                <span className="text-sm font-medium">Hear how the Buywiser coupon works</span>
+                <span className="text-sm font-medium">Hear how the Buywiser CA Coupon works</span>
               </button>
             </div>
 
@@ -494,7 +494,7 @@ export default function BuywiserHome() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">Simple as 1, 2, 3</p>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900">Get Your Coupon in 3 Steps</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900">Get Your CA Coupon in 3 Steps</h2>
           </div>
 
           {/* Clean 3-step process graphic */}
@@ -581,12 +581,12 @@ export default function BuywiserHome() {
                         <p className="font-black text-slate-900 text-xs">$1,250,000</p>
                       </div>
                       <div className="rounded-lg p-2" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "1.5px solid #f59e0b" }}>
-                        <p style={{ fontSize: 8, color: "#fde68a" }} className="font-semibold uppercase">Coupon</p>
+                        <p style={{ fontSize: 8, color: "#fde68a" }} className="font-semibold uppercase">CA Coupon</p>
                         <p className="font-black text-white text-xs">$12,500</p>
                       </div>
                     </div>
                     <div className="w-full py-1.5 rounded-lg text-white font-black text-center" style={{ background: "linear-gradient(135deg,#b45309,#d97706)", fontSize: 10 }}>
-                      ⚡ Activate My Coupon
+                     ⚡ Activate My CA Coupon
                     </div>
                   </div>
                 </div>
@@ -599,8 +599,8 @@ export default function BuywiserHome() {
             <div className="flex items-center gap-4 flex-shrink-0">
               <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0" style={{ background: "#1e3a8a" }}>3</div>
               <div>
-                <p className="font-black text-slate-900">Get Your Official Coupon</p>
-                <p className="text-slate-400 text-sm">Your California Homebuyers Coupon is activated instantly</p>
+                <p className="font-black text-slate-900">Get Your Official CA Coupon</p>
+                <p className="text-slate-400 text-sm">Your CA Homebuyers Coupon is activated instantly</p>
               </div>
             </div>
             <div className="flex-1 flex flex-col md:flex-row items-center gap-6">
@@ -608,14 +608,14 @@ export default function BuywiserHome() {
                 <OfficialCoupon value="$12,500" serial="BW-DEMO-0000" compact />
               </div>
               <div className="space-y-3">
-                {["Coupon is activated before you tour", "Rebate applied at closing", "Works with any California home"].map((item) => (
+                {["CA Coupon activated before you tour", "Rebate applied at closing", "Works with any CA home"].map((item) => (
                   <div key={item} className="flex items-center gap-2.5">
                     <CheckCircle className="h-4 w-4 text-amber-500 flex-shrink-0" />
                     <span className="text-slate-700 text-sm font-medium">{item}</span>
                   </div>
                 ))}
                 <a href="#calculator" className="inline-flex items-center gap-2 mt-2 px-6 py-3 bg-amber-500 text-white font-bold rounded-xl hover:bg-amber-400 transition text-sm">
-                  Get My Coupon Now <ArrowRight className="h-4 w-4" />
+                  Get My CA Coupon Now <ArrowRight className="h-4 w-4" />
                 </a>
               </div>
             </div>
@@ -646,11 +646,11 @@ export default function BuywiserHome() {
       {/* ── FINAL CTA ── */}
       <section className="py-20 bg-gradient-to-br from-slate-900 to-slate-950 text-white">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-black mb-4">Found a home on Zillow?<br />Get your coupon first.</h2>
-          <p className="text-slate-400 text-lg mb-10">Tap into the California Homebuyers Coupon and save thousands. Simple as 1, 2, 3.</p>
+          <h2 className="text-4xl md:text-5xl font-black mb-4">Found a home on Zillow?<br />Get your CA Coupon first.</h2>
+          <p className="text-slate-400 text-lg mb-10">Tap into the CA Homebuyers Coupon and save thousands. Simple as 1, 2, 3.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="#calculator" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
-              Get My Coupon <ArrowRight className="h-4 w-4" />
+              Get My CA Coupon <ArrowRight className="h-4 w-4" />
             </a>
             <button onClick={() => setVideoOpen(true)} className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-600 text-white font-bold rounded-2xl hover:border-slate-400 transition text-base">
               <Play className="h-4 w-4 fill-white" /> Watch Video
@@ -665,7 +665,7 @@ export default function BuywiserHome() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-9 w-auto brightness-0 invert" />
           <div className="flex flex-wrap gap-6 text-sm text-slate-500 justify-center">
-            {["How It Works", "Coupon Value", "Activate", "Contact"].map((item) => (
+            {["How It Works", "CA Coupon Value", "Activate", "Contact"].map((item) => (
               <a key={item} href="#" className="hover:text-white transition">{item}</a>
             ))}
           </div>
