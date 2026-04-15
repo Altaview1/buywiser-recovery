@@ -122,7 +122,7 @@ function getExpirationDate() {
 
 // ── Official Coupon ────────────────────────────────────────────────────────────
 function OfficialCoupon({ value, serial, compact = false }) {
-  const sealSize = compact ? 72 : 96;
+  const sealSize = compact ? 60 : 80;
   const expDate = getExpirationDate();
   const issuedDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
@@ -155,17 +155,18 @@ function OfficialCoupon({ value, serial, compact = false }) {
               <div className="mb-3" style={{ borderTop: "1px solid #ddd" }} />
 
               {/* Seal + value */}
-              <div className="flex items-center gap-4 mb-3">
+              <div className="flex items-center gap-3 mb-3 overflow-hidden">
                 <div className="flex-shrink-0">
                   <CASealGold size={sealSize} />
                 </div>
                 <div className="flex-1 text-center">
                   <p style={{ fontSize: 8, letterSpacing: "0.2em", color: "#888", fontFamily: "sans-serif" }} className="uppercase font-bold mb-1">Estimated Savings Value</p>
                   <p style={{
-                    fontSize: compact ? "clamp(1.6rem,6vw,2.2rem)" : "clamp(2.2rem,6vw,3rem)",
+                    fontSize: compact ? "clamp(1.2rem,4vw,1.8rem)" : "clamp(1.6rem,4vw,2.4rem)",
                     color: "#111",
                     fontFamily: "'Georgia', serif",
                     letterSpacing: "0.02em",
+                    wordBreak: "break-all",
                   }} className="font-black leading-none">{value || "$10,000"}</p>
                   <p style={{ fontSize: 8, color: "#888", fontFamily: "sans-serif" }} className="mt-1">Approx. 1% of Purchase Price</p>
                 </div>
