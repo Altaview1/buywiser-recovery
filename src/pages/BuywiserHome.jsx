@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, Home, Users, DollarSign, Star, Ticket, X, Play } from "lucide-react";
+import { CheckCircle, ArrowRight, Home, Users, DollarSign, Star, Ticket, X, Play, Volume2 } from "lucide-react";
 
 const HEYGEN_VIDEO_ID = "a9339c11582d4bacb2274163f199d778";
 const HEYGEN_EMBED_URL = `https://app.heygen.com/embeds/${HEYGEN_VIDEO_ID}`;
@@ -349,7 +349,7 @@ function LiveDashboard() {
 
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function BuywiserHome() {
-  const [videoOpen, setVideoOpen] = useState(true);
+  const [videoOpen, setVideoOpen] = useState(false);
 
   return (
     <div className="bg-white text-slate-900 font-sans">
@@ -427,6 +427,14 @@ export default function BuywiserHome() {
                   <Play className="h-4 w-4 fill-slate-600" /> Watch Video
                 </button>
               </div>
+
+              {/* Speaker nudge */}
+              <button onClick={() => setVideoOpen(true)} className="mt-5 inline-flex items-center gap-2 text-slate-400 hover:text-amber-600 transition group">
+                <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center group-hover:bg-amber-100 transition">
+                  <Volume2 className="h-4 w-4 text-amber-500" />
+                </div>
+                <span className="text-sm font-medium">Hear how the Buywiser coupon works</span>
+              </button>
             </div>
 
             {/* Right: Video thumbnail */}
