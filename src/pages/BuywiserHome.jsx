@@ -383,22 +383,31 @@ export default function BuywiserHome() {
                 <Ticket className="h-3.5 w-3.5" /> California Homebuyers Coupon
               </div>
 
-              {/* Zillow + Buywiser = Savings equation */}
+              {/* Zillow URL + Buywiser = Rebate equation */}
               <div className="flex items-center gap-3 mb-8 flex-wrap">
+                {/* Box 1: Zillow URL placeholder */}
                 <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3">
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "#006aff" }}>
-                    <span className="text-white font-black text-xs">Z</span>
+                  <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: "#006aff" }}>
+                    <span className="text-white font-black" style={{ fontSize: 10 }}>Z</span>
                   </div>
-                  <span className="font-black text-slate-800 text-sm">Zillow</span>
+                  <div className="leading-tight">
+                    <p className="font-black text-slate-800 text-xs">Zillow</p>
+                    <p className="font-mono text-blue-600 font-bold" style={{ fontSize: 10 }}>"url"</p>
+                  </div>
                 </div>
                 <span className="text-2xl font-black text-slate-400">+</span>
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-3">
+                {/* Box 2: Buywiser logo */}
+                <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3">
                   <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="Buywiser" className="h-5 w-auto brightness-0 invert" />
                 </div>
                 <span className="text-2xl font-black text-slate-400">=</span>
+                {/* Box 3: Rebate amount */}
                 <div className="flex items-center gap-2 rounded-2xl px-4 py-3" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "2px solid #c9a84c" }}>
-                  <DollarSign className="h-5 w-5 text-amber-400" />
-                  <span className="font-black text-white text-sm">Thousands Back</span>
+                  <DollarSign className="h-5 w-5 text-amber-400 flex-shrink-0" />
+                  <div className="leading-tight">
+                    <p className="font-black text-white text-xs">Up to $20,000</p>
+                    <p className="text-amber-300 font-semibold" style={{ fontSize: 10 }}>Homebuyer Rebate</p>
+                  </div>
                 </div>
               </div>
 
