@@ -621,6 +621,7 @@ function HeroWithPaste({ onVideoOpen }) {
           <span className="text-blue-600">·</span>
           <a href="#how" className="hover:text-amber-400 transition font-medium">See the steps</a>
         </div>
+        <p className="text-blue-400/70 text-xs mt-3">* Coupon valid unless property previously viewed with a Realtor.</p>
       </div>
     </section>
   );
