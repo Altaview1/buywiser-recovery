@@ -98,7 +98,7 @@ function CASealGold({ size = 88 }) {
       {/* Arc text: STATE OF CALIFORNIA (top) */}
       <path id="topArcG" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,1 ${r + midR - 4},${r}`} fill="none" />
       <text style={{ fontSize: size * 0.1, fontFamily: "sans-serif", fontWeight: 900, letterSpacing: "0.05em" }} fill="#4a3508">
-        <textPath href="#topArcG" startOffset="50%" textAnchor="middle">STATE OF CALIFORNIA</textPath>
+        <textPath href="#topArcG" startOffset="50%" textAnchor="middle">FOR CALIFORNIA REBATES</textPath>
       </text>
       {/* Arc text: HOMEBUYERS COUPON (bottom) */}
       <path id="botArcG" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,0 ${r + midR - 4},${r}`} fill="none" />
@@ -137,7 +137,7 @@ function OfficialCoupon({ value, serial, compact = false }) {
         {/* Top black header band */}
         <div className="px-6 py-2.5 flex items-center justify-between" style={{ background: "#111" }}>
           <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-90" />
-          <p style={{ color: "#c9a84c", fontSize: 9, fontFamily: "sans-serif", letterSpacing: "0.18em" }} className="font-black uppercase">Official Certificate · State of California</p>
+          <p style={{ color: "#c9a84c", fontSize: 9, fontFamily: "sans-serif", letterSpacing: "0.18em" }} className="font-black uppercase">Official Certificate · for California Home Rebates</p>
         </div>
 
         {/* Inner border frame */}
