@@ -379,8 +379,14 @@ export default function BuywiserHome() {
 
             {/* Left: headline */}
             <div>
-              <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full mb-6 uppercase tracking-widest">
-                <Ticket className="h-3.5 w-3.5" /> California Homebuyers Coupon
+              <div className="flex flex-wrap gap-2 mb-6">
+                <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
+                  <Ticket className="h-3.5 w-3.5" /> California Homebuyers Coupon
+                </div>
+                <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
+                  Limited Program Funds — Reserve Your Place
+                </div>
               </div>
 
               {/* Listing URL + myrebate.ca = Rebate equation */}
