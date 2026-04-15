@@ -383,22 +383,41 @@ export default function BuywiserHome() {
                 <Ticket className="h-3.5 w-3.5" /> California Homebuyers Coupon
               </div>
 
-              {/* Zillow URL + Buywiser = Rebate equation */}
+              {/* Listing URL + myrebate.ca = Rebate equation */}
               <div className="flex items-center gap-3 mb-8 flex-wrap">
-                {/* Box 1: Zillow URL placeholder */}
-                <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-2xl px-4 py-3">
-                  <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0" style={{ background: "#006aff" }}>
-                    <span className="text-white font-black" style={{ fontSize: 10 }}>Z</span>
+                {/* Box 1: Listing URL with source badges */}
+                <div className="flex flex-col gap-1.5">
+                  {/* Source logos pointing in */}
+                  <div className="flex items-center gap-1 justify-end">
+                    {[
+                      { label: "Zillow", color: "#006aff" },
+                      { label: "Redfin", color: "#d7373f" },
+                      { label: "Realtor", color: "#c82021" },
+                    ].map((s) => (
+                      <div key={s.label} className="flex items-center gap-1">
+                        <div className="px-1.5 py-0.5 rounded text-white font-black leading-none" style={{ background: s.color, fontSize: 8 }}>{s.label}</div>
+                        <ArrowRight className="h-3 w-3 text-slate-400" />
+                      </div>
+                    ))}
                   </div>
-                  <div className="leading-tight">
-                    <p className="font-black text-slate-800 text-xs">Zillow</p>
-                    <p className="font-mono text-blue-600 font-bold" style={{ fontSize: 10 }}>"url"</p>
+                  {/* Listing URL box */}
+                  <div className="flex items-center gap-2 bg-blue-50 border-2 border-blue-300 rounded-2xl px-4 py-3">
+                    <div className="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-black" style={{ fontSize: 9 }}>URL</span>
+                    </div>
+                    <div className="leading-tight">
+                      <p className="font-black text-slate-800 text-xs">Listing URL</p>
+                      <p className="font-mono text-blue-500 font-bold" style={{ fontSize: 9 }}>any portal works</p>
+                    </div>
                   </div>
                 </div>
                 <span className="text-2xl font-black text-slate-400">+</span>
-                {/* Box 2: Buywiser logo */}
+                {/* Box 2: myrebate.ca */}
                 <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3">
-                  <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="Buywiser" className="h-5 w-auto brightness-0 invert" />
+                  <div className="leading-tight">
+                    <p className="font-black text-amber-400 text-xs tracking-tight">myrebate.ca</p>
+                    <p className="text-slate-400 font-semibold" style={{ fontSize: 9 }}>powered by Buywiser</p>
+                  </div>
                 </div>
                 <span className="text-2xl font-black text-slate-400">=</span>
                 {/* Box 3: Rebate amount */}
