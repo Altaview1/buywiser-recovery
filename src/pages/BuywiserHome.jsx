@@ -465,6 +465,167 @@ function LiveDashboard() {
   );
 }
 
+// ── Hero with inline URL paste ─────────────────────────────────────────────────
+function HeroWithPaste({ onVideoOpen }) {
+  const [url, setUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [property, setProperty] = useState(null);
+  const [error, setError] = useState("");
+  const [couponRevealed, setCouponRevealed] = useState(false);
+  const [couponSpinning, setCouponSpinning] = useState(false);
+  const [couponDisplay, setCouponDisplay] = useState("");
+  const spinRef = useRef(null);
+
+  const rebate = property?.price ? property.price * 0.01 : 0;
+  const isListing = url.includes("zillow.com") || url.includes("redfin.com") || url.includes("realtor.com") || url.includes("trulia.com") || url.includes("homes.com");
+
+  const handleFetch = async () => {
+    if (!url.trim() || !isListing) return;
+    setLoading(true); setError(""); setProperty(null); setCouponRevealed(false);
+    try {
+      const res = await base44.functions.invoke("fetchPropertyFromUrl", { url: url.trim() });
+      setProperty(res.data.property);
+    } catch (e) {
+      setError("Couldn't fetch that listing. Try pasting the full URL.");
+    }
+    setLoading(false);
+  };
+
+  const handleRevealCoupon = () => {
+    if (!rebate || couponSpinning) return;
+    setCouponSpinning(true); setCouponRevealed(false);
+    let ticks = 0;
+    const totalTicks = 26;
+    const getDelay = (t) => t < 10 ? 40 : t < 18 ? 75 : t < 23 ? 130 : 210;
+    const tick = () => {
+      ticks++;
+      if (ticks < totalTicks) {
+        setCouponDisplay(formatCurrency(Math.round(rebate * (0.4 + Math.random() * 1.2) / 100) * 100));
+        spinRef.current = setTimeout(tick, getDelay(ticks));
+      } else {
+        setCouponDisplay(formatCurrency(rebate)); setCouponSpinning(false); setCouponRevealed(true);
+      }
+    };
+    spinRef.current = setTimeout(tick, 40);
+  };
+
+  useEffect(() => () => clearTimeout(spinRef.current), []);
+
+  return (
+    <section className="pt-28 pb-20" style={{ background: "linear-gradient(160deg, #0f1f5c 0%, #1e3a8a 50%, #1d4ed8 100%)" }}>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+
+        <div className="inline-flex items-center gap-2 bg-amber-400/20 border border-amber-400/40 text-amber-300 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest mb-6">
+          <Ticket className="h-3.5 w-3.5" /> CA Homebuyers Coupon Program
+        </div>
+
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.05] tracking-tight mb-4">
+          Found a Home?<br />
+          <span className="text-amber-400">Get Your CA Coupon.</span>
+        </h1>
+        <p className="text-blue-200 text-lg mb-10 max-w-xl mx-auto">
+          Paste any listing URL — Zillow, Redfin, Realtor.com — and get your California Homebuyers Coupon instantly.
+        </p>
+
+        {/* Big paste box */}
+        <div className="bg-white rounded-3xl shadow-2xl p-4 md:p-6 mb-4">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Paste your listing URL below</p>
+          <div className="flex gap-2 mb-2">
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => { setUrl(e.target.value); setProperty(null); setCouponRevealed(false); setError(""); }}
+              onKeyDown={(e) => e.key === "Enter" && isListing && handleFetch()}
+              placeholder="https://www.zillow.com/homedetails/..."
+              className="flex-1 text-sm md:text-base border-2 border-slate-200 rounded-2xl px-4 py-4 focus:outline-none focus:border-amber-400 text-slate-700 min-w-0 transition"
+            />
+            <button
+              onClick={handleFetch}
+              disabled={!isListing || loading}
+              className="px-5 py-4 font-black rounded-2xl text-white text-sm transition disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
+              style={{ background: isListing && !loading ? "linear-gradient(135deg,#b45309,#d97706)" : "#e2e8f0", color: isListing && !loading ? "#fff" : "#94a3b8" }}
+            >
+              {loading
+                ? <span className="flex items-center gap-2"><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />Loading...</span>
+                : "⚡ Get Coupon"}
+            </button>
+          </div>
+          <p className="text-xs text-slate-400">Works with Zillow · Redfin · Realtor.com · Trulia · Homes.com</p>
+          {error && <p className="text-red-500 text-xs mt-2 font-medium">{error}</p>}
+          {!isListing && url.length > 10 && <p className="text-amber-500 text-xs mt-2">Please paste a Zillow, Redfin, or Realtor.com URL</p>}
+
+          {loading && (
+            <div className="mt-4 space-y-3 animate-pulse">
+              <div className="h-28 bg-slate-100 rounded-2xl" />
+              <div className="grid grid-cols-2 gap-3"><div className="h-16 bg-slate-100 rounded-xl" /><div className="h-16 bg-slate-100 rounded-xl" /></div>
+            </div>
+          )}
+
+          {property && !loading && (
+            <div className="mt-4 space-y-4">
+              <div className="rounded-2xl overflow-hidden border border-slate-200 text-left">
+                {property.image_url ? (
+                  <img src={property.image_url} alt="Property" className="w-full h-40 object-cover" onError={(e) => { e.target.style.display = "none"; }} />
+                ) : (
+                  <div className="w-full h-32 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center"><Home className="h-10 w-10 text-slate-300" /></div>
+                )}
+                <div className="p-3 bg-slate-50">
+                  <p className="font-bold text-slate-900 text-sm">{property.address}{property.city ? `, ${property.city}` : ""}{property.state ? `, ${property.state}` : ""}</p>
+                  <div className="flex gap-3 mt-1 flex-wrap">
+                    {property.beds && <span className="text-xs text-slate-500">{property.beds} bd</span>}
+                    {property.baths && <span className="text-xs text-slate-500">{property.baths} ba</span>}
+                    {property.sqft && <span className="text-xs text-slate-500">{Number(property.sqft).toLocaleString()} sqft</span>}
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-left">
+                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wide mb-1">List Price</p>
+                  <p className="text-slate-900 font-black text-lg">{property.price ? formatCurrency(property.price) : "—"}</p>
+                </div>
+                <div className="rounded-xl p-3 text-left transition-all duration-500" style={{
+                  background: couponRevealed ? "linear-gradient(135deg,#1e3a8a,#1d4ed8)" : "#f8fafc",
+                  border: couponRevealed ? "2px solid #f59e0b" : "2px solid #e2e8f0",
+                  boxShadow: couponRevealed ? "0 0 20px 4px rgba(245,158,11,0.3)" : "none",
+                }}>
+                  <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: couponRevealed ? "#fde68a" : "#94a3b8" }}>CA Coupon Value</p>
+                  <p className="font-black text-xl" style={{ color: couponSpinning ? "#fcd34d" : couponRevealed ? "#ffffff" : "#e2e8f0", fontVariantNumeric: "tabular-nums" }}>
+                    {couponSpinning || couponRevealed ? couponDisplay : "?????"}
+                  </p>
+                </div>
+              </div>
+              {!couponRevealed ? (
+                <button onClick={handleRevealCoupon} disabled={couponSpinning || !property.price}
+                  className="w-full py-4 text-base font-black rounded-2xl transition-all duration-200"
+                  style={{ background: "linear-gradient(135deg,#b45309,#d97706)", color: "#ffffff", boxShadow: "0 4px 24px rgba(180,83,9,0.45)" }}>
+                  {couponSpinning ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />Activating...</span> : "⚡ Activate My CA Coupon"}
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <OfficialCoupon value={formatCurrency(rebate)} serial={generateSerial()} compact />
+                  <a href={`mailto:hello@buywiser.com?subject=Buywiser CA Coupon&body=Property: ${property.address}%0APrice: ${formatCurrency(property.price)}%0ASavings: ${formatCurrency(rebate)}`}
+                    className="block w-full py-3.5 text-center font-black rounded-2xl text-sm text-white transition"
+                    style={{ background: "linear-gradient(135deg,#b45309,#d97706)", boxShadow: "0 4px 20px rgba(180,83,9,0.4)" }}>
+                    Start My BuyWiser Path →
+                  </a>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-center gap-4 text-blue-300 text-sm">
+          <button onClick={onVideoOpen} className="inline-flex items-center gap-2 hover:text-amber-400 transition font-medium">
+            <Play className="h-4 w-4 fill-current" /> Watch how it works
+          </button>
+          <span className="text-blue-600">·</span>
+          <a href="#how" className="hover:text-amber-400 transition font-medium">See the steps</a>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ── Main Page ──────────────────────────────────────────────────────────────────
 export default function BuywiserHome() {
   const [videoOpen, setVideoOpen] = useState(false);
@@ -491,121 +652,7 @@ export default function BuywiserHome() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="pt-28 pb-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-14 items-center">
-
-            {/* Left: headline */}
-            <div>
-              <div className="flex flex-wrap gap-2 mb-6">
-                <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                  <Ticket className="h-3.5 w-3.5" /> CA Homebuyers Coupon
-                </div>
-                <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 text-red-700 text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-widest">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
-                  Limited Program Funds — Reserve Your Place
-                </div>
-              </div>
-
-              {/* Listing URL + myrebate.ca = Rebate equation */}
-              <div className="flex items-center gap-3 mb-8 flex-wrap">
-                {/* Box 1: Listing URL with source badges */}
-                <div className="flex flex-col gap-1.5">
-                  {/* Source logos pointing in */}
-                  <div className="flex items-center gap-1 justify-end">
-                    {[
-                      { label: "Zillow", color: "#006aff" },
-                      { label: "Redfin", color: "#d7373f" },
-                      { label: "Realtor", color: "#c82021" },
-                    ].map((s) => (
-                      <div key={s.label} className="flex items-center gap-1">
-                        <div className="px-1.5 py-0.5 rounded text-white font-black leading-none" style={{ background: s.color, fontSize: 8 }}>{s.label}</div>
-                        <ArrowRight className="h-3 w-3 text-slate-400" />
-                      </div>
-                    ))}
-                  </div>
-                  {/* Listing URL box */}
-                  <div className="flex items-center gap-2 bg-blue-50 border-2 border-blue-300 rounded-2xl px-4 py-3">
-                    <div className="w-6 h-6 rounded-md bg-blue-600 flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-black" style={{ fontSize: 9 }}>URL</span>
-                    </div>
-                    <div className="leading-tight">
-                      <p className="font-black text-slate-800 text-xs">Listing URL</p>
-                      <p className="font-mono text-blue-500 font-bold" style={{ fontSize: 9 }}>any portal works</p>
-                    </div>
-                  </div>
-                </div>
-                <span className="text-2xl font-black text-slate-400">+</span>
-                {/* Box 2: myrebate.ca */}
-                <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-2xl px-4 py-3">
-                  <div className="leading-tight">
-                    <p className="font-black text-amber-400 text-xs tracking-tight">myrebate.ca</p>
-                    <p className="text-slate-400 font-semibold" style={{ fontSize: 9 }}>powered by Buywiser</p>
-                  </div>
-                </div>
-                <span className="text-2xl font-black text-slate-400">=</span>
-                {/* Box 3: Rebate amount */}
-                <div className="flex items-center gap-2 rounded-2xl px-4 py-3" style={{ background: "linear-gradient(135deg,#1e3a8a,#1d4ed8)", border: "2px solid #c9a84c" }}>
-                  <DollarSign className="h-5 w-5 text-amber-400 flex-shrink-0" />
-                  <div className="leading-tight">
-                    <p className="font-black text-white text-xs">Up to $20,000</p>
-                    <p className="text-amber-300 font-semibold" style={{ fontSize: 10 }}>Homebuyer Rebate</p>
-                  </div>
-                </div>
-              </div>
-
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 leading-[1.05] tracking-tight mb-5">
-                Tap Into The<br />
-                <span style={{ color: "#1e3a8a" }}>California Homebuyers</span><br />
-                CA Coupon & Save Thousands.
-              </h1>
-              <p className="text-lg text-slate-500 leading-relaxed mb-8 max-w-lg">
-                Locate a home on any search site, paste the URL, and see if it qualifies for a <span className="font-black text-slate-800">CA COUPON</span>.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <a href="#how" className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 text-white font-bold rounded-2xl hover:bg-amber-400 transition text-base shadow-lg">
-                  See How It Works <ArrowRight className="h-4 w-4" />
-                </a>
-                <button onClick={() => setVideoOpen(true)} className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-200 text-slate-700 font-bold rounded-2xl hover:border-slate-300 hover:bg-slate-50 transition text-base">
-                  <Play className="h-4 w-4 fill-slate-600" /> Watch Video
-                </button>
-              </div>
-
-              {/* Speaker nudge */}
-              <button onClick={() => setVideoOpen(true)} className="mt-5 inline-flex items-center gap-2 text-slate-400 hover:text-amber-600 transition group">
-                <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center group-hover:bg-amber-100 transition">
-                  <Volume2 className="h-4 w-4 text-amber-500" />
-                </div>
-                <span className="text-sm font-medium">Hear how the Buywiser CA Coupon works</span>
-              </button>
-            </div>
-
-            {/* Right: Video thumbnail */}
-            <div className="relative hidden lg:block">
-              <div className="relative w-full group cursor-pointer" onClick={() => setVideoOpen(true)}>
-                <img
-                  src="https://dynamic.heygen.ai/aws_pacific/avatar_tmp/0f383ecff85b43989c86627a5acc78fb/vHxkOtNVhD4T93gOtDdfsGIgVKf5JxaF5/a9339c11582d4bacb2274163f199d778.jpeg"
-                  alt="Watch the Buywiser video"
-                  className="w-full h-96 object-cover rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-[1.01]"
-                  onError={(e) => { e.target.src = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80"; }}
-                />
-                <div className="absolute inset-0 rounded-3xl bg-black/25 group-hover:bg-black/35 transition-colors duration-300" style={{ border: "2px solid rgba(201,168,76,0.5)" }} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-2xl transition-transform duration-200 group-hover:scale-110"
-                      style={{ background: "linear-gradient(135deg,#b45309,#d97706)", border: "3px solid #c9a84c", boxShadow: "0 0 40px rgba(201,168,76,0.5)" }}>
-                      <Play className="h-8 w-8 text-white fill-white ml-1" />
-                    </div>
-                    <span className="text-white font-bold text-sm px-4 py-1.5 rounded-full" style={{ background: "rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.2)" }}>
-                      Watch How It Works
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HeroWithPaste onVideoOpen={() => setVideoOpen(true)} />
 
       {/* ── HOW IT WORKS ── */}
       <section id="how" className="py-20 bg-slate-50">
@@ -742,22 +789,7 @@ export default function BuywiserHome() {
       {/* ── CALCULATOR ── */}
       <CouponCalculator />
 
-      {/* ── DASHBOARD ── */}
-      <LiveDashboard />
 
-      {/* ── TESTIMONIAL ── */}
-      <section id="testimonials" className="py-20 bg-slate-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
-          <div className="flex gap-1 justify-center mb-6">
-            {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-amber-400 text-amber-400" />)}
-          </div>
-          <p className="text-2xl md:text-3xl font-bold text-slate-900 leading-relaxed mb-6">
-            "My husband Allen and I saved a minimum of $100,000 between the rebates and the credits we received. Thank you, Buywiser."
-          </p>
-          <p className="font-black text-slate-900">Ami and Allen K.</p>
-          <p className="text-amber-600 text-sm font-medium">Thousand Oaks, CA</p>
-        </div>
-      </section>
 
       {/* ── TESTIMONIALS GRID ── */}
       <section className="py-20 bg-gradient-to-br from-slate-900 to-slate-950 text-white">
