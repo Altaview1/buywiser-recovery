@@ -494,7 +494,7 @@ export default function BuywiserHome() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-xs font-bold tracking-widest text-amber-600 uppercase mb-3">Simple as 1, 2, 3</p>
-            <h2 className="text-3xl md:text-4xl font-black text-slate-900">Get Your CA Coupon in 3 Steps</h2>
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900">Reserve Your CA Coupon in 3 Steps</h2>
           </div>
 
           {/* Clean 3-step process graphic */}
@@ -506,7 +506,7 @@ export default function BuywiserHome() {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-white font-black text-lg flex-shrink-0" style={{ background: "#006aff" }}>1</div>
                   <div>
-                    <p className="font-black text-slate-900 text-sm">Find on Zillow</p>
+                    <p className="font-black text-slate-900 text-sm">Enter Listing URL</p>
                     <p className="text-slate-400 text-xs">Any listing, anywhere in CA</p>
                   </div>
                 </div>
