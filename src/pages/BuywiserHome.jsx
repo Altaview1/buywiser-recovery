@@ -165,7 +165,7 @@ function OfficialCoupon({ value, serial, compact = false }) {
                 <div className="flex-shrink-0"><CASealGold size={sealSize} /></div>
                 <div className="flex-1 text-center">
                   <p style={{ fontSize: 8, letterSpacing: "0.2em", color: GOV.textLt, fontFamily: "sans-serif" }} className="uppercase font-bold mb-1">Estimated Savings Value</p>
-                  <p style={{ fontSize: compact ? "clamp(1.2rem,4vw,1.8rem)" : "clamp(1.6rem,4vw,2.4rem)", color: GOV.navy, fontFamily: "'Georgia', serif", wordBreak: "break-all" }} className="font-black leading-none">{value || "$10,000"}</p>
+                  <p style={{ fontSize: compact ? "clamp(1rem,3vw,1.5rem)" : "clamp(1.4rem,3.5vw,2rem)", color: GOV.navy, fontFamily: "'Georgia', serif", whiteSpace: "nowrap" }} className="font-black leading-none">{value || "$10,000"}</p>
                   <p style={{ fontSize: 8, color: GOV.textLt, fontFamily: "sans-serif" }} className="mt-1">Approx. 1% of Purchase Price</p>
                 </div>
               </div>
