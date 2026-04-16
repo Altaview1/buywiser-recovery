@@ -68,105 +68,120 @@ function VideoModal({ onClose }) {
   );
 }
 
-// ── Presidential-style Seal SVG ───────────────────────────────────────────────
+// ── American Eagle Seal ────────────────────────────────────────────────────────
 function CASealGold({ size = 88 }) {
-  const cx = size / 2;
-  const cy = size / 2;
-  const R = size / 2 - 2;
-
-  // Generate starburst rays (like presidential seal)
-  const rays = Array.from({ length: 48 }).map((_, i) => {
-    const angle = (i * 360) / 48 - 90;
-    const rad = (angle * Math.PI) / 180;
-    const isLong = i % 2 === 0;
-    const r1 = R * 0.72;
-    const r2 = isLong ? R * 0.94 : R * 0.84;
-    return { x1: cx + r1 * Math.cos(rad), y1: cy + r1 * Math.sin(rad), x2: cx + r2 * Math.cos(rad), y2: cy + r2 * Math.sin(rad), isLong };
-  });
-
-  // Laurel wreath points
-  const laurelCount = 20;
-  const laurelLeaves = Array.from({ length: laurelCount }).map((_, i) => {
-    const angle = ((i * 180) / laurelCount - 180) * (Math.PI / 180);
-    const rL = R * 0.62;
-    const lx = cx + rL * Math.cos(angle);
-    const ly = cy + rL * Math.sin(angle);
-    return { lx, ly, angle: (angle * 180) / Math.PI };
-  });
-
-  const uid = "seal_" + size;
-
+  const s = size;
+  const uid = `eagle_${size}`;
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block", filter: "drop-shadow(0 2px 10px rgba(160,110,10,0.55))" }}>
+    <svg width={s} height={s} viewBox="0 0 100 100" style={{ display: "block", filter: "drop-shadow(0 2px 10px rgba(140,90,5,0.6))" }}>
       <defs>
-        <radialGradient id={`bg_${uid}`} cx="50%" cy="38%" r="65%">
-          <stop offset="0%" stopColor="#faeea0" />
-          <stop offset="45%" stopColor="#d4a83a" />
-          <stop offset="100%" stopColor="#8a6010" />
+        <radialGradient id={`eagleBg_${uid}`} cx="50%" cy="40%" r="60%">
+          <stop offset="0%" stopColor="#fdf0b0" />
+          <stop offset="55%" stopColor="#d4a030" />
+          <stop offset="100%" stopColor="#8a5c08" />
         </radialGradient>
-        <radialGradient id={`inner_${uid}`} cx="50%" cy="38%" r="65%">
-          <stop offset="0%" stopColor="#fff8d0" />
-          <stop offset="50%" stopColor="#e8c050" />
-          <stop offset="100%" stopColor="#b08020" />
-        </radialGradient>
-        <linearGradient id={`star_${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#fff3a0" />
-          <stop offset="100%" stopColor="#c9940c" />
+        <linearGradient id={`eagleBody_${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#c8920a" />
+          <stop offset="100%" stopColor="#7a5205" />
         </linearGradient>
       </defs>
 
-      {/* Outer rim */}
-      <circle cx={cx} cy={cy} r={R} fill={`url(#bg_${uid})`} />
-      <circle cx={cx} cy={cy} r={R} fill="none" stroke="#7a5808" strokeWidth="1.2" />
-      <circle cx={cx} cy={cy} r={R * 0.97} fill="none" stroke="#f5d060" strokeWidth="0.6" opacity="0.7" />
+      {/* Outer circle */}
+      <circle cx="50" cy="50" r="48" fill={`url(#eagleBg_${uid})`} />
+      <circle cx="50" cy="50" r="48" fill="none" stroke="#7a5205" strokeWidth="1.5" />
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#f0c840" strokeWidth="0.7" opacity="0.8" />
+      <circle cx="50" cy="50" r="43" fill="none" stroke="#7a5205" strokeWidth="0.4" opacity="0.5" />
 
-      {/* Starburst rays */}
-      {rays.map((ray, i) => (
-        <line key={i} x1={ray.x1} y1={ray.y1} x2={ray.x2} y2={ray.y2}
-          stroke={ray.isLong ? "#7a5808" : "#a07820"} strokeWidth={ray.isLong ? "1.4" : "0.8"} opacity="0.9" />
-      ))}
+      {/* Arc text TOP */}
+      <path id={`ta_${uid}`} d="M 10,50 A 40,40 0 0,1 90,50" fill="none" />
+      <text fill="#3a2200" style={{ fontSize: 7, fontFamily: "Georgia, serif", fontWeight: 900, letterSpacing: "0.12em" }}>
+        <textPath href={`#ta_${uid}`} startOffset="50%" textAnchor="middle">BUYWISER · REBATE PROGRAM</textPath>
+      </text>
 
-      {/* Inner circle */}
-      <circle cx={cx} cy={cy} r={R * 0.70} fill={`url(#inner_${uid})`} stroke="#8a6010" strokeWidth="1" />
-      <circle cx={cx} cy={cy} r={R * 0.68} fill="none" stroke="#f5d060" strokeWidth="0.5" opacity="0.6" />
+      {/* Arc text BOTTOM */}
+      <path id={`ba_${uid}`} d="M 12,53 A 38,38 0 0,0 88,53" fill="none" />
+      <text fill="#3a2200" style={{ fontSize: 6.5, fontFamily: "Georgia, serif", fontWeight: 800, letterSpacing: "0.08em" }}>
+        <textPath href={`#ba_${uid}`} startOffset="50%" textAnchor="middle">CALIFORNIA · EST. 1991</textPath>
+      </text>
 
-      {/* Laurel wreath (bottom arc) */}
-      {laurelLeaves.map((leaf, i) => (
-        <ellipse key={i} cx={leaf.lx} cy={leaf.ly} rx={R * 0.055} ry={R * 0.028}
-          fill="#8a6010" opacity="0.55"
-          transform={`rotate(${leaf.angle + 90}, ${leaf.lx}, ${leaf.ly})`} />
-      ))}
+      {/* === EAGLE === */}
+      {/* Body */}
+      <ellipse cx="50" cy="56" rx="12" ry="14" fill={`url(#eagleBody_${uid})`} />
 
-      {/* Center emblem: 5-pointed star */}
-      {(() => {
-        const starR1 = R * 0.22;
-        const starR2 = R * 0.10;
-        const pts = Array.from({ length: 10 }).map((_, i) => {
-          const a = (i * 36 - 90) * (Math.PI / 180);
-          const r = i % 2 === 0 ? starR1 : starR2;
-          return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
+      {/* Breast shield (red/white stripes implied by lines) */}
+      <path d="M 44,50 Q 50,47 56,50 L 54,64 Q 50,67 46,64 Z" fill="#8a5205" opacity="0.4" />
+      <line x1="46" y1="52" x2="54" y2="52" stroke="#f0c840" strokeWidth="0.5" opacity="0.6" />
+      <line x1="45.5" y1="55" x2="54.5" y2="55" stroke="#f0c840" strokeWidth="0.5" opacity="0.6" />
+      <line x1="45.5" y1="58" x2="54.5" y2="58" stroke="#f0c840" strokeWidth="0.5" opacity="0.6" />
+      <line x1="46" y1="61" x2="54" y2="61" stroke="#f0c840" strokeWidth="0.5" opacity="0.6" />
+
+      {/* Left wing */}
+      <path d="M 44,54 Q 30,46 18,52 Q 24,58 34,58 Q 38,60 42,62 Z" fill={`url(#eagleBody_${uid})`} />
+      <path d="M 42,54 Q 29,44 16,48 Q 22,54 34,56 Z" fill="#c8920a" opacity="0.7" />
+      {/* Wing feather lines left */}
+      <line x1="42" y1="54" x2="20" y2="50" stroke="#7a5205" strokeWidth="0.5" opacity="0.6" />
+      <line x1="42" y1="57" x2="22" y2="54" stroke="#7a5205" strokeWidth="0.5" opacity="0.5" />
+      <line x1="42" y1="60" x2="26" y2="58" stroke="#7a5205" strokeWidth="0.5" opacity="0.4" />
+
+      {/* Right wing */}
+      <path d="M 56,54 Q 70,46 82,52 Q 76,58 66,58 Q 62,60 58,62 Z" fill={`url(#eagleBody_${uid})`} />
+      <path d="M 58,54 Q 71,44 84,48 Q 78,54 66,56 Z" fill="#c8920a" opacity="0.7" />
+      {/* Wing feather lines right */}
+      <line x1="58" y1="54" x2="80" y2="50" stroke="#7a5205" strokeWidth="0.5" opacity="0.6" />
+      <line x1="58" y1="57" x2="78" y2="54" stroke="#7a5205" strokeWidth="0.5" opacity="0.5" />
+      <line x1="58" y1="60" x2="74" y2="58" stroke="#7a5205" strokeWidth="0.5" opacity="0.4" />
+
+      {/* Tail feathers */}
+      <path d="M 45,68 Q 50,72 55,68 L 53,74 Q 50,76 47,74 Z" fill={`url(#eagleBody_${uid})`} />
+      <line x1="48" y1="68" x2="47" y2="74" stroke="#7a5205" strokeWidth="0.5" opacity="0.5" />
+      <line x1="52" y1="68" x2="53" y2="74" stroke="#7a5205" strokeWidth="0.5" opacity="0.5" />
+
+      {/* Neck */}
+      <ellipse cx="50" cy="43" rx="6" ry="5" fill="#e8b030" />
+
+      {/* Head (white head of bald eagle) */}
+      <circle cx="50" cy="36" r="8" fill="#f5e070" />
+      <circle cx="50" cy="36" r="8" fill="none" stroke="#c8920a" strokeWidth="0.5" />
+
+      {/* Eye */}
+      <circle cx="53" cy="34" r="1.8" fill="#3a2200" />
+      <circle cx="53.5" cy="33.5" r="0.5" fill="#f5e070" opacity="0.8" />
+
+      {/* Beak */}
+      <path d="M 55,36 L 61,38 L 55,40 Z" fill="#c8920a" />
+      <line x1="55" y1="38" x2="60" y2="38" stroke="#7a5205" strokeWidth="0.5" />
+
+      {/* Stars arc above head */}
+      {[0, 1, 2, 3, 4, 5, 6].map((i) => {
+        const a = ((i * 30) - 90) * Math.PI / 180;
+        const sr = 26;
+        const sx = 50 + sr * Math.cos(a);
+        const sy = 27 + sr * Math.sin(a);
+        const sp = Array.from({ length: 10 }).map((_, j) => {
+          const sa = (j * 36 - 90) * Math.PI / 180;
+          const r = j % 2 === 0 ? 2.2 : 1;
+          return `${sx + r * Math.cos(sa)},${sy + r * Math.sin(sa)}`;
         }).join(" ");
-        return <polygon points={pts} fill={`url(#star_${uid})`} stroke="#7a5808" strokeWidth="0.8" />;
-      })()}
-
-      {/* Small dots between rays at mid-ring */}
-      {Array.from({ length: 12 }).map((_, i) => {
-        const a = (i * 30 - 90) * (Math.PI / 180);
-        const dr = R * 0.81;
-        return <circle key={i} cx={cx + dr * Math.cos(a)} cy={cy + dr * Math.sin(a)} r={R * 0.018} fill="#7a5808" opacity="0.8" />;
+        return <polygon key={i} points={sp} fill="#f0c840" stroke="#8a5c08" strokeWidth="0.3" />;
       })}
 
-      {/* Arc text — TOP */}
-      <path id={`topArc_${uid}`} d={`M ${cx - R * 0.56},${cy} A ${R * 0.56},${R * 0.56} 0 0,1 ${cx + R * 0.56},${cy}`} fill="none" />
-      <text style={{ fontSize: size * 0.092, fontFamily: "'Georgia', serif", fontWeight: 900, letterSpacing: "0.06em" }} fill="#4a3206">
-        <textPath href={`#topArc_${uid}`} startOffset="50%" textAnchor="middle">BUYWISER · REBATES</textPath>
-      </text>
+      {/* Olive branch (left talon) */}
+      <path d="M 44,68 Q 38,72 34,70" stroke="#7a8a30" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <ellipse cx="36" cy="69" rx="2" ry="1.2" fill="#8a9a30" transform="rotate(-20,36,69)" />
+      <ellipse cx="39" cy="71" rx="2" ry="1.2" fill="#8a9a30" transform="rotate(-10,39,71)" />
+      <ellipse cx="42" cy="70" rx="2" ry="1.2" fill="#8a9a30" transform="rotate(10,42,70)" />
 
-      {/* Arc text — BOTTOM */}
-      <path id={`botArc_${uid}`} d={`M ${cx - R * 0.56},${cy} A ${R * 0.56},${R * 0.56} 0 0,0 ${cx + R * 0.56},${cy}`} fill="none" />
-      <text style={{ fontSize: size * 0.085, fontFamily: "'Georgia', serif", fontWeight: 800, letterSpacing: "0.04em" }} fill="#4a3206">
-        <textPath href={`#botArc_${uid}`} startOffset="50%" textAnchor="middle">CALIFORNIA · EST. 1991</textPath>
-      </text>
+      {/* Arrows (right talon) */}
+      <line x1="56" y1="68" x2="64" y2="74" stroke="#8a5205" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="58" y1="68" x2="66" y2="74" stroke="#8a5205" strokeWidth="1.2" strokeLinecap="round" />
+      <line x1="60" y1="67" x2="67" y2="73" stroke="#8a5205" strokeWidth="1.2" strokeLinecap="round" />
+      <polygon points="64,74 62,72 66,72" fill="#8a5205" />
+      <polygon points="66,74 64,72 68,72" fill="#8a5205" />
+      <polygon points="67,73 65,71 69,71" fill="#8a5205" />
+
+      {/* Ribbon banner */}
+      <path d="M 34,78 Q 50,82 66,78 Q 50,86 34,78 Z" fill="#c8920a" opacity="0.5" />
+      <text x="50" y="83" textAnchor="middle" fill="#3a2200" style={{ fontSize: 4.5, fontFamily: "Georgia, serif", fontWeight: 900, letterSpacing: "0.15em" }}>E PLURIBUS UNUM</text>
     </svg>
   );
 }
