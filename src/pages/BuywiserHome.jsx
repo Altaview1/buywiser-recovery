@@ -96,13 +96,12 @@ function CASealGold({ size = 88 }) {
         pointerEvents: "none",
       }} />
       <img
-        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Great_Seal_of_the_United_States_%28obverse%29.svg/240px-Great_Seal_of_the_United_States_%28obverse%29.svg.png"
+        src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/06dac0242_generated_image.png"
         alt="Official Seal"
         style={{
-          width: size * 0.82,
-          height: size * 0.82,
+          width: size * 0.9,
+          height: size * 0.9,
           objectFit: "contain",
-          filter: "sepia(1) saturate(2.5) hue-rotate(5deg) brightness(0.85)",
         }}
       />
     </div>
