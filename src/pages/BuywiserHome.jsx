@@ -96,11 +96,11 @@ function CASealGold({ size = 88 }) {
         pointerEvents: "none",
       }} />
       <img
-        src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/06dac0242_generated_image.png"
-        alt="Official Seal"
+        src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/591a15261_generated_image.png"
+        alt="California State Seal"
         style={{
-          width: size * 0.9,
-          height: size * 0.9,
+          width: size * 0.92,
+          height: size * 0.92,
           objectFit: "contain",
         }}
       />
