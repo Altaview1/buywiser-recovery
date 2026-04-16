@@ -68,61 +68,105 @@ function VideoModal({ onClose }) {
   );
 }
 
-// ── CA State Seal SVG ──────────────────────────────────────────────────────────
+// ── Presidential-style Seal SVG ───────────────────────────────────────────────
 function CASealGold({ size = 88 }) {
-  const r = size / 2;
-  const outerR = r - 2;
-  const midR = r - 8;
-  const innerR = r - 14;
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size / 2 - 2;
+
+  // Generate starburst rays (like presidential seal)
+  const rays = Array.from({ length: 48 }).map((_, i) => {
+    const angle = (i * 360) / 48 - 90;
+    const rad = (angle * Math.PI) / 180;
+    const isLong = i % 2 === 0;
+    const r1 = R * 0.72;
+    const r2 = isLong ? R * 0.94 : R * 0.84;
+    return { x1: cx + r1 * Math.cos(rad), y1: cy + r1 * Math.sin(rad), x2: cx + r2 * Math.cos(rad), y2: cy + r2 * Math.sin(rad), isLong };
+  });
+
+  // Laurel wreath points
+  const laurelCount = 20;
+  const laurelLeaves = Array.from({ length: laurelCount }).map((_, i) => {
+    const angle = ((i * 180) / laurelCount - 180) * (Math.PI / 180);
+    const rL = R * 0.62;
+    const lx = cx + rL * Math.cos(angle);
+    const ly = cy + rL * Math.sin(angle);
+    return { lx, ly, angle: (angle * 180) / Math.PI };
+  });
+
+  const uid = "seal_" + size;
+
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block", filter: "drop-shadow(0 2px 8px rgba(180,130,20,0.5))" }}>
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block", filter: "drop-shadow(0 2px 10px rgba(160,110,10,0.55))" }}>
       <defs>
-        <radialGradient id="sealBg2" cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#f5d87a" />
-          <stop offset="60%" stopColor="#c9a84c" />
-          <stop offset="100%" stopColor="#a07830" />
+        <radialGradient id={`bg_${uid}`} cx="50%" cy="38%" r="65%">
+          <stop offset="0%" stopColor="#faeea0" />
+          <stop offset="45%" stopColor="#d4a83a" />
+          <stop offset="100%" stopColor="#8a6010" />
         </radialGradient>
-        <radialGradient id="bearFill2" cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#7a5a10" />
-          <stop offset="100%" stopColor="#4a3508" />
+        <radialGradient id={`inner_${uid}`} cx="50%" cy="38%" r="65%">
+          <stop offset="0%" stopColor="#fff8d0" />
+          <stop offset="50%" stopColor="#e8c050" />
+          <stop offset="100%" stopColor="#b08020" />
         </radialGradient>
+        <linearGradient id={`star_${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#fff3a0" />
+          <stop offset="100%" stopColor="#c9940c" />
+        </linearGradient>
       </defs>
-      <circle cx={r} cy={r} r={outerR} fill="url(#sealBg2)" stroke="#a07830" strokeWidth="1.5" />
-      {Array.from({ length: 36 }).map((_, i) => {
-        const angle = (i * 360) / 36 - 90;
-        const rad = (angle * Math.PI) / 180;
-        const x1 = r + (midR + 1) * Math.cos(rad);
-        const y1 = r + (midR + 1) * Math.sin(rad);
-        const x2 = r + (outerR - 2) * Math.cos(rad);
-        const y2 = r + (outerR - 2) * Math.sin(rad);
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#7a5a10" strokeWidth={i % 3 === 0 ? "1.5" : "0.7"} opacity="0.8" />;
+
+      {/* Outer rim */}
+      <circle cx={cx} cy={cy} r={R} fill={`url(#bg_${uid})`} />
+      <circle cx={cx} cy={cy} r={R} fill="none" stroke="#7a5808" strokeWidth="1.2" />
+      <circle cx={cx} cy={cy} r={R * 0.97} fill="none" stroke="#f5d060" strokeWidth="0.6" opacity="0.7" />
+
+      {/* Starburst rays */}
+      {rays.map((ray, i) => (
+        <line key={i} x1={ray.x1} y1={ray.y1} x2={ray.x2} y2={ray.y2}
+          stroke={ray.isLong ? "#7a5808" : "#a07820"} strokeWidth={ray.isLong ? "1.4" : "0.8"} opacity="0.9" />
+      ))}
+
+      {/* Inner circle */}
+      <circle cx={cx} cy={cy} r={R * 0.70} fill={`url(#inner_${uid})`} stroke="#8a6010" strokeWidth="1" />
+      <circle cx={cx} cy={cy} r={R * 0.68} fill="none" stroke="#f5d060" strokeWidth="0.5" opacity="0.6" />
+
+      {/* Laurel wreath (bottom arc) */}
+      {laurelLeaves.map((leaf, i) => (
+        <ellipse key={i} cx={leaf.lx} cy={leaf.ly} rx={R * 0.055} ry={R * 0.028}
+          fill="#8a6010" opacity="0.55"
+          transform={`rotate(${leaf.angle + 90}, ${leaf.lx}, ${leaf.ly})`} />
+      ))}
+
+      {/* Center emblem: 5-pointed star */}
+      {(() => {
+        const starR1 = R * 0.22;
+        const starR2 = R * 0.10;
+        const pts = Array.from({ length: 10 }).map((_, i) => {
+          const a = (i * 36 - 90) * (Math.PI / 180);
+          const r = i % 2 === 0 ? starR1 : starR2;
+          return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
+        }).join(" ");
+        return <polygon points={pts} fill={`url(#star_${uid})`} stroke="#7a5808" strokeWidth="0.8" />;
+      })()}
+
+      {/* Small dots between rays at mid-ring */}
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (i * 30 - 90) * (Math.PI / 180);
+        const dr = R * 0.81;
+        return <circle key={i} cx={cx + dr * Math.cos(a)} cy={cy + dr * Math.sin(a)} r={R * 0.018} fill="#7a5808" opacity="0.8" />;
       })}
-      <circle cx={r} cy={r} r={innerR} fill="#e8c050" stroke="#a07830" strokeWidth="1" />
-      <g transform={`translate(${r}, ${r + 2})`}>
-        <ellipse cx="0" cy="7" rx="9" ry="7" fill="url(#bearFill2)" />
-        <circle cx="0" cy="-1" r="6" fill="url(#bearFill2)" />
-        <circle cx="-4" cy="-6" r="2.2" fill="url(#bearFill2)" />
-        <circle cx="4" cy="-6" r="2.2" fill="url(#bearFill2)" />
-        <rect x="-7" y="12" width="3.5" height="5" rx="1.5" fill="url(#bearFill2)" />
-        <rect x="-2" y="13" width="3.5" height="5" rx="1.5" fill="url(#bearFill2)" />
-        <rect x="3" y="13" width="3.5" height="5" rx="1.5" fill="url(#bearFill2)" />
-        <rect x="8" y="12" width="3.5" height="5" rx="1.5" fill="url(#bearFill2)" />
-        <ellipse cx="0" cy="1" rx="2.8" ry="2" fill="#5a3f08" />
-        <circle cx="-2.2" cy="-2.5" r="0.9" fill="#1a0f00" />
-        <circle cx="2.2" cy="-2.5" r="0.9" fill="#1a0f00" />
-      </g>
-      <path id="topArcSeal" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,1 ${r + midR - 4},${r}`} fill="none" />
-      <text style={{ fontSize: size * 0.1, fontFamily: "sans-serif", fontWeight: 900, letterSpacing: "0.05em" }} fill="#4a3508">
-        <textPath href="#topArcSeal" startOffset="50%" textAnchor="middle">FOR CALIFORNIA REBATES</textPath>
+
+      {/* Arc text — TOP */}
+      <path id={`topArc_${uid}`} d={`M ${cx - R * 0.56},${cy} A ${R * 0.56},${R * 0.56} 0 0,1 ${cx + R * 0.56},${cy}`} fill="none" />
+      <text style={{ fontSize: size * 0.092, fontFamily: "'Georgia', serif", fontWeight: 900, letterSpacing: "0.06em" }} fill="#4a3206">
+        <textPath href={`#topArc_${uid}`} startOffset="50%" textAnchor="middle">BUYWISER · REBATES</textPath>
       </text>
-      <path id="botArcSeal" d={`M ${r - midR + 4},${r} A ${midR - 4},${midR - 4} 0 0,0 ${r + midR - 4},${r}`} fill="none" />
-      <text style={{ fontSize: size * 0.088, fontFamily: "sans-serif", fontWeight: 800, letterSpacing: "0.04em" }} fill="#4a3508">
-        <textPath href="#botArcSeal" startOffset="50%" textAnchor="middle">HOMEBUYERS COUPON</textPath>
+
+      {/* Arc text — BOTTOM */}
+      <path id={`botArc_${uid}`} d={`M ${cx - R * 0.56},${cy} A ${R * 0.56},${R * 0.56} 0 0,0 ${cx + R * 0.56},${cy}`} fill="none" />
+      <text style={{ fontSize: size * 0.085, fontFamily: "'Georgia', serif", fontWeight: 800, letterSpacing: "0.04em" }} fill="#4a3206">
+        <textPath href={`#botArc_${uid}`} startOffset="50%" textAnchor="middle">CALIFORNIA · EST. 1991</textPath>
       </text>
-      {[0, 60, 120, 180, 240, 300].map((deg) => {
-        const rad = (deg * Math.PI) / 180;
-        return <circle key={deg} cx={r + (midR - 3) * Math.cos(rad)} cy={r + (midR - 3) * Math.sin(rad)} r="1.2" fill="#7a5a10" opacity="0.7" />;
-      })}
     </svg>
   );
 }
