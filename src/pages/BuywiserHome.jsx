@@ -112,7 +112,7 @@ function LandingView({ onResult }) {
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1 leading-tight tracking-tight">
             Listed Property Rebate Finder
           </h1>
-          <p className="text-lg font-semibold text-blue-700 mb-3 tracking-wide">CALIFORNIA</p>
+          <p className="text-lg font-semibold text-blue-700 mb-3 tracking-wide text-center">CALIFORNIA</p>
           <p className="text-slate-500 text-base mb-10">
             Paste the listing URL and find out if this home has a rebate waiting.
           </p>
