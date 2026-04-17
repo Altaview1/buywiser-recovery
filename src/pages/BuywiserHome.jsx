@@ -182,7 +182,7 @@ function LandingView({ onResult }) {
                 </div>
                 <div className="mt-2 text-center">
                   <p className="text-sm font-semibold text-slate-800">Bennett Liss</p>
-                  <p className="text-xs text-slate-500">CEO / Founder — BuyWiser</p>
+                  <p className="text-xs text-slate-500">CEO / Founder — BuyWiser &amp; MyRebate.House</p>
                 </div>
               </div>
 
