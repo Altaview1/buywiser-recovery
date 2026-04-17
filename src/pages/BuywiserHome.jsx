@@ -159,14 +159,7 @@ function LandingView({ onResult }) {
             </button>
           </form>
 
-          {/* Note + trust */}
-          <p className="text-xs text-slate-400 mt-4 text-center">
-            Rebates must be reserved before touring the property.
-          </p>
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-400">
-            <Lock className="h-3 w-3" />
-            <span>Powered by BuyWiser. Private rebate lookup.</span>
-          </div>
+
 
           {/* Testimonials */}
           <Testimonials />
