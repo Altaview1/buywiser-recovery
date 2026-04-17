@@ -109,9 +109,10 @@ function LandingView({ onResult }) {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-xl">
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight tracking-tight">
-            Official California Property<br className="hidden sm:block" /> Rebate Finder
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1 leading-tight tracking-tight">
+            Listed Property Rebate Finder
           </h1>
+          <p className="text-lg font-semibold text-blue-700 mb-3 tracking-wide">CALIFORNIA</p>
           <p className="text-slate-500 text-base mb-10">
             Paste the listing URL and find out if this home has a rebate waiting.
           </p>
@@ -164,8 +165,11 @@ function LandingView({ onResult }) {
           </p>
           <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-400">
             <Lock className="h-3 w-3" />
-            <span>Powered by BuyWiser. Private rebate lookup, not affiliated with the State of California.</span>
+            <span>Powered by BuyWiser. Private rebate lookup.</span>
           </div>
+
+          {/* Testimonials */}
+          <Testimonials />
 
           {/* Video */}
           <div className="mt-10">
@@ -182,8 +186,6 @@ function LandingView({ onResult }) {
             </div>
           </div>
 
-          {/* Testimonials */}
-          <Testimonials />
         </div>
       </main>
 
