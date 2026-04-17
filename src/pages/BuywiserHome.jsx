@@ -109,10 +109,10 @@ function LandingView({ onResult }) {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-xl">
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1 leading-tight tracking-tight text-center">
-            MYREBATE.HOUSE
+          <p className="text-lg font-semibold text-blue-700 mb-1 tracking-wide text-center">CALIFORNIA</p>
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight tracking-tight text-center">
+            Property Rebate Finder
           </h1>
-          <p className="text-lg font-semibold text-blue-700 mb-3 tracking-wide text-center">CALIFORNIA</p>
           <p className="text-slate-500 text-base mb-10">
             Paste the listing URL and find out if this home has a rebate waiting.
           </p>
