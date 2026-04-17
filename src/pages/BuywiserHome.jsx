@@ -109,7 +109,7 @@ function LandingView({ onResult }) {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-xl">
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-1 leading-tight tracking-tight text-center">
             Listed Property Rebate Finder
           </h1>
           <p className="text-lg font-semibold text-blue-700 mb-3 tracking-wide text-center">CALIFORNIA</p>
