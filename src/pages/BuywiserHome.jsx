@@ -169,15 +169,21 @@ function LandingView({ onResult }) {
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
             <div className="flex flex-col lg:flex-row gap-4 items-stretch">
               {/* Video */}
-              <div className="lg:w-1/2 rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-                <iframe
-                  src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
-                  title="How the Rebate Finder Works"
-                  frameBorder="0"
-                  allow="encrypted-media; fullscreen;"
-                  allowFullScreen
-                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-                />
+              <div className="lg:w-1/2 flex flex-col">
+                <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm flex-1" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+                  <iframe
+                    src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
+                    title="How the Rebate Finder Works"
+                    frameBorder="0"
+                    allow="encrypted-media; fullscreen;"
+                    allowFullScreen
+                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                  />
+                </div>
+                <div className="mt-2 text-center">
+                  <p className="text-sm font-semibold text-slate-800">Bennett Liss</p>
+                  <p className="text-xs text-slate-500">CEO / Founder — BuyWiser</p>
+                </div>
               </div>
 
               {/* Step-by-step guide */}
