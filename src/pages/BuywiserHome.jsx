@@ -1,7 +1,39 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, Home, Lock, AlertCircle } from "lucide-react";
+import { CheckCircle, ArrowRight, Lock, AlertCircle, Quote } from "lucide-react";
 import AppointmentScheduler from "../components/AppointmentScheduler";
+
+// ── Testimonials ───────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  { quote: "We added our searched property information in the rebate finder and saved $12,000 when we purchased that home. Best thing we ever did.", name: "Hal & Marjie", location: "Oxnard, CA" },
+  { quote: "We reserved rebates on 7 houses and ended up with a $13,000 savings.", name: "Chris K.", location: "Studio City, CA" },
+  { quote: "It's the easiest money we ever made.", name: "Dor S.", location: "Santa Monica, CA" },
+];
+
+function Testimonials() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const t = setInterval(() => setIndex(i => (i + 1) % TESTIMONIALS.length), 4500);
+    return () => clearInterval(t);
+  }, []);
+
+  const { quote, name, location } = TESTIMONIALS[index];
+
+  return (
+    <div className="mt-10 bg-slate-50 border border-slate-200 rounded-xl p-6 relative min-h-[120px]">
+      <Quote className="h-5 w-5 text-slate-300 mb-2" />
+      <p className="text-slate-700 text-sm leading-relaxed italic mb-3">"{quote}"</p>
+      <p className="text-xs font-semibold text-slate-500">{name} &mdash; {location}</p>
+      <div className="flex gap-1.5 mt-4">
+        {TESTIMONIALS.map((_, i) => (
+          <button key={i} onClick={() => setIndex(i)}
+            className={`w-2 h-2 rounded-full transition-all ${i === index ? "bg-slate-800 w-4" : "bg-slate-300"}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function formatCurrency(val) {
@@ -66,7 +98,7 @@ function LandingView({ onResult }) {
         <img
           src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
           alt="BuyWiser"
-          className="h-8 w-auto"
+          className="h-16 w-auto"
         />
         <a href="tel:+18183002642" className="text-sm text-slate-500 hover:text-slate-800 transition font-medium hidden sm:block">
           (818) 300-2642
@@ -130,10 +162,33 @@ function LandingView({ onResult }) {
           <p className="text-xs text-slate-400 mt-4 text-center">
             Rebates must be reserved before touring the property.
           </p>
-          <div className="mt-6 flex items-center justify-center gap-1.5 text-xs text-slate-400">
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-xs text-slate-400">
             <Lock className="h-3 w-3" />
             <span>Powered by BuyWiser. Private rebate lookup, not affiliated with the State of California.</span>
           </div>
+
+          {/* Video */}
+          <div className="mt-10">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
+            <a
+              href="https://app.heygen.com/videos/speech-about-ai-55sec-6188b66e8ec94d8ab944b2b8d4b533aa"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl overflow-hidden border border-slate-200 hover:border-slate-400 transition shadow-sm hover:shadow-md"
+            >
+              <img
+                src="https://resource2.heygen.ai/video/6188b66e8ec94d8ab944b2b8d4b533aa/vJOosOJTjo42PUiCYbN5j0nTizlsSduTX/gif.gif"
+                alt="How the rebate finder works"
+                className="w-full"
+              />
+              <div className="bg-slate-900 text-white text-center py-2.5 text-sm font-semibold">
+                ▶ Watch: How the Rebate Finder Works
+              </div>
+            </a>
+          </div>
+
+          {/* Testimonials */}
+          <Testimonials />
         </div>
       </main>
 
@@ -182,7 +237,7 @@ function ResultView({ property, listingUrl, onBack }) {
         <img
           src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
           alt="BuyWiser"
-          className="h-8 w-auto"
+          className="h-16 w-auto"
         />
         <button onClick={onBack} className="text-sm text-slate-500 hover:text-slate-800 transition font-medium">
           ← Check another property
