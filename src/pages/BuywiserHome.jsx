@@ -170,21 +170,16 @@ function LandingView({ onResult }) {
           {/* Video */}
           <div className="mt-10">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
-            <a
-              href="https://app.heygen.com/videos/speech-about-ai-55sec-6188b66e8ec94d8ab944b2b8d4b533aa"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-xl overflow-hidden border border-slate-200 hover:border-slate-400 transition shadow-sm hover:shadow-md"
-            >
-              <img
-                src="https://resource2.heygen.ai/video/6188b66e8ec94d8ab944b2b8d4b533aa/vJOosOJTjo42PUiCYbN5j0nTizlsSduTX/gif.gif"
-                alt="How the rebate finder works"
-                className="w-full"
+            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+              <iframe
+                src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
+                title="How the Rebate Finder Works"
+                frameBorder="0"
+                allow="encrypted-media; fullscreen;"
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
               />
-              <div className="bg-slate-900 text-white text-center py-2.5 text-sm font-semibold">
-                ▶ Watch: How the Rebate Finder Works
-              </div>
-            </a>
+            </div>
           </div>
 
           {/* Testimonials */}
