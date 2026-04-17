@@ -78,7 +78,7 @@ function LandingView({ onResult }) {
         <div className="w-full max-w-xl">
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight tracking-tight">
-            Check if a California Property<br className="hidden sm:block" /> Has a Buyer Rebate
+            Official California Property<br className="hidden sm:block" /> Rebate Finder
           </h1>
           <p className="text-slate-500 text-base mb-10">
             Paste the listing URL and find out if this home has a rebate waiting.
@@ -113,7 +113,7 @@ function LandingView({ onResult }) {
             <button
               type="submit"
               disabled={!valid || loading}
-              className="w-full py-4 bg-slate-900 text-white font-semibold text-base rounded-lg hover:bg-slate-800 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-slate-900 text-white font-bold text-lg rounded-lg hover:bg-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20 ring-2 ring-slate-900 ring-offset-2"
             >
               {loading ? (
                 <>
@@ -121,7 +121,7 @@ function LandingView({ onResult }) {
                   Checking...
                 </>
               ) : (
-                <>Find My Rebate <ArrowRight className="h-4 w-4" /></>
+                <>Check Property Rebate <ArrowRight className="h-5 w-5" /></>
               )}
             </button>
           </form>
