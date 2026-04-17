@@ -164,18 +164,63 @@ function LandingView({ onResult }) {
           {/* Testimonials */}
           <Testimonials />
 
-          {/* Video */}
+          {/* Video + Steps */}
           <div className="mt-10">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
-            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-              <iframe
-                src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
-                title="How the Rebate Finder Works"
-                frameBorder="0"
-                allow="encrypted-media; fullscreen;"
-                allowFullScreen
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-              />
+            <div className="flex flex-col lg:flex-row gap-4 items-stretch">
+              {/* Video */}
+              <div className="lg:w-1/2 rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+                <iframe
+                  src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
+                  title="How the Rebate Finder Works"
+                  frameBorder="0"
+                  allow="encrypted-media; fullscreen;"
+                  allowFullScreen
+                  style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+                />
+              </div>
+
+              {/* Step-by-step guide */}
+              <div className="lg:w-1/2 flex flex-col justify-center gap-3">
+                {/* Step 1 */}
+                <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Find a home on Zillow, Redfin, or Realtor.com</p>
+                    <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-blue-600 font-mono truncate shadow-sm">
+                      <span className="text-slate-400 flex-shrink-0">🔗</span>
+                      zillow.com/homedetails/123-main-st…
+                    </div>
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <div className="flex justify-center text-slate-300 text-lg">↓</div>
+
+                {/* Step 2 */}
+                <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Copy &amp; paste the URL into the Rebate Finder</p>
+                    <div className="bg-white border-2 border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-500 font-mono shadow-sm">
+                      Paste Zillow, Redfin, or Realtor.com URL…
+                    </div>
+                  </div>
+                </div>
+
+                {/* Arrow */}
+                <div className="flex justify-center text-slate-300 text-lg">↓</div>
+
+                {/* Step 3 */}
+                <div className="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded-xl p-4">
+                  <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+                  <div>
+                    <p className="text-sm font-semibold text-white mb-0.5">See your estimated rebate instantly</p>
+                    <p className="text-xl font-bold text-amber-400">$8,500 – $10,500</p>
+                    <p className="text-xs text-slate-400 mt-0.5">~1% of purchase price, credited at closing</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
