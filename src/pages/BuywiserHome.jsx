@@ -55,6 +55,11 @@ function isListingUrl(url) {
 function PageFooter() {
   return (
     <footer className="py-8 px-4 text-center border-t border-slate-100">
+      <img
+        src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
+        alt="BuyWiser"
+        className="h-10 w-auto mx-auto mb-3 opacity-60"
+      />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
         Powered by BuyWiser. Private rebate lookup, not affiliated with the State of California.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Terms &amp; Eligibility</a>
@@ -94,12 +99,7 @@ function LandingView({ onResult }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Nav */}
-      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <img
-          src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
-          alt="BuyWiser"
-          className="h-16 w-auto"
-        />
+      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-end">
         <a href="tel:+18183002642" className="text-sm text-slate-500 hover:text-slate-800 transition font-medium hidden sm:block">
           (818) 300-2642
         </a>
@@ -230,12 +230,7 @@ function ResultView({ property, listingUrl, onBack }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Nav */}
-      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-        <img
-          src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
-          alt="BuyWiser"
-          className="h-16 w-auto"
-        />
+      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-end">
         <button onClick={onBack} className="text-sm text-slate-500 hover:text-slate-800 transition font-medium">
           ← Check another property
         </button>
