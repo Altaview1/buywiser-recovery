@@ -102,9 +102,6 @@ function LandingView({ onResult }) {
     <div className="min-h-screen flex flex-col bg-white">
       {/* Nav */}
       <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-end">
-        <a href="tel:+18183002642" className="text-sm text-slate-500 hover:text-slate-800 transition font-medium hidden sm:block">
-          (818) 300-2642
-        </a>
       </header>
 
       {/* Main */}
