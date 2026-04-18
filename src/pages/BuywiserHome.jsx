@@ -252,7 +252,7 @@ function LandingView({ onResult }) {
                   <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
                   <div>
                     <p className="text-sm font-semibold text-white mb-0.5">See your estimated rebate instantly</p>
-                    <p className="text-xl font-bold text-amber-400">$8,500 – $10,500</p>
+                    <p className="text-xl font-bold text-amber-400">$8,500 – $20,000</p>
                     <p className="text-xs text-slate-400 mt-0.5">~1% of purchase price, credited at closing</p>
                     <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on commission offered, lender guidelines, and transaction details.</p>
                   </div>
