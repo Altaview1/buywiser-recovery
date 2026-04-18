@@ -119,7 +119,7 @@ function LandingView({ onResult }) {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
+              <label className="block text-sm font-bold text-blue-700 uppercase tracking-wider mb-1.5">
                 Paste Listing Link
               </label>
               <input
