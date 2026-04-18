@@ -5,9 +5,9 @@ import AppointmentScheduler from "../components/AppointmentScheduler";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  { quote: "We added our searched property information in the rebate finder and saved $12,000 when we purchased that home. Best thing we ever did.", name: "Hal & Marjie", location: "Oxnard, CA" },
-  { quote: "We reserved rebates on 7 houses and ended up with a $13,000 savings.", name: "Chris K.", location: "Studio City, CA" },
-  { quote: "It's the easiest money we ever made.", name: "Dor S.", location: "Santa Monica, CA" },
+  { quote: "We added our searched property information in the rebate finder and saved", highlight: "$12,000", quoteSuffix: " when we purchased that home. Best thing we ever did.", name: "Hal & Marjie", location: "Oxnard, CA" },
+  { quote: "We reserved rebates on 7 houses and ended up with a", highlight: "$13,000 savings", quoteSuffix: ".", name: "Chris K.", location: "Studio City, CA" },
+  { quote: "It's the easiest money we ever made.", highlight: null, quoteSuffix: "", name: "Dor S.", location: "Santa Monica, CA" },
 ];
 
 function Testimonials() {
@@ -18,12 +18,14 @@ function Testimonials() {
     return () => clearInterval(t);
   }, []);
 
-  const { quote, name, location } = TESTIMONIALS[index];
+  const { quote, highlight, quoteSuffix, name, location } = TESTIMONIALS[index];
 
   return (
-    <div className="mt-10 bg-slate-50 border border-slate-200 rounded-xl p-6 relative min-h-[120px]">
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 relative min-h-[120px]">
       <Quote className="h-5 w-5 text-slate-300 mb-2" />
-      <p className="text-slate-700 text-sm leading-relaxed italic mb-3">"{quote}"</p>
+      <p className="text-slate-700 text-sm leading-relaxed italic mb-3">
+        "{quote}{highlight && <span className="not-italic font-bold text-slate-900 text-base"> {highlight}</span>}{quoteSuffix}"
+      </p>
       <p className="text-xs font-semibold text-slate-500">{name} &mdash; {location}</p>
       <div className="flex gap-1.5 mt-4">
         {TESTIMONIALS.map((_, i) => (
@@ -109,26 +111,26 @@ function LandingView({ onResult }) {
       <main className="flex-1 flex flex-col items-center justify-center px-4 py-16">
         <div className="w-full max-w-xl">
           {/* Headline */}
-          <p className="text-lg font-semibold text-blue-700 mb-1 tracking-wide text-center">CALIFORNIA</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Property Rebate Finder
+          <p className="text-sm font-semibold text-blue-700 mb-2 tracking-wide text-center uppercase">California Buyer Rebate</p>
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2 leading-tight tracking-tight text-center">
+            Paste Any California Listing<br className="hidden sm:block" /> and See Your Buyer Rebate
           </h1>
-          <p className="text-slate-500 text-base mb-10">
-            Paste the listing URL and find out if this home has a rebate waiting.
+          <p className="text-slate-500 text-base mb-6 text-center">
+            Paste a Zillow, Redfin, or Realtor.com link to instantly see your estimated buyer rebate.
           </p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                Paste Zillow, Redfin, or Realtor.com URL
+                Paste Listing Link
               </label>
               <input
                 ref={inputRef}
                 type="url"
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(""); }}
-                placeholder="https://www.zillow.com/homedetails/..."
+                placeholder="Paste Zillow, Redfin, or Realtor.com property link here"
                 className="w-full px-4 py-3.5 text-base border-2 border-slate-200 rounded-lg focus:outline-none focus:border-slate-800 transition bg-white"
               />
             </div>
@@ -154,18 +156,41 @@ function LandingView({ onResult }) {
                   Checking...
                 </>
               ) : (
-                <>Check Property Rebate <ArrowRight className="h-5 w-5" /></>
+                <>See My Rebate <ArrowRight className="h-5 w-5" /></>
               )}
             </button>
           </form>
 
+          {/* Trust lines */}
+          <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center text-xs text-slate-500">
+            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />Fast, free estimate for California buyers</span>
+            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />Works on most major listing sites</span>
+            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />No obligation just to check</span>
+          </div>
+
+          {/* Quick clarity strip */}
+          <div className="mt-6 grid grid-cols-3 gap-2 text-center">
+            {[["1", "Paste the link"], ["2", "See your estimate"], ["3", "Get exact numbers if you want"]].map(([num, label]) => (
+              <div key={num} className="bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-2">
+                <p className="text-xs font-bold text-slate-400 mb-0.5">Step {num}</p>
+                <p className="text-xs font-semibold text-slate-700 leading-snug">{label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Pre-tour nudge */}
+          <p className="mt-4 text-center text-sm text-slate-500 italic">Before you tour a home, check the rebate.</p>
+
 
 
           {/* Testimonials */}
-          <Testimonials />
+          <div className="mt-8">
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Real buyers have saved thousands</p>
+            <Testimonials />
+          </div>
 
           {/* Video + Steps */}
-          <div className="mt-10">
+          <div className="mt-6">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
             <div className="flex flex-col lg:flex-row gap-4 items-stretch">
               {/* Video */}
