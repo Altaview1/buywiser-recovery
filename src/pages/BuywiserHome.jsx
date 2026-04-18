@@ -5,7 +5,7 @@ import AppointmentScheduler from "../components/AppointmentScheduler";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  { quote: "We added our searched property information in the rebate finder and saved", highlight: "$12,000", quoteSuffix: " when we purchased that home. Best thing we ever did.", name: "Hal & Marjie", location: "Oxnard, CA" },
+  { quote: "We used the rebate finder and saved", highlight: "$12,000", quoteSuffix: " on our home purchase. Best thing we ever did.", name: "Hal & Marjie", location: "Oxnard, CA" },
   { quote: "We reserved rebates on 7 houses and ended up with a", highlight: "$13,000 savings", quoteSuffix: ".", name: "Chris K.", location: "Studio City, CA" },
   { quote: "It's the easiest money we ever made.", highlight: null, quoteSuffix: "", name: "Dor S.", location: "Santa Monica, CA" },
 ];
@@ -115,8 +115,8 @@ function LandingView({ onResult }) {
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-2 leading-tight tracking-tight text-center">
             Paste Any California Listing<br className="hidden sm:block" /> and See Your Buyer Rebate
           </h1>
-          <p className="text-slate-500 text-base mb-6 text-center">
-            Paste a Zillow, Redfin, or Realtor.com link to instantly see your estimated buyer rebate.
+          <p className="text-slate-500 text-base mb-4 text-center">
+            Paste a Zillow, Redfin, or Realtor.com link to instantly see your estimated California buyer rebate.
           </p>
 
           {/* Form */}
@@ -148,7 +148,7 @@ function LandingView({ onResult }) {
             <button
               type="submit"
               disabled={!valid || loading}
-              className="w-full py-4 bg-slate-900 text-white font-bold text-lg rounded-lg hover:bg-slate-700 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20 ring-2 ring-slate-900 ring-offset-2"
+              className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-lg hover:bg-blue-800 active:bg-blue-900 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-700/30"
             >
               {loading ? (
                 <>
@@ -162,19 +162,24 @@ function LandingView({ onResult }) {
           </form>
 
           {/* Trust lines */}
-          <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center text-xs text-slate-500">
-            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />Fast, free estimate for California buyers</span>
-            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />Works on most major listing sites</span>
-            <span className="flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />No obligation just to check</span>
+          <div className="mt-2 flex flex-col sm:flex-row gap-1.5 sm:gap-5 justify-center">
+            {["Fast free estimate for California buyers", "Works with Zillow, Redfin, and Realtor.com", "No signup required just to check"].map(t => (
+              <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
+                <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />{t}
+              </span>
+            ))}
           </div>
 
           {/* Quick clarity strip */}
-          <div className="mt-6 grid grid-cols-3 gap-2 text-center">
-            {[["1", "Paste the link"], ["2", "See your estimate"], ["3", "Get exact numbers if you want"]].map(([num, label]) => (
-              <div key={num} className="bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-2">
-                <p className="text-xs font-bold text-slate-400 mb-0.5">Step {num}</p>
-                <p className="text-xs font-semibold text-slate-700 leading-snug">{label}</p>
-              </div>
+          <div className="mt-4 flex items-center justify-center gap-1 text-xs text-slate-500">
+            {[["1", "Paste the link"], ["2", "See your estimate"], ["3", "Get exact numbers if you want"]].map(([num, label], i, arr) => (
+              <>
+                <span key={num} className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
+                  <span className="w-4 h-4 rounded-full bg-slate-300 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
+                  {label}
+                </span>
+                {i < arr.length - 1 && <span key={`arrow-${num}`} className="text-slate-300 text-base">→</span>}
+              </>
             ))}
           </div>
 
@@ -206,8 +211,8 @@ function LandingView({ onResult }) {
                   />
                 </div>
                 <div className="mt-2 text-center">
-                  <p className="text-sm font-semibold text-slate-800">Bennett Liss</p>
-                  <p className="text-xs text-slate-500">CEO / Founder — BuyWiser &amp; MyRebate.House</p>
+                  <p className="text-sm font-semibold text-slate-700">Watch a 1-minute explanation</p>
+                  <p className="text-xs text-slate-400">Bennett Liss — BuyWiser</p>
                 </div>
               </div>
 
@@ -232,7 +237,7 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Copy &amp; paste the URL into the Rebate Finder</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Copy and paste the link into the Rebate Finder</p>
                     <div className="bg-white border-2 border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-500 font-mono shadow-sm">
                       Paste Zillow, Redfin, or Realtor.com URL…
                     </div>
@@ -249,6 +254,7 @@ function LandingView({ onResult }) {
                     <p className="text-sm font-semibold text-white mb-0.5">See your estimated rebate instantly</p>
                     <p className="text-xl font-bold text-amber-400">$8,500 – $10,500</p>
                     <p className="text-xs text-slate-400 mt-0.5">~1% of purchase price, credited at closing</p>
+                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on commission offered, lender guidelines, and transaction details.</p>
                   </div>
                 </div>
               </div>
