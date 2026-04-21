@@ -157,21 +157,24 @@ function LandingView({ onResult }) {
         />
       </header>
 
+      {/* Red top bar */}
+      <div style={{ background: "#cc0000", height: 6, width: "100%" }} />
+
       {/* Hero */}
       <main className="flex-1 flex flex-col items-center px-4 py-12 sm:py-16">
         <div className="w-full max-w-xl">
 
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="inline-block w-5 h-px bg-blue-300" />
-            <p className="text-xs font-bold text-blue-700 tracking-widest uppercase">Veteran Next Home Benefit</p>
-            <span className="inline-block w-5 h-px bg-blue-300" />
+            <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Veteran Next Home Benefit</p>
+            <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
             Selling Your Home as a Veteran?<br className="hidden sm:block" />
-            <span className="text-blue-700"> Get Up to 1.5% Back</span> on Your Next Purchase
+            <span style={{ color: "#cc0000" }}> Get Up to 1.5% Back</span> on Your Next Purchase
           </h1>
 
           {/* Subheadline */}
@@ -216,7 +219,8 @@ function LandingView({ onResult }) {
             <button
               type="submit"
               disabled={!valid || loading}
-              className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-lg hover:bg-blue-800 active:bg-blue-900 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-700/30"
+              className="w-full py-4 font-bold text-lg rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              style={{ background: valid ? "#cc0000" : "#94a3b8", color: "#fff", boxShadow: valid ? "0 8px 24px rgba(204,0,0,0.35)" : "none" }}
             >
               {loading ? (
                 <>
@@ -237,7 +241,7 @@ function LandingView({ onResult }) {
               "No sign-up required just to check"
             ].map(t => (
               <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
-                <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />{t}
+                <CheckCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#cc0000" }} />{t}
               </span>
             ))}
           </div>
@@ -258,8 +262,15 @@ function LandingView({ onResult }) {
           {/* Supporting line */}
           <p className="mt-4 text-center text-sm text-slate-400 italic">Before you buy again, see what you may qualify for.</p>
 
+          {/* RWB stripe */}
+          <div className="flex mt-10 mb-8 rounded-full overflow-hidden" style={{ height: 6 }}>
+            <div style={{ flex: 1, background: "#cc0000" }} />
+            <div style={{ flex: 1, background: "#ffffff", border: "1px solid #e2e8f0" }} />
+            <div style={{ flex: 1, background: "#1d4ed8" }} />
+          </div>
+
           {/* ── What Is section ── */}
-          <div className="mt-10 border-t border-slate-100 pt-8">
+          <div className="pt-0">
             <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Next Home Benefit?</h2>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
               The Veteran Next Home Benefit is a BuyWiser advantage for eligible veterans who are selling a home and planning their next purchase. Depending on the transaction, this may include up to 1.5% back on the next purchase when you buy and finance through BuyWiser, along with guidance on your best financing strategy for the move ahead.
@@ -267,8 +278,8 @@ function LandingView({ onResult }) {
           </div>
 
           {/* ── Built for section ── */}
-          <div className="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-6">
-            <h2 className="text-base font-bold text-slate-900 mb-4">Built for Veteran Homeowners Making Their Next Move</h2>
+          <div className="mt-8 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
+            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>Built for Veteran Homeowners Making Their Next Move</h2>
             <ul className="space-y-2.5">
               {[
                 "Selling a home and planning another purchase",
@@ -277,7 +288,7 @@ function LandingView({ onResult }) {
                 "Looking for a smarter plan before you buy again in California",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
-                  <CheckCircle className="h-4 w-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#cc0000" }} />
                   {item}
                 </li>
               ))}
