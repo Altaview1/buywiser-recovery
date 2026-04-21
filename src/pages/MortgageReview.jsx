@@ -93,51 +93,55 @@ export default function MortgageReview() {
     <div className="min-h-screen bg-white">
 
       {/* ── Hero Banner ── */}
-      <div className="relative overflow-hidden bg-blue-950">
-        {/* Decorative stripes */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 left-0 right-0 h-3 bg-red-600" />
-          <div className="absolute bottom-0 left-0 right-0 h-3 bg-red-600" />
-        </div>
-        <div className="absolute top-0 right-0 w-80 h-80 rounded-full opacity-5 bg-white" style={{ transform: "translate(30%, -30%)" }} />
+      <div className="relative overflow-hidden" style={{ background: "#0a1f5c" }}>
+
+        {/* Top red bar */}
+        <div style={{ background: "#cc0000", height: 8, width: "100%" }} />
+
+        {/* Stars pattern overlay */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{
+          backgroundImage: "radial-gradient(circle, #ffffff 1px, transparent 1px)",
+          backgroundSize: "30px 30px"
+        }} />
 
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-10">
 
             {/* Left: Copy */}
             <div className="flex-1 text-center lg:text-left">
+
               {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 bg-red-600/20 border border-red-500/40 text-red-300 text-xs font-bold px-4 py-1.5 rounded-full mb-5 uppercase tracking-widest">
+              <div className="inline-flex items-center gap-2 text-xs font-black px-5 py-2 rounded-full mb-5 uppercase tracking-widest"
+                style={{ background: "#cc0000", color: "#fff", letterSpacing: "0.15em" }}>
                 <Shield className="h-3.5 w-3.5" /> Exclusive Veteran Next Home Benefit
               </div>
 
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
                 A New Homebuying Benefit<br className="hidden sm:block" />
-                <span className="text-red-400"> Exclusively for Veterans</span>
+                <span style={{ color: "#ff4444" }}> Exclusively for Veterans</span>
               </h1>
 
               <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-2xl">
-                If you're a veteran selling your current home, you may qualify for <strong className="text-white">up to 1.5% back on your next purchase</strong> — a BuyWiser benefit available only when you buy and finance through us. This is not a VA program. It's a private advantage we've created for veterans making their next move.
+                If you're a veteran <strong className="text-white">selling your current home</strong>, you may qualify for <strong className="text-white">up to 1.5% back on your next purchase</strong> — a BuyWiser benefit available only when you buy and finance through us. This is not a VA program. It's a private financial advantage we created exclusively for veterans making their next move in California.
               </p>
 
-              {/* Benefit callout pill */}
-              <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 mb-6">
-                <div className="text-left">
-                  <p className="text-xs text-blue-300 font-semibold uppercase tracking-wider mb-0.5">Example Benefit</p>
-                  <p className="text-white font-bold text-lg">$700K purchase = <span className="text-amber-400">up to $10,500 back</span></p>
-                </div>
+              {/* Benefit callout box */}
+              <div className="inline-block rounded-2xl px-6 py-4 mb-6 text-left"
+                style={{ background: "rgba(255,255,255,0.08)", border: "1.5px solid rgba(255,255,255,0.2)" }}>
+                <p className="text-xs font-bold uppercase tracking-widest mb-1" style={{ color: "#93c5fd" }}>Example Benefit</p>
+                <p className="text-white font-bold text-xl">$700K purchase = <span style={{ color: "#fbbf24" }}>up to $10,500 back</span></p>
               </div>
 
               {/* Key bullets */}
-              <ul className="space-y-2 text-sm text-blue-200 text-left max-w-md mx-auto lg:mx-0">
+              <ul className="space-y-2.5 text-sm text-blue-200 text-left max-w-md mx-auto lg:mx-0">
                 {[
-                  "Available to eligible veterans selling their current home",
+                  "Available to eligible veterans who are selling their current home",
                   "Works with VA or conventional financing on the next purchase",
-                  "Not affiliated with the VA or any government program",
+                  "Not a VA program — not affiliated with any government agency",
                   "Only available through BuyWiser — California's boutique mortgage experts",
                 ].map((b) => (
-                  <li key={b} className="flex items-start gap-2">
-                    <Star className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <li key={b} className="flex items-start gap-2.5">
+                    <Star className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#fbbf24" }} />
                     <span>{b}</span>
                   </li>
                 ))}
@@ -146,21 +150,24 @@ export default function MortgageReview() {
 
             {/* Right: Badge */}
             <div className="flex-shrink-0 flex flex-col items-center gap-4">
-              <div className="relative w-44 h-44 rounded-full flex items-center justify-center shadow-2xl"
-                style={{ background: "radial-gradient(circle at 40% 35%, #1e3a8a, #172554)" }}>
-                {/* Red ring */}
-                <div className="absolute inset-0 rounded-full border-4 border-red-600" />
+              {/* Outer red ring */}
+              <div className="relative flex items-center justify-center rounded-full shadow-2xl"
+                style={{ width: 196, height: 196, background: "#cc0000", padding: 6 }}>
                 {/* White ring */}
-                <div className="absolute inset-2 rounded-full border-2 border-white/30" />
-                <div className="text-center z-10 px-4">
-                  <p className="text-white text-xs font-bold uppercase tracking-widest mb-1">Up to</p>
-                  <p className="text-amber-400 text-4xl font-black leading-none">1.5%</p>
-                  <p className="text-white text-xs font-bold uppercase tracking-widest mt-1">Back</p>
-                  <p className="text-blue-300 text-[10px] mt-1 leading-tight">on your next purchase</p>
+                <div className="rounded-full flex items-center justify-center"
+                  style={{ width: "100%", height: "100%", background: "#fff", padding: 5 }}>
+                  {/* Navy inner */}
+                  <div className="rounded-full flex flex-col items-center justify-center text-center"
+                    style={{ width: "100%", height: "100%", background: "#0a1f5c" }}>
+                    <p className="text-white text-xs font-black uppercase tracking-widest">Up to</p>
+                    <p className="font-black leading-none" style={{ color: "#fbbf24", fontSize: 46 }}>1.5%</p>
+                    <p className="text-white text-xs font-black uppercase tracking-widest">Back</p>
+                    <p className="text-blue-300 leading-tight mt-1" style={{ fontSize: 10 }}>on your next purchase</p>
+                  </div>
                 </div>
               </div>
-              <p className="text-xs text-blue-400 text-center max-w-[160px] leading-snug">
-                Exclusive BuyWiser veteran benefit. Not a government program.
+              <p className="text-xs text-center max-w-[170px] leading-snug" style={{ color: "#93c5fd" }}>
+                Exclusive BuyWiser veteran benefit.<br />Not a government program.
               </p>
             </div>
 
@@ -168,10 +175,10 @@ export default function MortgageReview() {
         </div>
 
         {/* Red-white-blue bottom stripe */}
-        <div className="flex h-2">
-          <div className="flex-1 bg-red-600" />
-          <div className="flex-1 bg-white" />
-          <div className="flex-1 bg-blue-600" />
+        <div className="flex" style={{ height: 10 }}>
+          <div style={{ flex: 1, background: "#cc0000" }} />
+          <div style={{ flex: 1, background: "#ffffff" }} />
+          <div style={{ flex: 1, background: "#1d4ed8" }} />
         </div>
       </div>
 
@@ -196,10 +203,10 @@ export default function MortgageReview() {
         <div className="bg-white border-2 border-slate-200 rounded-2xl shadow-lg overflow-hidden min-h-[340px] flex flex-col">
 
           {/* Card header accent */}
-          <div className="flex h-1.5">
-            <div className="flex-1 bg-red-600" />
-            <div className="flex-1 bg-white border-y border-slate-200" />
-            <div className="flex-1 bg-blue-800" />
+          <div className="flex" style={{ height: 6 }}>
+            <div style={{ flex: 1, background: "#cc0000" }} />
+            <div style={{ flex: 1, background: "#ffffff", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0" }} />
+            <div style={{ flex: 1, background: "#1e40af" }} />
           </div>
 
           <div className="p-6 md:p-8 flex flex-col flex-1">
@@ -329,24 +336,26 @@ export default function MortgageReview() {
       </div>
 
       {/* ── Veteran Benefit Callout Bar ── */}
-      <div className="bg-gradient-to-r from-red-700 via-red-600 to-red-700 py-10">
+      <div style={{ background: "linear-gradient(135deg, #9b0000, #cc0000, #9b0000)" }} className="py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-white/15 border border-white/30 text-white text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 text-white text-xs font-black px-4 py-1.5 rounded-full mb-4 uppercase tracking-widest"
+            style={{ background: "rgba(255,255,255,0.18)", border: "1px solid rgba(255,255,255,0.35)" }}>
             <Shield className="h-3.5 w-3.5" /> New — Only Through BuyWiser
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">
             The Veteran Next Home Benefit
           </h2>
-          <p className="text-red-100 max-w-2xl mx-auto text-base leading-relaxed mb-6">
+          <p className="max-w-2xl mx-auto text-base leading-relaxed mb-6" style={{ color: "#fecaca" }}>
             This is not a VA program. It is a BuyWiser-created benefit for eligible veterans who are <strong className="text-white">selling their current home</strong> and buying another. When you buy and finance your next home through BuyWiser, you may receive <strong className="text-white">up to 1.5% of the purchase price back</strong> at closing.
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-red-700 font-extrabold rounded-xl hover:bg-red-50 transition text-sm shadow-lg"
+            className="inline-flex items-center gap-2 px-8 py-3.5 font-extrabold rounded-xl transition text-sm shadow-xl"
+            style={{ background: "#ffffff", color: "#9b0000" }}
           >
             Check My Veteran Benefit Estimate →
           </Link>
-          <p className="text-red-200 text-xs mt-4">Only available to eligible veterans buying and financing through BuyWiser in California.</p>
+          <p className="text-xs mt-4" style={{ color: "#fca5a5" }}>Only available to eligible veterans buying and financing through BuyWiser in California.</p>
         </div>
       </div>
 
