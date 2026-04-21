@@ -5,9 +5,9 @@ import AppointmentScheduler from "../components/AppointmentScheduler";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
-  { quote: "We worked with BuyWiser when we were selling and buying at the same time. They helped us map out the full picture — and we saved", highlight: "$12,000", quoteSuffix: " on the purchase side.", name: "Hal & Marjie", location: "Oxnard, CA" },
-  { quote: "I wasn't sure if VA or conventional made more sense for our next home. BuyWiser walked us through both options and we ended up with a", highlight: "$13,000 savings", quoteSuffix: " we didn't expect.", name: "Chris K.", location: "Studio City, CA" },
-  { quote: "Bennett gave us straight answers and a clear plan. It made the whole transition from selling to buying feel manageable.", highlight: null, quoteSuffix: "", name: "Dor S.", location: "Santa Monica, CA" },
+  { quote: "We used BuyWiser's planning tool and saved", highlight: "$12,000", quoteSuffix: " on our next home purchase. Best decision we made.", name: "Hal & Marjie", location: "Oxnard, CA" },
+  { quote: "We looked at 7 homes and ended up with", highlight: "$13,000 in savings", quoteSuffix: " credited at closing.", name: "Chris K.", location: "Studio City, CA" },
+  { quote: "Bennett laid out a plan that made the whole move make sense financially.", highlight: null, quoteSuffix: "", name: "Dor S.", location: "Santa Monica, CA" },
 ];
 
 function Testimonials() {
@@ -21,7 +21,7 @@ function Testimonials() {
   const { quote, highlight, quoteSuffix, name, location } = TESTIMONIALS[index];
 
   return (
-    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 relative min-h-[130px]">
+    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 relative min-h-[120px]">
       <Quote className="h-5 w-5 text-slate-300 mb-2" />
       <p className="text-slate-700 text-sm leading-relaxed italic mb-3">
         "{quote}{highlight && <span className="not-italic font-bold text-slate-900 text-base"> {highlight}</span>}{quoteSuffix}"
@@ -41,19 +41,19 @@ function Testimonials() {
 const FAQS = [
   {
     q: "Do I need to use a VA loan to qualify?",
-    a: "No. This benefit is designed for veterans who are selling and planning their next purchase. In some cases the best next loan may be a VA loan, and in others it may be conventional. We help you understand both options."
+    a: "No. This benefit is designed for veterans who are selling and planning their next purchase. In some cases the best next loan may be VA, and in others it may be conventional. We'll help you figure out which makes more sense for your situation."
   },
   {
     q: "What kind of benefit might I see?",
-    a: "Depending on the property and your situation, the estimate may reflect potential BuyWiser savings, rebate opportunities, or planning advantages for your next purchase. The goal is to show you what's possible before you commit."
+    a: "Depending on the property and your situation, the estimate may reflect potential BuyWiser savings, rebate opportunities, or planning advantages for your next purchase. The goal is to give you a clear picture before you commit to anything."
   },
   {
     q: "Do I need to sign up just to check?",
-    a: "No. Paste your listing link and see an initial estimate without a full sign-up. You only share your contact information if you want the full benefit plan and next steps."
+    a: "No. Paste your listing and see the initial estimate without a full sign-up flow. You only share your contact information if you want to take the next step."
   },
   {
     q: "Is this only for California properties?",
-    a: "Yes. This program is designed specifically for California veterans who are selling and planning their next home purchase in California."
+    a: "Yes. BuyWiser is a California-licensed mortgage brokerage and this planning advantage is specifically designed around California transactions."
   },
 ];
 
@@ -65,14 +65,14 @@ function FAQ() {
         <div key={i} className="border border-slate-200 rounded-xl overflow-hidden">
           <button
             onClick={() => setOpen(open === i ? null : i)}
-            className="w-full flex items-center justify-between px-5 py-4 text-left text-sm font-semibold text-slate-800 hover:bg-slate-50 transition"
+            className="w-full flex items-center justify-between px-5 py-4 text-left bg-white hover:bg-slate-50 transition"
           >
-            {item.q}
+            <span className="text-sm font-semibold text-slate-800">{item.q}</span>
             {open === i ? <ChevronUp className="h-4 w-4 text-slate-400 flex-shrink-0" /> : <ChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0" />}
           </button>
           {open === i && (
-            <div className="px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
-              {item.a}
+            <div className="px-5 pb-4 bg-white">
+              <p className="text-sm text-slate-600 leading-relaxed">{item.a}</p>
             </div>
           )}
         </div>
@@ -107,7 +107,7 @@ function PageFooter() {
         className="h-10 w-auto mx-auto mb-3 opacity-60"
       />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Powered by BuyWiser. This is a BuyWiser planning and savings advantage — not a government program or official VA benefit.{" "}
+        Powered by BuyWiser. This is a private planning advantage — not a government program or official VA benefit.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Terms &amp; Eligibility</a>
       </p>
       <p className="text-xs text-slate-300 mt-2">
@@ -149,19 +149,19 @@ function LandingView({ onResult }) {
         <img
           src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
           alt="BuyWiser"
-          className="h-8 w-auto opacity-70"
+          className="h-8 w-auto opacity-80"
         />
       </header>
 
       {/* Hero */}
-      <main className="flex-1 flex flex-col items-center px-4 pt-12 pb-8">
+      <main className="flex-1 flex flex-col items-center px-4 py-12 sm:py-16">
         <div className="w-full max-w-xl">
 
           {/* Eyebrow */}
-          <div className="flex justify-center mb-3">
-            <span className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase text-blue-700 bg-blue-50 border border-blue-100 px-4 py-1.5 rounded-full">
-              <span className="text-base">⭐</span> Veteran Next Home Benefit
-            </span>
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <span className="inline-block w-5 h-px bg-blue-300" />
+            <p className="text-xs font-bold text-blue-700 tracking-widest uppercase">Veteran Next Home Benefit</p>
+            <span className="inline-block w-5 h-px bg-blue-300" />
           </div>
 
           {/* Headline */}
@@ -204,7 +204,7 @@ function LandingView({ onResult }) {
             <button
               type="submit"
               disabled={!valid || loading}
-              className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-lg hover:bg-blue-800 active:bg-blue-900 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-700/25"
+              className="w-full py-4 bg-blue-700 text-white font-bold text-lg rounded-lg hover:bg-blue-800 active:bg-blue-900 transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-blue-700/30"
             >
               {loading ? (
                 <>
@@ -222,7 +222,7 @@ function LandingView({ onResult }) {
             {[
               "Built for veterans selling and buying again",
               "Works whether your next loan is VA or conventional",
-              "No sign-up required just to check",
+              "No sign-up required just to check"
             ].map(t => (
               <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />{t}
@@ -232,35 +232,32 @@ function LandingView({ onResult }) {
 
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Paste your listing"], ["2", "See your veteran benefit estimate"], ["3", "Get your next-home plan"]].map(([num, label], i, arr) => (
+            {[["1", "Paste your listing"], ["2", "See your benefit estimate"], ["3", "Get your next-home plan"]].map(([num, label], i, arr) => (
               <span key={num} className="flex items-center gap-1">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
                   <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
                   {label}
                 </span>
-                {i < arr.length - 1 && <span className="text-slate-300 text-base">→</span>}
+                {i < arr.length - 1 && <span className="text-slate-300 text-base px-0.5">→</span>}
               </span>
             ))}
           </div>
 
-          {/* Nudge line */}
-          <p className="mt-4 text-center text-sm text-slate-500 italic">Before you buy again, see what advantage may be available.</p>
+          {/* Supporting line */}
+          <p className="mt-4 text-center text-sm text-slate-400 italic">Before you buy again, see what advantage may be available.</p>
 
-          {/* Divider */}
-          <div className="mt-10 border-t border-slate-100" />
-
-          {/* What Is The Benefit section */}
-          <div className="mt-8">
-            <h2 className="text-xl font-bold text-slate-900 mb-2">What Is the Veteran Next Home Benefit?</h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              This is a BuyWiser planning and savings advantage for veterans who are selling a home and preparing for what comes next. Depending on your situation, your benefit may include a buyer rebate, financing strategy, payment guidance, or a smarter path for your next purchase. It's not a government program — it's a strategic service built for veterans who want to make the most of their next move.
+          {/* ── What Is section ── */}
+          <div className="mt-10 border-t border-slate-100 pt-8">
+            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Next Home Benefit?</h2>
+            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
+              This is a BuyWiser planning and savings advantage for veterans who are selling a home and preparing for what comes next. Depending on your situation, your benefit may include a buyer rebate, financing strategy, payment guidance, or a smarter path for your next purchase.
             </p>
           </div>
 
-          {/* Built for section */}
-          <div className="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-5">
-            <h2 className="text-base font-bold text-slate-800 mb-3">Built for Veteran Sellers Making Their Next Move</h2>
-            <ul className="space-y-2">
+          {/* ── Built for section ── */}
+          <div className="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-6">
+            <h2 className="text-base font-bold text-slate-900 mb-4">Built for Veteran Sellers Making Their Next Move</h2>
+            <ul className="space-y-2.5">
               {[
                 "Selling a home and wondering what you can buy next",
                 "Unsure whether VA or conventional financing makes more sense",
@@ -275,13 +272,13 @@ function LandingView({ onResult }) {
             </ul>
           </div>
 
-          {/* Testimonials */}
+          {/* ── Testimonials ── */}
           <div className="mt-8">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Smart California Buyers Have Saved Thousands with BuyWiser</p>
             <Testimonials />
           </div>
 
-          {/* Video + Steps */}
+          {/* ── Video + Step-by-step ── */}
           <div className="mt-8">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
             <div className="flex flex-col lg:flex-row gap-4 items-stretch">
@@ -303,21 +300,19 @@ function LandingView({ onResult }) {
                 </div>
               </div>
 
-              {/* Step-by-step guide */}
+              {/* Step-by-step */}
               <div className="lg:w-1/2 flex flex-col justify-center gap-3">
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Find your next home on Zillow, Redfin, or Realtor.com</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Find your California listing on Zillow, Redfin, or Realtor.com</p>
                     <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-blue-600 font-mono truncate shadow-sm">
                       <span className="text-slate-400 flex-shrink-0">🔗</span>
                       zillow.com/homedetails/123-main-st…
                     </div>
                   </div>
                 </div>
-
                 <div className="flex justify-center text-slate-300 text-lg">↓</div>
-
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                   <div>
@@ -327,14 +322,12 @@ function LandingView({ onResult }) {
                     </div>
                   </div>
                 </div>
-
                 <div className="flex justify-center text-slate-300 text-lg">↓</div>
-
                 <div className="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded-xl p-4">
-                  <div className="w-7 h-7 rounded-full bg-blue-500 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+                  <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
                   <div>
-                    <p className="text-sm font-semibold text-white mb-0.5">See your estimated veteran advantage instantly</p>
-                    <p className="text-xl font-bold text-blue-300">$8,500 – $20,000</p>
+                    <p className="text-sm font-semibold text-white mb-0.5">See your estimated next-home advantage</p>
+                    <p className="text-xl font-bold text-amber-400">$8,500 – $20,000</p>
                     <p className="text-xs text-slate-400 mt-0.5">~1% of purchase price, credited at closing</p>
                     <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on commission offered, lender guidelines, and transaction details.</p>
                   </div>
@@ -343,17 +336,17 @@ function LandingView({ onResult }) {
             </div>
           </div>
 
-          {/* Practical advantage section */}
-          <div className="mt-10 bg-blue-50 border border-blue-100 rounded-xl p-6">
-            <h2 className="text-base font-bold text-slate-800 mb-2">A Practical Advantage, Not a Complicated Process</h2>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              BuyWiser helps veteran homeowners quickly understand what their next-home options may look like before they commit to the next move. The goal is simple: help you see whether there is a meaningful financial or strategic advantage available to you — so you can plan with clarity, not guesswork.
+          {/* ── Credibility section ── */}
+          <div className="mt-10 border border-blue-100 bg-blue-50 rounded-xl p-6">
+            <h2 className="text-base font-bold text-slate-900 mb-2">A Practical Advantage, Not a Complicated Process</h2>
+            <p className="text-sm text-slate-600 leading-relaxed">
+              BuyWiser helps veteran homeowners quickly understand what their next-home options may look like before they commit to the next move. The goal is simple: help you see whether there is a meaningful financial or strategic advantage available to you.
             </p>
           </div>
 
-          {/* FAQ */}
+          {/* ── FAQ ── */}
           <div className="mt-10">
-            <h2 className="text-base font-bold text-slate-800 mb-4 uppercase tracking-wider text-xs text-slate-500">Common Questions</h2>
+            <h2 className="text-base font-bold text-slate-900 mb-4 text-center uppercase tracking-wider text-xs text-slate-500">Common Questions</h2>
             <FAQ />
           </div>
 
@@ -404,7 +397,7 @@ function ResultView({ property, listingUrl, onBack }) {
         <img
           src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
           alt="BuyWiser"
-          className="h-8 w-auto opacity-70"
+          className="h-8 w-auto opacity-80"
         />
         <button onClick={onBack} className="text-sm text-slate-500 hover:text-slate-800 transition font-medium">
           ← Check another property
@@ -416,10 +409,8 @@ function ResultView({ property, listingUrl, onBack }) {
 
           {/* Result headline */}
           <div>
-            <div className="inline-flex items-center gap-1.5 text-xs font-bold tracking-widest uppercase text-blue-700 bg-blue-50 border border-blue-100 px-3 py-1 rounded-full mb-3">
-              ⭐ Veteran Next Home Benefit
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">Your Veteran Benefit Estimate</h1>
+            <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-1">Veteran Next Home Benefit</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">Your Benefit Estimate</h1>
             <p className="text-slate-500 text-sm">Based on the property listing you submitted.</p>
           </div>
 
@@ -445,7 +436,7 @@ function ResultView({ property, listingUrl, onBack }) {
 
           {/* Benefit result box */}
           <div className="bg-slate-900 text-white rounded-lg p-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Estimated Veteran Next Home Benefit</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Estimated Veteran Next Home Advantage</p>
             {rebateLow ? (
               <p className="text-3xl sm:text-4xl font-bold tracking-tight">
                 {rebateLow} – {rebateHigh}
@@ -453,24 +444,24 @@ function ResultView({ property, listingUrl, onBack }) {
             ) : (
               <p className="text-2xl font-bold">Savings available — amount based on purchase price</p>
             )}
-            <p className="text-slate-400 text-sm mt-2">Approximately 1% of purchase price, credited at closing.</p>
+            <p className="text-slate-400 text-sm mt-2">Approximately 1% of purchase price, credited at closing. Estimate only.</p>
           </div>
 
           {/* Reminder */}
-          <div className="flex items-start gap-2.5 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+          <div className="flex items-start gap-2.5 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <AlertCircle className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-blue-900 font-medium">
-              Your benefit should be reserved <strong>before</strong> making an offer. Lock in your advantage now to make sure it's available when you need it.
+              This advantage should be reserved <strong>before</strong> touring the home. Reserve yours now to lock it in and get your full next-home plan.
             </p>
           </div>
 
-          {/* CTA / Flow */}
+          {/* CTA */}
           {!done && !showFlow && (
             <button
               onClick={() => setShowFlow(true)}
-              className="w-full py-4 bg-blue-700 text-white font-semibold text-base rounded-lg hover:bg-blue-800 transition flex items-center justify-center gap-2 shadow-md"
+              className="w-full py-4 bg-blue-700 text-white font-semibold text-base rounded-lg hover:bg-blue-800 transition flex items-center justify-center gap-2"
             >
-              Reserve My Benefit &amp; Get My Next-Home Plan <ArrowRight className="h-4 w-4" />
+              Reserve My Veteran Benefit &amp; Get My Next-Home Plan <ArrowRight className="h-4 w-4" />
             </button>
           )}
 
@@ -506,8 +497,8 @@ function ResultView({ property, listingUrl, onBack }) {
                 </div>
                 {contactError && <p className="text-red-600 text-sm font-medium">{contactError}</p>}
                 <button onClick={handleContactSubmit}
-                  className="w-full py-3.5 bg-blue-700 text-white font-semibold rounded-lg hover:bg-blue-800 transition">
-                  Continue to Schedule a Consultation →
+                  className="w-full py-3.5 bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-800 transition">
+                  Continue to Schedule a Call →
                 </button>
               </div>
             </div>
@@ -526,12 +517,12 @@ function ResultView({ property, listingUrl, onBack }) {
           {/* Done state */}
           {done && (
             <div className="border border-slate-200 rounded-lg p-6 text-center space-y-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle className="h-6 w-6 text-blue-600" />
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
-              <h2 className="font-bold text-slate-900 text-lg">Your Benefit is Reserved</h2>
+              <h2 className="font-bold text-slate-900 text-lg">Your Benefit Is Reserved</h2>
               <p className="text-slate-500 text-sm">
-                Your benefit summary for <strong>{formatCurrency(couponValue)}</strong> has been emailed to {contact.email}. Bennett will reach out to walk you through your next-home plan.
+                Your summary for <strong>{formatCurrency(couponValue)}</strong> has been emailed to {contact.email}. Bennett will be in touch to walk through your next-home plan.
               </p>
               <p className="text-xs text-slate-400">Questions? Call (818) 300-2642 or email bennett@buywiser.com</p>
             </div>
@@ -539,8 +530,8 @@ function ResultView({ property, listingUrl, onBack }) {
 
           {/* Trust line */}
           <p className="text-xs text-slate-400 text-center">
-            Powered by BuyWiser. This is a BuyWiser planning advantage — not an official government or VA program.<br />
-            Licensed in California. NMLS #1887767.
+            Powered by BuyWiser. Not a government program. Licensed California mortgage brokerage.<br />
+            NMLS #1887767 · CA DRE #01107013
           </p>
         </div>
       </main>
