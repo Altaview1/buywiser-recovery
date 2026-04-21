@@ -23,6 +23,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Disclosures from './pages/Disclosures';
 import MortgageAI from './pages/MortgageAI';
 import BuywiserHome from './pages/BuywiserHome';
+import FlagWatermark from './components/FlagWatermark';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -80,6 +81,7 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
+          <FlagWatermark />
           <AuthenticatedApp />
         </Router>
         <Toaster />
