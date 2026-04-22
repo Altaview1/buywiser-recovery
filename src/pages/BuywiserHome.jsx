@@ -40,24 +40,20 @@ function Testimonials() {
 // ── FAQ ────────────────────────────────────────────────────────────────────────
 const FAQS = [
   {
-    q: "Do I need to use a VA loan to qualify?",
-    a: "No. The next loan may be VA or conventional depending on what makes the most sense for your situation. The benefit is not tied to a specific loan type."
+    q: "Can I keep my current agent?",
+    a: "Yes, if your agent participates in the Veteran Home Transition Benefit."
   },
   {
-    q: "How much could I receive?",
-    a: "Eligible veterans may receive up to 1.5% of the next home purchase price back when they buy and finance through BuyWiser. The exact amount depends on the transaction."
+    q: "What if my agent does not participate?",
+    a: "You can review other options, including participating agents and local veteran agents where available."
   },
   {
-    q: "Can I check before committing?",
-    a: "Yes. Paste your listing and review the initial estimate without going through a full sign-up process. You only share contact information if you want to take the next step."
+    q: "Is this a government benefit?",
+    a: "No. This is a private program benefit offered through BuyWiser and participating professionals. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
   {
-    q: "Is this for California only?",
-    a: "Yes. BuyWiser is a California-licensed mortgage brokerage and this benefit is specifically designed around California transactions."
-  },
-  {
-    q: "Is this a government program?",
-    a: "No. This is a BuyWiser-created consumer benefit for eligible veterans buying their next home through BuyWiser. It is not affiliated with the VA or any government agency."
+    q: "How much is the benefit?",
+    a: "Up to 1.5% toward the purchase price of your next home, depending on the transaction and participation structure."
   },
 ];
 
@@ -111,7 +107,7 @@ function PageFooter() {
         className="h-10 w-auto mx-auto mb-3 opacity-60"
       />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Powered by BuyWiser. This is a private planning advantage — not a government program or official VA benefit.{" "}
+        Powered by BuyWiser. The Veteran Home Transition Benefit is a private program benefit — not a government program or official VA benefit.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Terms &amp; Eligibility</a>
       </p>
       <p className="text-xs text-slate-300 mt-2">
@@ -167,41 +163,44 @@ function LandingView({ onResult }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Veteran Next Home Benefit</p>
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</p>
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Selling Your Home as a Veteran?<br className="hidden sm:block" />
-            <span style={{ color: "#cc0000" }}> Get Up to 1.5% Back</span> on Your Next Purchase
+            Your Home Is for Sale. Does Your Agent Participate in the{" "}
+            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit?</span>
           </h1>
 
           {/* Subheadline */}
           <p className="text-slate-500 text-base mb-4 text-center leading-relaxed">
-            Paste your California listing link to see whether you may qualify for a BuyWiser veteran next-home benefit worth up to 1.5% of your next purchase price when you buy and finance with us.
+            Participating agents have agreed to include the Veteran Home Transition Benefit in the structure of your next-home purchase — offering up to 1.5% toward your next home. Not all agents participate.
           </p>
 
           {/* Example callout */}
-          <div className="mb-5 flex justify-center">
+          <div className="mb-3 flex justify-center">
             <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-600">
               <span className="font-semibold text-slate-800">Example:</span>
-              A $700,000 purchase could mean <span className="font-bold text-blue-700 ml-1">up to $10,500 back</span>
+              A $700,000 purchase could mean <span className="font-bold text-blue-700 ml-1">up to $10,500 toward your next home</span>
             </div>
           </div>
+
+          {/* Supporting line */}
+          <p className="text-center text-sm text-slate-500 italic mb-5">Before you decide who should represent you on your next home, check this.</p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-sm font-bold text-blue-700 uppercase tracking-wider mb-1.5">
-                Paste Your Listing Link
+                Check Your Options
               </label>
               <input
                 ref={inputRef}
                 type="url"
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(""); }}
-                placeholder="Paste Zillow, Redfin, or Realtor.com property link here"
+                placeholder="Paste your Zillow, Redfin, or Realtor.com listing link"
                 className="w-full px-4 py-3.5 text-base border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white"
               />
             </div>
@@ -228,7 +227,7 @@ function LandingView({ onResult }) {
                   Checking...
                 </>
               ) : (
-                <>See My Veteran Benefit <ArrowRight className="h-5 w-5" /></>
+                <>See My Veteran Home Transition Benefit <ArrowRight className="h-5 w-5" /></>
               )}
             </button>
           </form>
@@ -236,9 +235,9 @@ function LandingView({ onResult }) {
           {/* Trust bullets */}
           <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center">
             {[
-              "Up to 1.5% back on your next purchase",
+              "Up to 1.5% toward your next home",
               "Works whether your next loan is VA or conventional",
-              "No sign-up required just to check"
+              "Check your options before deciding on buyer representation"
             ].map(t => (
               <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#cc0000" }} />{t}
@@ -248,7 +247,7 @@ function LandingView({ onResult }) {
 
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Paste your listing"], ["2", "See your benefit estimate"], ["3", "Get your next-home plan"]].map(([num, label], i, arr) => (
+            {[["1", "Paste your listing"], ["2", "Check whether your agent participates"], ["3", "See your benefit and next-home options"]].map(([num, label], i, arr) => (
               <span key={num} className="flex items-center gap-1">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
                   <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
@@ -259,8 +258,8 @@ function LandingView({ onResult }) {
             ))}
           </div>
 
-          {/* Supporting line */}
-          <p className="mt-4 text-center text-sm text-slate-400 italic">Before you buy again, see what you may qualify for.</p>
+          {/* Supporting line under steps */}
+          <p className="mt-4 text-center text-sm text-slate-400 italic">Before you decide who should represent you on your next home purchase, review your options.</p>
 
           {/* RWB stripe */}
           <div className="flex mt-10 mb-8 rounded-full overflow-hidden" style={{ height: 6 }}>
@@ -269,23 +268,55 @@ function LandingView({ onResult }) {
             <div style={{ flex: 1, background: "#1d4ed8" }} />
           </div>
 
-          {/* ── What Is section ── */}
+          {/* ── Why Agent Participation Matters ── */}
           <div className="pt-0">
-            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Next Home Benefit?</h2>
-            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
-              The Veteran Next Home Benefit is a BuyWiser advantage for eligible veterans who are selling a home and planning their next purchase. Depending on the transaction, this may include up to 1.5% back on the next purchase when you buy and finance through BuyWiser, along with guidance on your best financing strategy for the move ahead.
+            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your Agent's Participation Matters</h2>
+            <div className="text-sm text-slate-600 leading-relaxed space-y-3">
+              <p>Selling your current home and buying your next one are two separate transactions.</p>
+              <p>Many homeowners naturally assume the same agent relationship will carry forward automatically. But not all agents participate in the Veteran Home Transition Benefit.</p>
+              <p>Participating agents have agreed to include the Veteran Home Transition Benefit in the structure of qualifying next-home purchases. That decision can affect whether this benefit is included in your next purchase.</p>
+            </div>
+          </div>
+
+          {/* ── Already Working With an Agent ── */}
+          <div className="mt-6 rounded-xl p-5 bg-blue-50 border border-blue-200">
+            <h2 className="text-base font-bold text-slate-900 mb-2">Already Working With an Agent?</h2>
+            <p className="text-sm text-slate-600 leading-relaxed mb-3">Your current agent may be able to participate.</p>
+            <p className="text-sm text-slate-600 leading-relaxed mb-3">If your agent participates, you may be able to continue working together while preserving the structure of the Veteran Home Transition Benefit on your next purchase.</p>
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">If your agent does not participate, you may want to review other options, including a local participating veteran agent with a strong reputation.</p>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button className="px-4 py-2.5 text-sm font-semibold rounded-lg border-2 text-slate-800 border-slate-300 hover:border-slate-500 transition bg-white">
+                Nominate My Agent
+              </button>
+              <button className="px-4 py-2.5 text-sm font-semibold rounded-lg border-2 transition" style={{ background: "#cc0000", color: "#fff", borderColor: "#cc0000" }}>
+                Show Me Participating Veteran Agents
+              </button>
+            </div>
+          </div>
+
+          {/* ── What Is section ── */}
+          <div className="mt-6">
+            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Home Transition Benefit?</h2>
+            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
+              The Veteran Home Transition Benefit is a private program benefit offered through BuyWiser for qualifying veterans who are selling their current home and planning another purchase.
+            </p>
+            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
+              Participating agents have agreed to include this benefit in the structure of qualifying next-home purchases, offering up to 1.5% toward the purchase of your next home.
+            </p>
+            <p className="text-sm text-slate-500 leading-relaxed text-center max-w-md mx-auto">
+              The exact amount depends on the transaction and participation structure.
             </p>
           </div>
 
           {/* ── Built for section ── */}
-          <div className="mt-8 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
+          <div className="mt-6 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
             <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>Built for Veteran Homeowners Making Their Next Move</h2>
             <ul className="space-y-2.5">
               {[
                 "Selling a home and planning another purchase",
                 "Want to know whether VA or conventional financing makes more sense",
-                "Curious how much you may be able to get back on your next purchase",
-                "Looking for a smarter plan before you buy again in California",
+                "Want to know how much you could receive through the Veteran Home Transition Benefit",
+                "Want a smarter plan before deciding who should represent you on your next home",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
                   <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#cc0000" }} />
@@ -298,12 +329,13 @@ function LandingView({ onResult }) {
           {/* ── Testimonials ── */}
           <div className="mt-8">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser</p>
+
             <Testimonials />
           </div>
 
           {/* ── Video + Step-by-step ── */}
           <div className="mt-8">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">See How It Works — 1 Minute</p>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">How It Works</p>
             <div className="flex flex-col lg:flex-row gap-4 items-stretch">
               {/* Video */}
               <div className="lg:w-1/2 flex flex-col">
@@ -328,7 +360,7 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Find your California listing on Zillow, Redfin, or Realtor.com</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Paste your listing</p>
                     <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-blue-600 font-mono truncate shadow-sm">
                       <span className="text-slate-400 flex-shrink-0">🔗</span>
                       zillow.com/homedetails/123-main-st…
@@ -339,7 +371,7 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Paste the link to see your veteran benefit estimate</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Check whether your agent participates</p>
                     <div className="bg-white border-2 border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-500 font-mono shadow-sm">
                       Paste Zillow, Redfin, or Realtor.com URL…
                     </div>
@@ -349,27 +381,31 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
                   <div>
-                    <p className="text-sm font-semibold text-white mb-0.5">See your estimated veteran benefit</p>
-                    <p className="text-xl font-bold text-amber-400">Up to 1.5% back</p>
-                    <p className="text-xs text-slate-400 mt-0.5">On the next purchase, credited at closing when you buy and finance through BuyWiser</p>
-                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on eligibility, lender guidelines, and transaction details.</p>
+                    <p className="text-sm font-semibold text-white mb-0.5">See your benefit and next-home options</p>
+                    <p className="text-xl font-bold text-amber-400">Up to 1.5% toward your next home</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Depending on the transaction and participation structure</p>
+                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on eligibility and transaction details.</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ── Credibility section ── */}
-          <div className="mt-10 border border-blue-100 bg-blue-50 rounded-xl p-6">
-            <h2 className="text-base font-bold text-slate-900 mb-2">A Practical Advantage, Not a Complicated Process</h2>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              BuyWiser helps veteran homeowners quickly understand what their next-home options may look like before they commit to the next move. The goal is simple: help you see whether there is a meaningful financial or strategic advantage available to you.
-            </p>
+          {/* ── Footer CTA strip ── */}
+          <div className="mt-10 rounded-xl p-6 text-center" style={{ background: "#0a1f5c" }}>
+            <p className="text-white text-sm leading-relaxed mb-4">Before you decide who should represent you on your next home, check your options.</p>
+            <button
+              onClick={() => inputRef.current?.focus()}
+              className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
+              style={{ background: "#cc0000", color: "#fff" }}
+            >
+              Check My Options <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
 
           {/* ── FAQ ── */}
           <div className="mt-10">
-            <h2 className="text-base font-bold text-slate-900 mb-4 text-center uppercase tracking-wider text-xs text-slate-500">Common Questions</h2>
+            <h2 className="text-base font-bold text-slate-900 mb-4 text-center">Frequently Asked Questions</h2>
             <FAQ />
           </div>
 
@@ -432,7 +468,7 @@ function ResultView({ property, listingUrl, onBack }) {
 
           {/* Result headline */}
           <div>
-            <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-1">Veteran Next Home Benefit</p>
+            <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-1">Veteran Home Transition Benefit</p>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">Your Benefit Estimate</h1>
             <p className="text-slate-500 text-sm">Based on the property listing you submitted.</p>
           </div>
@@ -459,8 +495,8 @@ function ResultView({ property, listingUrl, onBack }) {
 
           {/* Benefit result box */}
           <div className="bg-slate-900 text-white rounded-lg p-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Estimated Veteran Next Home Benefit</p>
-            <p className="text-xs text-slate-500 mb-3">Up to 1.5% of purchase price when you buy and finance through BuyWiser</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Estimated Veteran Home Transition Benefit</p>
+            <p className="text-xs text-slate-500 mb-3">Up to 1.5% toward your next home, depending on the transaction and participation structure</p>
             {rebateLow ? (
               <p className="text-3xl sm:text-4xl font-bold tracking-tight">
                 {rebateLow} – {rebateHigh}
