@@ -64,7 +64,7 @@ const FAQS = [
   },
   {
     q: "How much is the benefit?",
-    a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured."
+    a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured. This benefit is available for the next 90 days."
   },
   {
     q: "What is a Personal Benefit Code?",
@@ -380,7 +380,7 @@ function LandingView({ onResult }) {
           <div className="pt-0">
             <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Is the Key</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
-              <p>Veterans who currently hold a VA loan and are selling to purchase another home occupy a unique position — your service and your existing VA loan are what make this benefit available to you.</p>
+              <p>Veterans who currently hold a VA loan and are selling to purchase another home qualify for this benefit — your service and your existing VA loan are what make it available to you for the next 90 days.</p>
               <p>BuyWiser's Next Move™ Veteran Home Transition Benefit is built for exactly this moment: when a veteran is leaving one home (with a VA loan) and moving into the next.</p>
               <p>But the window is narrow. Once you've committed to buyer representation on your next purchase, the ability to structure the benefit may be gone.</p>
             </div>
@@ -439,7 +439,7 @@ function LandingView({ onResult }) {
 
           {/* ── Built for section ── */}
           <div className="mt-6 rounded-xl p-6 bg-green-50 border border-green-200">
-            <h2 className="text-base font-bold mb-4 text-green-800">You Likely Qualify If You Are:</h2>
+            <h2 className="text-base font-bold mb-4 text-green-800">You Qualify for the Next 90 Days If You Are:</h2>
             <ul className="space-y-2.5">
               {[
                 "Currently holding a VA loan on your home",
