@@ -13,13 +13,13 @@ const STEPS = [
   },
   {
     icon: Phone,
-    title: "Talk to Bennett",
-    desc: "Schedule a quick call — no pressure, just straight answers about your options.",
+    title: "Confirm Your Email",
+    desc: "We'll send your benefit summary and next steps to your inbox.",
   },
   {
     icon: Home,
-    title: "Move With Confidence",
-    desc: "Receive up to 1.5% toward your next home purchase, structured correctly.",
+    title: "Schedule a Call",
+    desc: "Book a quick call with a BuyWiser licensed realtor to review your options.",
   },
 ];
 
