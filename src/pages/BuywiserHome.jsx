@@ -4,6 +4,7 @@ import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Ta
 import AppointmentScheduler from "../components/AppointmentScheduler";
 import LeadCaptureForm from "../components/LeadCaptureForm";
 import ProcessSteps from "../components/ProcessSteps";
+import VeteranTestimonials from "../components/VeteranTestimonials";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
@@ -439,8 +440,7 @@ function LandingView({ onResult }) {
           {/* ── Testimonials ── */}
           <div className="mt-8">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser Customized Programs</p>
-
-            <Testimonials />
+            <VeteranTestimonials />
           </div>
 
           {/* ── Video + Step-by-step ── */}
