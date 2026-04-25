@@ -293,7 +293,7 @@ function LandingView({ onResult }) {
 
           {/* ── Process Steps ── */}
           <div className="mt-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">How It Works — Your Journey</p>
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Your Journey in 3 Steps</p>
             <ProcessSteps activeStep={0} />
           </div>
 
