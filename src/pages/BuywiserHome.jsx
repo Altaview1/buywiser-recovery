@@ -234,7 +234,7 @@ function LandingView({ onResult }) {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            You may be eligible for a purchase credit on your next home through{" "}
+            You are eligible for a purchase credit on your next home through{" "}
             <span style={{ color: "#cc0000" }}>BuyWiser's Next Move™ Veteran Home Transition Benefit</span>.
           </h1>
 
