@@ -375,8 +375,8 @@ function LandingView({ onResult }) {
               <div className="lg:w-1/2 flex flex-col">
                 <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm flex-1" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
                   <iframe
-                    src="https://app.heygen.com/embeds/6188b66e8ec94d8ab944b2b8d4b533aa"
-                    title="How the Veteran Next Home Benefit Works"
+                    src="https://app.heygen.com/embeds/f235762557ed4a008bfc3951c186107b"
+                    title="no caption but best yet circle"
                     frameBorder="0"
                     allow="encrypted-media; fullscreen;"
                     allowFullScreen
