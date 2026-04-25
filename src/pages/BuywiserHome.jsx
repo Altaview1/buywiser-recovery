@@ -126,7 +126,7 @@ function PageFooter() {
         className="h-10 w-auto mx-auto mb-3 opacity-60"
       />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Powered by BuyWiser. The Veteran Home Transition Benefit is a private program benefit — not a government program or official VA benefit.{" "}
+        Powered by BuyWiser. The Next Move™ Veteran Home Transition Benefit is a private BuyWiser program benefit — not a government program or official VA benefit.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Terms &amp; Eligibility</a>
       </p>
       <p className="text-xs text-slate-300 mt-2">
@@ -234,14 +234,14 @@ function LandingView({ onResult }) {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            You may be eligible for a purchase credit on your next home through the{" "}
-            <span style={{ color: "#cc0000" }}>Veteran Next Move™</span> Program.
+            You may be eligible for a purchase credit on your next home through{" "}
+            <span style={{ color: "#cc0000" }}>BuyWiser's Next Move™ Veteran Home Transition Benefit</span>.
           </h1>
 
           {/* Subheadline */}
           <div className="mb-4 text-center space-y-3">
             <p className="text-slate-500 text-base leading-relaxed">
-              The Veteran Next Move™ Program is designed exclusively for veterans making their next home purchase — giving you a meaningful purchase credit applied directly at closing.
+              BuyWiser's Next Move™ Veteran Home Transition Benefit is designed exclusively for veterans making their next home purchase — giving you a meaningful purchase credit applied directly at closing.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
               Most veterans never learn about this program until after they've already committed to buyer representation — at which point the credit can no longer be structured in.
@@ -381,7 +381,7 @@ function LandingView({ onResult }) {
             <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Is the Key</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
               <p>Veterans who currently hold a VA loan and are selling to purchase another home occupy a unique position — your service and your existing VA loan are what make this benefit available to you.</p>
-              <p>The Veteran Home Transition Benefit is structured specifically for this moment: when a veteran is leaving one home (with a VA loan) and moving into the next.</p>
+              <p>BuyWiser's Next Move™ Veteran Home Transition Benefit is built for exactly this moment: when a veteran is leaving one home (with a VA loan) and moving into the next.</p>
               <p>But the window is narrow. Once you've committed to buyer representation on your next purchase, the ability to structure the benefit may be gone.</p>
             </div>
           </div>
@@ -408,7 +408,7 @@ function LandingView({ onResult }) {
           {/* ── How the Benefit Is Structured ── */}
           <div className="mt-6 rounded-xl p-5 border border-slate-200 bg-white">
             <h2 className="text-base font-bold text-slate-900 mb-3">How the Benefit Is Structured</h2>
-            <p className="text-sm text-slate-600 leading-relaxed mb-4">The Veteran Home Transition Benefit is flexible and depends on how your next-home purchase is structured.</p>
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">BuyWiser's Next Move™ Veteran Home Transition Benefit is flexible and depends on how your next-home purchase is structured.</p>
             <div className="space-y-3">
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
                 <p className="text-sm font-bold text-amber-800 mb-1">Maximum benefit (up to 1.5%)</p>
@@ -428,9 +428,9 @@ function LandingView({ onResult }) {
 
           {/* ── What Is section ── */}
           <div className="mt-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Home Transition Benefit?</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is BuyWiser's Next Move™ Veteran Home Transition Benefit?</h2>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
-              It is a private benefit offered through BuyWiser — available to veterans who currently hold a VA loan and are selling that home to purchase their next one. Your existing VA loan is the qualifying factor.
+              It is a private benefit offered exclusively through BuyWiser — available to veterans who currently hold a VA loan and are selling that home to purchase their next one. Your existing VA loan is the qualifying factor.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
               It is not a government program. It is not affiliated with the VA. It is a BuyWiser benefit structured around the moment of your transition.
@@ -499,7 +499,7 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">See how the Veteran Home Transition Benefit can be structured</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">See how BuyWiser's Next Move™ Veteran Home Transition Benefit can be structured</p>
                     <p className="text-xs text-slate-500">Based on your transaction and how services are coordinated</p>
                   </div>
                 </div>
@@ -667,7 +667,7 @@ function ResultView({ property, listingUrl, matchedCode, onBack }) {
 
           {/* Benefit result box */}
           <div className="bg-slate-900 text-white rounded-lg p-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">Estimated Veteran Home Transition Benefit</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-1">BuyWiser Next Move™ — Estimated Veteran Home Transition Benefit</p>
             <p className="text-xs text-slate-500 mb-3">Up to 1.5% toward your next home, depending on the transaction and participation structure</p>
             {rebateLow ? (
               <p className="text-3xl sm:text-4xl font-bold tracking-tight">
