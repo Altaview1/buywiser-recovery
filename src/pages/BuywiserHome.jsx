@@ -753,10 +753,16 @@ function ResultView({ property, listingUrl, matchedCode, onBack }) {
                 <CheckCircle className="h-6 w-6 text-green-600" />
               </div>
               <h2 className="font-bold text-slate-900 text-lg">Your Benefit Is Reserved</h2>
-              <p className="text-slate-500 text-sm">
-                Your summary for <strong>{formatCurrency(couponValue)}</strong> has been emailed to {contact.email}. Bennett will be in touch to walk through your next-home plan.
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Your benefit summary for <strong className="text-slate-900">{formatCurrency(couponValue)}</strong> has been sent to {contact.email}.
               </p>
-              <p className="text-xs text-slate-400">Questions? Call (818) 300-2642 or email bennett@buywiser.com</p>
+              <div className="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-xl text-left">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Your Personal Representative</p>
+                <p className="text-sm font-bold text-slate-900">Bennett Liss</p>
+                <p className="text-xs text-slate-500">CA Real Estate License #01107013 &nbsp;·&nbsp; NMLS #1524446</p>
+                <p className="text-sm text-slate-600 mt-2 leading-relaxed">will be in touch personally to walk through your next-home plan and answer any questions you may have.</p>
+              </div>
+              <p className="text-xs text-slate-400 mt-1">Prefer to reach out directly? <a href="tel:+18183002642" className="underline hover:text-slate-600">(818) 300-2642</a> &nbsp;·&nbsp; <a href="mailto:bennett@buywiser.com" className="underline hover:text-slate-600">bennett@buywiser.com</a></p>
             </div>
           )}
 
