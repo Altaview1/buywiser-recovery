@@ -261,7 +261,7 @@ function LandingView({ onResult }) {
                 type="url"
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(""); }}
-                placeholder="Enter your home address or listing (Zillow, Redfin, etc.)"
+                placeholder="Enter any home listing from Zillow, Redfin, etc. and find your benefit"
                 className="w-full px-4 py-3.5 text-base border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white"
               />
               <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
