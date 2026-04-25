@@ -167,7 +167,7 @@ function LandingView({ onResult }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</p>
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>How Your Veteran Home Transition Benefit Is Structured</p>
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
