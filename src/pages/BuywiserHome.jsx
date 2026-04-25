@@ -235,7 +235,7 @@ function LandingView({ onResult }) {
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
             Because you currently have a VA loan, you qualify for the{" "}
-            <span style={{ color: "#cc0000" }}>BuyWiser Veteran's Home Transition Benefit</span> to apply to your next purchase.
+            <span style={{ color: "#cc0000" }}>BuyWiser's Veteran's Home Transition Benefit</span> to apply to your next purchase.
           </h1>
 
           {/* Subheadline */}
