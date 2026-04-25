@@ -332,6 +332,12 @@ function LandingView({ onResult }) {
             ))}
           </div>
 
+          {/* ── Lead Capture Form — close to hero ── */}
+          <div className="mt-8">
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Skip the Listing — Talk to Us Directly</p>
+            <LeadCaptureForm />
+          </div>
+
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
             {[["1", "Enter your home address or listing to review your options"], ["2", "Optionally enter your Personal Benefit Code to personalize your results"], ["3", "See how the benefit is structured"], ["4", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
@@ -515,12 +521,6 @@ function LandingView({ onResult }) {
           <div className="mt-10">
             <h2 className="text-base font-bold text-slate-900 mb-4 text-center">Frequently Asked Questions</h2>
             <FAQ />
-          </div>
-
-          {/* ── Lead Capture Form ── */}
-          <div className="mt-10">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Skip the Listing — Talk to Us Directly</p>
-            <LeadCaptureForm />
           </div>
 
         </div>
