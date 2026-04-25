@@ -228,23 +228,23 @@ function LandingView({ onResult }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>If your current home was financed with a VA loan, how you structure your next purchase will determine the benefit you receive.</p>
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Official Program Notification — Veterans Only</p>
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Your home is for sale. Before you choose who will represent you on the purchase of your next home, check how the{" "}
-            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> can be structured.
+            You may be eligible for a purchase credit on your next home through the{" "}
+            <span style={{ color: "#cc0000" }}>Veteran Next Move™</span> Program.
           </h1>
 
           {/* Subheadline */}
           <div className="mb-4 text-center space-y-3">
             <p className="text-slate-500 text-base leading-relaxed">
-              Veterans departing a VA loan have earned access to a transition benefit worth up to 1.5% toward their next home purchase — but it must be structured correctly before you commit to buyer representation.
+              The Veteran Next Move™ Program is designed exclusively for veterans making their next home purchase — giving you a meaningful purchase credit applied directly at closing.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Most veterans never know this benefit exists until after they've already signed with a buyer's agent.
+              Most veterans never learn about this program until after they've already committed to buyer representation — at which point the credit can no longer be structured in.
             </p>
           </div>
 
