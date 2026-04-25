@@ -306,6 +306,12 @@ function LandingView({ onResult }) {
             </div>
           </div>
 
+          {/* ── Benefit Estimator — prominent placement ── */}
+          <div className="mt-6 p-5 bg-white border-2 border-red-200 rounded-xl shadow-sm">
+            <p className="text-center text-xs font-black text-red-600 uppercase tracking-widest mb-4">Step 1 — Enter Your Estimated Purchase Price</p>
+            <BenefitEstimator />
+          </div>
+
           {/* ── Process Steps ── */}
           <div className="mt-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Your Journey in 3 Steps</p>
