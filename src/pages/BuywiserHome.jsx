@@ -41,23 +41,23 @@ function Testimonials() {
 const FAQS = [
   {
     q: "Can I keep my current agent?",
-    a: "Yes, if your agent participates in the Veteran Home Transition Benefit."
+    a: "Yes. You do not have to change agents to explore your options."
   },
   {
-    q: "What if my agent does not participate?",
-    a: "You can review other options, including participating agents and local veteran agents where available."
+    q: "How do I receive the full 1.5%?",
+    a: "The maximum benefit is typically achieved when BuyWiser coordinates both financing and purchase-side services."
   },
   {
-    q: "Why doesn't every agent participate?",
-    a: "Participation requires agreeing to structure the next-home purchase to include the Veteran Home Transition Benefit. Not all agents choose to participate."
+    q: "Are there other options?",
+    a: "Yes. Depending on how your transaction is structured, partial benefit options may be available."
   },
   {
     q: "Is this a government benefit?",
-    a: "No. This is a private program benefit offered through BuyWiser and participating professionals. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+    a: "No. This is a private program offered through BuyWiser and participating professionals. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
   {
     q: "How much is the benefit?",
-    a: "Up to 1.5% toward the purchase price of your next home, depending on the transaction and participation structure."
+    a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured."
   },
 ];
 
@@ -173,17 +173,17 @@ function LandingView({ onResult }) {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Your Home Is for Sale. Does Your Agent Participate in the{" "}
-            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit?</span>
+            Your home is for sale. Before you choose who will represent you on the purchase of your next home, check how the{" "}
+            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> can be structured.
           </h1>
 
           {/* Subheadline */}
-          <div className="mb-4 text-center space-y-2">
+          <div className="mb-4 text-center space-y-3">
             <p className="text-slate-500 text-base leading-relaxed">
-              Participating agents have agreed to include the Veteran Home Transition Benefit in the structure of your next-home purchase — offering up to 1.5% toward your next home. Not all agents participate.
+              The Veteran Home Transition Benefit can be structured into your next-home purchase — offering up to 1.5% toward your next home.
             </p>
-            <p className="text-slate-700 text-base font-semibold leading-relaxed">
-              That decision will determine whether this benefit is included in your next purchase.
+            <p className="text-slate-600 text-sm leading-relaxed">
+              The full benefit is typically achieved when your next-home purchase is coordinated through BuyWiser's network, including financing and home search support. Other options may be available depending on how the transaction is structured.
             </p>
           </div>
 
@@ -196,7 +196,7 @@ function LandingView({ onResult }) {
           </div>
 
           {/* Supporting line */}
-          <p className="text-center text-sm text-slate-500 italic mb-5">Before you decide who should represent you on your next home, check this.</p>
+          <p className="text-center text-sm text-slate-500 italic mb-5">Before you commit to buyer representation on your next home, review your options.</p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
@@ -209,10 +209,10 @@ function LandingView({ onResult }) {
                 type="url"
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(""); }}
-                placeholder="Paste your Zillow, Redfin, or Realtor.com listing link"
+                placeholder="Enter your home address or listing (Zillow, Redfin, etc.)"
                 className="w-full px-4 py-3.5 text-base border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white"
               />
-              <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed for participation.</p>
+              <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
             </div>
 
             {error && (
@@ -245,9 +245,9 @@ function LandingView({ onResult }) {
           {/* Trust bullets */}
           <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center">
             {[
-              "Up to 1.5% toward your next home",
+              "Up to 1.5% toward your next home purchase",
               "Works whether your next loan is VA or conventional",
-              "Check your options before committing to buyer representation"
+              "Review your options before committing to buyer representation"
             ].map(t => (
               <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
                 <CheckCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#cc0000" }} />{t}
@@ -257,7 +257,7 @@ function LandingView({ onResult }) {
 
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Enter your listing to check your options"], ["2", "Check whether your agent participates"], ["3", "See your benefit and next-home options"]].map(([num, label], i, arr) => (
+            {[["1", "Enter your home address or listing to review your options"], ["2", "See how the benefit can be structured"], ["3", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
               <span key={num} className="flex items-center gap-1">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
                   <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
@@ -279,31 +279,55 @@ function LandingView({ onResult }) {
           </div>
 
           {/* ── Transition line ── */}
-          <p className="text-sm text-slate-500 italic text-center mb-6">Most homeowners never ask this question before choosing who represents them on their next home.</p>
+          <p className="text-sm text-slate-500 italic text-center mb-6">Most homeowners never review these options before choosing who represents them on their next home.</p>
 
-          {/* ── Why Agent Participation Matters ── */}
+          {/* ── Why This Matters ── */}
           <div className="pt-0">
-            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your Agent's Participation Matters</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why This Matters</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
               <p>Selling your current home and buying your next one are two separate transactions.</p>
-              <p>Many homeowners naturally assume the same agent relationship will carry forward automatically. But not all agents participate in the Veteran Home Transition Benefit.</p>
-              <p>Participating agents have agreed to include the Veteran Home Transition Benefit in the structure of qualifying next-home purchases. That decision can affect whether this benefit is included in your next purchase.</p>
+              <p>Many homeowners assume the same agent relationship will carry forward automatically.</p>
+              <p>But how your next-home purchase is structured — including who you work with and how services are coordinated — can affect whether and how the Veteran Home Transition Benefit is included.</p>
             </div>
           </div>
 
           {/* ── Already Working With an Agent ── */}
           <div className="mt-6 rounded-xl p-5 bg-blue-50 border border-blue-200">
             <h2 className="text-base font-bold text-slate-900 mb-2">Already Working With an Agent?</h2>
-            <p className="text-sm font-semibold text-slate-800 leading-relaxed mb-3">You do not have to change agents to access this benefit.</p>
-            <p className="text-sm text-slate-600 leading-relaxed mb-3">If your agent participates, you can continue working together while preserving the structure of the Veteran Home Transition Benefit on your next purchase.</p>
-            <p className="text-sm text-slate-600 leading-relaxed mb-4">If your agent does not participate, you can review other options, including a local participating veteran agent with a strong reputation.</p>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button className="px-4 py-2.5 text-sm font-semibold rounded-lg border-2 text-slate-800 border-slate-300 hover:border-slate-500 transition bg-white">
-                Nominate My Agent
-              </button>
-              <button className="px-4 py-2.5 text-sm font-semibold rounded-lg border-2 transition" style={{ background: "#cc0000", color: "#fff", borderColor: "#cc0000" }}>
-                Show Me Participating Veteran Agents
-              </button>
+            <p className="text-sm font-semibold text-slate-800 leading-relaxed mb-3">You do not have to change agents to explore this benefit.</p>
+            <ul className="space-y-2 mb-3">
+              {[
+                "Your current agent may still be part of your next purchase",
+                "Some structures allow flexibility depending on how services are coordinated",
+                "The full benefit is typically achieved when your next purchase is coordinated through BuyWiser",
+              ].map(item => (
+                <li key={item} className="flex items-start gap-2 text-sm text-slate-600">
+                  <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5 text-blue-500" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="text-sm text-slate-600 italic">Before you commit to buyer representation, it's worth reviewing your options.</p>
+          </div>
+
+          {/* ── How the Benefit Is Structured ── */}
+          <div className="mt-6 rounded-xl p-5 border border-slate-200 bg-white">
+            <h2 className="text-base font-bold text-slate-900 mb-3">How the Benefit Is Structured</h2>
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">The Veteran Home Transition Benefit is flexible and depends on how your next-home purchase is structured.</p>
+            <div className="space-y-3">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm font-bold text-amber-800 mb-1">Maximum benefit (up to 1.5%)</p>
+                <p className="text-xs text-amber-700">Typically achieved when BuyWiser coordinates both:</p>
+                <ul className="mt-1.5 space-y-1">
+                  {["Financing", "Purchase-side services"].map(i => (
+                    <li key={i} className="flex items-center gap-1.5 text-xs text-amber-800"><CheckCircle className="h-3 w-3 flex-shrink-0" />{i}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+                <p className="text-sm font-bold text-slate-700 mb-1">Other options</p>
+                <p className="text-xs text-slate-600">Different structures may offer partial benefit depending on participation, services used, and transaction details.</p>
+              </div>
             </div>
           </div>
 
@@ -313,23 +337,20 @@ function LandingView({ onResult }) {
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
               The Veteran Home Transition Benefit is a private program benefit offered through BuyWiser for qualifying veterans who are selling their current home and planning another purchase.
             </p>
-            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
-              Participating agents have agreed to include this benefit in the structure of qualifying next-home purchases, offering up to 1.5% toward the purchase of your next home.
-            </p>
-            <p className="text-sm text-slate-500 leading-relaxed text-center max-w-md mx-auto">
-              The exact amount depends on the transaction and participation structure.
+            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
+              It is designed to help structure your next-home purchase in a way that provides meaningful financial benefit.
             </p>
           </div>
 
           {/* ── Built for section ── */}
           <div className="mt-6 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
-            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>Built for Veteran Homeowners Making Their Next Move</h2>
+            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>Built for Veteran Homeowners Who Are:</h2>
             <ul className="space-y-2.5">
               {[
                 "Selling a home and planning another purchase",
-                "Want to know whether VA or conventional financing makes more sense",
-                "Want to know how much you can access through the Veteran Home Transition Benefit",
-                "Want a smarter plan before deciding who should represent you on your next home",
+                "Evaluating whether VA or conventional financing makes more sense",
+                "Interested in how much benefit may be available",
+                "Wanting to make a more informed decision before choosing buyer representation",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
                   <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#cc0000" }} />
@@ -373,7 +394,7 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Enter your listing to check your options</p>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">Enter your home address or listing to review your options</p>
                     <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-blue-600 font-mono truncate shadow-sm">
                       <span className="text-slate-400 flex-shrink-0">🔗</span>
                       zillow.com/homedetails/123-main-st…
@@ -384,20 +405,18 @@ function LandingView({ onResult }) {
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Check whether your agent participates</p>
-                    <div className="bg-white border-2 border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-500 font-mono shadow-sm">
-                      Paste Zillow, Redfin, or Realtor.com URL…
-                    </div>
+                    <p className="text-sm font-semibold text-slate-800 mb-1">See how the Veteran Home Transition Benefit can be structured</p>
+                    <p className="text-xs text-slate-500">Based on your transaction and how services are coordinated</p>
                   </div>
                 </div>
                 <div className="flex justify-center text-slate-300 text-lg">↓</div>
                 <div className="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
                   <div>
-                    <p className="text-sm font-semibold text-white mb-0.5">See your benefit and next-home options</p>
+                    <p className="text-sm font-semibold text-white mb-0.5">Decide how to move forward based on your priorities</p>
                     <p className="text-xl font-bold text-amber-400">Up to 1.5% toward your next home</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Depending on the transaction and participation structure</p>
-                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Estimate only. Final amount depends on eligibility and transaction details.</p>
+                    <p className="text-xs text-slate-400 mt-0.5">Depending on how the transaction is structured</p>
+                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Final amount depends on eligibility and transaction details.</p>
                   </div>
                 </div>
               </div>
@@ -406,7 +425,7 @@ function LandingView({ onResult }) {
 
           {/* ── Footer CTA strip ── */}
           <div className="mt-10 rounded-xl p-6 text-center" style={{ background: "#0a1f5c" }}>
-            <p className="text-white text-sm leading-relaxed mb-4">Before you commit to buyer representation on your next home, check your options.</p>
+            <p className="text-white text-sm leading-relaxed mb-4">Before you commit to buyer representation on your next home, review your options.</p>
             <button
               onClick={() => inputRef.current?.focus()}
               className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
