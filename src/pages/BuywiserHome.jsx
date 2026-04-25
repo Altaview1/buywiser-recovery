@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Tag } from "lucide-react";
 import AppointmentScheduler from "../components/AppointmentScheduler";
 import LeadCaptureForm from "../components/LeadCaptureForm";
+import ProcessSteps from "../components/ProcessSteps";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
 const TESTIMONIALS = [
@@ -310,6 +311,12 @@ function LandingView({ onResult }) {
               )}
             </button>
           </form>
+
+          {/* ── Process Steps ── */}
+          <div className="mt-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">How It Works — Your Journey</p>
+            <ProcessSteps activeStep={0} />
+          </div>
 
           {/* Trust bullets */}
           <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center">
