@@ -142,6 +142,7 @@ function LandingView({ onResult }) {
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [urlTouched, setUrlTouched] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -151,10 +152,15 @@ function LandingView({ onResult }) {
     if (params.get("code")) setCode(params.get("code"));
   }, []);
 
-  const valid = url.trim().length > 10 && isListingUrl(url);
+  const hasContent = url.trim().length > 10;
+  const valid = hasContent && isListingUrl(url);
+  const showUrlError = urlTouched && hasContent && !isListingUrl(url);
+
+  const ACCEPTED_DOMAINS = "zillow.com, redfin.com, realtor.com, trulia.com, homes.com";
 
   const handleSubmit = async (e) => {
     e?.preventDefault();
+    setUrlTouched(true);
     if (!valid || loading) return;
     setLoading(true);
     setError("");
@@ -264,10 +270,20 @@ function LandingView({ onResult }) {
                 type="url"
                 value={url}
                 onChange={(e) => { setUrl(e.target.value); setError(""); }}
+                onBlur={() => setUrlTouched(true)}
                 placeholder="Enter any home listing from Zillow, Redfin, etc. and find your benefit"
-                className="w-full px-4 py-3.5 text-base border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white"
+                className={`w-full px-4 py-3.5 text-base border-2 rounded-lg focus:outline-none transition bg-white ${
+                  showUrlError ? "border-red-400 focus:border-red-500" : valid ? "border-green-400 focus:border-green-500" : "border-slate-200 focus:border-blue-600"
+                }`}
               />
-              <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
+              {showUrlError ? (
+                <div className="mt-1.5 flex items-start gap-1.5 text-red-600">
+                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                  <p className="text-xs font-medium">Please paste a valid listing URL from: {ACCEPTED_DOMAINS}</p>
+                </div>
+              ) : (
+                <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
+              )}
             </div>
 
             {/* Optional code field */}
@@ -292,10 +308,6 @@ function LandingView({ onResult }) {
                 <span>{error}</span>
               </div>
             )}
-            {!valid && url.length > 10 && !isListingUrl(url) && (
-              <p className="text-amber-600 text-sm">Please paste a Zillow, Redfin, Realtor.com, Trulia, or Homes.com URL.</p>
-            )}
-
             <button
               type="submit"
               disabled={!valid || loading}
