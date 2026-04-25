@@ -174,7 +174,7 @@ function LandingView({ onResult }) {
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
             Your home is for sale. Before you choose who will represent you on the purchase of your next home, check how the{" "}
-            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> can be structured.
+            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> is structured.
           </h1>
 
           {/* Subheadline */}
