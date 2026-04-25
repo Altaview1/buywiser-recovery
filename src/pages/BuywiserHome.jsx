@@ -45,7 +45,7 @@ const FAQS = [
   },
   {
     q: "How do I receive the full 1.5%?",
-    a: "The maximum benefit is typically achieved when BuyWiser coordinates both financing and purchase-side services."
+    a: "The full benefit is achieved when your next-home purchase is coordinated through BuyWiser's network — including both financing and purchase-side services. Other structures may offer a partial benefit depending on how the transaction is arranged."
   },
   {
     q: "Are there other options?",
@@ -235,7 +235,7 @@ function LandingView({ onResult }) {
               Veterans departing a VA loan have earned access to a transition benefit worth up to 1.5% toward their next home purchase — but it must be structured correctly before you commit to buyer representation.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
-              The full benefit is achieved when your next-home purchase is coordinated through BuyWiser's network. Most veterans never know this benefit exists until after they've already signed with a buyer's agent.
+              Most veterans never know this benefit exists until after they've already signed with a buyer's agent.
             </p>
           </div>
 
