@@ -228,14 +228,14 @@ function LandingView({ onResult }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>You Earned This — Your VA Loan Is Why You Qualify</p>
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>If your current home was financed with a VA loan, how you structure your next purchase will determine the benefit you receive.</p>
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Because you currently have a VA loan, you qualify for{" "}
-            <span style={{ color: "#cc0000" }}>BuyWiser's Veteran's Home Transition Benefit</span> to apply to your next purchase.
+            Your home is for sale. Before you choose who will represent you on the purchase of your next home, check how the{" "}
+            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> can be structured.
           </h1>
 
           {/* Subheadline */}
