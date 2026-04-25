@@ -256,75 +256,6 @@ function LandingView({ onResult }) {
             </div>
           </div>
 
-          {/* Supporting line */}
-          <p className="text-center text-sm text-slate-500 italic mb-5">Check your benefit now — before you commit to buyer representation on your next home.</p>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div>
-              <label className="block text-sm font-bold text-blue-700 uppercase tracking-wider mb-1.5">
-                Check Your Options
-              </label>
-              <input
-                ref={inputRef}
-                type="url"
-                value={url}
-                onChange={(e) => { setUrl(e.target.value); setError(""); }}
-                onBlur={() => setUrlTouched(true)}
-                placeholder="Enter any home listing from Zillow, Redfin, etc. and find your benefit"
-                className={`w-full px-4 py-3.5 text-base border-2 rounded-lg focus:outline-none transition bg-white ${
-                  showUrlError ? "border-red-400 focus:border-red-500" : valid ? "border-green-400 focus:border-green-500" : "border-slate-200 focus:border-blue-600"
-                }`}
-              />
-              {showUrlError ? (
-                <div className="mt-1.5 flex items-start gap-1.5 text-red-600">
-                  <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs font-medium">Please paste a valid listing URL from: {ACCEPTED_DOMAINS}</p>
-                </div>
-              ) : (
-                <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
-              )}
-            </div>
-
-            {/* Optional code field */}
-            <div>
-              <label className="block text-sm font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
-                <Tag className="h-3.5 w-3.5 text-slate-400" />
-                Have a Personal Benefit Code? <span className="font-normal text-slate-400">(optional)</span>
-              </label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="Enter your code (e.g., ABX-4729)"
-                className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
-              />
-              <p className="mt-1 text-xs text-slate-400">Found on your mailer — used to personalize your options</p>
-            </div>
-
-            {error && (
-              <div className="flex items-start gap-2 text-red-600 text-sm">
-                <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-            <button
-              type="submit"
-              disabled={!valid || loading}
-              className="w-full py-4 font-bold text-lg rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              style={{ background: valid ? "#cc0000" : "#94a3b8", color: "#fff", boxShadow: valid ? "0 8px 24px rgba(204,0,0,0.35)" : "none" }}
-            >
-              {loading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Checking...
-                </>
-              ) : (
-                <>Check My Options <ArrowRight className="h-5 w-5" /></>
-              )}
-            </button>
-          </form>
-
           {/* ── Process Steps ── */}
           <div className="mt-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">How It Works — Your Journey</p>
@@ -348,6 +279,75 @@ function LandingView({ onResult }) {
           <div className="mt-8">
             <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Skip the Listing — Talk to Us Directly</p>
             <LeadCaptureForm />
+          </div>
+
+          {/* ── Listing Form ── */}
+          <div className="mt-8">
+            <p className="text-center text-sm text-slate-500 italic mb-5">Check your benefit now — before you commit to buyer representation on your next home.</p>
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div>
+                <label className="block text-sm font-bold text-blue-700 uppercase tracking-wider mb-1.5">
+                  Check Your Options
+                </label>
+                <input
+                  ref={inputRef}
+                  type="url"
+                  value={url}
+                  onChange={(e) => { setUrl(e.target.value); setError(""); }}
+                  onBlur={() => setUrlTouched(true)}
+                  placeholder="Enter any home listing from Zillow, Redfin, etc. and find your benefit"
+                  className={`w-full px-4 py-3.5 text-base border-2 rounded-lg focus:outline-none transition bg-white ${
+                    showUrlError ? "border-red-400 focus:border-red-500" : valid ? "border-green-400 focus:border-green-500" : "border-slate-200 focus:border-blue-600"
+                  }`}
+                />
+                {showUrlError ? (
+                  <div className="mt-1.5 flex items-start gap-1.5 text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs font-medium">Please paste a valid listing URL from: {ACCEPTED_DOMAINS}</p>
+                  </div>
+                ) : (
+                  <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
+                )}
+              </div>
+
+              {/* Optional code field */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
+                  <Tag className="h-3.5 w-3.5 text-slate-400" />
+                  Have a Personal Benefit Code? <span className="font-normal text-slate-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Enter your code (e.g., ABX-4729)"
+                  className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
+                />
+                <p className="mt-1 text-xs text-slate-400">Found on your mailer — used to personalize your options</p>
+              </div>
+
+              {error && (
+                <div className="flex items-start gap-2 text-red-600 text-sm">
+                  <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
+              <button
+                type="submit"
+                disabled={!valid || loading}
+                className="w-full py-4 font-bold text-lg rounded-lg transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                style={{ background: valid ? "#cc0000" : "#94a3b8", color: "#fff", boxShadow: valid ? "0 8px 24px rgba(204,0,0,0.35)" : "none" }}
+              >
+                {loading ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Checking...
+                  </>
+                ) : (
+                  <>Check My Options <ArrowRight className="h-5 w-5" /></>
+                )}
+              </button>
+            </form>
           </div>
 
           {/* 3-step strip */}
