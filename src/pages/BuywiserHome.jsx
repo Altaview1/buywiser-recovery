@@ -52,6 +52,10 @@ const FAQS = [
     a: "Yes. Depending on how your transaction is structured, partial benefit options may be available."
   },
   {
+    q: "Why does my VA loan matter?",
+    a: "Your current VA loan is the qualifying factor. Veterans who are departing a VA loan as part of a home sale and moving into a new purchase occupy a specific transition window — that's when this benefit can be structured in."
+  },
+  {
     q: "Is this a government benefit?",
     a: "No. This is a private program offered through BuyWiser and participating professionals. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
@@ -215,23 +219,23 @@ function LandingView({ onResult }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-4">
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>How Your Veteran Home Transition Benefit Is Structured</p>
+            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>You Earned This — Your VA Loan Is Why You Qualify</p>
             <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
           </div>
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            Your home is for sale. Before you choose who will represent you on the purchase of your next home, check how the{" "}
-            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> is structured.
+            Because you currently have a VA loan, you qualify for the{" "}
+            <span style={{ color: "#cc0000" }}>Veteran Home Transition Benefit</span> on your next home purchase.
           </h1>
 
           {/* Subheadline */}
           <div className="mb-4 text-center space-y-3">
             <p className="text-slate-500 text-base leading-relaxed">
-              The Veteran Home Transition Benefit can be structured into your next-home purchase — offering up to 1.5% toward your next home.
+              Veterans departing a VA loan have earned access to a transition benefit worth up to 1.5% toward their next home purchase — but it must be structured correctly before you commit to buyer representation.
             </p>
             <p className="text-slate-600 text-sm leading-relaxed">
-              The full benefit is typically achieved when your next-home purchase is coordinated through BuyWiser's network, including financing and home search support. Other options may be available depending on how the transaction is structured.
+              The full benefit is achieved when your next-home purchase is coordinated through BuyWiser's network. Most veterans never know this benefit exists until after they've already signed with a buyer's agent.
             </p>
           </div>
 
@@ -239,12 +243,12 @@ function LandingView({ onResult }) {
           <div className="mb-3 flex justify-center">
             <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-600">
               <span className="font-semibold text-slate-800">On a $700,000 purchase:</span>
-              <span className="font-bold text-blue-700">up to $10,500 toward your next home</span>
+              <span className="font-bold text-blue-700">up to $10,500 you may be leaving on the table</span>
             </div>
           </div>
 
           {/* Supporting line */}
-          <p className="text-center text-sm text-slate-500 italic mb-5">Before you commit to buyer representation on your next home, review your options.</p>
+          <p className="text-center text-sm text-slate-500 italic mb-5">Check your benefit now — before you commit to buyer representation on your next home.</p>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-3">
@@ -343,15 +347,15 @@ function LandingView({ onResult }) {
           </div>
 
           {/* ── Transition line ── */}
-          <p className="text-sm text-slate-500 italic text-center mb-6">Most homeowners never review these options before choosing who represents them on their next home.</p>
+          <p className="text-sm text-slate-500 italic text-center mb-6">Most veterans with a departing VA loan never realize this benefit exists until it's too late to use it.</p>
 
           {/* ── Why This Matters ── */}
           <div className="pt-0">
-            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why This Matters</h2>
+            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Is the Key</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
-              <p>Selling your current home and buying your next one are two separate transactions.</p>
-              <p>Many homeowners assume the same agent relationship will carry forward automatically.</p>
-              <p>But how your next-home purchase is structured — including who you work with and how services are coordinated — can affect whether and how the Veteran Home Transition Benefit is included.</p>
+              <p>Veterans who currently hold a VA loan and are selling to purchase another home occupy a unique position — your service and your existing VA loan are what make this benefit available to you.</p>
+              <p>The Veteran Home Transition Benefit is structured specifically for this moment: when a veteran is leaving one home (with a VA loan) and moving into the next.</p>
+              <p>But the window is narrow. Once you've committed to buyer representation on your next purchase, the ability to structure the benefit may be gone.</p>
             </div>
           </div>
 
@@ -399,22 +403,22 @@ function LandingView({ onResult }) {
           <div className="mt-6">
             <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Veteran Home Transition Benefit?</h2>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
-              The Veteran Home Transition Benefit is a private program benefit offered through BuyWiser for qualifying veterans who are selling their current home and planning another purchase.
+              It is a private benefit offered through BuyWiser — available to veterans who currently hold a VA loan and are selling that home to purchase their next one. Your existing VA loan is the qualifying factor.
             </p>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
-              It is designed to help structure your next-home purchase in a way that provides meaningful financial benefit.
+              It is not a government program. It is not affiliated with the VA. It is a BuyWiser benefit structured around the moment of your transition.
             </p>
           </div>
 
           {/* ── Built for section ── */}
           <div className="mt-6 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
-            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>Built for Veteran Homeowners Who Are:</h2>
+            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>You Likely Qualify If You Are:</h2>
             <ul className="space-y-2.5">
               {[
-                "Selling a home and planning another purchase",
-                "Evaluating whether VA or conventional financing makes more sense",
-                "Interested in how much benefit may be available",
-                "Wanting to make a more informed decision before choosing buyer representation",
+                "Currently holding a VA loan on your home",
+                "Selling that home and purchasing another",
+                "Have not yet committed to buyer representation on your next purchase",
+                "Interested in VA or conventional financing on your next home",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
                   <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#cc0000" }} />
@@ -489,7 +493,7 @@ function LandingView({ onResult }) {
 
           {/* ── Footer CTA strip ── */}
           <div className="mt-10 rounded-xl p-6 text-center" style={{ background: "#0a1f5c" }}>
-            <p className="text-white text-sm leading-relaxed mb-4">Before you commit to buyer representation on your next home, review your options.</p>
+            <p className="text-white text-sm leading-relaxed mb-4">Your VA loan is what makes this benefit available. Don't leave it behind — check your options before committing to buyer representation.</p>
             <button
               onClick={() => inputRef.current?.focus()}
               className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
