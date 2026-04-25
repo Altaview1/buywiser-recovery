@@ -55,7 +55,7 @@ const FAQS = [
   },
   {
     q: "Why does my VA loan matter?",
-    a: "Your current VA-financed home is what makes it possible to structure this benefit into your next purchase. Veterans transitioning from a VA-financed home to another purchase are in the right position to structure this benefit in."
+    a: "Your current VA-financed home is what makes it possible to structure this benefit into your next purchase. Veterans transitioning from a VA-financed home to another purchase are in the right position to structure your full benefit."
   },
   {
     q: "Is this a government benefit?",
@@ -311,7 +311,7 @@ function LandingView() {
             <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Matters</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
               <p>Your current VA-financed home is what makes it possible to structure this benefit into your next purchase.</p>
-              <p>Veterans who are transitioning from a VA-financed home to another purchase are in the right position to structure this benefit in — but that window closes once you commit to buyer representation.</p>
+              <p>Veterans who are transitioning from a VA-financed home to another purchase are in the right position to structure your full benefit — but that window closes once you commit to buyer representation.</p>
             </div>
           </div>
 
