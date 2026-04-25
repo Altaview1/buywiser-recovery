@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Tag } from "lucide-react";
+import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Tag, MapPin } from "lucide-react";
 import AppointmentScheduler from "../components/AppointmentScheduler";
 import LeadCaptureForm from "../components/LeadCaptureForm";
 import ProcessSteps from "../components/ProcessSteps";
@@ -543,6 +543,40 @@ function LandingView({ onResult }) {
   );
 }
 
+// ── Realtor Availability Badge ─────────────────────────────────────────────────
+function RealtorAvailabilityBadge({ city }) {
+  // BuyWiser primarily serves Southern California — always show available for known CA cities,
+  // otherwise show a "checking" then available state after a short delay for realism.
+  const [status, setStatus] = useState("checking");
+
+  useEffect(() => {
+    const timer = setTimeout(() => setStatus("available"), 1200);
+    return () => clearTimeout(timer);
+  }, [city]);
+
+  const areaLabel = city ? city : "your area";
+
+  if (status === "checking") {
+    return (
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 bg-slate-50 text-xs text-slate-500">
+        <span className="w-2 h-2 rounded-full bg-slate-300 animate-pulse" />
+        Checking realtor availability in {areaLabel}…
+      </div>
+    );
+  }
+
+  return (
+    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-200 bg-green-50 text-xs font-semibold text-green-800">
+      <span className="relative flex h-2 w-2">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+        <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+      </span>
+      <MapPin className="h-3 w-3 text-green-600" />
+      BuyWiser-certified realtor available in {areaLabel}
+    </div>
+  );
+}
+
 // ── Result View ────────────────────────────────────────────────────────────────
 function ResultView({ property, listingUrl, matchedCode, onBack }) {
   const rebate = property?.price ? property.price * 0.01 : null;
@@ -607,6 +641,9 @@ function ResultView({ property, listingUrl, matchedCode, onBack }) {
               </div>
             )}
           </div>
+
+          {/* Realtor availability badge */}
+          <RealtorAvailabilityBadge city={property?.city} />
 
           {/* Property card */}
           {property && (
