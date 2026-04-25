@@ -3,7 +3,6 @@ import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Tag, MapPin } from "lucide-react";
 import AppointmentScheduler from "../components/AppointmentScheduler";
 import LeadCaptureForm from "../components/LeadCaptureForm";
-import ProcessSteps from "../components/ProcessSteps";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
@@ -43,36 +42,36 @@ function Testimonials() {
 // ── FAQ ────────────────────────────────────────────────────────────────────────
 const FAQS = [
   {
+    q: "Do I need to enter anything to see my options?",
+    a: "No. You can review your options immediately. A Personal Benefit Code simply helps personalize your experience if you received a mailer."
+  },
+  {
+    q: "How do I receive the full benefit?",
+    a: "The maximum benefit is typically achieved when BuyWiser coordinates both financing and purchase-side services for your next home."
+  },
+  {
     q: "Can I keep my current agent?",
-    a: "Yes. You do not have to change agents to explore your options."
-  },
-  {
-    q: "How do I receive the full 1.5%?",
-    a: "The full benefit is achieved when your next-home purchase is coordinated through BuyWiser's network — including both financing and purchase-side services. Other structures may offer a partial benefit depending on how the transaction is arranged."
-  },
-  {
-    q: "Are there other options?",
-    a: "Yes. Depending on how your transaction is structured, partial benefit options may be available."
+    a: "Yes. You can explore your options without changing agents. Your current agent may still be involved in the transaction."
   },
   {
     q: "Why does my VA loan matter?",
-    a: "Your current VA loan is the qualifying factor. Veterans who are departing a VA loan as part of a home sale and moving into a new purchase occupy a specific transition window — that's when this benefit can be structured in."
+    a: "Your current VA-financed home is what makes it possible to structure this benefit into your next purchase. Veterans transitioning from a VA-financed home to another purchase are in the right position to structure this benefit in."
   },
   {
     q: "Is this a government benefit?",
-    a: "No. This is a private program offered through BuyWiser and participating professionals. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+    a: "No. The Red White & Blue Purchase Benefit is a private program offered through BuyWiser. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
   {
     q: "How much is the benefit?",
-    a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured. This benefit is available for the next 90 days."
+    a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured."
   },
   {
     q: "What is a Personal Benefit Code?",
-    a: "A code included in select mailers that allows us to personalize your experience and track your request. It helps us connect your mailed piece to your online review."
+    a: "A code included in select mailers that allows us to personalize your experience and connect your mailed piece to your online review."
   },
   {
-    q: "Do I need a code to check my options?",
-    a: "No. You can review your options with or without a code. The code simply helps us personalize your results if you received a mailer."
+    q: "Are there other options?",
+    a: "Yes. Partial benefit options may be available depending on how your transaction is structured. Structure determines outcome."
   },
 ];
 
@@ -126,7 +125,7 @@ function PageFooter() {
         className="h-10 w-auto mx-auto mb-3 opacity-60"
       />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed">
-        Powered by BuyWiser. The Next Move™ Veteran Home Transition Benefit is a private BuyWiser program benefit — not a government program or official VA benefit.{" "}
+        Powered by BuyWiser. The Red White &amp; Blue Purchase Benefit is a private program offered through BuyWiser — not a government program or official VA benefit.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Terms &amp; Eligibility</a>
       </p>
       <p className="text-xs text-slate-300 mt-2">
@@ -187,75 +186,16 @@ function BenefitEstimator() {
 }
 
 // ── Landing View ───────────────────────────────────────────────────────────────
-function LandingView({ onResult }) {
-  const [url, setUrl] = useState("");
+function LandingView() {
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [urlTouched, setUrlTouched] = useState(false);
-  const inputRef = useRef(null);
+  const ctaRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
-    // Pre-fill code from URL param if present
     const params = new URLSearchParams(window.location.search);
-    if (params.get("code")) setCode(params.get("code"));
+    if (params.get("code")) setCode(params.get("code").toUpperCase());
   }, []);
 
-  const hasContent = url.trim().length > 10;
-  const valid = hasContent && isListingUrl(url);
-  const showUrlError = urlTouched && hasContent && !isListingUrl(url);
-
-  const ACCEPTED_DOMAINS = "zillow.com, redfin.com, realtor.com, trulia.com, homes.com";
-
-  const handleSubmit = async (e) => {
-    e?.preventDefault();
-    setUrlTouched(true);
-    if (!valid || loading) return;
-    setLoading(true);
-    setError("");
-    try {
-      // Lookup mailer code if provided
-      let matchedCode = null;
-      let codeMatched = false;
-      if (code.trim()) {
-        const codes = await base44.entities.MailerCode.filter({ code: code.trim().toUpperCase() });
-        if (codes && codes.length > 0) {
-          matchedCode = codes[0];
-          codeMatched = true;
-        }
-      }
-
-      // Create lead record
-      const leadData = {
-        address_or_link: url.trim(),
-        utm_source: code.trim() ? "mailer" : "web",
-        ...(code.trim() && { code: code.trim().toUpperCase() }),
-        code_matched: codeMatched,
-        ...(matchedCode && {
-          campaign_id: matchedCode.campaign_id,
-          assigned_agent: matchedCode.assigned_agent,
-          mailer_code_id: matchedCode.id,
-        }),
-      };
-      await base44.entities.Lead.create(leadData);
-
-      const res = await base44.functions.invoke("fetchPropertyFromUrl", { url: url.trim() });
-
-      // If code matched and has an address but user entered a listing URL, we can augment
-      const property = res.data.property;
-      if (matchedCode && matchedCode.address && !property?.address) {
-        property.address = matchedCode.address;
-        property.city = matchedCode.city;
-        property.state = matchedCode.state;
-      }
-
-      onResult(property, url.trim(), matchedCode);
-    } catch {
-      setError("We couldn't read that listing. Please paste the full URL and try again.");
-    }
-    setLoading(false);
-  };
+  const scrollToCTA = () => ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -268,110 +208,74 @@ function LandingView({ onResult }) {
         />
       </header>
 
-      {/* Red top bar */}
-      <div style={{ background: "#cc0000", height: 6, width: "100%" }} />
+      {/* RWB top bar */}
+      <div className="flex" style={{ height: 6 }}>
+        <div style={{ flex: 1, background: "#cc0000" }} />
+        <div style={{ flex: 1, background: "#ffffff", borderTop: "1px solid #e2e8f0" }} />
+        <div style={{ flex: 1, background: "#1d4ed8" }} />
+      </div>
 
-      {/* Hero */}
       <main className="flex-1 flex flex-col items-center px-4 py-12 sm:py-16">
         <div className="w-full max-w-xl">
 
-          {/* Eyebrow */}
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
-            <p className="text-xs font-black tracking-widest uppercase" style={{ color: "#cc0000" }}>Official Program Notification — Veterans Only</p>
-            <span className="inline-block w-5 h-px" style={{ background: "#cc0000" }} />
+          {/* Eyebrow caption */}
+          <div className="flex items-center justify-center gap-2 mb-5">
+            <span className="inline-block w-5 h-px" style={{ background: "#1d4ed8" }} />
+            <p className="text-xs font-bold tracking-widest uppercase text-slate-500">Important Information for Veteran Homeowners</p>
+            <span className="inline-block w-5 h-px" style={{ background: "#1d4ed8" }} />
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-3 leading-tight tracking-tight text-center">
-            You are eligible for a purchase credit on your next home through{" "}
-            <span style={{ color: "#cc0000" }}>BuyWiser's Next Move™ Veteran Home Transition Benefit</span>.
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 leading-tight tracking-tight text-center">
+            Because your current home was financed with a VA loan, your next purchase can be structured to include the{" "}
+            <span style={{ color: "#cc0000" }}>Red White &amp; Blue Purchase Benefit</span>.
           </h1>
 
-          {/* Subheadline */}
-          <div className="mb-4 text-center space-y-3">
-            <p className="text-slate-500 text-base leading-relaxed">
-              BuyWiser's Next Move™ Veteran Home Transition Benefit is designed exclusively for veterans making their next home purchase — giving you a meaningful purchase credit applied directly at closing.
+          {/* Subhead */}
+          <div className="mb-5 text-center space-y-3">
+            <p className="text-slate-600 text-base leading-relaxed">
+              The Red White &amp; Blue Purchase Benefit offers <strong>up to 1.5%</strong> toward your next home when properly structured.
             </p>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Most veterans never learn about this program until after they've already committed to buyer representation — at which point the credit can no longer be structured in.
+            <p className="text-slate-500 text-sm leading-relaxed">
+              The full benefit is typically achieved when your next-home purchase is coordinated through BuyWiser's network, including financing and home search support. Other options may be available depending on how your transaction is handled.
             </p>
           </div>
 
           {/* Example callout */}
-          <div className="mb-3 flex justify-center">
-            <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-600">
+          <div className="mb-5 flex justify-center">
+            <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-5 py-2.5 text-sm">
               <span className="font-semibold text-slate-800">On a $700,000 purchase:</span>
-              <span className="font-bold text-blue-700">you will receive up to $10,500</span>
+              <span className="font-bold text-blue-700">up to $10,500 toward your next home</span>
             </div>
           </div>
 
-          {/* ── Benefit Estimator — prominent placement ── */}
-          <div className="mt-6 p-5 bg-white border-2 border-red-200 rounded-xl shadow-sm">
-            <p className="text-center text-xs font-black text-red-600 uppercase tracking-widest mb-4">Step 1 — Enter Your Estimated Purchase Price</p>
+          {/* Support line */}
+          <p className="text-center text-sm text-slate-500 italic mb-7">
+            Before you commit to buyer representation on your next home, review your options.
+          </p>
+
+          {/* Primary CTAs */}
+          <div className="flex flex-col sm:flex-row gap-3 mb-4">
+            <button
+              onClick={scrollToCTA}
+              className="flex-1 py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2"
+              style={{ background: "#cc0000", color: "#fff" }}
+            >
+              Check My Options <ArrowRight className="h-4 w-4" />
+            </button>
+            <a
+              href="tel:+18183002642"
+              className="flex-1 py-4 font-bold text-base rounded-xl border-2 border-slate-300 text-slate-700 hover:bg-slate-50 transition flex items-center justify-center gap-2"
+            >
+              Talk to a Specialist
+            </a>
+          </div>
+
+          {/* ── Benefit Estimator ── */}
+          <div className="mt-8 p-5 bg-white border-2 border-red-200 rounded-xl shadow-sm">
+            <p className="text-center text-xs font-black text-red-600 uppercase tracking-widest mb-4">Estimate Your Benefit</p>
             <BenefitEstimator />
           </div>
-
-          {/* ── Process Steps ── */}
-          <div className="mt-8 p-5 bg-slate-50 border border-slate-200 rounded-xl">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-6">Your Journey in 3 Steps</p>
-            <ProcessSteps activeStep={0} />
-          </div>
-
-          {/* Trust bullets */}
-          <div className="mt-3 flex flex-col sm:flex-row gap-1.5 sm:gap-4 justify-center">
-            {[
-              "Up to 1.5% toward your next home purchase",
-              "Works whether your next loan is VA or conventional",
-              "Review your options before committing to buyer representation"
-            ].map(t => (
-              <span key={t} className="flex items-center gap-1.5 text-sm text-slate-600">
-                <CheckCircle className="h-4 w-4 flex-shrink-0" style={{ color: "#cc0000" }} />{t}
-              </span>
-            ))}
-          </div>
-
-          {/* ── Lead Capture Form — close to hero ── */}
-          <div className="mt-8">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Skip the Listing — Talk to Us Directly</p>
-            <LeadCaptureForm />
-          </div>
-
-          {/* ── Personal Benefit Code ── */}
-          <div className="mt-8">
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
-                  <Tag className="h-3.5 w-3.5 text-slate-400" />
-                  Have a Personal Benefit Code? <span className="font-normal text-slate-400">(optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  placeholder="Enter your code (e.g., ABX-4729)"
-                  className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
-                />
-                <p className="mt-1 text-xs text-slate-400">Found on your mailer — used to personalize your options</p>
-              </div>
-            </div>
-          </div>
-
-          {/* 3-step strip */}
-          <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Enter your approximate purchase price to get your benefit estimate"], ["2", "Optionally enter your Personal Benefit Code to personalize your results"], ["3", "See how the benefit is structured"], ["4", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
-              <span key={num} className="flex items-center gap-1">
-                <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
-                  <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
-                  {label}
-                </span>
-                {i < arr.length - 1 && <span className="text-slate-300 text-base px-0.5">→</span>}
-              </span>
-            ))}
-          </div>
-
-          {/* Supporting line under steps */}
-          <p className="mt-4 text-center text-sm text-slate-400 italic">Before you commit to buyer representation on your next home, review your options.</p>
 
           {/* RWB stripe */}
           <div className="flex mt-10 mb-8 rounded-full overflow-hidden" style={{ height: 6 }}>
@@ -380,16 +284,34 @@ function LandingView({ onResult }) {
             <div style={{ flex: 1, background: "#1d4ed8" }} />
           </div>
 
-          {/* ── Transition line ── */}
-          <p className="text-sm text-slate-500 italic text-center mb-6">Most veterans with a departing VA loan never realize this benefit exists until it's too late to use it.</p>
+          {/* ── How It Works ── */}
+          <div>
+            <h2 className="text-lg font-bold text-slate-900 mb-4 text-center">How It Works</h2>
+            <div className="space-y-3">
+              {[
+                { n: "1", text: "Review how your Red White & Blue Purchase Benefit can be structured" },
+                { n: "2", text: "See your available options based on your situation" },
+                { n: "3", text: "Decide how to move forward before choosing representation" },
+              ].map(({ n, text }) => (
+                <div key={n} className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">
+                  <div className="w-8 h-8 rounded-full bg-slate-900 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">{n}</div>
+                  <p className="text-sm text-slate-700 font-medium">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          {/* ── Why This Matters ── */}
-          <div className="pt-0">
-            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Is the Key</h2>
+          {/* Transition line */}
+          <p className="mt-6 text-sm text-slate-500 italic text-center">
+            Most homeowners never review these options before choosing who represents them on their next home.
+          </p>
+
+          {/* ── Why VA Loan Matters ── */}
+          <div className="mt-8">
+            <h2 className="text-lg font-bold text-slate-900 mb-3 text-center">Why Your VA Loan Matters</h2>
             <div className="text-sm text-slate-600 leading-relaxed space-y-3">
-              <p>Veterans who currently hold a VA loan and are selling to purchase another home qualify for this benefit — your service and your existing VA loan are what make it available to you for the next 90 days.</p>
-              <p>BuyWiser's Next Move™ Veteran Home Transition Benefit is built for exactly this moment: when a veteran is leaving one home (with a VA loan) and moving into the next.</p>
-              <p>But the window is narrow. Once you've committed to buyer representation on your next purchase, the ability to structure the benefit may be gone.</p>
+              <p>Your current VA-financed home is what makes it possible to structure this benefit into your next purchase.</p>
+              <p>Veterans who are transitioning from a VA-financed home to another purchase are in the right position to structure this benefit in — but that window closes once you commit to buyer representation.</p>
             </div>
           </div>
 
@@ -399,9 +321,9 @@ function LandingView({ onResult }) {
             <p className="text-sm font-semibold text-slate-800 leading-relaxed mb-3">You do not have to change agents to explore this benefit.</p>
             <ul className="space-y-2 mb-3">
               {[
-                "Your current agent may still be part of your next purchase",
-                "Some structures allow flexibility depending on how services are coordinated",
-                "The full benefit is typically achieved when your next purchase is coordinated through BuyWiser",
+                "Your agent may still be involved in the transaction",
+                "Some structures allow flexibility",
+                "The full benefit is typically achieved when coordinated through BuyWiser",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2 text-sm text-slate-600">
                   <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5 text-blue-500" />
@@ -412,131 +334,119 @@ function LandingView({ onResult }) {
             <p className="text-sm text-slate-600 italic">Before you commit to buyer representation, it's worth reviewing your options.</p>
           </div>
 
-          {/* ── How the Benefit Is Structured ── */}
+          {/* ── How the Benefit Works ── */}
           <div className="mt-6 rounded-xl p-5 border border-slate-200 bg-white">
-            <h2 className="text-base font-bold text-slate-900 mb-3">How the Benefit Is Structured</h2>
-            <p className="text-sm text-slate-600 leading-relaxed mb-4">BuyWiser's Next Move™ Veteran Home Transition Benefit is flexible and depends on how your next-home purchase is structured.</p>
+            <h2 className="text-base font-bold text-slate-900 mb-2">How the Red White &amp; Blue Purchase Benefit Works</h2>
+            <p className="text-sm text-slate-600 leading-relaxed mb-4">The benefit is not automatic — it depends on how your next-home purchase is structured.</p>
             <div className="space-y-3">
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                <p className="text-sm font-bold text-amber-800 mb-1">Maximum benefit (up to 1.5%)</p>
-                <p className="text-xs text-amber-700">Typically achieved when BuyWiser coordinates both:</p>
-                <ul className="mt-1.5 space-y-1">
-                  {["Financing", "Purchase-side services"].map(i => (
+                <p className="text-sm font-bold text-amber-800 mb-1">Maximum Benefit (up to 1.5%)</p>
+                <p className="text-xs text-amber-700 mb-1.5">Typically achieved when:</p>
+                <ul className="space-y-1">
+                  {["BuyWiser coordinates financing", "and purchase-side services"].map(i => (
                     <li key={i} className="flex items-center gap-1.5 text-xs text-amber-800"><CheckCircle className="h-3 w-3 flex-shrink-0" />{i}</li>
                   ))}
                 </ul>
               </div>
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
-                <p className="text-sm font-bold text-slate-700 mb-1">Other options</p>
-                <p className="text-xs text-slate-600">Different structures may offer partial benefit depending on participation, services used, and transaction details.</p>
+                <p className="text-sm font-bold text-slate-700 mb-1">Other Options</p>
+                <ul className="space-y-1">
+                  {["Partial benefit may be available", "Your current agent may still be part of the transaction", "Structure determines outcome"].map(i => (
+                    <li key={i} className="flex items-center gap-1.5 text-xs text-slate-600"><CheckCircle className="h-3 w-3 flex-shrink-0 text-slate-400" />{i}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
 
           {/* ── What Is section ── */}
           <div className="mt-6">
-            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is BuyWiser's Next Move™ Veteran Home Transition Benefit?</h2>
-            <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto mb-2">
-              It is a private benefit offered exclusively through BuyWiser — available to veterans who currently hold a VA loan and are selling that home to purchase their next one. Your existing VA loan is the qualifying factor.
-            </p>
+            <h2 className="text-lg font-bold text-slate-900 mb-2 text-center">What Is the Red White &amp; Blue Purchase Benefit?</h2>
             <p className="text-sm text-slate-600 leading-relaxed text-center max-w-md mx-auto">
-              It is not a government program. It is not affiliated with the VA. It is a BuyWiser benefit structured around the moment of your transition.
+              The Red White &amp; Blue Purchase Benefit is a private program offered through BuyWiser for qualifying veterans who are selling a home and planning another purchase. It is not a government program and is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.
             </p>
-          </div>
-
-          {/* ── Built for section ── */}
-          <div className="mt-6 rounded-xl p-6 bg-green-50 border border-green-200">
-            <h2 className="text-base font-bold mb-4 text-green-800">You Qualify for the Next 90 Days If You Are:</h2>
-            <ul className="space-y-2.5">
-              {[
-                "Currently holding a VA loan on your home",
-                "Selling that home and purchasing another",
-                "Have not yet committed to buyer representation on your next purchase",
-                "Interested in VA or conventional financing on your next home",
-              ].map(item => (
-                <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
-                  <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5 text-green-600" />
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
 
           {/* ── Testimonials ── */}
           <div className="mt-8">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser Customized Programs</p>
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser</p>
             <VeteranTestimonials />
           </div>
 
-          {/* ── Video + Step-by-step ── */}
+          {/* ── Video ── */}
           <div className="mt-8">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">How It Works</p>
-            <div className="flex flex-col lg:flex-row gap-4 items-stretch">
-              {/* Video */}
-              <div className="lg:w-1/2 flex flex-col">
-                <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm flex-1" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-                  <iframe
-                    src="https://app.heygen.com/embeds/f235762557ed4a008bfc3951c186107b"
-                    title="no caption but best yet circle"
-                    frameBorder="0"
-                    allow="encrypted-media; fullscreen;"
-                    allowFullScreen
-                    style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
-                  />
-                </div>
-                <div className="mt-2 text-center">
-                  <p className="text-sm font-semibold text-slate-700">Watch a 1-minute explanation</p>
-                  <p className="text-xs text-slate-400">Bennett Liss — BuyWiser</p>
-                </div>
-              </div>
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 text-center">Hear From Bennett Directly</p>
+            <div className="rounded-xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+              <iframe
+                src="https://app.heygen.com/embeds/f235762557ed4a008bfc3951c186107b"
+                title="Bennett Liss — BuyWiser"
+                frameBorder="0"
+                allow="encrypted-media; fullscreen;"
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+              />
+            </div>
+            <div className="mt-2 text-center">
+              <p className="text-sm font-semibold text-slate-700">Watch a 1-minute explanation</p>
+              <p className="text-xs text-slate-400">Bennett Liss — BuyWiser</p>
+            </div>
+          </div>
 
-              {/* Step-by-step */}
-              <div className="lg:w-1/2 flex flex-col justify-center gap-3">
-                <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-slate-800 mb-2">Enter your approximate purchase price to estimate your benefit</p>
-                    <BenefitEstimator />
-                  </div>
-                </div>
-                <div className="flex justify-center text-slate-300 text-lg">↓</div>
-                <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">See how BuyWiser's Next Move™ Veteran Home Transition Benefit can be structured</p>
-                    <p className="text-xs text-slate-500">Based on your transaction and how services are coordinated</p>
-                  </div>
-                </div>
-                <div className="flex justify-center text-slate-300 text-lg">↓</div>
-                <div className="flex items-start gap-3 bg-slate-900 border border-slate-700 rounded-xl p-4">
-                  <div className="w-7 h-7 rounded-full bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
-                  <div>
-                    <p className="text-sm font-semibold text-white mb-0.5">Decide how to move forward based on your priorities</p>
-                    <p className="text-xl font-bold text-amber-400">Up to 1.5% toward your next home</p>
-                    <p className="text-xs text-slate-400 mt-0.5">Depending on how the transaction is structured</p>
-                    <p className="text-xs text-slate-500 mt-1.5 leading-snug">Final amount depends on eligibility and transaction details.</p>
-                  </div>
-                </div>
+          {/* ── Check Your Options (Input Section) ── */}
+          <div ref={ctaRef} className="mt-10 rounded-xl border-2 border-slate-200 overflow-hidden">
+            <div className="px-6 py-4 text-center" style={{ background: "#0a1f5c" }}>
+              <p className="text-white font-black text-base uppercase tracking-widest">Check Your Options</p>
+            </div>
+            <div className="p-6 bg-white space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
+                  <Tag className="h-3.5 w-3.5 text-slate-400" />
+                  Have a Personal Benefit Code? <span className="font-normal text-slate-400">(optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={code}
+                  onChange={(e) => setCode(e.target.value.toUpperCase())}
+                  placeholder="Enter your code from your mailer"
+                  className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
+                />
+                <p className="mt-1.5 text-xs text-slate-400">No code? No problem — you can still review your options.</p>
               </div>
+              <LeadCaptureForm prefillCode={code} />
             </div>
           </div>
 
           {/* ── Footer CTA strip ── */}
           <div className="mt-10 rounded-xl p-6 text-center" style={{ background: "#0a1f5c" }}>
-            <p className="text-white text-sm leading-relaxed mb-4">Your VA loan is what makes this benefit available. Check your options before committing to buyer representation.</p>
-            <button
-              onClick={() => inputRef.current?.focus()}
-              className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
-              style={{ background: "#cc0000", color: "#fff" }}
-            >
-              Check My Options <ArrowRight className="h-4 w-4" />
-            </button>
+            <p className="text-white text-sm leading-relaxed mb-4">Before you commit to buyer representation on your next home, review how your Red White &amp; Blue Purchase Benefit can be structured.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={scrollToCTA}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
+                style={{ background: "#cc0000", color: "#fff" }}
+              >
+                Check My Options <ArrowRight className="h-4 w-4" />
+              </button>
+              <a
+                href="tel:+18183002642"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 font-bold rounded-lg text-sm border-2 border-white text-white hover:bg-white hover:text-slate-900 transition"
+              >
+                Talk to a Specialist
+              </a>
+            </div>
           </div>
 
           {/* ── FAQ ── */}
           <div className="mt-10">
             <h2 className="text-base font-bold text-slate-900 mb-4 text-center">Frequently Asked Questions</h2>
             <FAQ />
+          </div>
+
+          {/* ── Disclaimer ── */}
+          <div className="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <p className="text-xs text-slate-500 leading-relaxed text-center">
+              The Red White &amp; Blue Purchase Benefit is a private program offered through BuyWiser. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.
+            </p>
           </div>
 
         </div>
@@ -785,29 +695,5 @@ function ResultView({ property, listingUrl, matchedCode, onBack }) {
 
 // ── Main Export ────────────────────────────────────────────────────────────────
 export default function BuywiserHome() {
-  const [view, setView] = useState("landing");
-  const [property, setProperty] = useState(null);
-  const [listingUrl, setListingUrl] = useState("");
-  const [matchedCode, setMatchedCode] = useState(null);
-
-  const handleResult = (prop, url, codeRecord) => {
-    setProperty(prop);
-    setListingUrl(url);
-    setMatchedCode(codeRecord || null);
-    setView("result");
-    window.scrollTo(0, 0);
-  };
-
-  const handleBack = () => {
-    setView("landing");
-    setProperty(null);
-    setListingUrl("");
-    setMatchedCode(null);
-  };
-
-  if (view === "result") {
-    return <ResultView property={property} listingUrl={listingUrl} matchedCode={matchedCode} onBack={handleBack} />;
-  }
-
-  return <LandingView onResult={handleResult} />;
+  return <LandingView />;
 }
