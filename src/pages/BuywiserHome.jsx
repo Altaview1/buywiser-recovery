@@ -136,6 +136,41 @@ function PageFooter() {
   );
 }
 
+// ── Benefit Estimator ──────────────────────────────────────────────────────────
+function BenefitEstimator() {
+  const [price, setPrice] = useState(700000);
+  const benefit = price * 0.015;
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2">
+        <span className="text-xs text-slate-500">$100K</span>
+        <input
+          type="range"
+          min={100000}
+          max={2000000}
+          step={25000}
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
+          className="flex-1 accent-red-600"
+        />
+        <span className="text-xs text-slate-500">$2M</span>
+      </div>
+      <div className="bg-white border border-slate-200 rounded-lg px-4 py-3 flex items-center justify-between">
+        <div>
+          <p className="text-xs text-slate-500">Purchase Price</p>
+          <p className="text-base font-bold text-slate-900">{formatCurrency(price)}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-xs text-slate-500">Est. Benefit (up to 1.5%)</p>
+          <p className="text-base font-bold text-green-700">{formatCurrency(benefit)}</p>
+        </div>
+      </div>
+      <p className="text-[10px] text-slate-400">Estimate only. Final benefit depends on transaction structure and eligibility.</p>
+    </div>
+  );
+}
+
 // ── Landing View ───────────────────────────────────────────────────────────────
 function LandingView({ onResult }) {
   const [url, setUrl] = useState("");
@@ -352,7 +387,7 @@ function LandingView({ onResult }) {
 
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Enter your home address or listing to review your options"], ["2", "Optionally enter your Personal Benefit Code to personalize your results"], ["3", "See how the benefit is structured"], ["4", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
+            {[["1", "Enter your approximate purchase price to get your benefit estimate"], ["2", "Optionally enter your Personal Benefit Code to personalize your results"], ["3", "See how the benefit is structured"], ["4", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
               <span key={num} className="flex items-center gap-1">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
                   <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
@@ -487,12 +522,9 @@ function LandingView({ onResult }) {
               <div className="lg:w-1/2 flex flex-col justify-center gap-3">
                 <div className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="w-7 h-7 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800 mb-1">Enter your home address or listing to review your options</p>
-                    <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs text-blue-600 font-mono truncate shadow-sm">
-                      <span className="text-slate-400 flex-shrink-0">🔗</span>
-                      zillow.com/homedetails/123-main-st…
-                    </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold text-slate-800 mb-2">Enter your approximate purchase price to estimate your benefit</p>
+                    <BenefitEstimator />
                   </div>
                 </div>
                 <div className="flex justify-center text-slate-300 text-lg">↓</div>

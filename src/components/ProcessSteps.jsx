@@ -1,19 +1,14 @@
-import { CheckCircle, Search, FileText, Phone, Home } from "lucide-react";
+import { CheckCircle, DollarSign, Phone, Home } from "lucide-react";
 
 const STEPS = [
   {
-    icon: Search,
-    title: "Enter a Listing",
-    desc: "Paste any Zillow, Redfin, or Realtor.com link to get started.",
-  },
-  {
-    icon: FileText,
-    title: "See Your Benefit",
-    desc: "We calculate your Veteran Home Transition Benefit estimate instantly.",
+    icon: DollarSign,
+    title: "Estimate Your Benefit",
+    desc: "Enter your approximate purchase price to see your estimated credit.",
   },
   {
     icon: Phone,
-    title: "Confirm Your Email",
+    title: "Confirm Your Info",
     desc: "We'll send your benefit summary and next steps to your inbox.",
   },
   {
@@ -29,7 +24,7 @@ export default function ProcessSteps({ activeStep = 0 }) {
       {/* Desktop: horizontal */}
       <div className="hidden sm:flex items-start justify-between relative">
         {/* Connector line */}
-        <div className="absolute top-5 left-0 right-0 h-0.5 bg-slate-200 z-0" style={{ marginLeft: "10%", marginRight: "10%" }} />
+        <div className="absolute top-5 left-0 right-0 h-0.5 bg-slate-200 z-0" style={{ marginLeft: "16%", marginRight: "16%" }} />
 
         {STEPS.map((step, i) => {
           const Icon = step.icon;
@@ -38,7 +33,6 @@ export default function ProcessSteps({ activeStep = 0 }) {
 
           return (
             <div key={i} className="flex flex-col items-center text-center z-10 flex-1 px-2">
-              {/* Circle */}
               <div
                 className={`w-10 h-10 rounded-full flex items-center justify-center mb-3 border-2 transition-all ${
                   done
@@ -52,31 +46,15 @@ export default function ProcessSteps({ activeStep = 0 }) {
                 {done ? (
                   <CheckCircle className="h-5 w-5 text-white" />
                 ) : (
-                  <Icon
-                    className={`h-5 w-5 ${active ? "text-red-600" : "text-slate-300"}`}
-                  />
+                  <Icon className={`h-5 w-5 ${active ? "text-red-600" : "text-slate-300"}`} />
                 )}
               </div>
-
-              {/* Step number */}
-              <p
-                className={`text-[10px] font-black uppercase tracking-widest mb-1 ${
-                  done ? "text-green-600" : active ? "text-red-600" : "text-slate-400"
-                }`}
-              >
+              <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${done ? "text-green-600" : active ? "text-red-600" : "text-slate-400"}`}>
                 Step {i + 1}
               </p>
-
-              {/* Title */}
-              <p
-                className={`text-sm font-bold mb-1 ${
-                  done || active ? "text-slate-900" : "text-slate-400"
-                }`}
-              >
+              <p className={`text-sm font-bold mb-1 ${done || active ? "text-slate-900" : "text-slate-400"}`}>
                 {step.title}
               </p>
-
-              {/* Description */}
               <p className="text-xs text-slate-500 leading-relaxed max-w-[130px]">{step.desc}</p>
             </div>
           );
@@ -93,7 +71,6 @@ export default function ProcessSteps({ activeStep = 0 }) {
 
           return (
             <div key={i} className="flex gap-4">
-              {/* Left: circle + connector */}
               <div className="flex flex-col items-center">
                 <div
                   className={`w-9 h-9 rounded-full flex items-center justify-center border-2 flex-shrink-0 transition-all ${
@@ -112,14 +89,8 @@ export default function ProcessSteps({ activeStep = 0 }) {
                 </div>
                 {!isLast && <div className="w-0.5 flex-1 bg-slate-200 my-1" style={{ minHeight: 24 }} />}
               </div>
-
-              {/* Right: content */}
               <div className="pb-5">
-                <p
-                  className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${
-                    done ? "text-green-600" : active ? "text-red-600" : "text-slate-400"
-                  }`}
-                >
+                <p className={`text-[10px] font-black uppercase tracking-widest mb-0.5 ${done ? "text-green-600" : active ? "text-red-600" : "text-slate-400"}`}>
                   Step {i + 1}
                 </p>
                 <p className={`text-sm font-bold mb-0.5 ${done || active ? "text-slate-900" : "text-slate-400"}`}>
