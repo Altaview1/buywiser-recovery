@@ -493,7 +493,7 @@ function LandingView({ onResult }) {
 
           {/* ── Footer CTA strip ── */}
           <div className="mt-10 rounded-xl p-6 text-center" style={{ background: "#0a1f5c" }}>
-            <p className="text-white text-sm leading-relaxed mb-4">Your VA loan is what makes this benefit available. Don't leave it behind — check your options before committing to buyer representation.</p>
+            <p className="text-white text-sm leading-relaxed mb-4">Your VA loan is what makes this benefit available. Check your options before committing to buyer representation.</p>
             <button
               onClick={() => inputRef.current?.focus()}
               className="inline-flex items-center gap-2 px-6 py-3 font-bold rounded-lg text-sm transition"
