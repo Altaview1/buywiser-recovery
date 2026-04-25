@@ -138,11 +138,20 @@ function PageFooter() {
 
 // ── Benefit Estimator ──────────────────────────────────────────────────────────
 function BenefitEstimator() {
-  const [price, setPrice] = useState(700000);
-  const benefit = price * 0.015;
+  const [price, setPrice] = useState(null);
+  const [sliderVal, setSliderVal] = useState(700000);
+
+  const handleChange = (e) => {
+    const val = Number(e.target.value);
+    setSliderVal(val);
+    setPrice(val);
+  };
+
+  const benefit = price ? price * 0.015 : null;
 
   return (
     <div className="space-y-2">
+      <p className="text-xs text-slate-500 italic">Move the slider to enter your estimated purchase price</p>
       <div className="flex items-center gap-2">
         <span className="text-xs text-slate-500">$100K</span>
         <input
@@ -150,23 +159,29 @@ function BenefitEstimator() {
           min={100000}
           max={2000000}
           step={25000}
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
+          value={sliderVal}
+          onChange={handleChange}
           className="flex-1 accent-red-600"
         />
         <span className="text-xs text-slate-500">$2M</span>
       </div>
-      <div className="bg-white border border-slate-200 rounded-lg px-4 py-3 flex items-center justify-between">
-        <div>
-          <p className="text-xs text-slate-500">Purchase Price</p>
-          <p className="text-base font-bold text-slate-900">{formatCurrency(price)}</p>
+      {price ? (
+        <div className="bg-white border border-green-300 rounded-lg px-4 py-3 flex items-center justify-between">
+          <div>
+            <p className="text-xs text-slate-500">Purchase Price</p>
+            <p className="text-base font-bold text-slate-900">{formatCurrency(price)}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-xs text-slate-500">Est. Benefit (up to 1.5%)</p>
+            <p className="text-base font-bold text-green-700">{formatCurrency(benefit)}</p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-xs text-slate-500">Est. Benefit (up to 1.5%)</p>
-          <p className="text-base font-bold text-green-700">{formatCurrency(benefit)}</p>
+      ) : (
+        <div className="bg-slate-100 border border-dashed border-slate-300 rounded-lg px-4 py-3 flex items-center justify-center">
+          <p className="text-sm text-slate-400 italic">Your estimated benefit will appear here</p>
         </div>
-      </div>
-      <p className="text-[10px] text-slate-400">Estimate only. Final benefit depends on transaction structure and eligibility.</p>
+      )}
+      {price && <p className="text-[10px] text-slate-400">Estimate only. Final benefit depends on transaction structure and eligibility.</p>}
     </div>
   );
 }
