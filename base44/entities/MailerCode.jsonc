@@ -1,0 +1,42 @@
+{
+  "name": "MailerCode",
+  "type": "object",
+  "properties": {
+    "code": {
+      "type": "string",
+      "description": "Unique personal benefit code (e.g. ABX-4729)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Recipient name"
+    },
+    "address": {
+      "type": "string",
+      "description": "Home address"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "zip": {
+      "type": "string"
+    },
+    "campaign_id": {
+      "type": "string",
+      "description": "Campaign identifier for attribution"
+    },
+    "assigned_agent": {
+      "type": "string",
+      "description": "Agent name if pre-assigned"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "code"
+  ]
+}

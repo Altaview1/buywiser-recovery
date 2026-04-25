@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, ArrowRight, AlertCircle, Quote, ChevronDown, ChevronUp, Tag } from "lucide-react";
 import AppointmentScheduler from "../components/AppointmentScheduler";
 
 // ── Testimonials ───────────────────────────────────────────────────────────────
@@ -58,6 +58,14 @@ const FAQS = [
   {
     q: "How much is the benefit?",
     a: "Up to 1.5% toward the purchase price of your next home, depending on how the transaction is structured."
+  },
+  {
+    q: "What is a Personal Benefit Code?",
+    a: "A code included in select mailers that allows us to personalize your experience and track your request. It helps us connect your mailed piece to your online review."
+  },
+  {
+    q: "Do I need a code to check my options?",
+    a: "No. You can review your options with or without a code. The code simply helps us personalize your results if you received a mailer."
   },
 ];
 
@@ -124,11 +132,17 @@ function PageFooter() {
 // ── Landing View ───────────────────────────────────────────────────────────────
 function LandingView({ onResult }) {
   const [url, setUrl] = useState("");
+  const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const inputRef = useRef(null);
 
-  useEffect(() => { inputRef.current?.focus(); }, []);
+  useEffect(() => {
+    inputRef.current?.focus();
+    // Pre-fill code from URL param if present
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("code")) setCode(params.get("code"));
+  }, []);
 
   const valid = url.trim().length > 10 && isListingUrl(url);
 
@@ -138,8 +152,42 @@ function LandingView({ onResult }) {
     setLoading(true);
     setError("");
     try {
+      // Lookup mailer code if provided
+      let matchedCode = null;
+      let codeMatched = false;
+      if (code.trim()) {
+        const codes = await base44.entities.MailerCode.filter({ code: code.trim().toUpperCase() });
+        if (codes && codes.length > 0) {
+          matchedCode = codes[0];
+          codeMatched = true;
+        }
+      }
+
+      // Create lead record
+      const leadData = {
+        address_or_link: url.trim(),
+        utm_source: code.trim() ? "mailer" : "web",
+        ...(code.trim() && { code: code.trim().toUpperCase() }),
+        code_matched: codeMatched,
+        ...(matchedCode && {
+          campaign_id: matchedCode.campaign_id,
+          assigned_agent: matchedCode.assigned_agent,
+          mailer_code_id: matchedCode.id,
+        }),
+      };
+      await base44.entities.Lead.create(leadData);
+
       const res = await base44.functions.invoke("fetchPropertyFromUrl", { url: url.trim() });
-      onResult(res.data.property, url.trim());
+
+      // If code matched and has an address but user entered a listing URL, we can augment
+      const property = res.data.property;
+      if (matchedCode && matchedCode.address && !property?.address) {
+        property.address = matchedCode.address;
+        property.city = matchedCode.city;
+        property.state = matchedCode.state;
+      }
+
+      onResult(property, url.trim(), matchedCode);
     } catch {
       setError("We couldn't read that listing. Please paste the full URL and try again.");
     }
@@ -215,6 +263,22 @@ function LandingView({ onResult }) {
               <p className="mt-1.5 text-xs text-slate-400">Already working with an agent? You can request that your agent be reviewed as part of your options.</p>
             </div>
 
+            {/* Optional code field */}
+            <div>
+              <label className="block text-sm font-semibold text-slate-600 mb-1.5 flex items-center gap-1.5">
+                <Tag className="h-3.5 w-3.5 text-slate-400" />
+                Have a Personal Benefit Code? <span className="font-normal text-slate-400">(optional)</span>
+              </label>
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Enter your code (e.g., ABX-4729)"
+                className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-lg focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
+              />
+              <p className="mt-1 text-xs text-slate-400">Found on your mailer — used to personalize your options</p>
+            </div>
+
             {error && (
               <div className="flex items-start gap-2 text-red-600 text-sm">
                 <AlertCircle className="h-4 w-4 mt-0.5 flex-shrink-0" />
@@ -257,7 +321,7 @@ function LandingView({ onResult }) {
 
           {/* 3-step strip */}
           <div className="mt-5 flex items-center justify-center gap-1 text-xs text-slate-500 flex-wrap">
-            {[["1", "Enter your home address or listing to review your options"], ["2", "See how the benefit can be structured"], ["3", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
+            {[["1", "Enter your home address or listing to review your options"], ["2", "Optionally enter your Personal Benefit Code to personalize your results"], ["3", "See how the benefit is structured"], ["4", "Decide how to move forward based on your priorities"]].map(([num, label], i, arr) => (
               <span key={num} className="flex items-center gap-1">
                 <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-full whitespace-nowrap">
                   <span className="w-4 h-4 rounded-full bg-slate-700 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{num}</span>
@@ -450,7 +514,7 @@ function LandingView({ onResult }) {
 }
 
 // ── Result View ────────────────────────────────────────────────────────────────
-function ResultView({ property, listingUrl, onBack }) {
+function ResultView({ property, listingUrl, matchedCode, onBack }) {
   const rebate = property?.price ? property.price * 0.01 : null;
   const rebateLow = rebate ? formatCurrency(rebate * 0.9) : null;
   const rebateHigh = rebate ? formatCurrency(rebate * 1.1) : null;
@@ -501,8 +565,17 @@ function ResultView({ property, listingUrl, onBack }) {
           {/* Result headline */}
           <div>
             <p className="text-xs font-bold text-blue-700 uppercase tracking-widest mb-1">Veteran Home Transition Benefit</p>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">Your Benefit Estimate</h1>
-            <p className="text-slate-500 text-sm">Based on the property listing you submitted.</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-1">
+              {matchedCode ? "We've prepared options based on your home." : "Your Benefit Estimate"}
+            </h1>
+            <p className="text-slate-500 text-sm">
+              {matchedCode ? "Your Personal Benefit Code was recognized. Options below have been personalized for your situation." : "Based on the property listing you submitted."}
+            </p>
+            {matchedCode?.assigned_agent && (
+              <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+                You may continue working with your current agent while reviewing your options.
+              </div>
+            )}
           </div>
 
           {/* Property card */}
@@ -638,10 +711,12 @@ export default function BuywiserHome() {
   const [view, setView] = useState("landing");
   const [property, setProperty] = useState(null);
   const [listingUrl, setListingUrl] = useState("");
+  const [matchedCode, setMatchedCode] = useState(null);
 
-  const handleResult = (prop, url) => {
+  const handleResult = (prop, url, codeRecord) => {
     setProperty(prop);
     setListingUrl(url);
+    setMatchedCode(codeRecord || null);
     setView("result");
     window.scrollTo(0, 0);
   };
@@ -650,10 +725,11 @@ export default function BuywiserHome() {
     setView("landing");
     setProperty(null);
     setListingUrl("");
+    setMatchedCode(null);
   };
 
   if (view === "result") {
-    return <ResultView property={property} listingUrl={listingUrl} onBack={handleBack} />;
+    return <ResultView property={property} listingUrl={listingUrl} matchedCode={matchedCode} onBack={handleBack} />;
   }
 
   return <LandingView onResult={handleResult} />;

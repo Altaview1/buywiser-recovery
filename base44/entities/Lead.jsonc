@@ -1,0 +1,46 @@
+{
+  "name": "Lead",
+  "type": "object",
+  "properties": {
+    "address_or_link": {
+      "type": "string",
+      "description": "Address or listing URL entered by user"
+    },
+    "code": {
+      "type": "string",
+      "description": "Personal benefit code entered (if any)"
+    },
+    "code_matched": {
+      "type": "boolean",
+      "description": "Whether the code was found in mailer_codes"
+    },
+    "campaign_id": {
+      "type": "string",
+      "description": "Campaign ID from matched mailer code"
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "utm_source": {
+      "type": "string",
+      "description": "Traffic source (e.g. mailer)"
+    },
+    "assigned_agent": {
+      "type": "string"
+    },
+    "mailer_code_id": {
+      "type": "string",
+      "description": "ID of matched MailerCode record"
+    }
+  },
+  "required": [
+    "address_or_link"
+  ]
+}
