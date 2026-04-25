@@ -411,8 +411,8 @@ function LandingView({ onResult }) {
           </div>
 
           {/* ── Built for section ── */}
-          <div className="mt-6 rounded-xl p-6" style={{ background: "#fff5f5", border: "1.5px solid #fca5a5" }}>
-            <h2 className="text-base font-bold mb-4" style={{ color: "#9b0000" }}>You Likely Qualify If You Are:</h2>
+          <div className="mt-6 rounded-xl p-6 bg-green-50 border border-green-200">
+            <h2 className="text-base font-bold mb-4 text-green-800">You Likely Qualify If You Are:</h2>
             <ul className="space-y-2.5">
               {[
                 "Currently holding a VA loan on your home",
@@ -421,7 +421,7 @@ function LandingView({ onResult }) {
                 "Interested in VA or conventional financing on your next home",
               ].map(item => (
                 <li key={item} className="flex items-start gap-2.5 text-sm text-slate-700">
-                  <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: "#cc0000" }} />
+                  <CheckCircle className="h-4 w-4 flex-shrink-0 mt-0.5 text-green-600" />
                   {item}
                 </li>
               ))}
