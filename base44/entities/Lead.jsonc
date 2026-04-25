@@ -38,6 +38,22 @@
     "mailer_code_id": {
       "type": "string",
       "description": "ID of matched MailerCode record"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Contacted",
+        "Qualified",
+        "Closed",
+        "Lost"
+      ],
+      "default": "New",
+      "description": "Lead status"
+    },
+    "internal_notes": {
+      "type": "string",
+      "description": "Internal notes for tracking transition progress"
     }
   },
   "required": [

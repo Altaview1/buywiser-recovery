@@ -23,6 +23,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Disclosures from './pages/Disclosures';
 import MortgageAI from './pages/MortgageAI';
 import BuywiserHome from './pages/BuywiserHome';
+import LeadsDashboard from './pages/LeadsDashboard';
 import FlagWatermark from './components/FlagWatermark';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
       <Route path="/Disclosures" element={<LayoutWrapper currentPageName="Disclosures"><Disclosures /></LayoutWrapper>} />
       <Route path="/MortgageAI" element={<MortgageAI />} />
       <Route path="/BuywiserHome" element={<BuywiserHome />} />
+      <Route path="/leads" element={<LeadsDashboard />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
