@@ -243,7 +243,7 @@ function LandingView({ onResult }) {
           <div className="mb-3 flex justify-center">
             <div className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-4 py-2 text-sm text-slate-600">
               <span className="font-semibold text-slate-800">On a $700,000 purchase:</span>
-              <span className="font-bold text-blue-700">up to $10,500 you may be leaving on the table</span>
+              <span className="font-bold text-blue-700">you will receive up to $10,500</span>
             </div>
           </div>
 
