@@ -37,9 +37,9 @@ export default function LeadCaptureForm() {
         <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
           <CheckCircle className="h-6 w-6 text-green-600" />
         </div>
-        <h3 className="text-lg font-bold text-slate-900 mb-1">We'll Be in Touch</h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-1">You've Been Assigned a BuyWiser Concierge</h3>
         <p className="text-sm text-slate-500">
-          Thank you! Bennett will review your information and reach out within one business day.
+          A BuyWiser Concierge has been assigned to go over your Red White &amp; Blue Purchase Benefit and will be in touch within one business day.
         </p>
         <p className="text-xs text-slate-400 mt-3">Questions? Call (818) 300-2642</p>
       </div>
