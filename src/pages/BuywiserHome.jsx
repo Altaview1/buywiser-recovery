@@ -430,7 +430,7 @@ function LandingView({ onResult }) {
 
           {/* ── Testimonials ── */}
           <div className="mt-8">
-            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser</p>
+            <p className="text-center text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Veterans and California Buyers Have Saved Thousands with BuyWiser Customized Programs</p>
 
             <Testimonials />
           </div>
