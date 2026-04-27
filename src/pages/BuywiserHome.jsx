@@ -290,28 +290,12 @@ function LandingView() {
             A private Buywiser benefit for qualifying veteran homeowners selling a VA-financed home and purchasing another. Not a government program.
           </p>
 
-          <div className="space-y-3">
-            <div className="bg-white border-2 rounded-2xl px-5 py-4 flex items-center justify-between" style={{ borderColor: RED }}>
-              <div>
-                <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum Benefit</p>
-                <p className="text-sm text-slate-700 font-medium">Buywiser real estate + Buywiser financing</p>
-              </div>
-              <p className="text-2xl font-black" style={{ color: RED }}>1.5%</p>
+          <div className="bg-white border-2 rounded-2xl px-6 py-5 flex items-center justify-between" style={{ borderColor: RED }}>
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum Benefit</p>
+              <p className="text-sm text-slate-700 font-medium">When the purchase is properly structured through Buywiser</p>
             </div>
-            <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">Real Estate Only</p>
-                <p className="text-sm text-slate-600">Buywiser real estate, outside financing</p>
-              </div>
-              <p className="text-xl font-black text-slate-700">1.0%</p>
-            </div>
-            <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-0.5">Financing Only</p>
-                <p className="text-sm text-slate-600">Buywiser financing, outside agent</p>
-              </div>
-              <p className="text-xl font-black text-slate-700">0.5%</p>
-            </div>
+            <p className="text-3xl font-black ml-4" style={{ color: RED }}>1.5%</p>
           </div>
           <p className="text-xs text-slate-400 text-center mt-4">Final benefit depends on transaction details and how the purchase is structured.</p>
         </div>
