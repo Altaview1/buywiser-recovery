@@ -187,9 +187,9 @@ function LandingView() {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
-            Your home is for sale. Before you buy your next home, review how Buywiser can structure{" "}
+            Before your next home purchase, see how Buywiser structures{" "}
             <span style={{ color: "#ef9a9a" }}>up to 1.5% back</span>{" "}
-            through the Red White &amp; Blue Purchase Benefit.
+            for veteran homeowners.
           </h1>
 
           {/* Subheadline */}
