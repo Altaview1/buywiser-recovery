@@ -335,8 +335,12 @@ function AccessGate({ onAccess }) {
         <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
           <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Access</p>
           <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network</p>
+          <p className="text-blue-400 text-xs mt-2 italic font-medium">Selective Partnerships for High-Performing Agents Only</p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-600 leading-relaxed">
+            VTON is an <strong>exclusive partner network</strong>. We are selective about who we trust with these veteran leads. Partners must demonstrate professional standards, consistent communication, and a genuine commitment to serving veteran homeowners.
+          </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
             <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
