@@ -139,6 +139,7 @@ function LeadRow({ lead, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState(lead.status || "New");
   const [closeReason, setCloseReason] = useState(lead.close_reason || "");
+  const [agentComment, setAgentComment] = useState(lead.agent_comment || "");
   const [notes, setNotes] = useState(lead.internal_notes || "");
   const [saving, setSaving] = useState(false);
 
@@ -147,16 +148,18 @@ function LeadRow({ lead, onUpdate }) {
     await base44.entities.Lead.update(lead.id, {
       status,
       close_reason: status === "Closed" ? closeReason : "",
+      agent_comment: agentComment,
       internal_notes: notes,
     });
     setSaving(false);
     setEditing(false);
-    onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", internal_notes: notes });
+    onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", agent_comment: agentComment, internal_notes: notes });
   };
 
   const handleCancel = () => {
     setStatus(lead.status || "New");
     setCloseReason(lead.close_reason || "");
+    setAgentComment(lead.agent_comment || "");
     setNotes(lead.internal_notes || "");
     setEditing(false);
   };
@@ -206,6 +209,12 @@ function LeadRow({ lead, onUpdate }) {
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
                 {lead.close_reason}
               </span>
+            </div>
+          )}
+          {lead.agent_comment && !editing && (
+            <div className="mt-2 flex items-start gap-1.5 text-xs text-blue-700 bg-blue-50 border border-blue-100 rounded-lg px-2 py-1.5">
+              <span className="font-semibold flex-shrink-0">💬</span>
+              <span className="italic">{lead.agent_comment}</span>
             </div>
           )}
           {lead.internal_notes && !editing && (
@@ -263,6 +272,16 @@ function LeadRow({ lead, onUpdate }) {
               </div>
             </div>
           )}
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Agent Comment <span className="font-normal normal-case text-slate-400">(brief context for this update)</span></label>
+            <input
+              type="text"
+              value={agentComment}
+              onChange={(e) => setAgentComment(e.target.value)}
+              placeholder="e.g. Left voicemail, called back tomorrow, very interested…"
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
+            />
+          </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Internal Notes</label>
             <textarea

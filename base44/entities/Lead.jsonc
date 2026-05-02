@@ -63,6 +63,10 @@
       ],
       "description": "Reason for closing the outreach cycle"
     },
+    "agent_comment": {
+      "type": "string",
+      "description": "Brief agent comment or context added when updating the lead"
+    },
     "internal_notes": {
       "type": "string",
       "description": "Internal notes for tracking transition progress"
