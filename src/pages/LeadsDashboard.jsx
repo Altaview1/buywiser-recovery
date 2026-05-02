@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import {
   Users, Search, RefreshCw, ChevronDown, ExternalLink,
   CheckCircle, Clock, Phone, Star, XCircle, StickyNote, Save, X,
-  Upload, Plus, ChevronUp, FileSpreadsheet
+  Upload, Plus, ChevronUp, FileSpreadsheet, BarChart2
 } from "lucide-react";
 import BulkLeadUpload from "@/components/BulkLeadUpload";
+import OutcomeSummary from "@/components/OutcomeSummary";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -297,6 +298,7 @@ export default function LeadsDashboard() {
   const [filterStatus, setFilterStatus] = useState("All");
   const [showUpload, setShowUpload] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -362,11 +364,22 @@ export default function LeadsDashboard() {
             <button onClick={() => setShowBulk(true)} className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white bg-blue-700 hover:bg-blue-800 transition">
               <FileSpreadsheet className="h-3.5 w-3.5" /> Bulk Import
             </button>
+            <button onClick={() => setShowSummary(v => !v)} className={`flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg border transition ${showSummary ? "bg-indigo-700 text-white border-indigo-700" : "border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
+              <BarChart2 className="h-3.5 w-3.5" /> Outcomes
+            </button>
           </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+        {/* Outcome Summary Panel */}
+        {showSummary && (
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Partner Performance — Outcome Summary</p>
+            <OutcomeSummary leads={leads} />
+          </div>
+        )}
 
         {/* Stats strip */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
