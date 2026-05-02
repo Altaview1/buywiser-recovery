@@ -36,7 +36,7 @@ function FAQ() {
   const [open, setOpen] = useState(null);
   const items = [
     { q: "What is VTON?", a: "VTON stands for Veteran Transition Opportunity Network. It is a territory-based system for identifying and activating veteran homeowner transition opportunities." },
-    { q: "Is this just a lead-buying program?", a: "No. VTON is a structured opportunity system with targeting, scripts, QR validation, CRM tracking, and Buywiser support." },
+    { q: "Is this just a lead-buying program?", a: "No. VTON uses a rolling $2,000 performance deposit—not a per-lead fee. You receive $200 credits for each verified conversation. If you create 10 verified conversations, your deposit is fully credited back. No leads are charged for; performance is rewarded." },
     { q: "What is the $2,000 deposit?", a: "It is a rolling performance deposit used to activate territory access. Partners receive a $200 credit for each verified homeowner conversation." },
     { q: "What counts as a verified conversation?", a: "A verified conversation requires actual homeowner contact plus QR scan or code entry, CRM notes, and logged outcome data." },
     { q: "What happens if I work the leads?", a: "If you create verified conversations, your deposit is credited back at $200 per conversation." },
