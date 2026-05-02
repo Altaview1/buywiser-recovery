@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, ArrowRight, Check, X } from "lucide-react";
+import PartnerPreScreenQuiz from "../components/vton/PartnerPreScreenQuiz";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -65,8 +66,15 @@ function FAQ() {
 }
 
 function ApplyForm() {
+  const [step, setStep] = useState("quiz"); // "quiz" or "form"
   const [form, setForm] = useState({ name: "", email: "", phone: "", market: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState({});
+
+  const handleQuizComplete = (answers) => {
+    setQuizAnswers(answers);
+    setStep("form");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,7 +88,15 @@ function ApplyForm() {
           <Check className="h-6 w-6 text-white" />
         </div>
         <p className="text-white font-bold text-lg mb-1">Application Received</p>
-        <p className="text-blue-200 text-sm">We'll be in touch within one business day.</p>
+        <p className="text-blue-200 text-sm">We'll be in touch within one business day to discuss your territory potential.</p>
+      </div>
+    );
+  }
+
+  if (step === "quiz") {
+    return (
+      <div className="bg-white/10 border border-white/20 rounded-2xl p-6">
+        <PartnerPreScreenQuiz onComplete={handleQuizComplete} />
       </div>
     );
   }
@@ -100,6 +116,9 @@ function ApplyForm() {
       <button type="submit" className="w-full py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2"
         style={{ background: RED, color: "#fff" }}>
         Apply for Territory Access <ArrowRight className="h-4 w-4" />
+      </button>
+      <button type="button" onClick={() => setStep("quiz")} className="w-full py-2 text-sm text-white/60 hover:text-white/80 transition">
+        ← Back to Pre-Screen
       </button>
     </form>
   );
