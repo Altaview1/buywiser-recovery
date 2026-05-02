@@ -4,8 +4,9 @@ import { Link } from "react-router-dom";
 import {
   Users, Search, RefreshCw, ChevronDown, ExternalLink,
   CheckCircle, Clock, Phone, Star, XCircle, StickyNote, Save, X,
-  Upload, Plus, ChevronUp
+  Upload, Plus, ChevronUp, FileSpreadsheet
 } from "lucide-react";
+import BulkLeadUpload from "@/components/BulkLeadUpload";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -252,6 +253,7 @@ export default function LeadsDashboard() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [showUpload, setShowUpload] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -290,6 +292,7 @@ export default function LeadsDashboard() {
   return (
     <div className="min-h-screen bg-slate-50">
       {showUpload && <UploadLeadModal onClose={() => setShowUpload(false)} onCreated={handleCreated} />}
+      {showBulk && <BulkLeadUpload onClose={() => setShowBulk(false)} onImported={(count) => { fetchLeads(); }} />}
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
@@ -312,6 +315,9 @@ export default function LeadsDashboard() {
             </button>
             <button onClick={() => setShowUpload(true)} className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition">
               <Upload className="h-3.5 w-3.5" /> Upload Lead
+            </button>
+            <button onClick={() => setShowBulk(true)} className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white bg-blue-700 hover:bg-blue-800 transition">
+              <FileSpreadsheet className="h-3.5 w-3.5" /> Bulk Import
             </button>
           </div>
         </div>
