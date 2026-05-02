@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { CheckCircle, ArrowRight, Loader2, Calendar } from "lucide-react";
 
-export default function LeadCaptureForm() {
+export default function LeadCaptureForm({ prefillCode }) {
+  const [mode, setMode] = useState("quick"); // "quick" or "schedule"
   const [form, setForm] = useState({
-    first_name: "",
-    last_name: "",
     email: "",
     phone: "",
-    loan_type: "",
-    comments: "",
   });
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -18,7 +15,9 @@ export default function LeadCaptureForm() {
     e.preventDefault();
     setLoading(true);
     await base44.entities.ContactSubmission.create({
-      ...form,
+      first_name: form.email.split("@")[0],
+      email: form.email,
+      phone: form.phone,
       form_type: "contact",
       status: "new",
       how_heard: "buywiser_landing",
@@ -50,107 +49,98 @@ export default function LeadCaptureForm() {
     <div className="bg-white border-2 border-slate-200 rounded-xl overflow-hidden shadow-sm">
       {/* Header */}
       <div className="px-6 py-4 bg-slate-900">
-        <p className="text-white font-bold text-sm">Get Your Personalized Benefit Estimate</p>
+        <p className="text-white font-bold text-sm">Start Your Veteran's Next Home™ Review</p>
         <p className="text-slate-400 text-xs mt-0.5">No cost · No obligation · Response within 1 business day</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-6 space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className={labelCls}>First Name *</label>
-            <input
-              type="text"
-              required
-              className={inputCls}
-              placeholder="Jane"
-              value={form.first_name}
-              onChange={(e) => setForm((f) => ({ ...f, first_name: e.target.value }))}
-            />
-          </div>
-          <div>
-            <label className={labelCls}>Last Name *</label>
-            <input
-              type="text"
-              required
-              className={inputCls}
-              placeholder="Smith"
-              value={form.last_name}
-              onChange={(e) => setForm((f) => ({ ...f, last_name: e.target.value }))}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className={labelCls}>Email Address *</label>
-          <input
-            type="email"
-            required
-            className={inputCls}
-            placeholder="jane@email.com"
-            value={form.email}
-            onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          />
-        </div>
-
-        <div>
-          <label className={labelCls}>Phone Number *</label>
-          <input
-            type="tel"
-            required
-            className={inputCls}
-            placeholder="(818) 555-1234"
-            value={form.phone}
-            onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
-          />
-        </div>
-
-        <div>
-          <label className={labelCls}>What Are You Looking to Do?</label>
-          <select
-            className={inputCls}
-            value={form.loan_type}
-            onChange={(e) => setForm((f) => ({ ...f, loan_type: e.target.value }))}
-          >
-            <option value="">Select your goal</option>
-            <option value="Purchase next home (VA loan)">Purchase next home (VA loan)</option>
-            <option value="Purchase next home (conventional)">Purchase next home (conventional)</option>
-            <option value="Refinance current home">Refinance current home</option>
-            <option value="Explore my options">Explore my options</option>
-          </select>
-        </div>
-
-        <div>
-          <label className={labelCls}>Anything Else? <span className="font-normal text-slate-400 normal-case">(optional)</span></label>
-          <textarea
-            className={inputCls}
-            rows={3}
-            placeholder="Your current situation, timeline, or any questions..."
-            value={form.comments}
-            onChange={(e) => setForm((f) => ({ ...f, comments: e.target.value }))}
-          />
-        </div>
-
+      {/* Mode selector */}
+      <div className="px-6 pt-6 flex gap-2 border-b border-slate-100">
         <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-4 font-bold text-base rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
-          style={{ background: "#cc0000", color: "#fff" }}
+          onClick={() => setMode("quick")}
+          className={`pb-3 px-2 text-sm font-semibold border-b-2 transition ${
+            mode === "quick"
+              ? "border-slate-900 text-slate-900"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
         >
-          {loading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Submitting...
-            </>
-          ) : (
-            <>
-              Get My Benefit Estimate <ArrowRight className="h-4 w-4" />
-            </>
-          )}
+          Quick Review
         </button>
+        <button
+          onClick={() => setMode("schedule")}
+          className={`pb-3 px-2 text-sm font-semibold border-b-2 transition ${
+            mode === "schedule"
+              ? "border-slate-900 text-slate-900"
+              : "border-transparent text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Schedule Consultation
+        </button>
+      </div>
 
-        <p className="text-xs text-slate-400 text-center">
-          Your information is used only to respond to your inquiry. We never sell your data.
-        </p>
-      </form>
+      {mode === "quick" ? (
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className={labelCls}>Email Address *</label>
+            <input
+              type="email"
+              required
+              className={inputCls}
+              placeholder="jane@email.com"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+            />
+          </div>
+
+          <div>
+            <label className={labelCls}>Phone Number *</label>
+            <input
+              type="tel"
+              required
+              className={inputCls}
+              placeholder="(818) 555-1234"
+              value={form.phone}
+              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-4 font-bold text-base rounded-lg transition flex items-center justify-center gap-2 disabled:opacity-50"
+            style={{ background: "#cc0000", color: "#fff" }}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> Submitting...
+              </>
+            ) : (
+              <>
+                Get My Benefit Estimate <ArrowRight className="h-4 w-4" />
+              </>
+            )}
+          </button>
+
+          <p className="text-xs text-slate-400 text-center">
+            Your information is used only to respond to your inquiry. We never sell your data.
+          </p>
+        </form>
+      ) : (
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-slate-600 leading-relaxed">
+            Schedule a consultation with a BuyWiser Concierge to discuss your next home transition and Red White &amp; Blue Purchase Benefit in detail.
+          </p>
+          <a
+            href="tel:+18183002642"
+            className="flex items-center justify-center gap-2 w-full py-4 font-bold text-base rounded-lg transition"
+            style={{ background: "#cc0000", color: "#fff" }}
+          >
+            <Calendar className="h-4 w-4" /> Call to Schedule (818) 300-2642
+          </a>
+          <p className="text-xs text-slate-400 text-center">
+            Available Monday–Friday, 9am–5pm PT
+          </p>
+        </div>
+      )}
     </div>
   );
 }
