@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
@@ -332,6 +333,21 @@ export default function PartnerDashboard() {
     return acc;
   }, {});
 
+  // Build last 6 months of verified conversation counts
+  const monthlyChartData = (() => {
+    const now = new Date();
+    return Array.from({ length: 6 }, (_, i) => {
+      const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+      const label = d.toLocaleString("en-US", { month: "short" });
+      const count = opportunities.filter(o => {
+        if ((o.opportunity_status || "assigned") !== "conversation_verified") return false;
+        const updated = new Date(o.updated_date || o.created_date);
+        return updated.getMonth() === d.getMonth() && updated.getFullYear() === d.getFullYear();
+      }).length;
+      return { month: label, count, isCurrent: i === 5 };
+    });
+  })();
+
   const filtered = filter === "all" ? opportunities : opportunities.filter(o => (o.opportunity_status || "assigned") === filter);
 
   const depositUsed = (partner?.verified_conversations || 0) * 200;
@@ -405,6 +421,28 @@ export default function PartnerDashboard() {
             </div>
             <p className="text-xs text-slate-400 mt-1">{statusCounts.conversation_verified || 0} verified conversations × $200 credit</p>
           </div>
+        </div>
+
+        {/* Monthly verified conversations chart */}
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Verified Conversations by Month</p>
+          <p className="text-xs text-slate-400 mb-4">Last 6 months</p>
+          <ResponsiveContainer width="100%" height={140}>
+            <BarChart data={monthlyChartData} barCategoryGap="30%">
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} width={24} />
+              <Tooltip
+                cursor={{ fill: "rgba(0,0,0,0.04)" }}
+                contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0", boxShadow: "none" }}
+                formatter={(v) => [v, "Verified"]}
+              />
+              <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                {monthlyChartData.map((entry, index) => (
+                  <Cell key={index} fill={entry.isCurrent ? RED : "#cbd5e1"} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
 
         {/* Filter tabs */}
