@@ -350,7 +350,22 @@ function LandingView() {
       {/* ── Testimonials ── */}
       <section className="px-4 py-12 bg-white">
         <div className="max-w-xl mx-auto">
-          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-5">Veterans &amp; California Buyers Who Saved With Buywiser</p>
+          <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Veterans &amp; California Buyers Who Saved With Buywiser</p>
+
+          {/* Video Testimonial */}
+          <div className="mb-8 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm bg-black">
+            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+              <iframe
+                src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview"
+                title="Customer Testimonial"
+                frameBorder="0"
+                allow="autoplay"
+                allowFullScreen
+                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+              />
+            </div>
+          </div>
+
           <VeteranTestimonials />
         </div>
       </section>
