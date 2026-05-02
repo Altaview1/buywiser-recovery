@@ -7,11 +7,11 @@ import {
 } from "lucide-react";
 
 const STATUS_CONFIG = {
-  New:       { color: "bg-blue-100 text-blue-800 border-blue-200",     icon: Clock },
-  Contacted: { color: "bg-amber-100 text-amber-800 border-amber-200",  icon: Phone },
-  Qualified: { color: "bg-purple-100 text-purple-800 border-purple-200", icon: Star },
-  Closed:    { color: "bg-green-100 text-green-800 border-green-200",  icon: CheckCircle },
-  Lost:      { color: "bg-slate-100 text-slate-500 border-slate-200",  icon: XCircle },
+  New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
+  Contacted: { color: "bg-amber-500 text-white border-amber-500",     accent: "#F59E0B", icon: Phone },
+  Qualified: { color: "bg-purple-600 text-white border-purple-600",   accent: "#9333EA", icon: Star },
+  Closed:    { color: "bg-green-600 text-white border-green-600",     accent: "#16A34A", icon: CheckCircle },
+  Lost:      { color: "bg-slate-400 text-white border-slate-400",     accent: "#94A3B8", icon: XCircle },
 };
 
 const ALL_STATUSES = ["All", "New", "Contacted", "Qualified", "Closed", "Lost"];
@@ -52,8 +52,11 @@ function LeadRow({ lead, onUpdate }) {
     ? new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : "—";
 
+  const accentColor = (STATUS_CONFIG[lead.status || "New"] || STATUS_CONFIG["New"]).accent;
+
   return (
-    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+      style={{ borderLeft: `4px solid ${accentColor}` }}>
       {/* Top row */}
       <div className="px-5 py-4 flex flex-col sm:flex-row sm:items-start gap-3 justify-between">
         <div className="flex-1 min-w-0">
@@ -220,7 +223,7 @@ export default function LeadsDashboard() {
                   filterStatus === s ? cfg.color + " ring-2 ring-offset-1 ring-blue-400" : "bg-white border-slate-200 hover:bg-slate-50"
                 }`}
               >
-                <Icon className="h-4 w-4 mb-1 text-slate-400" />
+                <Icon className="h-4 w-4 mb-1" style={{ color: cfg.accent }} />
                 <p className="text-lg font-black text-slate-800">{counts[s] || 0}</p>
                 <p className="text-xs text-slate-500">{s}</p>
               </button>
