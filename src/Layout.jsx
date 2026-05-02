@@ -51,6 +51,9 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="hidden xl:flex items-center gap-4">
+              <a href="/partner" className="text-sm text-slate-600 hover:text-slate-900 transition font-medium">
+                Agent Sign In
+              </a>
               <a href="tel:+18183002642" className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-blue-700 transition font-medium">
                 <Phone className="h-4 w-4" />(818) 300-2642
               </a>
