@@ -1,0 +1,431 @@
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import {
+  MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
+  Phone, Calendar, XCircle, ChevronDown, ChevronUp,
+  AlertCircle, RefreshCw, LogOut, Save, X
+} from "lucide-react";
+
+const NAVY = "#0B1F3B";
+const RED = "#C62828";
+
+const OPPORTUNITY_STATUSES = [
+  "assigned", "contacted", "conversation_verified",
+  "consultation_scheduled", "closed_won", "closed_lost"
+];
+
+const OUTCOMES = [
+  { value: "no_answer", label: "No Answer" },
+  { value: "not_interested", label: "Not Interested" },
+  { value: "interested", label: "Interested" },
+  { value: "callback_scheduled", label: "Callback Scheduled" },
+  { value: "consultation_booked", label: "Consultation Booked" },
+  { value: "converted", label: "Converted" },
+];
+
+const STATUS_CONFIG = {
+  assigned:               { color: "bg-blue-100 text-blue-800 border-blue-200",   icon: Clock,         label: "Assigned" },
+  contacted:              { color: "bg-amber-100 text-amber-800 border-amber-200", icon: Phone,         label: "Contacted" },
+  conversation_verified:  { color: "bg-purple-100 text-purple-800 border-purple-200", icon: CheckCircle, label: "Verified" },
+  consultation_scheduled: { color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: Calendar,   label: "Consultation" },
+  closed_won:             { color: "bg-green-100 text-green-800 border-green-200",  icon: CheckCircle,  label: "Won" },
+  closed_lost:            { color: "bg-slate-100 text-slate-500 border-slate-200",  icon: XCircle,      label: "Lost" },
+};
+
+const PRIORITY_CONFIG = {
+  high:   "bg-red-100 text-red-700 border-red-200",
+  medium: "bg-amber-100 text-amber-700 border-amber-200",
+  low:    "bg-slate-100 text-slate-500 border-slate-200",
+};
+
+function StatusBadge({ status }) {
+  const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.assigned;
+  const Icon = cfg.icon;
+  return (
+    <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.color}`}>
+      <Icon className="h-3 w-3" /> {cfg.label}
+    </span>
+  );
+}
+
+function OpportunityCard({ opp, onUpdate }) {
+  const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [status, setStatus] = useState(opp.opportunity_status || "assigned");
+  const [outcome, setOutcome] = useState(opp.outcome || "");
+  const [notes, setNotes] = useState(opp.crm_notes || "");
+  const [qrScanned, setQrScanned] = useState(opp.qr_scanned || false);
+  const [saving, setSaving] = useState(false);
+
+  const estBenefit = opp.estimated_price ? (opp.estimated_price * 0.015).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }) : null;
+
+  const handleSave = async () => {
+    setSaving(true);
+    const updated = await base44.entities.VTONOpportunity.update(opp.id, {
+      opportunity_status: status,
+      outcome,
+      crm_notes: notes,
+      qr_scanned: qrScanned,
+      ...(status === "contacted" && !opp.contact_date ? { contact_date: new Date().toISOString() } : {}),
+    });
+    setSaving(false);
+    setEditing(false);
+    onUpdate({ ...opp, opportunity_status: status, outcome, crm_notes: notes, qr_scanned: qrScanned });
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      {/* Card header */}
+      <div className="px-5 py-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <StatusBadge status={opp.opportunity_status || "assigned"} />
+              {opp.priority && (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${PRIORITY_CONFIG[opp.priority]}`}>
+                  {opp.priority.charAt(0).toUpperCase() + opp.priority.slice(1)} Priority
+                </span>
+              )}
+              {opp.va_loan_confirmed && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                  <Shield className="h-3 w-3" /> VA Confirmed
+                </span>
+              )}
+              {opp.qr_scanned && (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                  <CheckCircle className="h-3 w-3" /> QR Scanned
+                </span>
+              )}
+            </div>
+
+            <p className="text-sm font-bold text-slate-900 mb-0.5">
+              {opp.homeowner_name || "Homeowner"}
+            </p>
+            <div className="flex items-center gap-1 text-xs text-slate-500">
+              <MapPin className="h-3 w-3 flex-shrink-0" />
+              <span>{opp.property_address}{opp.city ? `, ${opp.city}` : ""}{opp.state ? `, ${opp.state}` : ""}</span>
+            </div>
+            {opp.estimated_price && (
+              <div className="flex items-center gap-3 mt-1.5">
+                <span className="text-xs text-slate-500 flex items-center gap-1">
+                  <Home className="h-3 w-3" /> ~{opp.estimated_price.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
+                </span>
+                {estBenefit && (
+                  <span className="text-xs font-semibold" style={{ color: RED }}>
+                    <DollarSign className="h-3 w-3 inline" /> up to {estBenefit} benefit
+                  </span>
+                )}
+              </div>
+            )}
+            {opp.crm_notes && !expanded && (
+              <p className="text-xs text-slate-400 mt-1.5 italic line-clamp-1">{opp.crm_notes}</p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              onClick={() => { setEditing(!editing); setExpanded(true); }}
+              className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
+            >
+              Log Update
+            </button>
+            <button onClick={() => setExpanded(!expanded)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-50 transition">
+              {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded / Edit panel */}
+      {expanded && (
+        <div className="border-t border-slate-100 bg-slate-50 px-5 py-4 space-y-4">
+          {editing ? (
+            <>
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Status</label>
+                <div className="flex flex-wrap gap-2">
+                  {OPPORTUNITY_STATUSES.map(s => {
+                    const cfg = STATUS_CONFIG[s];
+                    return (
+                      <button key={s} onClick={() => setStatus(s)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${status === s ? cfg.color + " ring-2 ring-offset-1 ring-blue-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"}`}>
+                        {cfg.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Outcome</label>
+                <select value={outcome} onChange={e => setOutcome(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white">
+                  <option value="">Select outcome</option>
+                  {OUTCOMES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">CRM Notes</label>
+                <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)}
+                  placeholder="Log conversation details, follow-up timing, homeowner reaction..."
+                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white resize-none" />
+              </div>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" checked={qrScanned} onChange={e => setQrScanned(e.target.checked)}
+                  className="rounded" />
+                <span className="text-xs font-semibold text-slate-700">QR code scanned / rep code entered</span>
+              </label>
+
+              <div className="flex gap-2">
+                <button onClick={handleSave} disabled={saving}
+                  className="flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded-lg transition disabled:opacity-50"
+                  style={{ background: NAVY }}>
+                  <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save Update"}
+                </button>
+                <button onClick={() => setEditing(false)}
+                  className="px-4 py-2 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-white transition">
+                  <X className="h-3.5 w-3.5 inline mr-1" />Cancel
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="space-y-2 text-sm text-slate-600">
+              {opp.outcome && <p><span className="font-semibold text-slate-700">Last Outcome:</span> {OUTCOMES.find(o => o.value === opp.outcome)?.label || opp.outcome}</p>}
+              {opp.contact_date && <p><span className="font-semibold text-slate-700">First Contacted:</span> {new Date(opp.contact_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>}
+              {opp.crm_notes ? (
+                <div>
+                  <p className="font-semibold text-slate-700 mb-1">Notes:</p>
+                  <p className="text-slate-500 leading-relaxed whitespace-pre-line">{opp.crm_notes}</p>
+                </div>
+              ) : (
+                <p className="text-slate-400 italic text-xs">No notes logged yet. Click "Log Update" to add details.</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function AccessGate({ onAccess }) {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const results = await base44.entities.PartnerApplication.filter({ email: email.toLowerCase().trim(), status: "approved" });
+    if (results.length > 0) {
+      onAccess(results[0]);
+    } else {
+      setError("No approved partner account found for this email. Contact VTON to request access.");
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16" style={{ background: NAVY }}>
+      <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
+          <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Access</p>
+          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network</p>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
+            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition" />
+          </div>
+          {error && (
+            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
+              <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-xs text-red-600">{error}</p>
+            </div>
+          )}
+          <button type="submit" disabled={loading}
+            className="w-full py-3.5 font-bold text-sm rounded-xl text-white transition disabled:opacity-50"
+            style={{ background: loading ? "#888" : RED }}>
+            {loading ? "Checking…" : "Access My Dashboard"}
+          </button>
+          <p className="text-xs text-slate-400 text-center">
+            Not a partner yet?{" "}
+            <a href="/vton" className="underline hover:text-slate-600">Apply for territory access</a>
+          </p>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default function PartnerDashboard() {
+  const [partner, setPartner] = useState(null);
+  const [opportunities, setOpportunities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filter, setFilter] = useState("all");
+
+  const fetchOpportunities = async (partnerEmail) => {
+    setLoading(true);
+    const data = await base44.entities.VTONOpportunity.filter({ partner_email: partnerEmail }, "-created_date", 100);
+    setOpportunities(data);
+    setLoading(false);
+  };
+
+  const handleAccess = (p) => {
+    setPartner(p);
+    fetchOpportunities(p.email);
+  };
+
+  const handleUpdate = (updated) => {
+    setOpportunities(prev => prev.map(o => o.id === updated.id ? updated : o));
+  };
+
+  const statusCounts = OPPORTUNITY_STATUSES.reduce((acc, s) => {
+    acc[s] = opportunities.filter(o => (o.opportunity_status || "assigned") === s).length;
+    return acc;
+  }, {});
+
+  const filtered = filter === "all" ? opportunities : opportunities.filter(o => (o.opportunity_status || "assigned") === filter);
+
+  const depositUsed = (partner?.verified_conversations || 0) * 200;
+  const depositRemaining = Math.max(0, (partner?.deposit_balance || 2000) - depositUsed);
+
+  if (!partner) return <AccessGate onAccess={handleAccess} />;
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+
+      {/* Header */}
+      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-70" />
+            <div className="h-5 w-px bg-slate-200" />
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Partner Dashboard</p>
+              <p className="text-sm font-semibold text-slate-800">{partner.name}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => fetchOpportunities(partner.email)}
+              className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition">
+              <RefreshCw className="h-4 w-4" />
+            </button>
+            <button onClick={() => setPartner(null)}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+              <LogOut className="h-3.5 w-3.5" /> Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        {/* Partner stats */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+            <p className="text-2xl font-black text-slate-800">{opportunities.length}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Total Opportunities</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+            <p className="text-2xl font-black" style={{ color: RED }}>{statusCounts.conversation_verified || 0}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Verified Conversations</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+            <p className="text-2xl font-black text-green-700">{statusCounts.closed_won || 0}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Closed Won</p>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
+            <p className="text-2xl font-black" style={{ color: NAVY }}>${depositRemaining.toLocaleString()}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Deposit Remaining</p>
+          </div>
+        </div>
+
+        {/* Territory + deposit info */}
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-0.5">Assigned Territory</p>
+            <p className="text-sm font-bold text-slate-800">{partner.territory || "Territory Pending Assignment"}</p>
+          </div>
+          <div className="h-px sm:h-10 sm:w-px bg-slate-100" />
+          <div className="flex-1">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Deposit Balance</p>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div className="h-full rounded-full transition-all" style={{ background: RED, width: `${Math.min(100, (depositRemaining / 2000) * 100)}%` }} />
+              </div>
+              <span className="text-xs font-bold text-slate-700">${depositRemaining.toLocaleString()} / $2,000</span>
+            </div>
+            <p className="text-xs text-slate-400 mt-1">{statusCounts.conversation_verified || 0} verified conversations × $200 credit</p>
+          </div>
+        </div>
+
+        {/* Filter tabs */}
+        <div className="flex flex-wrap gap-2">
+          <button onClick={() => setFilter("all")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${filter === "all" ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
+            All ({opportunities.length})
+          </button>
+          {OPPORTUNITY_STATUSES.map(s => {
+            const cfg = STATUS_CONFIG[s];
+            return (
+              <button key={s} onClick={() => setFilter(s)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${filter === s ? cfg.color + " ring-2 ring-offset-1 ring-blue-300" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
+                {cfg.label} ({statusCounts[s] || 0})
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Opportunities list */}
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+            <MapPin className="h-10 w-10 mx-auto mb-3 text-slate-200" />
+            <p className="font-semibold text-slate-500">No opportunities in this view</p>
+            <p className="text-sm text-slate-400 mt-1">Check back soon — new opportunities are assigned as they are identified.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <p className="text-xs text-slate-400 font-medium">{filtered.length} opportunit{filtered.length !== 1 ? "ies" : "y"}</p>
+            {filtered.map(opp => (
+              <OpportunityCard key={opp.id} opp={opp} onUpdate={handleUpdate} />
+            ))}
+          </div>
+        )}
+
+        {/* Protocol reminder */}
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">VTON Protocol Reminder</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
+            <div className="flex items-start gap-2">
+              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
+              <span>Log every door contact — even no-answers count toward activity tracking</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
+              <span>QR scan or code entry required for a conversation to be verified ($200 credit)</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
+              <span>Use Veteran's Next Home™ messaging and Red White & Blue Purchase Benefit framing at the door</span>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-xs text-slate-400 text-center pb-4">
+          VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs not affiliated with the U.S. Department of Veterans Affairs.
+        </p>
+      </div>
+    </div>
+  );
+}

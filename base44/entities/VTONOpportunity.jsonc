@@ -1,0 +1,86 @@
+{
+  "name": "VTONOpportunity",
+  "type": "object",
+  "properties": {
+    "partner_email": {
+      "type": "string",
+      "description": "Email of assigned partner"
+    },
+    "homeowner_name": {
+      "type": "string"
+    },
+    "property_address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "estimated_price": {
+      "type": "number"
+    },
+    "va_loan_confirmed": {
+      "type": "boolean",
+      "default": true
+    },
+    "listing_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "pending",
+        "sold",
+        "off_market"
+      ],
+      "default": "active"
+    },
+    "opportunity_status": {
+      "type": "string",
+      "enum": [
+        "assigned",
+        "contacted",
+        "conversation_verified",
+        "consultation_scheduled",
+        "closed_won",
+        "closed_lost"
+      ],
+      "default": "assigned"
+    },
+    "contact_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "qr_scanned": {
+      "type": "boolean",
+      "default": false
+    },
+    "crm_notes": {
+      "type": "string"
+    },
+    "outcome": {
+      "type": "string",
+      "enum": [
+        "no_answer",
+        "not_interested",
+        "interested",
+        "callback_scheduled",
+        "consultation_booked",
+        "converted"
+      ]
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "default": "medium"
+    }
+  },
+  "required": [
+    "property_address",
+    "partner_email"
+  ]
+}

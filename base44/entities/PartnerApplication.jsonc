@@ -1,0 +1,49 @@
+{
+  "name": "PartnerApplication",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "market": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "suspended"
+      ],
+      "default": "pending"
+    },
+    "territory": {
+      "type": "string",
+      "description": "Assigned territory/market name"
+    },
+    "deposit_balance": {
+      "type": "number",
+      "description": "Current rolling deposit balance",
+      "default": 2000
+    },
+    "verified_conversations": {
+      "type": "number",
+      "description": "Total verified conversations logged",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "email"
+  ]
+}
