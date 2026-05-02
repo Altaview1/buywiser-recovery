@@ -412,7 +412,7 @@ export default function VTON() {
           </div>
           <div className="mt-6 border-l-4 rounded-xl px-5 py-4 bg-slate-50" style={{ borderLeftColor: NAVY }}>
             <p className="text-sm font-bold text-slate-800 italic">
-              "The agent we want thinks: Give me the doors. I'll create the conversations."
+              "The agent we want thinks: Give me the qualified doors. I'll create the conversations."
             </p>
           </div>
         </div>
