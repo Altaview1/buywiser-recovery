@@ -9,6 +9,10 @@
     "homeowner_name": {
       "type": "string"
     },
+    "homeowner_phone": {
+      "type": "string",
+      "description": "Homeowner phone number for partner outreach"
+    },
     "property_address": {
       "type": "string"
     },

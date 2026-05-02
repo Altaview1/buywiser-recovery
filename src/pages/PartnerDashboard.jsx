@@ -104,9 +104,20 @@ function OpportunityCard({ opp, onUpdate }) {
               )}
             </div>
 
-            <p className="text-sm font-bold text-slate-900 mb-0.5">
-              {opp.homeowner_name || "Homeowner"}
-            </p>
+            <div className="flex items-center gap-2 mb-0.5">
+              <p className="text-sm font-bold text-slate-900">
+                {opp.homeowner_name || "Homeowner"}
+              </p>
+              {opp.homeowner_phone && (
+                <a
+                  href={`tel:${opp.homeowner_phone}`}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition"
+                  title={`Call ${opp.homeowner_phone}`}
+                >
+                  <Phone className="h-3 w-3" /> Call
+                </a>
+              )}
+            </div>
             <div className="flex items-center gap-1 text-xs text-slate-500">
               <MapPin className="h-3 w-3 flex-shrink-0" />
               <span>{opp.property_address}{opp.city ? `, ${opp.city}` : ""}{opp.state ? `, ${opp.state}` : ""}</span>
