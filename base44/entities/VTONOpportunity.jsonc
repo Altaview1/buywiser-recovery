@@ -82,6 +82,15 @@
         "low"
       ],
       "default": "medium"
+    },
+    "needs_reassignment": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flagged true when forfeited \u2014 signals office to reassign to another partner"
+    },
+    "forfeited_from_partner": {
+      "type": "string",
+      "description": "Email of partner who forfeited this opportunity, for office reference"
     }
   },
   "required": [
