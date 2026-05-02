@@ -25,6 +25,7 @@ import MortgageAI from './pages/MortgageAI';
 import BuywiserHome from './pages/BuywiserHome';
 import LeadsDashboard from './pages/LeadsDashboard';
 import FlagWatermark from './components/FlagWatermark';
+import VTON from './pages/VTON';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -68,6 +69,7 @@ const AuthenticatedApp = () => {
       <Route path="/MortgageAI" element={<MortgageAI />} />
       <Route path="/BuywiserHome" element={<BuywiserHome />} />
       <Route path="/leads" element={<LeadsDashboard />} />
+      <Route path="/vton" element={<VTON />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
