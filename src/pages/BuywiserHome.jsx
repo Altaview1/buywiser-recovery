@@ -384,7 +384,7 @@ function LandingView() {
       </section>
 
       {/* ── Start My Review (CTA Form) ── */}
-      <section ref={ctaRef} style={{ background: "#F5F7FA" }} className="px-4 py-14">
+      <section ref={ctaRef} style={{ background: "#F5F7FA" }} className="sticky top-0 z-40 px-4 py-14">
         <div className="max-w-xl mx-auto">
           <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
             <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
