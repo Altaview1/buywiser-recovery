@@ -1,8 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
 export default function VideoTestimonial() {
   const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (isPlaying) {
+      const timer = setTimeout(() => setIsPlaying(false), 120000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPlaying]);
 
   if (isPlaying) {
     return (
