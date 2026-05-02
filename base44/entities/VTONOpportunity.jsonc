@@ -47,7 +47,8 @@
         "conversation_verified",
         "consultation_scheduled",
         "closed_won",
-        "closed_lost"
+        "closed_lost",
+        "forfeited"
       ],
       "default": "assigned"
     },

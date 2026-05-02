@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
-  AlertCircle, RefreshCw, LogOut, Save, X, QrCode
+  AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer
 } from "lucide-react";
 
 const NAVY = "#0B1F3B";
@@ -13,8 +13,10 @@ const RED = "#C62828";
 
 const OPPORTUNITY_STATUSES = [
   "assigned", "contacted", "conversation_verified",
-  "consultation_scheduled", "closed_won", "closed_lost"
+  "consultation_scheduled", "closed_won", "closed_lost", "forfeited"
 ];
+
+const FORFEIT_HOURS = 36;
 
 const OUTCOMES = [
   { value: "no_answer", label: "No Answer" },
@@ -32,6 +34,7 @@ const STATUS_CONFIG = {
   consultation_scheduled: { color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: Calendar,   label: "Consultation" },
   closed_won:             { color: "bg-green-100 text-green-800 border-green-200",  icon: CheckCircle,  label: "Won" },
   closed_lost:            { color: "bg-slate-100 text-slate-500 border-slate-200",  icon: XCircle,      label: "Lost" },
+  forfeited:              { color: "bg-red-100 text-red-700 border-red-200",         icon: Timer,        label: "Forfeited" },
 };
 
 const PRIORITY_CONFIG = {
@@ -39,6 +42,46 @@ const PRIORITY_CONFIG = {
   medium: "bg-amber-100 text-amber-700 border-amber-200",
   low:    "bg-slate-100 text-slate-500 border-slate-200",
 };
+
+function CountdownTimer({ createdDate }) {
+  const deadline = new Date(createdDate).getTime() + FORFEIT_HOURS * 60 * 60 * 1000;
+
+  const getRemaining = () => {
+    const diff = deadline - Date.now();
+    if (diff <= 0) return null;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    return { h, m, s, diff };
+  };
+
+  const [remaining, setRemaining] = useState(getRemaining);
+
+  useEffect(() => {
+    const interval = setInterval(() => setRemaining(getRemaining()), 1000);
+    return () => clearInterval(interval);
+  }, [createdDate]);
+
+  if (!remaining) return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200">
+      <Timer className="h-3 w-3" /> Expired
+    </span>
+  );
+
+  const urgent = remaining.diff < 6 * 3600000; // under 6 hours
+  const warning = remaining.diff < 12 * 3600000; // under 12 hours
+
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${
+      urgent ? "bg-red-100 text-red-700 border-red-200 animate-pulse" :
+      warning ? "bg-amber-100 text-amber-700 border-amber-200" :
+      "bg-slate-100 text-slate-600 border-slate-200"
+    }`}>
+      <Timer className="h-3 w-3" />
+      {remaining.h}h {remaining.m}m {remaining.s}s
+    </span>
+  );
+}
 
 function StatusBadge({ status }) {
   const cfg = STATUS_CONFIG[status] || STATUS_CONFIG.assigned;
@@ -87,6 +130,9 @@ function OpportunityCard({ opp, onUpdate }) {
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <StatusBadge status={opp.opportunity_status || "assigned"} />
+              {(opp.opportunity_status || "assigned") === "assigned" && (
+                <CountdownTimer createdDate={opp.created_date} />
+              )}
               {opp.priority && (
                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${PRIORITY_CONFIG[opp.priority]}`}>
                   {opp.priority.charAt(0).toUpperCase() + opp.priority.slice(1)} Priority
