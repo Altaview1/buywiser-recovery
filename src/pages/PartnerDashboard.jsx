@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Leaderboard from "@/components/vton/Leaderboard";
+import VerificationBadge from "@/components/vton/VerificationBadge";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
@@ -431,7 +432,10 @@ export default function PartnerDashboard() {
             <div className="h-5 w-px bg-slate-200" />
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Partner Dashboard</p>
-              <p className="text-sm font-semibold text-slate-800">{partner.name}</p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-sm font-semibold text-slate-800">{partner.name}</p>
+                {partner.quiz_passed && <VerificationBadge size="sm" />}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, ArrowRight, Check, X } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import PartnerPreScreenQuiz from "../components/vton/PartnerPreScreenQuiz";
 
 const NAVY = "#0B1F3B";
@@ -76,9 +77,22 @@ function ApplyForm() {
     setStep("form");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      await base44.entities.PartnerApplication.create({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        market: form.market,
+        status: "pending",
+        quiz_passed: true,
+        quiz_answers: quizAnswers,
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting application:", error);
+    }
   };
 
   if (submitted) {

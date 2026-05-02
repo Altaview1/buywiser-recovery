@@ -40,6 +40,15 @@
     },
     "notes": {
       "type": "string"
+    },
+    "quiz_passed": {
+      "type": "boolean",
+      "description": "Whether the partner passed the pre-screening quiz",
+      "default": false
+    },
+    "quiz_answers": {
+      "type": "object",
+      "description": "Answers from the pre-screening quiz"
     }
   },
   "required": [

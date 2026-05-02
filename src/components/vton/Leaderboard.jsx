@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Trophy, Medal } from "lucide-react";
+import VerificationBadge from "./VerificationBadge";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -60,11 +61,14 @@ export default function Leaderboard({ currentPartnerEmail, currentPartnerVerifie
 
                 {/* Name + bar */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className={`text-sm font-semibold truncate ${isMe ? "text-blue-700" : "text-slate-800"}`}>
-                      {isMe ? "You" : partner.name}
-                      {isMe && <span className="ml-1.5 text-xs font-normal text-blue-500">← you</span>}
-                    </p>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <p className={`text-sm font-semibold truncate ${isMe ? "text-blue-700" : "text-slate-800"}`}>
+                        {isMe ? "You" : partner.name}
+                        {isMe && <span className="ml-1.5 text-xs font-normal text-blue-500">← you</span>}
+                      </p>
+                      {partner.quiz_passed && <VerificationBadge size="sm" />}
+                    </div>
                     <span className={`text-sm font-black ml-2 flex-shrink-0 ${isMe ? "text-blue-700" : "text-slate-700"}`}>
                       {count}
                     </span>
