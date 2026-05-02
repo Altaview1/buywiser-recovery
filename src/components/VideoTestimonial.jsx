@@ -7,11 +7,12 @@ export default function VideoTestimonial() {
     return (
       <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black w-full" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
         <iframe
-          src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview"
+          src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview?autoplay=1"
           title="Cody & Frank Testimonial"
           frameBorder="0"
-          allow="autoplay"
+          allow="autoplay;fullscreen"
           allowFullScreen
+          autoPlay
           style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
         />
       </div>
