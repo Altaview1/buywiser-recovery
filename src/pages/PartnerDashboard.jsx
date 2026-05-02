@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { base44 } from "@/api/base44Client";
+import { QRCodeSVG } from "qrcode.react";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
-  AlertCircle, RefreshCw, LogOut, Save, X
+  AlertCircle, RefreshCw, LogOut, Save, X, QrCode
 } from "lucide-react";
 
 const NAVY = "#0B1F3B";
@@ -51,11 +52,15 @@ function StatusBadge({ status }) {
 function OpportunityCard({ opp, onUpdate }) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [showQR, setShowQR] = useState(false);
   const [status, setStatus] = useState(opp.opportunity_status || "assigned");
   const [outcome, setOutcome] = useState(opp.outcome || "");
   const [notes, setNotes] = useState(opp.crm_notes || "");
   const [qrScanned, setQrScanned] = useState(opp.qr_scanned || false);
   const [saving, setSaving] = useState(false);
+
+  const qrValue = `https://buywiser.base44.app/partner?verify=${opp.id}&partner=${encodeURIComponent(opp.partner_email || "")}`;
+  const repCode = `VTON-${opp.id.slice(-6).toUpperCase()}`;
 
   const estBenefit = opp.estimated_price ? (opp.estimated_price * 0.015).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }) : null;
 
@@ -124,6 +129,13 @@ function OpportunityCard({ opp, onUpdate }) {
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
+              onClick={() => setShowQR(true)}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition"
+              title="Show QR Code"
+            >
+              <QrCode className="h-4 w-4" />
+            </button>
+            <button
               onClick={() => { setEditing(!editing); setExpanded(true); }}
               className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
             >
@@ -135,6 +147,35 @@ function OpportunityCard({ opp, onUpdate }) {
           </div>
         </div>
       </div>
+
+      {/* QR Modal */}
+      {showQR && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.6)" }}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+            <div className="px-5 py-4 flex items-center justify-between" style={{ background: NAVY }}>
+              <div>
+                <p className="text-white font-black text-sm uppercase tracking-widest">Conversation QR Code</p>
+                <p className="text-blue-300 text-xs mt-0.5">{opp.homeowner_name || "Homeowner"} · {opp.property_address}</p>
+              </div>
+              <button onClick={() => setShowQR(false)} className="p-1.5 rounded-lg text-white/60 hover:text-white hover:bg-white/10 transition">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="p-6 flex flex-col items-center gap-4">
+              <div className="p-4 bg-white border-2 border-slate-200 rounded-xl">
+                <QRCodeSVG value={qrValue} size={180} bgColor="#ffffff" fgColor="#0B1F3B" level="M" />
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-slate-400 uppercase tracking-widest mb-1">Rep Code</p>
+                <p className="text-2xl font-black tracking-widest" style={{ color: NAVY }}>{repCode}</p>
+              </div>
+              <div className="w-full bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 text-center leading-relaxed">
+                Show this QR code to the homeowner or enter the rep code to validate the conversation and earn your <strong>$200 credit</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Expanded / Edit panel */}
       {expanded && (
