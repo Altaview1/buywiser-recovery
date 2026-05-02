@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import Leaderboard from "@/components/vton/Leaderboard";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
@@ -501,6 +502,12 @@ export default function PartnerDashboard() {
             </BarChart>
           </ResponsiveContainer>
         </div>
+
+        {/* Leaderboard */}
+        <Leaderboard
+          currentPartnerEmail={partner.email}
+          currentPartnerVerified={partner.verified_conversations || 0}
+        />
 
         {/* Filter tabs */}
         <div className="flex flex-wrap gap-2">
