@@ -299,6 +299,7 @@ export default function LeadsDashboard() {
   const [showUpload, setShowUpload] = useState(false);
   const [showBulk, setShowBulk] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [filterReason, setFilterReason] = useState("All");
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -319,6 +320,7 @@ export default function LeadsDashboard() {
 
   const filtered = leads.filter((l) => {
     const matchStatus = filterStatus === "All" || (l.status || "New") === filterStatus;
+    const matchReason = filterReason === "All" || l.close_reason === filterReason;
     const q = search.toLowerCase();
     const matchSearch = !q ||
       l.address_or_link?.toLowerCase().includes(q) ||
@@ -326,7 +328,7 @@ export default function LeadsDashboard() {
       l.name?.toLowerCase().includes(q) ||
       l.phone?.toLowerCase().includes(q) ||
       l.code?.toLowerCase().includes(q);
-    return matchStatus && matchSearch;
+    return matchStatus && matchReason && matchSearch;
   });
 
   const counts = ALL_STATUSES.slice(1).reduce((acc, s) => {
@@ -421,6 +423,17 @@ export default function LeadsDashboard() {
               className="appearance-none pl-3 pr-8 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 transition font-medium text-slate-700"
             >
               {ALL_STATUSES.map((s) => <option key={s}>{s}</option>)}
+            </select>
+            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          </div>
+          <div className="relative">
+            <select
+              value={filterReason}
+              onChange={(e) => setFilterReason(e.target.value)}
+              className="appearance-none pl-3 pr-8 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 transition font-medium text-slate-700"
+            >
+              <option value="All">All Outcomes</option>
+              {CLOSE_REASONS.map((r) => <option key={r}>{r}</option>)}
             </select>
             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
           </div>
