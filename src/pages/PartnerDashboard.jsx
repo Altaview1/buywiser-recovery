@@ -369,6 +369,7 @@ export default function PartnerDashboard() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [approvedPartnerCount, setApprovedPartnerCount] = useState(0);
 
   const fetchOpportunities = async (partnerEmail) => {
     setLoading(true);
@@ -377,9 +378,11 @@ export default function PartnerDashboard() {
     setLoading(false);
   };
 
-  const handleAccess = (p) => {
+  const handleAccess = async (p) => {
     setPartner(p);
     fetchOpportunities(p.email);
+    const partners = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
+    setApprovedPartnerCount(partners.length);
   };
 
   const handleUpdate = (updated) => {
@@ -503,11 +506,13 @@ export default function PartnerDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Leaderboard */}
-        <Leaderboard
-          currentPartnerEmail={partner.email}
-          currentPartnerVerified={partner.verified_conversations || 0}
-        />
+        {/* Leaderboard — only shown when 5+ approved partners exist */}
+        {approvedPartnerCount >= 5 && (
+          <Leaderboard
+            currentPartnerEmail={partner.email}
+            currentPartnerVerified={partner.verified_conversations || 0}
+          />
+        )}
 
         {/* Filter tabs */}
         <div className="flex flex-wrap gap-2">
