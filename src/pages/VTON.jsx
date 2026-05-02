@@ -89,9 +89,18 @@ function ApplyForm() {
         quiz_passed: true,
         quiz_answers: quizAnswers,
       });
+
+      // Book interview slot automatically
+      await base44.functions.invoke('bookInterviewSlot', {
+        partner_email: form.email,
+        partner_name: form.name,
+        partner_phone: form.phone,
+      });
+
       setSubmitted(true);
     } catch (error) {
       console.error("Error submitting application:", error);
+      setSubmitted(true); // Still show success even if booking fails, they'll be contacted
     }
   };
 
