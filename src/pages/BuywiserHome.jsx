@@ -226,17 +226,59 @@ function LandingView() {
           </div>
 
           {/* Video Testimonial */}
-          <div className="mt-12 rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black max-w-2xl mx-auto w-full">
-            <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
-              <iframe
-                src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview"
-                title="Cody & Frank Testimonial"
-                frameBorder="0"
-                allow="autoplay"
-                allowFullScreen
-                style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+          <div className="mt-12 max-w-2xl mx-auto w-full">
+            <button
+              onClick={() => {
+                const iframe = document.createElement('iframe');
+                iframe.src = 'https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview';
+                iframe.setAttribute('frameborder', '0');
+                iframe.setAttribute('allow', 'autoplay');
+                iframe.setAttribute('allowfullscreen', 'true');
+                iframe.style.position = 'absolute';
+                iframe.style.top = '0';
+                iframe.style.left = '0';
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+                const container = document.getElementById('video-container');
+                if (container) {
+                  container.innerHTML = '';
+                  const wrapper = document.createElement('div');
+                  wrapper.style.position = 'relative';
+                  wrapper.style.paddingBottom = '56.25%';
+                  wrapper.style.height = '0';
+                  wrapper.appendChild(iframe);
+                  container.appendChild(wrapper);
+                }
+              }}
+              className="relative block w-full group cursor-pointer rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black hover:shadow-xl transition-shadow"
+            >
+              <img
+                src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/b15e55a9b_codiandfrank.png"
+                alt="Cody & Frank Testimonial"
+                className="w-full h-auto block"
               />
-            </div>
+              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-white/90 group-hover:bg-white transition-colors flex items-center justify-center">
+                  <div className="w-0 h-0 border-l-8 border-l-transparent border-r-0 border-t-5 border-t-transparent border-b-5 border-b-transparent"
+                    style={{
+                      borderLeft: '8px solid transparent',
+                      borderTop: '5px solid transparent',
+                      borderBottom: '5px solid transparent',
+                      borderRight: '0px solid transparent',
+                      width: '0',
+                      height: '0',
+                      marginLeft: '2px'
+                    }}
+                  >
+                    <svg className="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </button>
+            <div id="video-container" className="mt-2" />
+            <p className="text-center text-sm font-bold text-slate-700 mt-3 uppercase tracking-wide">Veterans Cody and Frank</p>
           </div>
         </div>
       </section>
