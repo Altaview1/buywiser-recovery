@@ -11,10 +11,11 @@ Deno.serve(async (req) => {
     const partnerEmail = opp.partner_email;
     if (!partnerEmail) return Response.json({ error: 'No partner email on opportunity' }, { status: 400 });
 
-    // Look up partner name
+    // Look up partner name and phone
     const partners = await base44.asServiceRole.entities.PartnerApplication.filter({ email: partnerEmail });
     const partnerName = partners.length > 0 ? partners[0].name.split(' ')[0] : 'Partner';
     const territory = partners.length > 0 && partners[0].territory ? partners[0].territory : 'your territory';
+    const partnerPhone = partners.length > 0 ? partners[0].phone : null;
 
     const address = opp.property_address || 'Address pending';
     const city = opp.city ? `, ${opp.city}` : '';
@@ -126,6 +127,26 @@ Deno.serve(async (req) => {
         </div>
       `,
     });
+
+    // Send SMS to partner if they have a phone number on file
+    if (partnerPhone) {
+      const smsBody = `🎯 VTON: New opportunity assigned, ${partnerName}!\n\n${homeowner} — ${fullAddress}${price ? `\nEst. ${price}` : ''}${benefit ? ` (up to ${benefit} benefit)` : ''}\nPriority: ${priority}\n\nLog in to your dashboard: https://buywiser.base44.app/partner`;
+
+      const twilioSid = Deno.env.get('TWILIO_ACCOUNT_SID');
+      const twilioAuth = Deno.env.get('TWILIO_AUTH_TOKEN');
+      const twilioFrom = Deno.env.get('TWILIO_FROM_NUMBER');
+
+      await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${btoa(`${twilioSid}:${twilioAuth}`)}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({ To: partnerPhone, From: twilioFrom, Body: smsBody }),
+      });
+
+      console.log(`SMS sent to partner ${partnerPhone}`);
+    }
 
     console.log(`Partner notification sent to ${partnerEmail} for opportunity at ${fullAddress}`);
     return Response.json({ success: true });
