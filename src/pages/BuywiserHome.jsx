@@ -226,11 +226,11 @@ function LandingView() {
           </div>
 
           {/* Video Testimonial */}
-          <div className="mt-12 rounded-2xl overflow-hidden border-2 border-slate-200 shadow-lg bg-black max-w-2xl mx-auto w-full">
+          <div className="mt-12 rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black max-w-2xl mx-auto w-full">
             <div style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
               <iframe
                 src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview"
-                title="Customer Testimonial"
+                title="Cody & Frank Testimonial"
                 frameBorder="0"
                 allow="autoplay"
                 allowFullScreen
