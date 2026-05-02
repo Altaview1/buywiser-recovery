@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { X } from "lucide-react";
 
 export default function VideoTestimonial() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   if (isPlaying) {
     return (
-      <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black w-full" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+      <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black w-full relative" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
         <iframe
           src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview?autoplay=1"
           title="Cody & Frank Testimonial"
@@ -15,6 +16,12 @@ export default function VideoTestimonial() {
           autoPlay
           style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
         />
+        <button
+          onClick={() => setIsPlaying(false)}
+          className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors z-10"
+        >
+          <X className="w-5 h-5 text-white" />
+        </button>
       </div>
     );
   }
