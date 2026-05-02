@@ -3,7 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import {
   Users, Search, RefreshCw, ChevronDown, ExternalLink,
-  CheckCircle, Clock, Phone, Star, XCircle, StickyNote, Save, X
+  CheckCircle, Clock, Phone, Star, XCircle, StickyNote, Save, X,
+  Upload, Plus, ChevronUp
 } from "lucide-react";
 
 const STATUS_CONFIG = {
@@ -23,6 +24,103 @@ function StatusBadge({ status }) {
     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${cfg.color}`}>
       <Icon className="h-3 w-3" /> {status || "New"}
     </span>
+  );
+}
+
+function UploadLeadModal({ onClose, onCreated }) {
+  const [agents, setAgents] = useState([]);
+  const [form, setForm] = useState({
+    address_or_link: "",
+    name: "",
+    email: "",
+    phone: "",
+    assigned_agent: "",
+    utm_source: "admin_upload",
+    status: "New",
+    internal_notes: "",
+  });
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    base44.entities.PartnerApplication.filter({ status: "approved" }, "name", 100)
+      .then(setAgents);
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    const created = await base44.entities.Lead.create(form);
+    setSaving(false);
+    onCreated(created);
+    onClose();
+  };
+
+  const inputCls = "w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white transition";
+  const labelCls = "block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+        <div className="px-6 py-4 flex items-center justify-between bg-slate-900">
+          <div className="flex items-center gap-2">
+            <Upload className="h-4 w-4 text-white/60" />
+            <p className="text-sm font-bold text-white">Upload New Lead</p>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className={labelCls}>Property Address or Listing URL *</label>
+            <input required className={inputCls} placeholder="123 Main St or https://..." value={form.address_or_link}
+              onChange={e => setForm(f => ({ ...f, address_or_link: e.target.value }))} />
+          </div>
+          <div>
+            <label className={labelCls}>Assign to Agent *</label>
+            <select required className={inputCls} value={form.assigned_agent}
+              onChange={e => setForm(f => ({ ...f, assigned_agent: e.target.value }))}>
+              <option value="">Select an agent…</option>
+              {agents.map(a => (
+                <option key={a.id} value={a.name}>{a.name} {a.territory ? `— ${a.territory}` : ""}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className={labelCls}>Lead Name</label>
+              <input className={inputCls} placeholder="Jane Smith" value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+            </div>
+            <div>
+              <label className={labelCls}>Phone</label>
+              <input className={inputCls} placeholder="(818) 555-1234" value={form.phone}
+                onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Email</label>
+            <input type="email" className={inputCls} placeholder="lead@email.com" value={form.email}
+              onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+          </div>
+          <div>
+            <label className={labelCls}>Initial Notes</label>
+            <textarea rows={2} className={inputCls} placeholder="Any notes for the agent…" value={form.internal_notes}
+              onChange={e => setForm(f => ({ ...f, internal_notes: e.target.value }))} />
+          </div>
+          <div className="flex gap-2 pt-1">
+            <button type="submit" disabled={saving}
+              className="flex items-center gap-1.5 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition disabled:opacity-50">
+              <Plus className="h-4 w-4" /> {saving ? "Adding…" : "Add Lead"}
+            </button>
+            <button type="button" onClick={onClose}
+              className="px-5 py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
 
@@ -153,6 +251,7 @@ export default function LeadsDashboard() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [showUpload, setShowUpload] = useState(false);
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -165,6 +264,10 @@ export default function LeadsDashboard() {
 
   const handleUpdate = (updated) => {
     setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
+  };
+
+  const handleCreated = (newLead) => {
+    setLeads((prev) => [newLead, ...prev]);
   };
 
   const filtered = leads.filter((l) => {
@@ -186,6 +289,7 @@ export default function LeadsDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {showUpload && <UploadLeadModal onClose={() => setShowUpload(false)} onCreated={handleCreated} />}
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
@@ -202,9 +306,14 @@ export default function LeadsDashboard() {
               <h1 className="text-base font-bold text-slate-800">Leads Dashboard</h1>
             </div>
           </div>
-          <button onClick={fetchLeads} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
-            <RefreshCw className="h-3.5 w-3.5" /> Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={fetchLeads} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+              <RefreshCw className="h-3.5 w-3.5" /> Refresh
+            </button>
+            <button onClick={() => setShowUpload(true)} className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white bg-slate-900 hover:bg-slate-800 transition">
+              <Upload className="h-3.5 w-3.5" /> Upload Lead
+            </button>
+          </div>
         </div>
       </div>
 
