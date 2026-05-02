@@ -4,6 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import Leaderboard from "@/components/vton/Leaderboard";
 import VerificationBadge from "@/components/vton/VerificationBadge";
+import PartnerProgressTracker from "@/components/vton/PartnerProgressTracker";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
@@ -452,6 +453,9 @@ export default function PartnerDashboard() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+        {/* Progress Tracker */}
+        <PartnerProgressTracker partner={partner} />
 
         {/* Partner stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
