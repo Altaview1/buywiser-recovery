@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import {
   Users, Search, RefreshCw, ChevronDown, ExternalLink,
   CheckCircle, Clock, Phone, Star, XCircle, StickyNote, Save, X,
-  Upload, Plus, ChevronUp, FileSpreadsheet, BarChart2
+  Upload, Plus, ChevronUp, FileSpreadsheet, BarChart2, RefreshCcw
 } from "lucide-react";
 import BulkLeadUpload from "@/components/BulkLeadUpload";
 import OutcomeSummary from "@/components/OutcomeSummary";
@@ -135,8 +135,84 @@ const CLOSE_REASONS = [
   "Other",
 ];
 
+function RecirculateModal({ lead, onClose, onRecirculated }) {
+  const [agents, setAgents] = useState([]);
+  const [selectedAgent, setSelectedAgent] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    base44.entities.PartnerApplication.filter({ status: "approved" }, "name", 100).then(setAgents);
+  }, []);
+
+  const handleConfirm = async () => {
+    if (!selectedAgent) return;
+    setSaving(true);
+    const updated = await base44.entities.Lead.update(lead.id, {
+      assigned_agent: selectedAgent,
+      status: "New",
+      close_reason: "",
+      agent_comment: "",
+      internal_notes: (lead.internal_notes ? lead.internal_notes + "\n\n" : "") +
+        `[Recirculated ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} → reassigned to ${selectedAgent}]`,
+    });
+    setSaving(false);
+    onRecirculated({ ...lead, assigned_agent: selectedAgent, status: "New", close_reason: "", agent_comment: "" });
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden">
+        <div className="px-5 py-4 flex items-center justify-between bg-slate-900">
+          <div className="flex items-center gap-2">
+            <RefreshCcw className="h-4 w-4 text-white/60" />
+            <p className="text-sm font-bold text-white">Recirculate Lead</p>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-600">
+            <p className="font-semibold text-slate-800 mb-0.5">{lead.name || "Lead"}</p>
+            <p className="text-slate-500">{lead.address_or_link}</p>
+            <p className="mt-1 text-slate-400">Previously with: <span className="font-medium text-slate-600">{lead.assigned_agent || "—"}</span></p>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Reassign to Agent *</label>
+            <select
+              value={selectedAgent}
+              onChange={e => setSelectedAgent(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
+            >
+              <option value="">Select an agent…</option>
+              {agents.filter(a => a.name !== lead.assigned_agent).map(a => (
+                <option key={a.id} value={a.name}>{a.name}{a.territory ? ` — ${a.territory}` : ""}</option>
+              ))}
+            </select>
+          </div>
+          <p className="text-xs text-slate-400">This will reset the lead to <strong>New</strong> and assign it to the selected agent.</p>
+          <div className="flex gap-2">
+            <button
+              onClick={handleConfirm}
+              disabled={!selectedAgent || saving}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-lg hover:bg-slate-800 transition disabled:opacity-40"
+            >
+              <RefreshCcw className="h-3.5 w-3.5" /> {saving ? "Reassigning…" : "Recirculate"}
+            </button>
+            <button onClick={onClose} className="px-4 py-2.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function LeadRow({ lead, onUpdate }) {
   const [editing, setEditing] = useState(false);
+  const [showRecirculate, setShowRecirculate] = useState(false);
   const [status, setStatus] = useState(lead.status || "New");
   const [closeReason, setCloseReason] = useState(lead.close_reason || "");
   const [agentComment, setAgentComment] = useState(lead.agent_comment || "");
@@ -224,12 +300,29 @@ function LeadRow({ lead, onUpdate }) {
             </div>
           )}
         </div>
-        <button
-          onClick={() => setEditing(!editing)}
-          className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
-        >
-          {editing ? "Cancel" : "Edit"}
-        </button>
+        <div className="flex items-center gap-2 flex-shrink-0">
+          {(lead.status === "Closed" || lead.status === "Lost") && !editing && (
+            <button
+              onClick={() => setShowRecirculate(true)}
+              className="flex items-center gap-1 px-3 py-1.5 text-xs font-semibold border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 rounded-lg transition"
+            >
+              <RefreshCcw className="h-3 w-3" /> Recirculate
+            </button>
+          )}
+          <button
+            onClick={() => setEditing(!editing)}
+            className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
+          >
+            {editing ? "Cancel" : "Edit"}
+          </button>
+        </div>
+        {showRecirculate && (
+          <RecirculateModal
+            lead={lead}
+            onClose={() => setShowRecirculate(false)}
+            onRecirculated={(updated) => { onUpdate(updated); setShowRecirculate(false); }}
+          />
+        )}
       </div>
 
       {/* Edit panel */}
