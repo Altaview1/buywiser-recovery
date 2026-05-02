@@ -213,11 +213,39 @@ function RecirculateModal({ lead, onClose, onRecirculated }) {
 function LeadRow({ lead, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [showRecirculate, setShowRecirculate] = useState(false);
+  const [agents, setAgents] = useState([]);
+  const [reassignAgent, setReassignAgent] = useState("");
+  const [reassigning, setReassigning] = useState(false);
   const [status, setStatus] = useState(lead.status || "New");
   const [closeReason, setCloseReason] = useState(lead.close_reason || "");
   const [agentComment, setAgentComment] = useState(lead.agent_comment || "");
   const [notes, setNotes] = useState(lead.internal_notes || "");
   const [saving, setSaving] = useState(false);
+
+  const isNotInterested = lead.close_reason === "Not Interested";
+
+  useEffect(() => {
+    if (isNotInterested && editing) {
+      base44.entities.PartnerApplication.filter({ status: "approved" }, "name", 100).then(setAgents);
+    }
+  }, [isNotInterested, editing]);
+
+  const handleReassign = async () => {
+    if (!reassignAgent) return;
+    setReassigning(true);
+    const updatedNotes = (lead.internal_notes ? lead.internal_notes + "\n\n" : "") +
+      `[Reassigned ${new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} from ${lead.assigned_agent || "—"} → ${reassignAgent}]`;
+    await base44.entities.Lead.update(lead.id, {
+      assigned_agent: reassignAgent,
+      status: "New",
+      close_reason: "",
+      agent_comment: "",
+      internal_notes: updatedNotes,
+    });
+    setReassigning(false);
+    setEditing(false);
+    onUpdate({ ...lead, assigned_agent: reassignAgent, status: "New", close_reason: "", agent_comment: "", internal_notes: updatedNotes });
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -385,6 +413,31 @@ function LeadRow({ lead, onUpdate }) {
               className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white resize-none"
             />
           </div>
+          {isNotInterested && (
+            <div className="bg-orange-50 border border-orange-200 rounded-xl px-4 py-3 space-y-2">
+              <p className="text-xs font-bold text-orange-700 uppercase tracking-wider">Reassign to Another Agent</p>
+              <p className="text-xs text-orange-600">This lead is marked <strong>Not Interested</strong>. You can reassign it to a different team member — it will reset to <strong>New</strong>.</p>
+              <div className="flex gap-2 items-center">
+                <select
+                  value={reassignAgent}
+                  onChange={e => setReassignAgent(e.target.value)}
+                  className="flex-1 px-3 py-2 text-sm border border-orange-200 rounded-lg focus:outline-none focus:border-orange-400 bg-white"
+                >
+                  <option value="">Select a team member…</option>
+                  {agents.filter(a => a.name !== lead.assigned_agent).map(a => (
+                    <option key={a.id} value={a.name}>{a.name}{a.territory ? ` — ${a.territory}` : ""}</option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleReassign}
+                  disabled={!reassignAgent || reassigning}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-orange-600 text-white text-xs font-bold rounded-lg hover:bg-orange-700 transition disabled:opacity-40 flex-shrink-0"
+                >
+                  <RefreshCcw className="h-3.5 w-3.5" /> {reassigning ? "Reassigning…" : "Reassign"}
+                </button>
+              </div>
+            </div>
+          )}
           <div className="flex gap-2">
             <button
               onClick={handleSave}
