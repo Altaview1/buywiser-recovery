@@ -125,22 +125,37 @@ function UploadLeadModal({ onClose, onCreated }) {
   );
 }
 
+const CLOSE_REASONS = [
+  "No Answer",
+  "Not Interested",
+  "Reserved Consultation",
+  "Current Agent Loyalty",
+  "Not Moving",
+  "Other",
+];
+
 function LeadRow({ lead, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [status, setStatus] = useState(lead.status || "New");
+  const [closeReason, setCloseReason] = useState(lead.close_reason || "");
   const [notes, setNotes] = useState(lead.internal_notes || "");
   const [saving, setSaving] = useState(false);
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.Lead.update(lead.id, { status, internal_notes: notes });
+    await base44.entities.Lead.update(lead.id, {
+      status,
+      close_reason: status === "Closed" ? closeReason : "",
+      internal_notes: notes,
+    });
     setSaving(false);
     setEditing(false);
-    onUpdate({ ...lead, status, internal_notes: notes });
+    onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", internal_notes: notes });
   };
 
   const handleCancel = () => {
     setStatus(lead.status || "New");
+    setCloseReason(lead.close_reason || "");
     setNotes(lead.internal_notes || "");
     setEditing(false);
   };
@@ -185,6 +200,13 @@ function LeadRow({ lead, onUpdate }) {
             {lead.phone && <a href={`tel:${lead.phone}`} className="hover:text-blue-700">📞 {lead.phone}</a>}
             {lead.assigned_agent && <span>🏠 Agent: {lead.assigned_agent}</span>}
           </div>
+          {lead.close_reason && !editing && (lead.status === "Closed") && (
+            <div className="mt-1.5">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200">
+                {lead.close_reason}
+              </span>
+            </div>
+          )}
           {lead.internal_notes && !editing && (
             <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-500 italic">
               <StickyNote className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
@@ -219,6 +241,27 @@ function LeadRow({ lead, onUpdate }) {
               ))}
             </div>
           </div>
+          {status === "Closed" && (
+            <div>
+              <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Close Reason *</label>
+              <div className="flex flex-wrap gap-2">
+                {CLOSE_REASONS.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setCloseReason(r)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                      closeReason === r
+                        ? "bg-slate-800 text-white border-slate-800 ring-2 ring-offset-1 ring-blue-400"
+                        : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Internal Notes</label>
             <textarea

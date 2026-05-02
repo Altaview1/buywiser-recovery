@@ -51,6 +51,18 @@
       "default": "New",
       "description": "Lead status"
     },
+    "close_reason": {
+      "type": "string",
+      "enum": [
+        "No Answer",
+        "Not Interested",
+        "Reserved Consultation",
+        "Current Agent Loyalty",
+        "Not Moving",
+        "Other"
+      ],
+      "description": "Reason for closing the outreach cycle"
+    },
     "internal_notes": {
       "type": "string",
       "description": "Internal notes for tracking transition progress"
