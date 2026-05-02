@@ -8,11 +8,35 @@ export default function LeadCaptureForm({ prefillCode }) {
     email: "",
     phone: "",
   });
+  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const validateEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const validatePhone = (phone) => {
+    const cleaned = phone.replace(/\D/g, "");
+    return cleaned.length >= 10;
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.email || !validateEmail(form.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    if (!form.phone || !validatePhone(form.phone)) {
+      newErrors.phone = "Please enter a valid phone number (at least 10 digits)";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validate()) return;
+    
     setLoading(true);
     await base44.entities.ContactSubmission.create({
       first_name: form.email.split("@")[0],
@@ -84,11 +108,15 @@ export default function LeadCaptureForm({ prefillCode }) {
             <input
               type="email"
               required
-              className={inputCls}
+              className={`${inputCls} ${errors.email ? "border-red-500" : ""}`}
               placeholder="jane@email.com"
               value={form.email}
-              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              onChange={(e) => {
+                setForm((f) => ({ ...f, email: e.target.value }));
+                if (errors.email) setErrors((err) => ({ ...err, email: "" }));
+              }}
             />
+            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
           </div>
 
           <div>
@@ -96,11 +124,15 @@ export default function LeadCaptureForm({ prefillCode }) {
             <input
               type="tel"
               required
-              className={inputCls}
+              className={`${inputCls} ${errors.phone ? "border-red-500" : ""}`}
               placeholder="(818) 555-1234"
               value={form.phone}
-              onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              onChange={(e) => {
+                setForm((f) => ({ ...f, phone: e.target.value }));
+                if (errors.phone) setErrors((err) => ({ ...err, phone: "" }));
+              }}
             />
+            {errors.phone && <p className="text-xs text-red-500 mt-1">{errors.phone}</p>}
           </div>
 
           <button
