@@ -61,14 +61,50 @@ function ScoreTiers() {
 function FAQ() {
   const [open, setOpen] = useState(null);
   const items = [
-    { q: "What is the VTON deposit?", a: "The VTON deposit is a fully refundable accountability commitment. It is refunded incrementally as verified outreach and performance actions are completed — $200 per verified accountability action, up to full refund at 10 completed actions." },
-    { q: "Am I buying leads?", a: "No. VTON assigns qualified veteran-transition homeowner opportunities to approved partners. This is an accountability and performance program, not a lead-purchase platform. Your deposit is not a lead fee — it is a refundable commitment that rewards execution." },
-    { q: "How do I earn my deposit back?", a: "By completing verified field actions: door knocks, QR validations, homeowner conversations, CRM compliance, follow-up completions, and buyer consultation progression milestones." },
-    { q: "What happens after my deposit is fully refunded?", a: "Your VTON Performance Score is reviewed to determine whether you will be invited into continued or expanded territory participation." },
-    { q: "What counts as a verified accountability action?", a: "A verified action requires actual homeowner or decision-maker contact, a rep-specific QR scan or code entry, a logged CRM note, a date/time record, and a basic outcome selection." },
-    { q: "Does VTON guarantee transactions?", a: "No. VTON evaluates execution, accountability, and opportunity creation. Transaction outcomes vary. VTON is a field performance network, not a transaction guarantee system." },
-    { q: "What does VTON receive on closed deals?", a: "VTON receives 10% of commission income actually received on closed transactions arising from VTON opportunities, plus Buywiser retains mortgage opportunity where applicable." },
-    { q: "Is this connected to the VA?", a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs." },
+    {
+      q: "Is this a pay-per-lead program?",
+      a: "No — and this distinction matters. VTON is not a lead-buying platform. You are not purchasing contact information. Your deposit is a refundable performance commitment, not a lead fee. You earn it back through verified field actions, not by buying access to names and numbers."
+    },
+    {
+      q: "What is the $2,000 deposit, exactly?",
+      a: "It is a fully refundable accountability commitment. Every time you complete a verified field action — door knock, homeowner conversation, QR scan, CRM entry — you earn $200 back. Complete 10 verified actions and your full deposit is returned. The deposit exists to ensure partners are serious about execution, not to generate revenue for VTON."
+    },
+    {
+      q: "So VTON makes no money from my deposit?",
+      a: "Correct. Your deposit is held and returned to you through verified performance. VTON earns only on closed transactions — 10% of commission income on deals that close through VTON opportunities. If you don't close deals, VTON earns nothing on your deposit."
+    },
+    {
+      q: "What's the difference between this and buying leads?",
+      a: "Lead companies charge you upfront for contact info regardless of quality or outcome. VTON assigns you pre-qualified veteran-transition homeowner opportunities, provides tools and scripts, and refunds your commitment as you do the work. Your deposit is not a cost — it is a performance bond that comes back to you through execution."
+    },
+    {
+      q: "What are the opportunities VTON assigns?",
+      a: "Qualified veteran homeowners in your territory who are transitioning — selling a VA-financed home and likely buying again. These are not cold lists. They are identified opportunities with VA loan history and demonstrated transition signals."
+    },
+    {
+      q: "How do I earn my deposit back?",
+      a: "By completing verified field actions: door knocks, QR code validations, documented homeowner conversations, CRM logging compliance, follow-up completions, and buyer consultation advancement. Each verified action earns $200 back — 10 actions returns your full $2,000."
+    },
+    {
+      q: "What counts as a verified accountability action?",
+      a: "A verified action requires actual homeowner or decision-maker contact, a rep-specific QR scan or code entry, a logged CRM note, a date/time record, and a basic outcome selection. You cannot self-report without validation."
+    },
+    {
+      q: "What happens after my deposit is fully refunded?",
+      a: "Your VTON Performance Score is reviewed to determine whether you will be invited into continued or expanded territory participation. High scorers may access priority assignments and additional territories."
+    },
+    {
+      q: "Does VTON guarantee transactions?",
+      a: "No. VTON evaluates execution, accountability, and opportunity creation. Transaction outcomes vary. VTON is a field performance network, not a transaction guarantee system."
+    },
+    {
+      q: "What does VTON receive on closed deals?",
+      a: "VTON receives 10% of commission income actually received on closed transactions arising from VTON opportunities, plus Buywiser retains mortgage opportunity where applicable. There are no hidden fees."
+    },
+    {
+      q: "Is this connected to the VA or a government program?",
+      a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+    },
   ];
 
   return (
@@ -499,7 +535,21 @@ export default function VTON() {
       {/* FAQ */}
       <section className="px-4 py-16 bg-white">
         <div className="max-w-2xl mx-auto">
-          <h2 className="text-2xl font-extrabold text-center mb-8" style={{ color: NAVY }}>Frequently Asked Questions</h2>
+          <SectionLabel>FAQ</SectionLabel>
+          <h2 className="text-2xl font-extrabold text-center mb-3" style={{ color: NAVY }}>Frequently Asked Questions</h2>
+          <p className="text-center text-sm text-slate-500 mb-6 max-w-lg mx-auto">
+            Especially: why this is <strong className="text-slate-700">not a lead-buying program</strong> and how the refundable deposit model actually works.
+          </p>
+          {/* Key distinction callout */}
+          <div className="flex items-start gap-3 p-4 mb-8 rounded-xl border-2 bg-green-50" style={{ borderColor: "#10b981" }}>
+            <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-black text-green-800 uppercase tracking-wide mb-0.5">You are not buying leads.</p>
+              <p className="text-sm text-green-700 leading-relaxed">
+                Your $2,000 deposit is fully refundable through verified execution. VTON earns nothing from your deposit — only from closed transactions. Your money comes back through your work.
+              </p>
+            </div>
+          </div>
           <FAQ />
         </div>
       </section>
