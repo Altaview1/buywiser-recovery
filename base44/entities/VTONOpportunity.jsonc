@@ -91,6 +91,16 @@
     "forfeited_from_partner": {
       "type": "string",
       "description": "Email of partner who forfeited this opportunity, for office reference"
+    },
+    "lead_quality_rating": {
+      "type": "number",
+      "description": "Partner rating of lead quality: 1\u20135 stars",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "lead_quality_feedback": {
+      "type": "string",
+      "description": "Optional short comment from partner about lead quality"
     }
   },
   "required": [

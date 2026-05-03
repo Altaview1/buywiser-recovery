@@ -105,6 +105,23 @@ function OpportunityCard({ opp, onUpdate }) {
   const [notes, setNotes] = useState(opp.crm_notes || "");
   const [qrScanned, setQrScanned] = useState(opp.qr_scanned || false);
   const [saving, setSaving] = useState(false);
+  const [rating, setRating] = useState(opp.lead_quality_rating || 0);
+  const [ratingHover, setRatingHover] = useState(0);
+  const [ratingFeedback, setRatingFeedback] = useState(opp.lead_quality_feedback || "");
+  const [ratingSaving, setRatingSaving] = useState(false);
+  const [ratingSubmitted, setRatingSubmitted] = useState(!!opp.lead_quality_rating);
+
+  const handleRatingSubmit = async (stars) => {
+    setRatingSaving(true);
+    await base44.entities.VTONOpportunity.update(opp.id, {
+      lead_quality_rating: stars,
+      lead_quality_feedback: ratingFeedback,
+    });
+    setRating(stars);
+    setRatingSubmitted(true);
+    setRatingSaving(false);
+    onUpdate({ ...opp, lead_quality_rating: stars, lead_quality_feedback: ratingFeedback });
+  };
 
   const qrValue = `https://buywiser.base44.app/partner?verify=${opp.id}&partner=${encodeURIComponent(opp.partner_email || "")}`;
   const repCode = `VTON-${opp.id.slice(-6).toUpperCase()}`;
@@ -241,6 +258,57 @@ function OpportunityCard({ opp, onUpdate }) {
       {/* Expanded / Edit panel */}
       {expanded && (
         <div className="border-t border-slate-100 bg-slate-50 px-5 py-4 space-y-4">
+
+          {/* Lead Quality Rating */}
+          <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Rate This Lead's Quality</p>
+            {ratingSubmitted ? (
+              <div className="flex items-center gap-3">
+                <div className="flex gap-1">
+                  {[1,2,3,4,5].map(s => (
+                    <span key={s} className={`text-lg ${s <= rating ? "text-amber-400" : "text-slate-200"}`}>★</span>
+                  ))}
+                </div>
+                <span className="text-xs text-slate-500">Feedback submitted</span>
+                <button onClick={() => setRatingSubmitted(false)} className="text-xs text-blue-500 hover:text-blue-700 underline ml-auto">Edit</button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="flex items-center gap-1">
+                  {[1,2,3,4,5].map(s => (
+                    <button
+                      key={s}
+                      onMouseEnter={() => setRatingHover(s)}
+                      onMouseLeave={() => setRatingHover(0)}
+                      onClick={() => setRating(s)}
+                      className={`text-2xl transition-transform hover:scale-110 ${s <= (ratingHover || rating) ? "text-amber-400" : "text-slate-200"}`}
+                    >★</button>
+                  ))}
+                  {rating > 0 && (
+                    <span className="text-xs text-slate-500 ml-2">
+                      {["","Poor","Below Average","Average","Good","Excellent"][rating]}
+                    </span>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Optional comment (e.g. 'Already listed', 'Very motivated')"
+                  value={ratingFeedback}
+                  onChange={e => setRatingFeedback(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-400 bg-slate-50"
+                />
+                <button
+                  disabled={!rating || ratingSaving}
+                  onClick={() => handleRatingSubmit(rating)}
+                  className="px-4 py-1.5 text-xs font-bold rounded-lg text-white transition disabled:opacity-40"
+                  style={{ background: NAVY }}
+                >
+                  {ratingSaving ? "Saving…" : "Submit Rating"}
+                </button>
+              </div>
+            )}
+          </div>
+
           {editing ? (
             <>
               <div>
