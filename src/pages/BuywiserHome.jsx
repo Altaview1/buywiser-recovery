@@ -194,7 +194,7 @@ function LandingView() {
 
           {/* Subheadline */}
           <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-            When your next home purchase is coordinated through Buywiser's real estate and financing network and platform, your transition can be structured to maximize the Red White &amp; Blue Purchase Benefit.
+            <span className="text-white font-bold">If the home you're selling has a VA loan — you may qualify for up to 1.5% cash back</span> when your next purchase is coordinated through Buywiser's real estate and financing network and platform.
           </p>
 
           {/* Cody & Frank callout */}
