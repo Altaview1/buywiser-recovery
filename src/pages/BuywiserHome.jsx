@@ -188,9 +188,8 @@ function LandingView() {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
-            Before your next home purchase, see how Buywiser structures{" "}
-            <span style={{ color: "#ef9a9a" }}>up to 1.5% back</span>{" "}
-            for veteran homeowners.
+            Buywiser Veteran's Next Home™ Benefit —{" "}
+            <span style={{ color: "#ef9a9a" }}>Up to 1.5% Cash Back.</span>
           </h1>
 
           {/* Subheadline */}
