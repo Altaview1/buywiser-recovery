@@ -204,6 +204,18 @@ function LandingView() {
             <span className="text-sm font-bold text-white">up to $10,500 back toward your next home</span>
           </div>
 
+          {/* Cody & Frank callout */}
+          <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 mb-6 mx-auto max-w-xl">
+            <span className="text-2xl">🎖️</span>
+            <p className="text-sm text-left leading-snug">
+              <span className="text-white font-black">See how Navy Veterans Cody &amp; Frank</span>
+              <span className="text-blue-200"> put </span>
+              <span className="font-black" style={{ color: "#fbbf24" }}>$9,500 back in their pocket</span>
+              <span className="text-blue-200"> on their next home purchase using the Red White &amp; Blue Benefit.</span>
+              <span className="block text-xs text-blue-400 mt-1 italic">Watch their story below ↓</span>
+            </p>
+          </div>
+
           {/* Support line */}
           <p className="text-blue-300 text-sm italic mb-8">
             Before major next-home decisions are finalized, start your Veteran's Next Home™ Review.
