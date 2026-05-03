@@ -404,7 +404,7 @@ function LandingView() {
                   placeholder="Enter the code from your mailer"
                   className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
                 />
-                <p className="mt-1.5 text-xs text-slate-400">No code? No problem. You can still start your Veteran's Next Home™ Review.</p>
+                <p className="mt-1.5 text-xs text-slate-400">No code? No problem. You can still start your Veteran's Next Home™ Benefit Review.</p>
               </div>
               <LeadCaptureForm prefillCode={code} />
             </div>

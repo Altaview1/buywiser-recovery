@@ -73,7 +73,7 @@ export default function LeadCaptureForm({ prefillCode }) {
     <div className="bg-white border-2 border-slate-200 rounded-xl overflow-hidden shadow-sm">
       {/* Header */}
       <div className="px-6 py-4 bg-slate-900">
-        <p className="text-white font-bold text-sm">Start Your Veteran's Next Home™ Review</p>
+        <p className="text-white font-bold text-sm">Start Your Veteran's Next Home™ Benefit Review</p>
         <p className="text-slate-400 text-xs mt-0.5">No cost · No obligation · Response within 1 business day</p>
       </div>
 
