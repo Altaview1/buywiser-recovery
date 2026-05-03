@@ -8,18 +8,19 @@ import PartnerProgressTracker from "@/components/vton/PartnerProgressTracker";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
-  AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer
+  AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer, Star, Target, TrendingUp
 } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
 
+// Updated statuses reflecting the new model
 const OPPORTUNITY_STATUSES = [
-  "assigned", "contacted", "conversation_verified",
-  "consultation_scheduled", "closed_won", "closed_lost", "forfeited"
+  "assigned", "review_window", "accepted", "in_progress",
+  "completed", "forfeited", "protocol_incomplete"
 ];
 
-const FORFEIT_HOURS = 36;
+const FORFEIT_HOURS = 48; // Updated to 48-hour window
 
 const OUTCOMES = [
   { value: "no_answer", label: "No Answer" },
@@ -31,13 +32,19 @@ const OUTCOMES = [
 ];
 
 const STATUS_CONFIG = {
-  assigned:               { color: "bg-blue-100 text-blue-800 border-blue-200",   icon: Clock,         label: "Assigned" },
-  contacted:              { color: "bg-amber-100 text-amber-800 border-amber-200", icon: Phone,         label: "Contacted" },
+  assigned:            { color: "bg-blue-100 text-blue-800 border-blue-200",     icon: Clock,         label: "Assigned" },
+  review_window:       { color: "bg-amber-100 text-amber-800 border-amber-200",  icon: Timer,         label: "Review Window" },
+  accepted:            { color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: CheckCircle,  label: "Accepted" },
+  in_progress:         { color: "bg-purple-100 text-purple-800 border-purple-200", icon: TrendingUp,   label: "In Progress" },
+  completed:           { color: "bg-green-100 text-green-800 border-green-200",   icon: CheckCircle,   label: "Completed" },
+  forfeited:           { color: "bg-red-100 text-red-700 border-red-200",          icon: XCircle,       label: "Forfeited" },
+  protocol_incomplete: { color: "bg-slate-100 text-slate-600 border-slate-200",   icon: AlertCircle,   label: "Protocol Incomplete" },
+  // Legacy support
+  contacted:              { color: "bg-amber-100 text-amber-800 border-amber-200", icon: Phone,        label: "Contacted" },
   conversation_verified:  { color: "bg-purple-100 text-purple-800 border-purple-200", icon: CheckCircle, label: "Verified" },
-  consultation_scheduled: { color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: Calendar,   label: "Consultation" },
-  closed_won:             { color: "bg-green-100 text-green-800 border-green-200",  icon: CheckCircle,  label: "Won" },
-  closed_lost:            { color: "bg-slate-100 text-slate-500 border-slate-200",  icon: XCircle,      label: "Lost" },
-  forfeited:              { color: "bg-red-100 text-red-700 border-red-200",         icon: Timer,        label: "Forfeited" },
+  consultation_scheduled: { color: "bg-indigo-100 text-indigo-800 border-indigo-200", icon: Calendar,  label: "Consultation" },
+  closed_won:             { color: "bg-green-100 text-green-800 border-green-200", icon: CheckCircle,   label: "Won" },
+  closed_lost:            { color: "bg-slate-100 text-slate-500 border-slate-200", icon: XCircle,       label: "Lost" },
 };
 
 const PRIORITY_CONFIG = {
@@ -46,7 +53,7 @@ const PRIORITY_CONFIG = {
   low:    "bg-slate-100 text-slate-500 border-slate-200",
 };
 
-function CountdownTimer({ createdDate }) {
+function DecisionTimer({ createdDate }) {
   const deadline = new Date(createdDate).getTime() + FORFEIT_HOURS * 60 * 60 * 1000;
 
   const getRemaining = () => {
@@ -66,22 +73,22 @@ function CountdownTimer({ createdDate }) {
   }, [createdDate]);
 
   if (!remaining) return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 border border-red-200">
-      <Timer className="h-3 w-3" /> Expired
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+      <Timer className="h-3 w-3" /> Decision Window Closed
     </span>
   );
 
-  const urgent = remaining.diff < 6 * 3600000; // under 6 hours
-  const warning = remaining.diff < 12 * 3600000; // under 12 hours
+  const urgent = remaining.diff < 6 * 3600000;
+  const warning = remaining.diff < 12 * 3600000;
 
   return (
     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold border ${
       urgent ? "bg-red-100 text-red-700 border-red-200 animate-pulse" :
       warning ? "bg-amber-100 text-amber-700 border-amber-200" :
-      "bg-slate-100 text-slate-600 border-slate-200"
+      "bg-blue-50 text-blue-700 border-blue-200"
     }`}>
       <Timer className="h-3 w-3" />
-      {remaining.h}h {remaining.m}m {remaining.s}s
+      48hr Window: {remaining.h}h {remaining.m}m {remaining.s}s
     </span>
   );
 }
@@ -111,6 +118,11 @@ function OpportunityCard({ opp, onUpdate }) {
   const [ratingSaving, setRatingSaving] = useState(false);
   const [ratingSubmitted, setRatingSubmitted] = useState(!!opp.lead_quality_rating);
 
+  const isInDecisionWindow = (() => {
+    const deadline = new Date(opp.created_date).getTime() + FORFEIT_HOURS * 60 * 60 * 1000;
+    return Date.now() < deadline && (status === "assigned" || status === "review_window");
+  })();
+
   const handleRatingSubmit = async (stars) => {
     setRatingSaving(true);
     await base44.entities.VTONOpportunity.update(opp.id, {
@@ -125,33 +137,46 @@ function OpportunityCard({ opp, onUpdate }) {
 
   const qrValue = `https://buywiser.base44.app/partner?verify=${opp.id}&partner=${encodeURIComponent(opp.partner_email || "")}`;
   const repCode = `VTON-${opp.id.slice(-6).toUpperCase()}`;
-
   const estBenefit = opp.estimated_price ? (opp.estimated_price * 0.015).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }) : null;
 
   const handleSave = async () => {
     setSaving(true);
-    const updated = await base44.entities.VTONOpportunity.update(opp.id, {
+    await base44.entities.VTONOpportunity.update(opp.id, {
       opportunity_status: status,
       outcome,
       crm_notes: notes,
       qr_scanned: qrScanned,
-      ...(status === "contacted" && !opp.contact_date ? { contact_date: new Date().toISOString() } : {}),
+      ...(status === "accepted" && !opp.contact_date ? { contact_date: new Date().toISOString() } : {}),
     });
     setSaving(false);
     setEditing(false);
     onUpdate({ ...opp, opportunity_status: status, outcome, crm_notes: notes, qr_scanned: qrScanned });
   };
 
+  const handleQuickStatus = async (newStatus) => {
+    setStatus(newStatus);
+    await base44.entities.VTONOpportunity.update(opp.id, { opportunity_status: newStatus });
+    onUpdate({ ...opp, opportunity_status: newStatus });
+  };
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+      {/* 48-hour decision window banner */}
+      {isInDecisionWindow && (
+        <div className="px-5 py-2 flex items-center gap-2 text-xs font-semibold" style={{ background: "#fffbeb", borderBottom: "1px solid #fde68a" }}>
+          <Clock className="h-3.5 w-3.5 text-amber-600" />
+          <span className="text-amber-800">48-Hour Decision Window — You may decline this opportunity for any reason before the timer expires.</span>
+        </div>
+      )}
+
       {/* Card header */}
       <div className="px-5 py-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-2 mb-2">
               <StatusBadge status={opp.opportunity_status || "assigned"} />
-              {(opp.opportunity_status || "assigned") === "assigned" && (
-                <CountdownTimer createdDate={opp.created_date} />
+              {(opp.opportunity_status === "assigned" || opp.opportunity_status === "review_window") && (
+                <DecisionTimer createdDate={opp.created_date} />
               )}
               {opp.priority && (
                 <span className={`px-2 py-0.5 rounded-full text-xs font-semibold border ${PRIORITY_CONFIG[opp.priority]}`}>
@@ -165,21 +190,16 @@ function OpportunityCard({ opp, onUpdate }) {
               )}
               {opp.qr_scanned && (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                  <CheckCircle className="h-3 w-3" /> QR Scanned
+                  <CheckCircle className="h-3 w-3" /> QR Validated
                 </span>
               )}
             </div>
 
             <div className="flex items-center gap-2 mb-0.5">
-              <p className="text-sm font-bold text-slate-900">
-                {opp.homeowner_name || "Homeowner"}
-              </p>
+              <p className="text-sm font-bold text-slate-900">{opp.homeowner_name || "Homeowner"}</p>
               {opp.homeowner_phone && (
-                <a
-                  href={`tel:${opp.homeowner_phone}`}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition"
-                  title={`Call ${opp.homeowner_phone}`}
-                >
+                <a href={`tel:${opp.homeowner_phone}`}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200 hover:bg-green-100 transition">
                   <Phone className="h-3 w-3" /> Call
                 </a>
               )}
@@ -195,43 +215,30 @@ function OpportunityCard({ opp, onUpdate }) {
                 </span>
                 {estBenefit && (
                   <span className="text-xs font-semibold" style={{ color: RED }}>
-                    <DollarSign className="h-3 w-3 inline" /> up to {estBenefit} benefit
+                    <DollarSign className="h-3 w-3 inline" /> up to {estBenefit} veteran benefit
                   </span>
                 )}
               </div>
             )}
-            {opp.crm_notes && !expanded && (
-              <p className="text-xs text-slate-400 mt-1.5 italic line-clamp-1">{opp.crm_notes}</p>
-            )}
           </div>
 
           <div className="flex items-center gap-2 flex-shrink-0">
-            <button
-              onClick={() => setShowQR(true)}
-              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition"
-              title="Show QR Code"
-            >
+            <button onClick={() => setShowQR(true)}
+              className="p-1.5 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition" title="Show QR Code">
               <QrCode className="h-4 w-4" />
             </button>
             {/* Quick status dropdown */}
             <select
               value={status}
-              onChange={async (e) => {
-                const newStatus = e.target.value;
-                setStatus(newStatus);
-                await base44.entities.VTONOpportunity.update(opp.id, { opportunity_status: newStatus });
-                onUpdate({ ...opp, opportunity_status: newStatus });
-              }}
+              onChange={e => handleQuickStatus(e.target.value)}
               className="px-2 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 bg-white hover:bg-slate-50 transition cursor-pointer focus:outline-none focus:border-blue-400"
             >
               {OPPORTUNITY_STATUSES.map(s => (
-                <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
+                <option key={s} value={s}>{STATUS_CONFIG[s]?.label || s}</option>
               ))}
             </select>
-            <button
-              onClick={() => { setEditing(!editing); setExpanded(true); }}
-              className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
-            >
+            <button onClick={() => { setEditing(!editing); setExpanded(true); }}
+              className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
               Log Update
             </button>
             <button onClick={() => setExpanded(!expanded)} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-50 transition">
@@ -263,7 +270,7 @@ function OpportunityCard({ opp, onUpdate }) {
                 <p className="text-2xl font-black tracking-widest" style={{ color: NAVY }}>{repCode}</p>
               </div>
               <div className="w-full bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 text-center leading-relaxed">
-                Show this QR code to the homeowner or enter the rep code to validate the conversation and earn your <strong>$200 refund credit</strong> toward your accountability deposit.
+                Show this QR code to the homeowner or enter the rep code to validate the conversation and earn your <strong>$200 deposit earn-back credit</strong>.
               </div>
             </div>
           </div>
@@ -276,7 +283,7 @@ function OpportunityCard({ opp, onUpdate }) {
 
           {/* Lead Quality Rating */}
           <div className="bg-white border border-slate-200 rounded-xl px-4 py-3">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Rate This Lead's Quality</p>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Rate This Opportunity's Quality</p>
             {ratingSubmitted ? (
               <div className="flex items-center gap-3">
                 <div className="flex gap-1">
@@ -291,33 +298,21 @@ function OpportunityCard({ opp, onUpdate }) {
               <div className="space-y-2">
                 <div className="flex items-center gap-1">
                   {[1,2,3,4,5].map(s => (
-                    <button
-                      key={s}
+                    <button key={s}
                       onMouseEnter={() => setRatingHover(s)}
                       onMouseLeave={() => setRatingHover(0)}
                       onClick={() => setRating(s)}
-                      className={`text-2xl transition-transform hover:scale-110 ${s <= (ratingHover || rating) ? "text-amber-400" : "text-slate-200"}`}
-                    >★</button>
+                      className={`text-2xl transition-transform hover:scale-110 ${s <= (ratingHover || rating) ? "text-amber-400" : "text-slate-200"}`}>★</button>
                   ))}
                   {rating > 0 && (
-                    <span className="text-xs text-slate-500 ml-2">
-                      {["","Poor","Below Average","Average","Good","Excellent"][rating]}
-                    </span>
+                    <span className="text-xs text-slate-500 ml-2">{["","Poor","Below Average","Average","Good","Excellent"][rating]}</span>
                   )}
                 </div>
-                <input
-                  type="text"
-                  placeholder="Optional comment (e.g. 'Already listed', 'Very motivated')"
-                  value={ratingFeedback}
-                  onChange={e => setRatingFeedback(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-400 bg-slate-50"
-                />
-                <button
-                  disabled={!rating || ratingSaving}
-                  onClick={() => handleRatingSubmit(rating)}
-                  className="px-4 py-1.5 text-xs font-bold rounded-lg text-white transition disabled:opacity-40"
-                  style={{ background: NAVY }}
-                >
+                <input type="text" placeholder="Optional comment about this opportunity"
+                  value={ratingFeedback} onChange={e => setRatingFeedback(e.target.value)}
+                  className="w-full px-3 py-2 text-xs border border-slate-200 rounded-lg focus:outline-none focus:border-blue-400 bg-slate-50" />
+                <button disabled={!rating || ratingSaving} onClick={() => handleRatingSubmit(rating)}
+                  className="px-4 py-1.5 text-xs font-bold rounded-lg text-white transition disabled:opacity-40" style={{ background: NAVY }}>
                   {ratingSaving ? "Saving…" : "Submit Rating"}
                 </button>
               </div>
@@ -327,14 +322,14 @@ function OpportunityCard({ opp, onUpdate }) {
           {editing ? (
             <>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Status</label>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Update Status</label>
                 <div className="flex flex-wrap gap-2">
                   {OPPORTUNITY_STATUSES.map(s => {
                     const cfg = STATUS_CONFIG[s];
                     return (
                       <button key={s} onClick={() => setStatus(s)}
                         className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${status === s ? cfg.color + " ring-2 ring-offset-1 ring-blue-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"}`}>
-                        {cfg.label}
+                        {cfg?.label || s}
                       </button>
                     );
                   })}
@@ -353,20 +348,18 @@ function OpportunityCard({ opp, onUpdate }) {
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">CRM Notes</label>
                 <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)}
-                  placeholder="Log conversation details, follow-up timing, homeowner reaction..."
+                  placeholder="Log conversation details, benefit discussion, follow-up timing, homeowner reaction..."
                   className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white resize-none" />
               </div>
 
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={qrScanned} onChange={e => setQrScanned(e.target.checked)}
-                  className="rounded" />
-                <span className="text-xs font-semibold text-slate-700">QR code scanned / rep code entered</span>
+                <input type="checkbox" checked={qrScanned} onChange={e => setQrScanned(e.target.checked)} className="rounded" />
+                <span className="text-xs font-semibold text-slate-700">QR code scanned / rep code validated</span>
               </label>
 
               <div className="flex gap-2">
                 <button onClick={handleSave} disabled={saving}
-                  className="flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded-lg transition disabled:opacity-50"
-                  style={{ background: NAVY }}>
+                  className="flex items-center gap-1.5 px-4 py-2 text-white text-xs font-bold rounded-lg transition disabled:opacity-50" style={{ background: NAVY }}>
                   <Save className="h-3.5 w-3.5" /> {saving ? "Saving…" : "Save Update"}
                 </button>
                 <button onClick={() => setEditing(false)}
@@ -378,7 +371,7 @@ function OpportunityCard({ opp, onUpdate }) {
           ) : (
             <div className="space-y-2 text-sm text-slate-600">
               {opp.outcome && <p><span className="font-semibold text-slate-700">Last Outcome:</span> {OUTCOMES.find(o => o.value === opp.outcome)?.label || opp.outcome}</p>}
-              {opp.contact_date && <p><span className="font-semibold text-slate-700">First Contacted:</span> {new Date(opp.contact_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>}
+              {opp.contact_date && <p><span className="font-semibold text-slate-700">Accepted:</span> {new Date(opp.contact_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</p>}
               {opp.crm_notes ? (
                 <div>
                   <p className="font-semibold text-slate-700 mb-1">Notes:</p>
@@ -418,13 +411,13 @@ function AccessGate({ onAccess }) {
       <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
-          <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Accountability Portal</p>
-          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network — Cycle 1 Evaluation</p>
+          <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Dashboard</p>
+          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network — Cycle 1</p>
           <p className="text-blue-400 text-xs mt-2 italic font-medium">For Approved Field Partners Only</p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-600 leading-relaxed">
-            VTON is a <strong>field accountability program</strong>. Your deposit is fully refundable through verified execution. Partners earn their place by completing qualified outreach and documenting performance.
+            VTON partners enjoy a <strong>48-hour decision window</strong> on every opportunity. After acceptance, your deposit is earned back through <strong>protocol execution</strong> — not sales outcomes.
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
@@ -445,7 +438,7 @@ function AccessGate({ onAccess }) {
           </button>
           <p className="text-xs text-slate-400 text-center">
             Not a partner yet?{" "}
-            <a href="/vton" className="underline hover:text-slate-600">Apply for your accountability review</a>
+            <a href="/vton" className="underline hover:text-slate-600">Apply for VTON Partner Access</a>
           </p>
         </form>
       </div>
@@ -478,19 +471,28 @@ export default function PartnerDashboard() {
     setOpportunities(prev => prev.map(o => o.id === updated.id ? updated : o));
   };
 
+  // Status counts
   const statusCounts = OPPORTUNITY_STATUSES.reduce((acc, s) => {
     acc[s] = opportunities.filter(o => (o.opportunity_status || "assigned") === s).length;
     return acc;
   }, {});
 
-  // Build last 6 months of verified conversation counts
+  // Engagement stats for 1-in-10 tracker
+  const totalAssigned = opportunities.length;
+  const meaningfulEngagements = opportunities.filter(o =>
+    ["in_progress", "completed", "accepted", "conversation_verified", "consultation_scheduled", "closed_won"].includes(o.opportunity_status)
+  ).length;
+  const closedWon = opportunities.filter(o => ["closed_won", "completed"].includes(o.opportunity_status)).length;
+  const benchmarkTarget = Math.floor(meaningfulEngagements / 10);
+
+  // Monthly chart data
   const monthlyChartData = (() => {
     const now = new Date();
     return Array.from({ length: 6 }, (_, i) => {
       const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
       const label = d.toLocaleString("en-US", { month: "short" });
       const count = opportunities.filter(o => {
-        if ((o.opportunity_status || "assigned") !== "conversation_verified") return false;
+        if (!["completed", "conversation_verified", "closed_won"].includes(o.opportunity_status || "")) return false;
         const updated = new Date(o.updated_date || o.created_date);
         return updated.getMonth() === d.getMonth() && updated.getFullYear() === d.getFullYear();
       }).length;
@@ -499,9 +501,7 @@ export default function PartnerDashboard() {
   })();
 
   const filtered = filter === "all" ? opportunities : opportunities.filter(o => (o.opportunity_status || "assigned") === filter);
-
-  const depositUsed = (partner?.verified_conversations || 0) * 200;
-  const depositRemaining = Math.max(0, (partner?.deposit_balance || 2000) - depositUsed);
+  const depositEarned = Math.min((partner?.verified_conversations || 0) * 200, 2000);
 
   if (!partner) return <AccessGate onAccess={handleAccess} />;
 
@@ -515,7 +515,7 @@ export default function PartnerDashboard() {
             <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-70" />
             <div className="h-5 w-px bg-slate-200" />
             <div>
-              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Accountability Dashboard</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Partner Dashboard</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <p className="text-sm font-semibold text-slate-800">{partner.name}</p>
                 {partner.quiz_passed && <VerificationBadge size="sm" />}
@@ -540,30 +540,56 @@ export default function PartnerDashboard() {
         {/* Progress Tracker */}
         <PartnerProgressTracker partner={partner} />
 
-        {/* Partner stats */}
+        {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black text-slate-800">{opportunities.length}</p>
+            <p className="text-2xl font-black text-slate-800">{totalAssigned}</p>
             <p className="text-xs text-slate-500 mt-0.5">Assigned Opportunities</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black" style={{ color: RED }}>{statusCounts.conversation_verified || 0}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Verified Accountability Actions</p>
+            <p className="text-2xl font-black" style={{ color: NAVY }}>{meaningfulEngagements}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Meaningful Engagements</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black text-green-700">{statusCounts.closed_won || 0}</p>
+            <p className="text-2xl font-black text-green-700">{closedWon}</p>
             <p className="text-xs text-slate-500 mt-0.5">Closed Won</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black" style={{ color: "#10b981" }}>${Math.min(depositRemaining, (partner?.verified_conversations || 0) * 200).toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Refund Progress</p>
+            <p className="text-2xl font-black" style={{ color: "#10b981" }}>${depositEarned.toLocaleString()}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Deposit Earn-Back</p>
           </div>
         </div>
 
-        {/* Success Ratio Goal */}
+        {/* 1-in-10 Opportunity Conversion Tracker */}
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
+          <div className="flex items-start gap-3 mb-4">
+            <Star className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Historical Opportunity Benchmark</p>
+              <p className="text-xs text-slate-400 mt-0.5">~1 in 10 meaningful veteran benefit conversations may become a closed opportunity</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+              <p className="text-2xl font-black text-slate-800">{meaningfulEngagements}</p>
+              <p className="text-xs text-slate-500 mt-0.5 leading-tight">Qualified Veteran Engagements</p>
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center">
+              <p className="text-2xl font-black text-amber-700">{benchmarkTarget}</p>
+              <p className="text-xs text-amber-600 mt-0.5 leading-tight">Historical Benchmark (~1 in 10)</p>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+              <p className="text-2xl font-black text-green-700">{closedWon}</p>
+              <p className="text-xs text-green-600 mt-0.5 leading-tight">Actual Closed Won</p>
+            </div>
+          </div>
+          <p className="text-xs text-slate-400 mt-3 italic text-center">Not a guarantee. A historical operating philosophy. Disciplined execution may create stronger odds than ordinary prospecting.</p>
+        </div>
+
+        {/* Success Ratio */}
         {(() => {
-          const contacted = opportunities.filter(o => !["assigned", "forfeited"].includes(o.opportunity_status || "assigned")).length;
-          const successful = opportunities.filter(o => ["conversation_verified", "consultation_scheduled", "closed_won"].includes(o.opportunity_status)).length;
+          const contacted = opportunities.filter(o => !["assigned", "review_window", "forfeited"].includes(o.opportunity_status || "assigned")).length;
+          const successful = opportunities.filter(o => ["in_progress", "completed", "conversation_verified", "consultation_scheduled", "closed_won"].includes(o.opportunity_status)).length;
           const ratio = contacted > 0 ? Math.round((successful / contacted) * 100) : 0;
           const GOAL = 85;
           const isOnTrack = ratio >= GOAL;
@@ -572,8 +598,8 @@ export default function PartnerDashboard() {
             <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">Success Ratio</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Verified + Consultation + Closed Won ÷ Contacted</p>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">Protocol Completion Rate</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Accepted opportunities with verified execution</p>
                 </div>
                 <div className="text-right">
                   <span className={`text-2xl font-black ${isOnTrack ? "text-green-600" : ratio >= 60 ? "text-amber-500" : "text-red-500"}`}>
@@ -584,32 +610,20 @@ export default function PartnerDashboard() {
               </div>
               <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(ratio, 100)}%`, background: barColor }} />
-                {/* Goal marker */}
                 <div className="absolute top-0 bottom-0 w-0.5 bg-slate-400" style={{ left: "85%" }} />
               </div>
               <div className="flex items-center justify-between mt-1.5">
-                <p className="text-xs text-slate-400">{successful} successful out of {contacted} contacted</p>
+                <p className="text-xs text-slate-400">{successful} successful out of {contacted} accepted</p>
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full bg-slate-400" />
                   <p className="text-xs text-slate-400">85% goal</p>
                 </div>
               </div>
-              {contacted === 0 && (
-                <p className="text-xs text-slate-400 italic mt-1">Start logging contacts to track your success ratio.</p>
-              )}
-              {contacted > 0 && !isOnTrack && (
-                <p className="text-xs text-amber-600 mt-1.5 font-medium">
-                  {ratio >= 60 ? `You're ${GOAL - ratio}% below the goal — keep engaging your assigned opportunities.` : `Focus on advancing more contacts to verified conversations to hit the 85% target.`}
-                </p>
-              )}
-              {isOnTrack && (
-                <p className="text-xs text-green-600 mt-1.5 font-medium">You're on track — success ratio meets the 85% program goal.</p>
-              )}
             </div>
           );
         })()}
 
-        {/* Territory + deposit info */}
+        {/* Territory + Deposit Earn-Back */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
             <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-0.5">Assigned Territory</p>
@@ -617,30 +631,28 @@ export default function PartnerDashboard() {
           </div>
           <div className="h-px sm:h-10 sm:w-px bg-slate-100" />
           <div className="flex-1">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Refund Progress</p>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Deposit Earn-Back Progress</p>
             <div className="flex items-center gap-3">
               <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
                 <div className="h-full rounded-full transition-all" style={{ background: "#10b981", width: `${Math.min(100, ((partner?.verified_conversations || 0) * 200 / 2000) * 100)}%` }} />
               </div>
-              <span className="text-xs font-bold text-slate-700">${Math.min((partner?.verified_conversations || 0) * 200, 2000).toLocaleString()} / $2,000</span>
+              <span className="text-xs font-bold text-slate-700">${depositEarned.toLocaleString()} / $2,000</span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">{statusCounts.conversation_verified || 0} verified accountability actions × $200 refund</p>
+            <p className="text-xs text-slate-400 mt-1">{partner?.verified_conversations || 0} verified actions × $200 earn-back credit</p>
           </div>
         </div>
 
-        {/* Monthly verified conversations chart */}
+        {/* Monthly chart */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Verified Accountability Actions by Month</p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Completed Actions by Month</p>
           <p className="text-xs text-slate-400 mb-4">Last 6 months</p>
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={monthlyChartData} barCategoryGap="30%">
               <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
               <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} width={24} />
-              <Tooltip
-                cursor={{ fill: "rgba(0,0,0,0.04)" }}
+              <Tooltip cursor={{ fill: "rgba(0,0,0,0.04)" }}
                 contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0", boxShadow: "none" }}
-                formatter={(v) => [v, "Verified Actions"]}
-              />
+                formatter={(v) => [v, "Completed Actions"]} />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {monthlyChartData.map((entry, index) => (
                   <Cell key={index} fill={entry.isCurrent ? RED : "#cbd5e1"} />
@@ -650,12 +662,9 @@ export default function PartnerDashboard() {
           </ResponsiveContainer>
         </div>
 
-        {/* Leaderboard — only shown when 5+ approved partners exist */}
+        {/* Leaderboard */}
         {approvedPartnerCount >= 5 && (
-          <Leaderboard
-            currentPartnerEmail={partner.email}
-            currentPartnerVerified={partner.verified_conversations || 0}
-          />
+          <Leaderboard currentPartnerEmail={partner.email} currentPartnerVerified={partner.verified_conversations || 0} />
         )}
 
         {/* Filter tabs */}
@@ -669,7 +678,7 @@ export default function PartnerDashboard() {
             return (
               <button key={s} onClick={() => setFilter(s)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${filter === s ? cfg.color + " ring-2 ring-offset-1 ring-blue-300" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
-                {cfg.label} ({statusCounts[s] || 0})
+                {cfg?.label} ({statusCounts[s] || 0})
               </button>
             );
           })}
@@ -695,28 +704,42 @@ export default function PartnerDashboard() {
           </div>
         )}
 
+        {/* VTON Insight Module */}
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl px-5 py-4">
+          <div className="flex items-start gap-3">
+            <Star className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-xs font-black uppercase tracking-widest text-amber-800 mb-1">VTON Insight</p>
+              <p className="text-sm text-amber-900 leading-relaxed">
+                Historical operating assumptions suggest that approximately <strong>1 in 10 meaningful Veteran's Next Move Benefit conversations</strong> may become a closed opportunity.
+              </p>
+              <p className="text-xs text-amber-600 mt-1.5 italic">Not a guarantee. A framework for disciplined execution.</p>
+            </div>
+          </div>
+        </div>
+
         {/* Protocol reminder */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Accountability Protocol — Cycle 1</p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">VTON Protocol Reminder</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
             <div className="flex items-start gap-2">
-              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>Log every door contact — activity documentation is part of your performance score</span>
+              <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
+              <span>48-hour decision window — decline any opportunity for any reason before it expires</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>QR scan or code entry required to earn your $200 refund credit per verified accountability action</span>
+              <span>QR validation + CRM documentation earns your $200 deposit earn-back credit per verified action</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>Use Veteran's Next Home™ messaging. Your execution quality affects your VTON Performance Score.</span>
+              <span>Clearly explain the Veteran's Next Move Benefits. Execution creates opportunity.</span>
             </div>
           </div>
         </div>
 
         <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-center">
-          <p className="text-xs font-bold text-slate-600 mb-0.5">Your first cycle is a proving ground.</p>
-          <p className="text-xs text-slate-400">VTON is evaluating you as much as you are evaluating VTON. Your actions determine your refund. Your score determines your future.</p>
+          <p className="text-xs font-bold text-slate-600 mb-0.5">Freedom to choose. Clarity to commit. Accountability to perform.</p>
+          <p className="text-xs text-slate-400">VTON respects your judgment before acceptance. VTON rewards your discipline after acceptance.</p>
         </div>
         <p className="text-xs text-slate-400 text-center pb-4">
           VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs not affiliated with the U.S. Department of Veterans Affairs.
