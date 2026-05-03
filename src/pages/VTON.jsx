@@ -118,6 +118,14 @@ function FAQ() {
       a: "Every homeowner in your assignment pool has already been contacted by mail, email, and text before you arrive. By the time you knock or call, they have seen the Red White & Blue Next Move Offer multiple times. You are the live follow-through — the human touchpoint that converts awareness into a real conversation. The groundwork is already laid."
     },
     {
+      q: "Does participating in Veteran's Next Home™ cost me anything upfront as an agent?",
+      a: "No — and this is what makes Veteran's Next Home™ unlike virtually every other buyer benefit model in real estate. You pay nothing to participate. There are no upfront fees, no subscription costs, and no per-lead charges. The model works entirely on the back end: when you close a transaction through the program, you contribute 1% of your commission back to the buyer as their Red White & Blue Purchase Benefit. That's it. The buyer receives a real, meaningful benefit at closing — funded from your commission, not from their pocket or yours upfront."
+    },
+    {
+      q: "Where does the other 0.5% of the buyer's benefit come from?",
+      a: "If the buyer chooses Buywiser for their financing, Buywiser contributes an additional 0.5% — bringing the total benefit to the buyer up to 1.5% of the purchase price. The agent's contribution is always 1%. The extra 0.5% is Buywiser's share, and it only applies when the buyer uses Buywiser for their mortgage. So the full 1.5% benefit is a joint contribution: 1% from the agent's commission, 0.5% from Buywiser's lending side. If the buyer uses outside financing, they still receive the 1% from you — the Buywiser share simply doesn't apply."
+    },
+    {
       q: "Is this connected to the VA or a government program?",
       a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
     },
