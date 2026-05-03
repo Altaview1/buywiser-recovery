@@ -216,7 +216,7 @@ function LandingView() {
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex justify-center">
             <button
               onClick={scrollToCTA}
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition"
@@ -224,12 +224,6 @@ function LandingView() {
             >
               Start My Next Home Review <ArrowRight className="h-4 w-4" />
             </button>
-            <a
-              href="tel:+18183002642"
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base border-2 border-white/30 text-white hover:bg-white/10 transition"
-            >
-              Talk to Buywiser
-            </a>
           </div>
 
           {/* Video Testimonial */}
