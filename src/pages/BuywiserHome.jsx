@@ -211,7 +211,7 @@ function LandingView() {
 
           {/* Support line */}
           <p className="text-blue-300 text-sm italic mb-8">
-            Before major next-home decisions are finalized, start your Veteran's Next Home™ Review.
+            Before major next-home decisions are finalized, start your Veteran's Next Home™ Benefit Review.
           </p>
 
           {/* CTAs */}
