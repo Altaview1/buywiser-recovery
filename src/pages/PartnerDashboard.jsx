@@ -213,6 +213,21 @@ function OpportunityCard({ opp, onUpdate }) {
             >
               <QrCode className="h-4 w-4" />
             </button>
+            {/* Quick status dropdown */}
+            <select
+              value={status}
+              onChange={async (e) => {
+                const newStatus = e.target.value;
+                setStatus(newStatus);
+                await base44.entities.VTONOpportunity.update(opp.id, { opportunity_status: newStatus });
+                onUpdate({ ...opp, opportunity_status: newStatus });
+              }}
+              className="px-2 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 bg-white hover:bg-slate-50 transition cursor-pointer focus:outline-none focus:border-blue-400"
+            >
+              {OPPORTUNITY_STATUSES.map(s => (
+                <option key={s} value={s}>{STATUS_CONFIG[s].label}</option>
+              ))}
+            </select>
             <button
               onClick={() => { setEditing(!editing); setExpanded(true); }}
               className="px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition"
