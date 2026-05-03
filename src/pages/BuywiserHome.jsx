@@ -387,7 +387,7 @@ function LandingView() {
         <div className="max-w-xl mx-auto">
           <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
             <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
-              <p className="text-white font-black text-base uppercase tracking-widest">Start Your Veteran's Next Home™ Review</p>
+              <p className="text-white font-black text-base uppercase tracking-widest">Start Your Veteran's Next Home™ Benefit Review</p>
               <p className="text-blue-300 text-xs mt-1">No cost · No obligation · Response within 1 business day</p>
             </div>
             <div className="p-6 bg-white space-y-4">
