@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, ChevronUp, ArrowRight, Check, X } from "lucide-react";
+import { ChevronDown, ChevronUp, ArrowRight, Check, X, Award, Target, TrendingUp, Shield } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import PartnerPreScreenQuiz from "../components/vton/PartnerPreScreenQuiz";
 
@@ -32,16 +32,41 @@ function SectionLabel({ children }) {
   );
 }
 
+const SCORE_TIERS = [
+  { range: "90–100", tier: "Priority Partner", color: "#10b981", bg: "#ecfdf5", border: "#6ee7b7", desc: "Eligible for expanded territories and preferred assignments" },
+  { range: "75–89", tier: "Qualified Partner", color: "#3b82f6", bg: "#eff6ff", border: "#93c5fd", desc: "Eligible for continued participation" },
+  { range: "60–74", tier: "Conditional Partner", color: "#f59e0b", bg: "#fffbeb", border: "#fcd34d", desc: "May require retraining or limited assignment" },
+  { range: "Below 60", tier: "Program Review", color: "#ef4444", bg: "#fef2f2", border: "#fca5a5", desc: "Participation may be paused or discontinued" },
+];
+
+function ScoreTiers() {
+  return (
+    <div className="space-y-3">
+      {SCORE_TIERS.map(t => (
+        <div key={t.tier} className="flex items-start gap-4 p-4 rounded-xl border" style={{ background: t.bg, borderColor: t.border }}>
+          <div className="text-center flex-shrink-0">
+            <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: t.color }}>Score</p>
+            <p className="text-lg font-black" style={{ color: t.color }}>{t.range}</p>
+          </div>
+          <div>
+            <p className="text-sm font-bold text-slate-900">{t.tier}</p>
+            <p className="text-xs text-slate-600 mt-0.5">{t.desc}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function FAQ() {
   const [open, setOpen] = useState(null);
   const items = [
-    { q: "What is VTON?", a: "VTON stands for Veteran Transition Opportunity Network. It is a territory-based system for identifying and activating veteran homeowner transition opportunities." },
-    { q: "Is this just a lead-buying program?", a: "No. VTON uses a rolling $2,000 performance deposit—not a per-lead fee. You receive $200 credits for each verified conversation. If you create 10 verified conversations, your deposit is fully credited back. No leads are charged for; performance is rewarded." },
-    { q: "What is the $2,000 deposit?", a: "It is a rolling performance deposit used to activate territory access. Partners receive a $200 credit for each verified homeowner conversation." },
-    { q: "What counts as a verified conversation?", a: "A verified conversation requires actual homeowner contact plus QR scan or code entry, CRM notes, and logged outcome data." },
-    { q: "What happens if I work the leads?", a: "If you create verified conversations, your deposit is credited back at $200 per conversation." },
-    { q: "What happens if I do not work the leads?", a: "Territory access may be paused or reassigned." },
-    { q: "Does VTON guarantee closings?", a: "No. VTON provides structured opportunities, not guaranteed transactions." },
+    { q: "What is the VTON deposit?", a: "The VTON deposit is a fully refundable accountability commitment. It is refunded incrementally as verified outreach and performance actions are completed — $200 per verified accountability action, up to full refund at 10 completed actions." },
+    { q: "Am I buying leads?", a: "No. VTON assigns qualified veteran-transition homeowner opportunities to approved partners. This is an accountability and performance program, not a lead-purchase platform. Your deposit is not a lead fee — it is a refundable commitment that rewards execution." },
+    { q: "How do I earn my deposit back?", a: "By completing verified field actions: door knocks, QR validations, homeowner conversations, CRM compliance, follow-up completions, and buyer consultation progression milestones." },
+    { q: "What happens after my deposit is fully refunded?", a: "Your VTON Performance Score is reviewed to determine whether you will be invited into continued or expanded territory participation." },
+    { q: "What counts as a verified accountability action?", a: "A verified action requires actual homeowner or decision-maker contact, a rep-specific QR scan or code entry, a logged CRM note, a date/time record, and a basic outcome selection." },
+    { q: "Does VTON guarantee transactions?", a: "No. VTON evaluates execution, accountability, and opportunity creation. Transaction outcomes vary. VTON is a field performance network, not a transaction guarantee system." },
     { q: "What does VTON receive on closed deals?", a: "VTON receives 10% of commission income actually received on closed transactions arising from VTON opportunities, plus Buywiser retains mortgage opportunity where applicable." },
     { q: "Is this connected to the VA?", a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs." },
   ];
@@ -67,7 +92,7 @@ function FAQ() {
 }
 
 function ApplyForm() {
-  const [step, setStep] = useState("quiz"); // "quiz" or "form"
+  const [step, setStep] = useState("quiz");
   const [form, setForm] = useState({ name: "", email: "", phone: "", market: "" });
   const [submitted, setSubmitted] = useState(false);
   const [quizAnswers, setQuizAnswers] = useState({});
@@ -89,29 +114,27 @@ function ApplyForm() {
         quiz_passed: true,
         quiz_answers: quizAnswers,
       });
-
-      // Book interview slot automatically
       await base44.functions.invoke('bookInterviewSlot', {
         partner_email: form.email,
         partner_name: form.name,
         partner_phone: form.phone,
       });
-
       setSubmitted(true);
     } catch (error) {
       console.error("Error submitting application:", error);
-      setSubmitted(true); // Still show success even if booking fails, they'll be contacted
+      setSubmitted(true);
     }
   };
 
   if (submitted) {
     return (
       <div className="text-center py-8">
-        <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3" style={{ background: "rgba(255,255,255,0.15)" }}>
-          <Check className="h-6 w-6 text-white" />
+        <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: "rgba(255,255,255,0.15)" }}>
+          <Award className="h-7 w-7 text-white" />
         </div>
-        <p className="text-white font-bold text-lg mb-1">Application Received</p>
-        <p className="text-blue-200 text-sm">We'll be in touch within one business day to discuss your territory potential.</p>
+        <p className="text-white font-black text-lg mb-1 uppercase tracking-wide">Accountability Review Submitted</p>
+        <p className="text-blue-200 text-sm max-w-sm mx-auto leading-relaxed">Your application has been received. VTON is evaluating your profile. We'll be in touch within one business day.</p>
+        <p className="text-blue-300 text-xs mt-3 italic">VTON is evaluating you as much as you are evaluating VTON.</p>
       </div>
     );
   }
@@ -138,7 +161,7 @@ function ApplyForm() {
       </div>
       <button type="submit" className="w-full py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2"
         style={{ background: RED, color: "#fff" }}>
-        Apply for Territory Access <ArrowRight className="h-4 w-4" />
+        Apply for Accountability Review <ArrowRight className="h-4 w-4" />
       </button>
       <button type="button" onClick={() => setStep("quiz")} className="w-full py-2 text-sm text-white/60 hover:text-white/80 transition">
         ← Back to Pre-Screen
@@ -151,43 +174,53 @@ export default function VTON() {
   const scrollToApply = () => document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" });
 
   const steps = [
-    { n: "1", title: "You secure territory access", desc: "Approved partners place a rolling performance deposit to activate their market." },
-    { n: "2", title: "VTON assigns veteran transition opportunities", desc: "You receive identified homeowner opportunities in your territory." },
-    { n: "3", title: "You create verified conversations", desc: "Each verified homeowner conversation is tracked by QR code, rep code, CRM notes, and outcome data." },
-    { n: "4", title: "You earn the upside", desc: "You convert qualified homeowners into buyer opportunities while VTON/Buywiser participates through mortgage opportunities and backend transaction economics." },
+    { n: "1", title: "Place Your Accountability Deposit", desc: "Partners place a fully refundable deposit to activate participation and demonstrate commitment to execution." },
+    { n: "2", title: "Receive Qualified Opportunity Assignments", desc: "VTON assigns identified veteran-transition homeowner opportunities in your territory." },
+    { n: "3", title: "Complete Verified Accountability Actions", desc: "Partners earn refund credits by performing and documenting required outreach actions — door knocks, conversations, QR validations, CRM compliance." },
+    { n: "4", title: "Earn Back Your Deposit Through Execution", desc: "Your deposit is refunded incrementally as you complete verified field actions. $200 refund per verified accountability action." },
+    { n: "5", title: "Receive Your VTON Performance Score", desc: "Once your deposit is fully refunded, your performance score determines whether VTON invites you into continued territory participation or expanded opportunities." },
   ];
 
   const provides = [
-    "Territory opportunity access",
-    "Identified veteran-transition homeowner records",
-    "QR-code validation system",
+    "Qualified veteran-transition opportunity assignments",
+    "Territory exclusivity",
+    "QR-code accountability validation system",
     "Rep-specific tracking codes",
-    "Door scripts",
-    "Leave-behind copy",
-    "CRM outcome tracking",
-    "Veteran's Next Home™ consumer messaging",
+    "Door scripts and Veteran's Next Home™ messaging",
+    "Leave-behind materials",
+    "CRM outcome tracking and compliance tools",
     "Red White & Blue Purchase Benefit framework",
     "Buywiser mortgage support where applicable",
+    "VTON Performance Score tracking",
   ];
 
   const forAgents = [
-    "Comfortable knocking doors",
-    "Can follow a script",
+    "Follow instructions and protocols",
+    "Complete outreach and document activity",
+    "Create verified homeowner conversations",
+    "Professionally represent the VTON framework",
+    "Believe in earning access through execution",
     "Want a differentiated veteran homeowner niche",
-    "Understand speed matters",
-    "Want protected territory upside",
-    "Willing to document activity",
-    "Believe they can convert real conversations into clients",
+    "Are comfortable with field outreach and door knocking",
   ];
 
   const notFor = [
-    "Passive agents",
-    "Agents who only want internet leads",
-    "Agents unwilling to door knock",
-    "Agents who will not follow the VTON protocol",
+    "Passive agents expecting automatic results",
+    "Agents who want internet leads without field work",
+    "Agents unwilling to follow the VTON accountability protocol",
+    "Agents who will not document their activity",
   ];
 
   const pilots = ["Denver", "Colorado Springs", "San Antonio", "Jacksonville", "Hampton Roads", "Phoenix"];
+
+  const accountabilityActions = [
+    "Verified qualified door knock",
+    "Verified homeowner conversation",
+    "QR code scan / code entry",
+    "CRM logging compliance",
+    "Follow-up completion",
+    "Buyer consultation advancement",
+  ];
 
   return (
     <div className="min-h-screen bg-white">
@@ -200,7 +233,7 @@ export default function VTON() {
           <span className="text-xs font-black uppercase tracking-widest text-slate-500">VTON</span>
         </div>
         <button onClick={scrollToApply} className="px-5 py-2.5 text-sm font-bold rounded-xl text-white transition" style={{ background: NAVY }}>
-          Apply for Territory Access
+          Apply for Accountability Review
         </button>
       </header>
 
@@ -211,21 +244,25 @@ export default function VTON() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="flex flex-wrap justify-center gap-2 mb-7">
             <Badge label="VTON" />
-            <Badge label="Veteran Transition Opportunity Network" />
-            <Badge label="Veteran's Next Home™" />
+            <Badge label="Partner Accountability Program" />
+            <Badge label="Cycle 1 Evaluation" />
           </div>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
-            Own a Veteran Transition Territory in Your Market
+            Prove You Can Execute.<br />
+            <span style={{ color: "#ef9a9a" }}>Earn Your Full Deposit Back.</span>
           </h1>
           <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-4 max-w-2xl mx-auto">
-            Get access to identified veteran homeowners who are selling VA-financed homes and may be preparing for their next purchase.
+            VTON is built for disciplined field partners who can professionally engage qualified veteran homeowner opportunities.
           </p>
-          <p className="text-blue-300 text-sm italic mb-10 max-w-xl mx-auto">
-            This is not random door knocking. These are time-triggered, property-based veteran transition opportunities.
+          <p className="text-blue-300 text-sm leading-relaxed mb-4 max-w-xl mx-auto">
+            Your deposit is not a lead fee. It is a <strong className="text-white">fully refundable accountability commitment</strong> designed to ensure real outreach, verified execution, and measurable performance.
+          </p>
+          <p className="text-blue-400 text-sm italic mb-10 max-w-xl mx-auto">
+            VTON is evaluating you as much as you are evaluating VTON.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={scrollToApply} className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition" style={{ background: RED, color: "#fff" }}>
-              Apply for Territory Access <ArrowRight className="h-4 w-4" />
+              Apply for Accountability Review <ArrowRight className="h-4 w-4" />
             </button>
             <a href="#how-it-works" className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base border-2 border-white/30 text-white hover:bg-white/10 transition">
               See How It Works
@@ -236,23 +273,42 @@ export default function VTON() {
 
       <RWBStripe />
 
+      {/* Core Concept Banner */}
+      <section className="px-4 py-10 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+            {[
+              { icon: Target, label: "Your Actions", sub: "Determine your refund" },
+              { icon: TrendingUp, label: "Your Score", sub: "Determines your future" },
+              { icon: Award, label: "Your Execution", sub: "Earns your place" },
+            ].map(({ icon: Icon, label, sub }) => (
+              <div key={label} className="flex flex-col items-center gap-2 p-5 bg-slate-50 border border-slate-200 rounded-2xl">
+                <Icon className="h-6 w-6" style={{ color: NAVY }} />
+                <p className="text-sm font-black text-slate-900">{label}</p>
+                <p className="text-xs text-slate-500">{sub}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Why This Is Different */}
       <section className="px-4 py-16" style={{ background: GRAY }}>
         <div className="max-w-3xl mx-auto">
-          <SectionLabel>Why This Is Different</SectionLabel>
+          <SectionLabel>What This Is</SectionLabel>
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>
-            Not Internet Leads. Not Cold Farming. Structured Transition Opportunities.
+            Not Lead Buying. Not Random Prospecting. Structured Accountability-Based Field Qualification.
           </h2>
           <p className="text-slate-600 text-sm leading-relaxed mb-6">
-            Most agents spend time chasing broad online leads, cold homeowners, or generic buyer inquiries. VTON focuses on a narrower, higher-intent category:
+            VTON is a field-performance network that uses veteran-transition opportunities to identify disciplined operators. Your deposit is the accountability mechanism. Your actions determine your refund. Your score determines your future.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             {[
-              "Homeowners with listed properties",
-              "VA-financed home sale triggers",
-              "Likely next-home transition timing",
-              "Veteran-focused benefit messaging",
-              "Field outreach supported by QR validation and Buywiser infrastructure",
+              "Qualified veteran-transition homeowner assignments",
+              "VA-financed home sale triggers — not cold lists",
+              "Accountability-validated field outreach",
+              "Performance scoring and tier advancement",
+              "Fully refundable deposit through verified execution",
             ].map(item => (
               <div key={item} className="flex items-start gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3">
                 <Check className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: RED }} />
@@ -262,7 +318,7 @@ export default function VTON() {
           </div>
           <div className="bg-white border-l-4 rounded-xl px-5 py-4" style={{ borderLeftColor: NAVY }}>
             <p className="text-sm text-slate-700 font-semibold">
-              You are not knocking random doors. You are working a targeted veteran-transition opportunity lane.
+              Your first cycle is a proving ground. Earn your place.
             </p>
           </div>
         </div>
@@ -272,7 +328,7 @@ export default function VTON() {
       <section id="how-it-works" className="px-4 py-16 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionLabel>Process</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8" style={{ color: NAVY }}>How VTON Territory Access Works</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8" style={{ color: NAVY }}>How the VTON Accountability Program Works</h2>
           <div className="space-y-4">
             {steps.map(({ n, title, desc }) => (
               <div key={n} className="flex gap-4 border border-slate-200 rounded-2xl px-5 py-4 bg-white">
@@ -289,19 +345,19 @@ export default function VTON() {
         </div>
       </section>
 
-      {/* Rolling Performance Deposit */}
+      {/* Refund / Accountability Structure */}
       <section className="px-4 py-16" style={{ background: GRAY }}>
         <div className="max-w-3xl mx-auto">
-          <SectionLabel>Performance Deposit</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>A Deposit That Rewards Execution</h2>
+          <SectionLabel>Refund Structure</SectionLabel>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>Your Deposit Is Fully Refundable Through Verified Performance</h2>
           <p className="text-slate-600 text-sm leading-relaxed mb-6">
-            VTON partners place a <strong>$2,000 rolling performance deposit</strong>. This is not a simple lead fee. It is a performance commitment.
+            Your deposit is refunded in structured increments as accountability actions are completed and verified. This is not a cost — it is a commitment mechanism that rewards execution.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             {[
-              { label: "Deposit Amount", value: "$2,000", sub: "To activate territory" },
-              { label: "Credit Per Conversation", value: "$200", sub: "Per verified homeowner" },
-              { label: "Conversations to Full Credit", value: "10", sub: "Fully credits deposit" },
+              { label: "Accountability Deposit", value: "$2,000", sub: "Fully refundable through execution" },
+              { label: "Refund Per Verified Action", value: "$200", sub: "Per verified accountability action" },
+              { label: "Actions for Full Refund", value: "10", sub: "Complete your deposit cycle" },
             ].map(card => (
               <div key={card.label} className="bg-white border-2 border-slate-200 rounded-2xl px-5 py-5 text-center">
                 <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">{card.label}</p>
@@ -310,88 +366,73 @@ export default function VTON() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-slate-500 mb-4">Territory access continues while the partner follows the outreach protocol and maintains an active balance.</p>
+
+          <p className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Verified Accountability Actions Include:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-6">
+            {accountabilityActions.map(item => (
+              <div key={item} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3">
+                <Check className="h-4 w-4 flex-shrink-0" style={{ color: "#10b981" }} />
+                <p className="text-sm text-slate-700">{item}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="bg-white border-l-4 rounded-xl px-5 py-4" style={{ borderLeftColor: RED }}>
             <p className="text-sm font-bold" style={{ color: RED }}>Your real risk is not money. Your real requirement is execution.</p>
           </div>
         </div>
       </section>
 
-      {/* Verified Conversations */}
+      {/* Performance Score */}
       <section className="px-4 py-16 bg-white">
         <div className="max-w-3xl mx-auto">
-          <SectionLabel>Verification</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>Verified Conversations, Not Guesswork</h2>
-          <p className="text-slate-600 text-sm leading-relaxed mb-6">A verified conversation requires:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+          <SectionLabel>Performance Score</SectionLabel>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: NAVY }}>Your Score Determines Your Future with VTON</h2>
+          <p className="text-slate-600 text-sm leading-relaxed mb-8 max-w-xl">
+            Once your accountability deposit cycle is complete, your VTON Performance Score determines whether you are invited into continued or expanded territory participation.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
             {[
-              "Actual homeowner or decision-maker contact",
-              "Rep-specific QR scan or code entry",
-              "CRM visit note",
-              "Date/time logged",
-              "Basic outcome selected",
-            ].map(item => (
-              <div key={item} className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-                <Check className="h-4 w-4 flex-shrink-0 mt-0.5" style={{ color: NAVY }} />
-                <p className="text-sm text-slate-700">{item}</p>
+              { icon: Target, label: "Accountability Score", items: ["Door attempts", "QR scans", "Protocol compliance", "Documentation speed"] },
+              { icon: Shield, label: "Conversation Score", items: ["Verified homeowner interactions", "Contact quality", "Follow-up completion"] },
+              { icon: TrendingUp, label: "Opportunity Advancement Score", items: ["Consultations generated", "Buyer interest created", "Next-stage progression"] },
+            ].map(({ icon: Icon, label, items }) => (
+              <div key={label} className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon className="h-4 w-4" style={{ color: NAVY }} />
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-600">{label}</p>
+                </div>
+                <div className="space-y-1.5">
+                  {items.map(item => (
+                    <div key={item} className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: RED }} />
+                      <p className="text-xs text-slate-600">{item}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-          <p className="text-sm text-slate-500 leading-relaxed">
-            This protects both sides. The partner gets credit for real work. VTON gets clean data and trackable opportunity creation.
-          </p>
+
+          <ScoreTiers />
         </div>
       </section>
 
-      {/* Economics */}
+      {/* Accountability Discipline Section */}
       <section className="px-4 py-16" style={{ background: GRAY }}>
         <div className="max-w-3xl mx-auto">
-          <SectionLabel>Economics</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-6" style={{ color: NAVY }}>Partner Economics</h2>
-          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr style={{ background: NAVY }}>
-                  <th className="text-left px-5 py-3 text-xs font-black uppercase tracking-widest text-white/70">Event</th>
-                  <th className="text-left px-5 py-3 text-xs font-black uppercase tracking-widest text-white/70">Partner Benefit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["Verified conversation", "$200 deposit credit"],
-                  ["Completed buyer consultation", "Opportunity advancement"],
-                  ["Closed real estate transaction", "Partner earns commission, subject to VTON participation"],
-                  ["Buywiser mortgage opportunity", "Buywiser retains mortgage opportunity where applicable"],
-                ].map(([event, benefit], i) => (
-                  <tr key={i} className={i % 2 === 0 ? "bg-white" : "bg-slate-50"}>
-                    <td className="px-5 py-3.5 font-medium text-slate-800 border-t border-slate-100">{event}</td>
-                    <td className="px-5 py-3.5 text-slate-600 border-t border-slate-100">{benefit}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className="mt-4 bg-white border border-slate-200 rounded-xl px-5 py-4">
-            <p className="text-xs text-slate-500 leading-relaxed">
-              On closed real estate deals created from VTON opportunities, VTON receives <strong className="text-slate-700">10% of commission income</strong> actually received by the partner side, plus Buywiser retains the opportunity to provide financing where applicable.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Who This Is For */}
-      <section className="px-4 py-16 bg-white">
-        <div className="max-w-3xl mx-auto">
-          <SectionLabel>Who This Is For</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8" style={{ color: NAVY }}>
-            Built for Hungry Agents Who Will Actually Work the Opportunity
-          </h2>
+          <SectionLabel>Accountability Standards</SectionLabel>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>This Program Rewards Discipline, Not Excuses</h2>
+          <p className="text-slate-600 text-sm leading-relaxed mb-6">
+            VTON is designed for field partners who complete accountability standards and represent the program professionally. Partners who excel may be invited into expanded territories or advanced VTON opportunities.
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <p className="text-xs font-black uppercase tracking-widest text-green-700 mb-3">This is for agents who:</p>
+              <p className="text-xs font-black uppercase tracking-widest text-green-700 mb-3">This is for partners who:</p>
               <div className="space-y-2">
                 {forAgents.map(item => (
-                  <div key={item} className="flex items-start gap-3 bg-green-50 border border-green-100 rounded-xl px-4 py-3">
+                  <div key={item} className="flex items-start gap-3 bg-white border border-green-100 rounded-xl px-4 py-3">
                     <Check className="h-4 w-4 flex-shrink-0 mt-0.5 text-green-600" />
                     <p className="text-sm text-slate-700">{item}</p>
                   </div>
@@ -410,35 +451,10 @@ export default function VTON() {
               </div>
             </div>
           </div>
-          <div className="mt-6 border-l-4 rounded-xl px-5 py-4 bg-slate-50" style={{ borderLeftColor: NAVY }}>
+          <div className="mt-6 border-l-4 rounded-xl px-5 py-4 bg-white" style={{ borderLeftColor: NAVY }}>
             <p className="text-sm font-bold text-slate-800 italic">
-              "The agent we want thinks: Give me the qualified doors. I'll create the conversations."
+              "I am earning access to a superior system." — That is the mindset VTON selects for.
             </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Why Agents Should Care */}
-      <section className="px-4 py-14" style={{ background: GRAY }}>
-        <div className="max-w-3xl mx-auto">
-          <SectionLabel>Opportunity</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-5" style={{ color: NAVY }}>A Better Side Hustle Than Random Prospecting</h2>
-          <p className="text-slate-600 text-sm leading-relaxed mb-4">
-            A strong VTON partner is not driving around aimlessly or knocking random doors. They are working identified opportunities where:
-          </p>
-          <div className="space-y-2.5 mb-6">
-            {[
-              "The homeowner is selling",
-              "The property is connected to VA financing",
-              "Timing matters",
-              "The next purchase may still be undecided",
-              "The Red White & Blue Purchase Benefit gives them a reason to listen",
-            ].map(item => (
-              <div key={item} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3.5">
-                <Check className="h-4 w-4 flex-shrink-0" style={{ color: RED }} />
-                <p className="text-sm text-slate-700 font-medium">{item}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -447,7 +463,7 @@ export default function VTON() {
       <section className="px-4 py-16 bg-white">
         <div className="max-w-3xl mx-auto">
           <SectionLabel>What You Get</SectionLabel>
-          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8" style={{ color: NAVY }}>What You Get</h2>
+          <h2 className="text-2xl sm:text-3xl font-extrabold mb-8" style={{ color: NAVY }}>What VTON Provides</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {provides.map(item => (
               <div key={item} className="flex items-start gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
@@ -465,7 +481,7 @@ export default function VTON() {
           <SectionLabel>Availability</SectionLabel>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">Pilot Territories Opening Soon</h2>
           <p className="text-blue-200 text-sm mb-8 max-w-xl mx-auto">
-            VTON is currently evaluating select pilot territories in veteran-heavy markets.
+            VTON is currently evaluating approved field partners in select veteran-heavy markets for Cycle 1 evaluation.
           </p>
           <div className="flex flex-wrap justify-center gap-3 mb-8">
             {pilots.map(city => (
@@ -475,7 +491,7 @@ export default function VTON() {
             ))}
           </div>
           <button onClick={scrollToApply} className="inline-flex items-center gap-2 px-8 py-4 font-bold rounded-xl text-base transition" style={{ background: RED, color: "#fff" }}>
-            Apply for a Territory <ArrowRight className="h-4 w-4" />
+            Apply for Accountability Review <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </section>
@@ -493,10 +509,11 @@ export default function VTON() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <SectionLabel>Apply</SectionLabel>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">Ready to Own a Veteran Transition Territory?</h2>
-            <p className="text-blue-200 text-sm max-w-lg mx-auto">
-              If you are a disciplined agent who can create conversations from targeted opportunities, VTON may be a strong fit.
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">Apply to Prove You Belong in VTON</h2>
+            <p className="text-blue-200 text-sm max-w-lg mx-auto leading-relaxed">
+              VTON is not for passive agents. It is for disciplined operators who can execute in the field and document their performance.
             </p>
+            <p className="text-blue-400 text-xs mt-2 italic">VTON is evaluating you as much as you are evaluating VTON.</p>
           </div>
           <ApplyForm />
         </div>
@@ -506,7 +523,7 @@ export default function VTON() {
       <footer className="px-4 py-8 bg-slate-900 text-center">
         <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mx-auto mb-4 opacity-40" />
         <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed mb-2">
-          VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Territory access, lead volume, and transaction outcomes are not guaranteed.
+          VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Deposit refunds are contingent on verified performance. Territory access and transaction outcomes are not guaranteed.
         </p>
         <p className="text-xs text-slate-500">BuyWiser Technology, Inc. NMLS #1887767 · CA DRE #01107013</p>
       </footer>

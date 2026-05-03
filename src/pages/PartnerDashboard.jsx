@@ -231,7 +231,7 @@ function OpportunityCard({ opp, onUpdate }) {
                 <p className="text-2xl font-black tracking-widest" style={{ color: NAVY }}>{repCode}</p>
               </div>
               <div className="w-full bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-xs text-blue-700 text-center leading-relaxed">
-                Show this QR code to the homeowner or enter the rep code to validate the conversation and earn your <strong>$200 credit</strong>.
+                Show this QR code to the homeowner or enter the rep code to validate the conversation and earn your <strong>$200 refund credit</strong> toward your accountability deposit.
               </div>
             </div>
           </div>
@@ -335,13 +335,13 @@ function AccessGate({ onAccess }) {
       <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
-          <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Access</p>
-          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network</p>
-          <p className="text-blue-400 text-xs mt-2 italic font-medium">Selective Partnerships for High-Performing Agents Only</p>
+          <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Accountability Portal</p>
+          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network — Cycle 1 Evaluation</p>
+          <p className="text-blue-400 text-xs mt-2 italic font-medium">For Approved Field Partners Only</p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-600 leading-relaxed">
-            VTON is an <strong>exclusive partner network</strong>. We are selective about who we trust with these veteran leads. Partners must demonstrate professional standards, consistent communication, and a genuine commitment to serving veteran homeowners.
+            VTON is a <strong>field accountability program</strong>. Your deposit is fully refundable through verified execution. Partners earn their place by completing qualified outreach and documenting performance.
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
@@ -362,7 +362,7 @@ function AccessGate({ onAccess }) {
           </button>
           <p className="text-xs text-slate-400 text-center">
             Not a partner yet?{" "}
-            <a href="/vton" className="underline hover:text-slate-600">Apply for territory access</a>
+            <a href="/vton" className="underline hover:text-slate-600">Apply for your accountability review</a>
           </p>
         </form>
       </div>
@@ -432,7 +432,7 @@ export default function PartnerDashboard() {
             <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-70" />
             <div className="h-5 w-px bg-slate-200" />
             <div>
-              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Partner Dashboard</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">VTON Accountability Dashboard</p>
               <div className="flex items-center gap-2 mt-0.5">
                 <p className="text-sm font-semibold text-slate-800">{partner.name}</p>
                 {partner.quiz_passed && <VerificationBadge size="sm" />}
@@ -461,19 +461,19 @@ export default function PartnerDashboard() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
             <p className="text-2xl font-black text-slate-800">{opportunities.length}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Total Opportunities</p>
+            <p className="text-xs text-slate-500 mt-0.5">Assigned Opportunities</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
             <p className="text-2xl font-black" style={{ color: RED }}>{statusCounts.conversation_verified || 0}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Verified Conversations</p>
+            <p className="text-xs text-slate-500 mt-0.5">Verified Accountability Actions</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
             <p className="text-2xl font-black text-green-700">{statusCounts.closed_won || 0}</p>
             <p className="text-xs text-slate-500 mt-0.5">Closed Won</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black" style={{ color: NAVY }}>${depositRemaining.toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Deposit Remaining</p>
+            <p className="text-2xl font-black" style={{ color: "#10b981" }}>${Math.min(depositRemaining, (partner?.verified_conversations || 0) * 200).toLocaleString()}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Refund Progress</p>
           </div>
         </div>
 
@@ -485,20 +485,20 @@ export default function PartnerDashboard() {
           </div>
           <div className="h-px sm:h-10 sm:w-px bg-slate-100" />
           <div className="flex-1">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Deposit Balance</p>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Refund Progress</p>
             <div className="flex items-center gap-3">
               <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
-                <div className="h-full rounded-full transition-all" style={{ background: RED, width: `${Math.min(100, (depositRemaining / 2000) * 100)}%` }} />
+                <div className="h-full rounded-full transition-all" style={{ background: "#10b981", width: `${Math.min(100, ((partner?.verified_conversations || 0) * 200 / 2000) * 100)}%` }} />
               </div>
-              <span className="text-xs font-bold text-slate-700">${depositRemaining.toLocaleString()} / $2,000</span>
+              <span className="text-xs font-bold text-slate-700">${Math.min((partner?.verified_conversations || 0) * 200, 2000).toLocaleString()} / $2,000</span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">{statusCounts.conversation_verified || 0} verified conversations × $200 credit</p>
+            <p className="text-xs text-slate-400 mt-1">{statusCounts.conversation_verified || 0} verified accountability actions × $200 refund</p>
           </div>
         </div>
 
         {/* Monthly verified conversations chart */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Verified Conversations by Month</p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-1">Verified Accountability Actions by Month</p>
           <p className="text-xs text-slate-400 mb-4">Last 6 months</p>
           <ResponsiveContainer width="100%" height={140}>
             <BarChart data={monthlyChartData} barCategoryGap="30%">
@@ -507,7 +507,7 @@ export default function PartnerDashboard() {
               <Tooltip
                 cursor={{ fill: "rgba(0,0,0,0.04)" }}
                 contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0", boxShadow: "none" }}
-                formatter={(v) => [v, "Verified"]}
+                formatter={(v) => [v, "Verified Actions"]}
               />
               <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                 {monthlyChartData.map((entry, index) => (
@@ -565,23 +565,27 @@ export default function PartnerDashboard() {
 
         {/* Protocol reminder */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">VTON Protocol Reminder</p>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Accountability Protocol — Cycle 1</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
             <div className="flex items-start gap-2">
               <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>Log every door contact — even no-answers count toward activity tracking</span>
+              <span>Log every door contact — activity documentation is part of your performance score</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>QR scan or code entry required for a conversation to be verified ($200 credit)</span>
+              <span>QR scan or code entry required to earn your $200 refund credit per verified accountability action</span>
             </div>
             <div className="flex items-start gap-2">
               <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>Use Veteran's Next Home™ messaging and Red White & Blue Purchase Benefit framing at the door</span>
+              <span>Use Veteran's Next Home™ messaging. Your execution quality affects your VTON Performance Score.</span>
             </div>
           </div>
         </div>
 
+        <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-center">
+          <p className="text-xs font-bold text-slate-600 mb-0.5">Your first cycle is a proving ground.</p>
+          <p className="text-xs text-slate-400">VTON is evaluating you as much as you are evaluating VTON. Your actions determine your refund. Your score determines your future.</p>
+        </div>
         <p className="text-xs text-slate-400 text-center pb-4">
           VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs not affiliated with the U.S. Department of Veterans Affairs.
         </p>
