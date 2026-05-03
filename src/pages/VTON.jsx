@@ -102,6 +102,22 @@ function FAQ() {
       a: "VTON receives 10% of commission income actually received on closed transactions arising from VTON opportunities, plus Buywiser retains mortgage opportunity where applicable. There are no hidden fees."
     },
     {
+      q: "How motivated are these homeowners to actually move?",
+      a: "Highly. VTON opportunities carry an 85% next-move/buy ratio within 30 days of assignment. These are not cold prospects — they are veteran homeowners who have demonstrated active transition signals and are in the decision window. You are not trying to create urgency. The urgency already exists."
+    },
+    {
+      q: "Do all of these homeowners qualify for the Red White & Blue Next Move Offer?",
+      a: "Yes. Every opportunity assigned through VTON has been pre-screened and qualifies for the Red White & Blue Next Move Offer based on their previous loan being a VA loan. You do not need to qualify them on that point — they are already eligible. Your job is to introduce the benefit and start the conversation."
+    },
+    {
+      q: "Are any of these homeowners already locked into a contract with another agent?",
+      a: "No. VTON will not assign any opportunity where the homeowner has signed an exclusive buyer's agency agreement with another agent. That means there is no legal loyalty to a competing agent, no contractual barrier, and no reason they cannot work with you. The field is clear."
+    },
+    {
+      q: "What outreach has already happened before I knock on the door?",
+      a: "Every homeowner in your assignment pool has already been contacted by mail, email, and text before you arrive. By the time you knock or call, they have seen the Red White & Blue Next Move Offer multiple times. You are the live follow-through — the human touchpoint that converts awareness into a real conversation. The groundwork is already laid."
+    },
+    {
       q: "Is this connected to the VA or a government program?",
       a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
     },
