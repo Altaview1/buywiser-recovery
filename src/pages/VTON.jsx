@@ -143,6 +143,13 @@ function FAQ() {
   );
 }
 
+const COMMITMENT_POINTS = [
+  { heading: "This is not a lead-buying program.", body: "You are not purchasing contact information. Your $2,000 deposit is a fully refundable accountability commitment — returned to you $200 at a time as you complete verified field actions." },
+  { heading: "VTON earns nothing from your deposit.", body: "We earn only on closed transactions. If you execute and complete your 10 verified actions, your full $2,000 is returned. The deposit exists to ensure you are serious — not to generate revenue for VTON." },
+  { heading: "These are warm, pre-qualified opportunities.", body: "Every homeowner has already received mail, email, and texts about the Red White & Blue Next Move Offer. They carry an 85% next-move ratio within 30 days. No exclusive buyer contracts. No legal barriers. You are the live follow-through." },
+  { heading: "Your job is execution and documentation.", body: "Show up, knock the door, log the conversation, scan the QR code. That's how you earn your deposit back and build your VTON Performance Score for continued territory access." },
+];
+
 function ApplyForm() {
   const [step, setStep] = useState("quiz");
   const [form, setForm] = useState({ name: "", email: "", phone: "", market: "" });
@@ -151,7 +158,7 @@ function ApplyForm() {
 
   const handleQuizComplete = (answers) => {
     setQuizAnswers(answers);
-    setStep("form");
+    setStep("commitment");
   };
 
   const handleSubmit = async (e) => {
@@ -199,26 +206,84 @@ function ApplyForm() {
     );
   }
 
+  if (step === "commitment") {
+    return (
+      <div className="space-y-4">
+        {/* Step indicator */}
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex gap-1.5">
+            {["quiz", "commitment", "form"].map((s, i) => (
+              <div key={s} className={`rounded-full transition-all ${step === s ? "w-5 h-2 bg-white" : i < ["quiz","commitment","form"].indexOf(step) ? "w-2 h-2 bg-white/60" : "w-2 h-2 bg-white/20"}`} />
+            ))}
+          </div>
+          <span className="text-xs text-white/50 ml-1">Step 2 of 3 — Before You Apply</span>
+        </div>
+
+        <div className="bg-white/10 border border-white/20 rounded-2xl p-5 space-y-1">
+          <p className="text-white font-black text-sm uppercase tracking-widest mb-3">Understand the Accountability Commitment</p>
+          <p className="text-blue-200 text-xs mb-4 leading-relaxed">Before we ask for your information, we want you to fully understand what you are committing to — and why the deposit is not a cost.</p>
+          <div className="space-y-3">
+            {COMMITMENT_POINTS.map((pt, i) => (
+              <div key={i} className="flex gap-3 bg-white/8 border border-white/10 rounded-xl px-4 py-3">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black" style={{ background: RED, color: "#fff" }}>{i + 1}</div>
+                <div>
+                  <p className="text-sm font-bold text-white mb-0.5">{pt.heading}</p>
+                  <p className="text-xs text-blue-200 leading-relaxed">{pt.body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 flex items-start gap-2">
+          <Check className="h-4 w-4 text-green-400 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-blue-200 leading-relaxed">
+            <strong className="text-white">The deposit ($2,000) is discussed and collected only after your accountability review interview</strong> — not during this application. You are applying for the interview, not paying today.
+          </p>
+        </div>
+
+        <button onClick={() => setStep("form")} className="w-full py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2" style={{ background: RED, color: "#fff" }}>
+          I Understand — Continue to Apply <ArrowRight className="h-4 w-4" />
+        </button>
+        <button type="button" onClick={() => setStep("quiz")} className="w-full py-2 text-sm text-white/50 hover:text-white/70 transition">
+          ← Back to Pre-Screen
+        </button>
+      </div>
+    );
+  }
+
   const inputCls = "w-full px-4 py-3 text-sm rounded-xl border-2 border-white/20 bg-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/50 transition";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <input required className={inputCls} placeholder="Full Name *" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-        <input required type="email" className={inputCls} placeholder="Email Address *" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+    <div className="space-y-3">
+      {/* Step indicator */}
+      <div className="flex items-center gap-2 mb-1">
+        <div className="flex gap-1.5">
+          {["quiz", "commitment", "form"].map((s, i) => (
+            <div key={s} className={`rounded-full transition-all ${step === s ? "w-5 h-2 bg-white" : i < ["quiz","commitment","form"].indexOf(step) ? "w-2 h-2 bg-white/60" : "w-2 h-2 bg-white/20"}`} />
+          ))}
+        </div>
+        <span className="text-xs text-white/50 ml-1">Step 3 of 3 — Your Information</span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <input required type="tel" className={inputCls} placeholder="Phone Number *" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
-        <input className={inputCls} placeholder="Target Market / City" value={form.market} onChange={e => setForm(f => ({ ...f, market: e.target.value }))} />
-      </div>
-      <button type="submit" className="w-full py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2"
-        style={{ background: RED, color: "#fff" }}>
-        Apply for Accountability Review <ArrowRight className="h-4 w-4" />
-      </button>
-      <button type="button" onClick={() => setStep("quiz")} className="w-full py-2 text-sm text-white/60 hover:text-white/80 transition">
-        ← Back to Pre-Screen
-      </button>
-    </form>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input required className={inputCls} placeholder="Full Name *" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+          <input required type="email" className={inputCls} placeholder="Email Address *" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <input required type="tel" className={inputCls} placeholder="Phone Number *" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
+          <input className={inputCls} placeholder="Target Market / City" value={form.market} onChange={e => setForm(f => ({ ...f, market: e.target.value }))} />
+        </div>
+        <button type="submit" className="w-full py-4 font-bold text-base rounded-xl transition flex items-center justify-center gap-2"
+          style={{ background: RED, color: "#fff" }}>
+          Apply for Accountability Review <ArrowRight className="h-4 w-4" />
+        </button>
+        <button type="button" onClick={() => setStep("commitment")} className="w-full py-2 text-sm text-white/50 hover:text-white/70 transition">
+          ← Back
+        </button>
+      </form>
+    </div>
   );
 }
 
