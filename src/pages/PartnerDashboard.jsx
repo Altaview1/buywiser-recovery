@@ -545,6 +545,55 @@ export default function PartnerDashboard() {
           </div>
         </div>
 
+        {/* Success Ratio Goal */}
+        {(() => {
+          const contacted = opportunities.filter(o => !["assigned", "forfeited"].includes(o.opportunity_status || "assigned")).length;
+          const successful = opportunities.filter(o => ["conversation_verified", "consultation_scheduled", "closed_won"].includes(o.opportunity_status)).length;
+          const ratio = contacted > 0 ? Math.round((successful / contacted) * 100) : 0;
+          const GOAL = 85;
+          const isOnTrack = ratio >= GOAL;
+          const barColor = ratio >= GOAL ? "#10b981" : ratio >= 60 ? "#f59e0b" : RED;
+          return (
+            <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-widest text-slate-400">Success Ratio</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Verified + Consultation + Closed Won ÷ Contacted</p>
+                </div>
+                <div className="text-right">
+                  <span className={`text-2xl font-black ${isOnTrack ? "text-green-600" : ratio >= 60 ? "text-amber-500" : "text-red-500"}`}>
+                    {contacted > 0 ? `${ratio}%` : "—"}
+                  </span>
+                  <p className="text-xs text-slate-400 mt-0.5">Goal: 85%</p>
+                </div>
+              </div>
+              <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all duration-700" style={{ width: `${Math.min(ratio, 100)}%`, background: barColor }} />
+                {/* Goal marker */}
+                <div className="absolute top-0 bottom-0 w-0.5 bg-slate-400" style={{ left: "85%" }} />
+              </div>
+              <div className="flex items-center justify-between mt-1.5">
+                <p className="text-xs text-slate-400">{successful} successful out of {contacted} contacted</p>
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 rounded-full bg-slate-400" />
+                  <p className="text-xs text-slate-400">85% goal</p>
+                </div>
+              </div>
+              {contacted === 0 && (
+                <p className="text-xs text-slate-400 italic mt-1">Start logging contacts to track your success ratio.</p>
+              )}
+              {contacted > 0 && !isOnTrack && (
+                <p className="text-xs text-amber-600 mt-1.5 font-medium">
+                  {ratio >= 60 ? `You're ${GOAL - ratio}% below the goal — keep engaging your assigned opportunities.` : `Focus on advancing more contacts to verified conversations to hit the 85% target.`}
+                </p>
+              )}
+              {isOnTrack && (
+                <p className="text-xs text-green-600 mt-1.5 font-medium">You're on track — success ratio meets the 85% program goal.</p>
+              )}
+            </div>
+          );
+        })()}
+
         {/* Territory + deposit info */}
         <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
           <div className="flex-1">
