@@ -198,12 +198,6 @@ function LandingView() {
             When your next home purchase is coordinated through Buywiser's real estate and financing network and platform, your transition can be structured to maximize the Red White &amp; Blue Purchase Benefit.
           </p>
 
-          {/* Example pill */}
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-5 py-2.5 mb-6">
-            <span className="text-sm text-white/70">On a $700,000 purchase:</span>
-            <span className="text-sm font-bold text-white">up to $10,500 back toward your next home</span>
-          </div>
-
           {/* Cody & Frank callout */}
           <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 mb-6 mx-auto max-w-xl">
             <span className="text-2xl">🎖️</span>
