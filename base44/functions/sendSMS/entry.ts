@@ -1,12 +1,25 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
+function formatPhone(phone) {
+  if (!phone) return null;
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.length === 10) return `+1${cleaned}`;
+  if (cleaned.length === 11) return `+${cleaned}`;
+  return `+${cleaned}`;
+}
+
 Deno.serve(async (req) => {
   const { message, phone } = await req.json();
 
   const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
   const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
   const from = Deno.env.get("TWILIO_FROM_NUMBER");
-  const to = phone || Deno.env.get("BENNETT_PHONE");
+  const rawPhone = phone || Deno.env.get("BENNETT_PHONE");
+  const to = formatPhone(rawPhone);
+
+  if (!to) {
+    return Response.json({ error: "Invalid phone number" }, { status: 400 });
+  }
 
   const response = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`,
