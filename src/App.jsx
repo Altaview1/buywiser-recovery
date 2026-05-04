@@ -78,7 +78,6 @@ const AuthenticatedApp = () => {
       <Route path="/partner" element={<PartnerDashboard />} />
       <Route path="/b" element={<PersonalizedBenefit />} />
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
-      <Route path="/prospects" element={<ProspectsDashboard />} />
       <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
@@ -92,15 +91,19 @@ const AuthenticatedApp = () => {
 
 function App() {
   return (
-    <AuthProvider>
-      <QueryClientProvider client={queryClientInstance}>
-        <Router>
-          <FlagWatermark />
-          <AuthenticatedApp />
-        </Router>
+    <QueryClientProvider client={queryClientInstance}>
+      <Router>
+        <FlagWatermark />
+        <Routes>
+          {/* Public partner portals — no auth required */}
+          <Route path="/prospects" element={<ProspectsDashboard />} />
+          
+          {/* All other routes wrapped in auth */}
+          <Route element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
+        </Routes>
         <Toaster />
-      </QueryClientProvider>
-    </AuthProvider>
+      </Router>
+    </QueryClientProvider>
   );
 }
 
