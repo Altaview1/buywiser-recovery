@@ -98,6 +98,12 @@ function CheckEstimator() {
 
   return (
     <div>
+      {/* Slider label */}
+      <div className="mb-3 text-center">
+        <p className="text-sm font-bold text-slate-700">Enter the approximate price of your next home</p>
+        <p className="text-lg font-black text-slate-900 mt-0.5">{formatCurrency(price)}</p>
+      </div>
+
       {/* Slider above check */}
       <div className="flex items-center gap-3 mb-5 px-1">
         <span className="text-xs font-semibold text-slate-400 w-12 text-right">$100K</span>
