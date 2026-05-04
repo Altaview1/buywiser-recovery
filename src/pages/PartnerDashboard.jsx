@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import OpportunityQRGenerator from "@/components/vton/OpportunityQRGenerator";
 import PartnerProfileEditor from "@/components/vton/PartnerProfileEditor";
+import DoorKnockOutcomeLogger from "@/components/vton/DoorKnockOutcomeLogger";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -338,26 +339,22 @@ function OpportunityCard({ opp, onUpdate }) {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Outcome</label>
-                <select value={outcome} onChange={e => setOutcome(e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white">
-                  <option value="">Select outcome</option>
-                  {OUTCOMES.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              </div>
+              {/* Door-Knock Outcome Logger */}
+              <DoorKnockOutcomeLogger 
+                opp={opp} 
+                onOutcomeSelect={(outcomeData) => {
+                  setOutcome(outcomeData.outcome);
+                  setNotes(outcomeData.notes);
+                  setQrScanned(outcomeData.qrScanned);
+                }}
+              />
 
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">CRM Notes</label>
-                <textarea rows={3} value={notes} onChange={e => setNotes(e.target.value)}
-                  placeholder="Log conversation details, benefit discussion, follow-up timing, homeowner reaction..."
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Additional Notes</label>
+                <textarea rows={2} value={notes} onChange={e => setNotes(e.target.value)}
+                  placeholder="Add any additional context..."
                   className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white resize-none" />
               </div>
-
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={qrScanned} onChange={e => setQrScanned(e.target.checked)} className="rounded" />
-                <span className="text-xs font-semibold text-slate-700">QR code scanned / rep code validated</span>
-              </label>
 
               <div className="flex gap-2">
                 <button onClick={handleSave} disabled={saving}
@@ -772,20 +769,56 @@ export default function PartnerDashboard() {
         </div>
 
         {/* Protocol reminder */}
-        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">VTON Protocol Reminder</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
-            <div className="flex items-start gap-2">
-              <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
-              <span>48-hour decision window — decline any opportunity for any reason before it expires</span>
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4 space-y-4">
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">VTON Door-Knock Protocol: The 3-Strike Rule</p>
+            <div className="space-y-2 text-xs text-slate-600">
+              <div className="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <span className="font-black text-lg flex-shrink-0 text-slate-400">1️⃣</span>
+                <div>
+                  <p className="font-bold text-slate-700">Visit 1: Leave Packet</p>
+                  <p className="text-slate-500 mt-0.5">No answer at door. Leave benefit packet with QR code. Log follow-up date.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <span className="font-black text-lg flex-shrink-0 text-slate-400">2️⃣</span>
+                <div>
+                  <p className="font-bold text-slate-700">Visit 2: Leave Packet Again</p>
+                  <p className="text-slate-500 mt-0.5">Still no answer. Leave second packet. Schedule Visit 3.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <span className="font-black text-lg flex-shrink-0 text-slate-400">3️⃣</span>
+                <div>
+                  <p className="font-bold text-slate-700">Visit 3: Final Attempt (or Conversation)</p>
+                  <p className="text-slate-500 mt-0.5">Final packet drop. If homeowner is home → log conversation immediately. If they open the door, explain benefit &amp; show QR.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <span className="font-black text-lg flex-shrink-0 text-green-600">✓</span>
+                <div>
+                  <p className="font-bold text-green-700">Verification Trigger</p>
+                  <p className="text-green-600 mt-0.5">Conversation logged OR QR scanned from packet = $200 deposit earn-back credit. 3 visits or 1 verified action = rebate completion.</p>
+                </div>
+              </div>
             </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>QR validation + CRM documentation earns your $200 deposit earn-back credit per verified action</span>
-            </div>
-            <div className="flex items-start gap-2">
-              <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
-              <span>Clearly explain the Veteran's Next Move Benefits. Execution creates opportunity.</span>
+          </div>
+
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">General Execution Rules</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-slate-600">
+              <div className="flex items-start gap-2">
+                <Clock className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-amber-500" />
+                <span>48-hour decision window — decline any opportunity for any reason before it expires</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
+                <span>Conversation, QR scan, or consultation booking = $200 deposit earn-back credit</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-green-500" />
+                <span>Document every interaction. CRM notes create accountability &amp; proof of execution.</span>
+              </div>
             </div>
           </div>
         </div>

@@ -7,6 +7,64 @@ const RED = "#C62828";
 
 const FAQS = [
   {
+    category: "VTON Agent Execution Protocol (3-Strike Door-Knock Rule)",
+    items: [
+      {
+        q: "What is the 3-Strike Door-Knock Protocol?",
+        a: "It's a systematic approach to lead follow-up: Visit 1 (leave packet), Visit 2 (leave packet again), Visit 3 (final attempt or conversation). After 3 strikes, the opportunity is considered worked. Each visit must be logged in the CRM with date and outcome. This ensures disciplined execution and proof of activity.",
+      },
+      {
+        q: "How does the 3-Strike Rule work exactly?",
+        a: "Visit 1: No answer — leave benefit packet at door with QR code. Log date & schedule Visit 2. Visit 2: Still no answer — leave another packet. Schedule Visit 3. Visit 3: Final packet drop or, if homeowner is home, have a conversation about the benefit. If conversation happens on ANY visit, log it immediately — this counts as a verified action.",
+      },
+      {
+        q: "What counts as a 'verified action' that earns deposit credit?",
+        a: "Three things earn $200 deposit earn-back credit: (1) Direct conversation with homeowner about the Veteran's Next Home™ benefit, (2) Homeowner scans QR code from packet and views personalized benefit page, (3) Homeowner schedules consultation appointment. Only ONE of these is required per opportunity to earn the credit.",
+      },
+      {
+        q: "Can I stop after fewer than 3 visits?",
+        a: "Yes. If you have a conversation on Visit 1 or 2, log it immediately and you've completed the protocol for that opportunity. The $200 credit is earned at that point. However, if you get no answer, you must complete all 3 visits or log a conversation to fulfill the commitment.",
+      },
+      {
+        q: "What if I connect with the homeowner on Visit 1 or 2?",
+        a: "Immediately log the conversation with detailed notes about what was discussed and the homeowner's reaction. This is your $200 earn-back trigger. You do NOT need to return for additional visits. Update the opportunity status to reflect the engagement level.",
+      },
+      {
+        q: "How do I log the packets and visits in the CRM?",
+        a: "When you click 'Log Update' on an opportunity, use the Door-Knock Outcome Logger. Select the visit number (Packet Visit 1/2/3) or conversation/QR scan. Set your follow-up date for the next visit. The system tracks your visits and ensures you stay accountable to the 3-strike rule.",
+      },
+      {
+        q: "What happens after 3 packet drops with no conversation?",
+        a: "The opportunity is marked as 'worked.' If a QR code from one of your packets is scanned later, you still earn the $200 credit retroactively. The packet is your sales tool — it contains the benefit amount, rep code, and QR link. Make sure it's professional and visible.",
+      },
+      {
+        q: "Can I set calendar reminders for follow-up visits?",
+        a: "Yes. When you log a packet visit, you can set a follow-up date and time. The system will prompt you to add it to your calendar. This keeps you disciplined and ensures you show up on schedule.",
+      },
+    ],
+  },
+  {
+    category: "Deposit Earn-Back Mechanics",
+    items: [
+      {
+        q: "How exactly do I earn the $2,000 deposit back?",
+        a: "You earn $200 for each verified action (conversation, QR scan, or consultation booking). 10 verified actions = $2,000 deposit fully earned back. The rebate is completed when you hit $2,000 total or 10 qualifying actions — whichever comes first.",
+      },
+      {
+        q: "Does every conversation count as $200?",
+        a: "Yes. Any direct conversation with the homeowner about the Veteran's Next Home™ benefit counts as one $200 credit. It doesn't matter if it happens on Visit 1, 2, 3, or later — if you talk to them, log it.",
+      },
+      {
+        q: "If a homeowner scans the QR code from my packet, do I get credit?",
+        a: "Yes. When they scan the QR code and view their personalized benefit page, that counts as one verified action. The system tracks QR scans, so you get the credit automatically.",
+      },
+      {
+        q: "What if I drop off 10 packets but only 1 gets scanned?",
+        a: "You earn $200 for that 1 scan. The other 9 packets didn't result in verified actions. The deposit incentive is built around verification — the homeowner taking action (conversation, scan, or booking), not just your effort.",
+      },
+    ],
+  },
+  {
     category: "The Benefit",
     items: [
       {
@@ -24,6 +82,31 @@ const FAQS = [
       {
         q: "When do I receive the benefit?",
         a: "The benefit is applied at closing on your next home purchase, when the transaction has been properly structured through Buywiser.",
+      },
+    ],
+  },
+  {
+    category: "Reporting & Accountability",
+    items: [
+      {
+        q: "Why is detailed CRM documentation so critical?",
+        a: "Documentation proves execution. Every visit, conversation, and outcome must be logged with date, time, and details. This creates accountability, prevents disputes, and ensures the office can verify that the protocol was followed. It's your defense if questions arise.",
+      },
+      {
+        q: "What should I include in my visit notes?",
+        a: "For packet visits: date, time, address, whether anyone answered, condition of door/property. For conversations: date, time, homeowner name, key points discussed, their reaction (interested/not interested/callback needed), next steps. This detail demonstrates disciplined execution.",
+      },
+      {
+        q: "What happens if I don't log visits?",
+        a: "Unlogged visits don't count. The CRM is the single source of truth. If your work isn't documented, it didn't happen from the office perspective. You won't earn deposit credit, and you lose proof of your effort.",
+      },
+      {
+        q: "Can the homeowner's QR scan happen weeks after I drop the packet?",
+        a: "Yes. The packet is designed to work long-term. If you drop a packet on Visit 1 and the homeowner scans the QR code 3 weeks later after reviewing it, you still earn the $200 credit. That's why the packet design is critical.",
+      },
+      {
+        q: "How do I know if my QR code was scanned?",
+        a: "When a homeowner scans the QR code, the system logs it immediately and marks the opportunity as 'QR scanned.' You'll see this in your dashboard. Congratulations — you've earned your $200 earn-back credit.",
       },
     ],
   },
