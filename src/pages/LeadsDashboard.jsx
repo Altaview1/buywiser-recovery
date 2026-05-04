@@ -223,6 +223,9 @@ function LeadRow({ lead, onUpdate }) {
   const [agentComment, setAgentComment] = useState(lead.agent_comment || "");
   const [notes, setNotes] = useState(lead.internal_notes || "");
   const [saving, setSaving] = useState(false);
+  const [savingNotes, setSavingNotes] = useState(false);
+  const [notesEditId, setNotesEditId] = useState(null);
+  const [notesText, setNotesText] = useState("");
 
   const isNotInterested = lead.close_reason === "Not Interested";
 
@@ -268,6 +271,14 @@ function LeadRow({ lead, onUpdate }) {
     setAgentComment(lead.agent_comment || "");
     setNotes(lead.internal_notes || "");
     setEditing(false);
+  };
+
+  const handleSaveNotes = async () => {
+    setSavingNotes(true);
+    await base44.entities.Lead.update(lead.id, { internal_notes: notesText });
+    setSavingNotes(false);
+    setNotesEditId(null);
+    onUpdate({ ...lead, internal_notes: notesText });
   };
 
   const isUrl = lead.address_or_link?.startsWith("http");
@@ -323,10 +334,46 @@ function LeadRow({ lead, onUpdate }) {
               <span className="italic">{lead.agent_comment}</span>
             </div>
           )}
-          {lead.internal_notes && !editing && (
-            <div className="mt-2 flex items-start gap-1.5 text-xs text-slate-500 italic">
-              <StickyNote className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
-              <span className="line-clamp-2">{lead.internal_notes}</span>
+          {!editing && notesEditId !== lead.id && (
+            <div className="mt-2 flex items-start gap-1.5">
+              {lead.internal_notes && (
+                <div className="flex-1 flex items-start gap-1.5 text-xs text-slate-500 italic">
+                  <StickyNote className="h-3 w-3 mt-0.5 flex-shrink-0 text-amber-500" />
+                  <span className="line-clamp-2">{lead.internal_notes}</span>
+                </div>
+              )}
+              <button
+                onClick={() => { setNotesEditId(lead.id); setNotesText(lead.internal_notes || ""); }}
+                className="text-xs font-semibold text-blue-600 hover:text-blue-800 underline flex-shrink-0"
+              >
+                {lead.internal_notes ? "Edit" : "Add Note"}
+              </button>
+            </div>
+          )}
+          {notesEditId === lead.id && !editing && (
+            <div className="mt-2 space-y-2 bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <textarea
+                value={notesText}
+                onChange={(e) => setNotesText(e.target.value)}
+                placeholder="Add a note about this lead..."
+                className="w-full px-2 py-1.5 text-xs border border-amber-300 rounded bg-white focus:outline-none focus:border-blue-400 resize-none"
+                rows={2}
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSaveNotes}
+                  disabled={savingNotes}
+                  className="text-xs font-semibold px-3 py-1 bg-amber-600 text-white rounded hover:bg-amber-700 transition disabled:opacity-50"
+                >
+                  {savingNotes ? "Saving…" : "Save Note"}
+                </button>
+                <button
+                  onClick={() => setNotesEditId(null)}
+                  className="text-xs font-semibold px-3 py-1 border border-slate-200 text-slate-600 rounded hover:bg-slate-50 transition"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -468,6 +515,7 @@ export default function LeadsDashboard() {
   const [showSummary, setShowSummary] = useState(false);
   const [filterReason, setFilterReason] = useState("All");
   const [viewMode, setViewMode] = useState("cards"); // "cards", "table", or "map"
+
 
   const fetchLeads = async () => {
     setLoading(true);
