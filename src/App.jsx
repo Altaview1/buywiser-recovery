@@ -30,6 +30,7 @@ import PartnerDashboard from './pages/PartnerDashboard';
 import PersonalizedBenefit from './pages/PersonalizedBenefit';
 import AgentQRDashboard from './pages/AgentQRDashboard';
 import FAQ from './pages/FAQ';
+import MortgageFAQ from './pages/MortgageFAQ';
 import ProspectsDashboard from './pages/ProspectsDashboard';
 import PartnerLeadsDashboard from './pages/PartnerLeadsDashboard';
 
@@ -80,6 +81,7 @@ const AuthenticatedApp = () => {
       <Route path="/b" element={<PersonalizedBenefit />} />
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
       <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
+      <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
