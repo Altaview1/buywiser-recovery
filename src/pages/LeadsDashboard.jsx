@@ -524,7 +524,13 @@ export default function LeadsDashboard() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchLeads(); }, []);
+  useEffect(() => { 
+    fetchLeads();
+    // Request notification permission
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
   const handleUpdate = (updated) => {
     setLeads((prev) => prev.map((l) => (l.id === updated.id ? updated : l)));
@@ -532,6 +538,14 @@ export default function LeadsDashboard() {
 
   const handleCreated = (newLead) => {
     setLeads((prev) => [newLead, ...prev]);
+    // Send browser notification
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification("New Lead Added", {
+        body: `${newLead.name || "New lead"} from ${newLead.address_or_link || "unknown address"}`,
+        icon: "https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png",
+        tag: "lead-notification",
+      });
+    }
   };
 
   const filtered = leads.filter((l) => {
