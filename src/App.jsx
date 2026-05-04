@@ -31,6 +31,7 @@ import PersonalizedBenefit from './pages/PersonalizedBenefit';
 import AgentQRDashboard from './pages/AgentQRDashboard';
 import FAQ from './pages/FAQ';
 import ProspectsDashboard from './pages/ProspectsDashboard';
+import PartnerLeadsDashboard from './pages/PartnerLeadsDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -97,6 +98,7 @@ function App() {
         <Routes>
           {/* Public partner portals — no auth required */}
           <Route path="/prospects" element={<ProspectsDashboard />} />
+          <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           
           {/* All other routes wrapped in auth */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
