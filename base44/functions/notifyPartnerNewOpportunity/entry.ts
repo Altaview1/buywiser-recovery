@@ -36,11 +36,18 @@ Deno.serve(async (req) => {
       timeStyle: 'short',
     });
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      from_name: 'VTON — Veteran Transition Opportunity Network',
-      to: partnerEmail,
-      subject: `🎯 New Opportunity Assigned: ${fullAddress}`,
-      body: `
+    const resendKey = Deno.env.get('RESEND_API_KEY');
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'VTON — Veteran Transition Opportunity Network <notifications@buywiser.com>',
+        to: [partnerEmail],
+        subject: `🎯 New Opportunity Assigned: ${fullAddress}`,
+        html: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">
 
           <!-- Header -->
@@ -126,6 +133,7 @@ Deno.serve(async (req) => {
           </p>
         </div>
       `,
+      }),
     });
 
     // Send SMS to partner if they have a phone number on file
