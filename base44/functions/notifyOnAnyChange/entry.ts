@@ -142,6 +142,7 @@ Deno.serve(async (req) => {
     console.log(`Email sent to admin: ${subject}`);
 
     // Send SMS to admin
+    console.log(`Attempting SMS to ${ADMIN_PHONE}: ${smsBody}`);
     await sendSMS(ADMIN_PHONE, smsBody);
 
     // Send email to partner using unified email address
