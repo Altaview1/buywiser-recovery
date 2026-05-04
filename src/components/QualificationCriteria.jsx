@@ -8,7 +8,6 @@ const CRITERIA = [
   { label: "You served in the U.S. military (any branch)" },
   { label: "You plan to purchase another home" },
   { label: "Your next purchase will be in a qualifying market" },
-  { label: "You're willing to structure the purchase through Buywiser" },
 ];
 
 export default function QualificationCriteria({ onScrollToCTA }) {
