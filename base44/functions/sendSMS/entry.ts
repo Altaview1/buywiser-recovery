@@ -2,6 +2,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.23';
 
 function formatPhone(phone) {
   if (!phone) return null;
+  // If already has +, return as-is
+  if (phone.startsWith('+')) return phone;
+  // Otherwise clean and format
   const cleaned = phone.replace(/\D/g, '');
   if (cleaned.length === 10) return `+1${cleaned}`;
   if (cleaned.length === 11) return `+${cleaned}`;
