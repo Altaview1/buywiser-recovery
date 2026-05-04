@@ -234,12 +234,33 @@ export default function PersonalizedBenefit() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       {/* Nav */}
-      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
-        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
-        {agent?.phone && (
-          <a href={`tel:${agent.phone}`} className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition hidden sm:block">
-            {agent.phone}
-          </a>
+      <header className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 z-40 shadow-sm">
+        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-70" />
+        {agent ? (
+          <div className="flex items-center gap-3">
+            {agent.photo_url ? (
+              <img src={agent.photo_url} alt={agent.name} className="w-9 h-9 rounded-full object-cover border-2 border-slate-200 flex-shrink-0" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm font-black text-slate-500 flex-shrink-0">
+                {agent.name?.charAt(0) || "A"}
+              </div>
+            )}
+            <div className="hidden sm:block text-right">
+              <p className="text-xs font-bold text-slate-800 leading-tight">{agent.name}</p>
+              {agent.title && <p className="text-xs text-slate-400 leading-tight">{agent.title}</p>}
+            </div>
+            {agent.phone && (
+              <a href={`tel:${agent.phone}`}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white transition flex-shrink-0"
+                style={{ background: "#0B1F3B" }}>
+                <Phone className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">{agent.phone}</span>
+                <span className="sm:hidden">Call</span>
+              </a>
+            )}
+          </div>
+        ) : loading ? null : (
+          <a href="tel:+18183002642" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition">(818) 300-2642</a>
         )}
       </header>
 
