@@ -89,34 +89,58 @@ function BenefitEstimator() {
   const benefit = sliderVal * 0.015;
 
   return (
-    <div className="space-y-3">
-      <p className="text-xs text-slate-500 italic text-center">Move the slider to estimate your benefit</p>
-      <div className="flex items-center gap-3">
-        <span className="text-xs text-slate-400 w-10 text-right">$100K</span>
-        <input
-          type="range"
-          min={100000}
-          max={2000000}
-          step={25000}
-          value={sliderVal}
-          onChange={(e) => setSliderVal(Number(e.target.value))}
-          className="flex-1"
-          style={{ accentColor: RED }}
-        />
-        <span className="text-xs text-slate-400 w-8">$2M</span>
+    <div>
+      {/* RWB top stripe */}
+      <div className="flex" style={{ height: 6 }}>
+        <div style={{ flex: 1, background: RED }} />
+        <div style={{ flex: 1, background: "#ffffff", borderTop: "1px solid #e2e8f0" }} />
+        <div style={{ flex: 1, background: NAVY }} />
       </div>
-      <div className="rounded-xl overflow-hidden flex">
-        <div className="flex-1 px-5 py-4" style={{ background: NAVY }}>
-          <p className="text-xs text-blue-300 mb-0.5">Purchase Price</p>
-          <p className="text-lg font-bold text-white">{formatCurrency(sliderVal)}</p>
+
+      <div className="p-6 space-y-4 bg-white">
+        <p className="text-xs text-slate-500 italic text-center">Move the slider to estimate your benefit</p>
+
+        {/* Slider */}
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-semibold text-slate-400 w-10 text-right">$100K</span>
+          <input
+            type="range"
+            min={100000}
+            max={2000000}
+            step={25000}
+            value={sliderVal}
+            onChange={(e) => setSliderVal(Number(e.target.value))}
+            className="flex-1"
+            style={{ accentColor: "#16a34a" }}
+          />
+          <span className="text-xs font-semibold text-slate-400 w-8">$2M</span>
         </div>
-        <div className="w-px bg-white/20" />
-        <div className="flex-1 px-5 py-4 bg-white text-right">
-          <p className="text-xs text-slate-500 mb-0.5">Est. Benefit (up to 1.5%)</p>
-          <p className="text-lg font-bold" style={{ color: RED }}>{formatCurrency(benefit)}</p>
+
+        {/* RWB result panels */}
+        <div className="flex rounded-xl overflow-hidden border border-slate-200">
+          {/* Red — Purchase Price */}
+          <div className="flex-1 px-5 py-4 text-center" style={{ background: RED }}>
+            <p className="text-xs font-bold text-red-200 mb-1 uppercase tracking-widest">Purchase Price</p>
+            <p className="text-xl font-black text-white">{formatCurrency(sliderVal)}</p>
+          </div>
+          {/* White divider */}
+          <div className="w-px bg-slate-200" />
+          {/* Blue — Benefit */}
+          <div className="flex-1 px-5 py-4 text-center" style={{ background: NAVY }}>
+            <p className="text-xs font-bold text-blue-300 mb-1 uppercase tracking-widest">Est. Benefit (1.5%)</p>
+            <p className="text-xl font-black" style={{ color: "#4ade80" }}>{formatCurrency(benefit)}</p>
+          </div>
         </div>
+
+        <p className="text-[10px] text-slate-400 text-center">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
       </div>
-      <p className="text-[10px] text-slate-400 text-center">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
+
+      {/* RWB bottom stripe */}
+      <div className="flex" style={{ height: 6 }}>
+        <div style={{ flex: 1, background: NAVY }} />
+        <div style={{ flex: 1, background: "#ffffff", borderBottom: "1px solid #e2e8f0" }} />
+        <div style={{ flex: 1, background: RED }} />
+      </div>
     </div>
   );
 }
@@ -243,12 +267,12 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Benefit Estimator ── */}
-      <section className="px-4 py-12" style={{ background: NAVY }}>
+      <section className="px-4 py-12 bg-white">
         <div className="max-w-lg mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest mb-5 text-white">
+          <p className="text-center text-xs font-black uppercase tracking-widest mb-5" style={{ color: NAVY }}>
             Estimate Your Red White &amp; Blue Purchase Benefit
           </p>
-          <div className="bg-white border border-white/20 rounded-2xl p-6 shadow-sm">
+          <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
             <BenefitEstimator />
           </div>
         </div>
