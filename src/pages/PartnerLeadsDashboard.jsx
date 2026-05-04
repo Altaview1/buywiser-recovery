@@ -164,6 +164,19 @@ function OpportunitiesSection({ opportunities, onRefresh }) {
   const completed = opportunities.filter(o => ["completed", "closed_won"].includes(o.opportunity_status)).length;
   const earnedBack = Math.min((contacted || 0) * 200, 2000);
 
+  const OPPORTUNITY_STATUSES = [
+    { value: "assigned", label: "New", color: "#3B82F6", icon: "🆕" },
+    { value: "accepted", label: "Accepted", color: "#F59E0B", icon: "✅" },
+    { value: "in_progress", label: "In Progress", color: "#8B5CF6", icon: "⚡" },
+    { value: "completed", label: "Completed", color: "#10B981", icon: "🎉" },
+    { value: "forfeited", label: "Forfeited", color: "#EF4444", icon: "❌" },
+  ];
+
+  const getStatusProgress = (status) => {
+    const statusMap = { "assigned": 25, "review_window": 25, "accepted": 50, "in_progress": 75, "completed": 100, "closed_won": 100, "forfeited": 0 };
+    return statusMap[status] || 0;
+  };
+
   return (
     <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
       <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
@@ -177,7 +190,7 @@ function OpportunitiesSection({ opportunities, onRefresh }) {
       </div>
 
       {/* Progress metrics */}
-      <div className="space-y-4 px-5 py-4">
+      <div className="space-y-4 px-5 py-4 border-b border-slate-100">
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <p className="text-xs font-semibold text-slate-500">Contacted / Assigned</p>
@@ -220,6 +233,66 @@ function OpportunitiesSection({ opportunities, onRefresh }) {
           </div>
         </div>
       </div>
+
+      {/* Individual opportunity progress */}
+      {opportunities.length === 0 ? (
+        <div className="px-5 py-8 text-center text-slate-400">
+          <p className="text-sm">No opportunities assigned yet</p>
+        </div>
+      ) : (
+        <div className="divide-y divide-slate-100">
+          {opportunities.slice(0, 8).map(opp => {
+            const progress = getStatusProgress(opp.opportunity_status || "assigned");
+            const statusCfg = OPPORTUNITY_STATUSES.find(s => s.value === (opp.opportunity_status || "assigned")) || OPPORTUNITY_STATUSES[0];
+            const address = [opp.property_address, opp.city, opp.state].filter(Boolean).join(", ");
+            
+            return (
+              <div key={opp.id} className="px-5 py-3 hover:bg-slate-50 transition">
+                <div className="flex items-start justify-between gap-3 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-800">{opp.homeowner_name || "Homeowner"}</p>
+                    <p className="text-xs text-slate-500 flex items-center gap-1 truncate">
+                      <MapPin className="h-3 w-3 flex-shrink-0" /> {address || "—"}
+                    </p>
+                    {opp.estimated_price && (
+                      <p className="text-xs text-green-600 font-semibold mt-0.5">
+                        Est. benefit: ${Math.round(opp.estimated_price * 0.015).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                  <span className="flex-shrink-0 text-2xl">{statusCfg.icon}</span>
+                </div>
+
+                {/* Progress bar */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-slate-500">{statusCfg.label}</span>
+                    <span className="text-xs text-slate-400">{progress}%</span>
+                  </div>
+                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full rounded-full transition-all duration-500" 
+                      style={{ width: `${progress}%`, background: statusCfg.color }}
+                    />
+                  </div>
+                </div>
+
+                {/* Status badges */}
+                {opp.qr_scanned && (
+                  <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                    <CheckCircle className="h-3 w-3" /> QR Validated
+                  </span>
+                )}
+              </div>
+            );
+          })}
+          {opportunities.length > 8 && (
+            <div className="px-5 py-3 bg-slate-50 text-center text-xs text-slate-500">
+              +{opportunities.length - 8} more opportunities
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
