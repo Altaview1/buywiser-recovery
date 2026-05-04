@@ -3,6 +3,7 @@ import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Sea
 import LeadCaptureForm from "../components/LeadCaptureForm";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
+import QualificationCriteria from "../components/QualificationCriteria";
 
 // ── Colors ─────────────────────────────────────────────────────────────────────
 const NAVY = "#0B1F3B";
@@ -232,6 +233,11 @@ function LandingView() {
           </div>
         </div>
       </section>
+
+      <RWBStripe />
+
+      {/* ── Qualification Criteria ── */}
+      <QualificationCriteria onScrollToCTA={scrollToCTA} />
 
       <RWBStripe />
 
