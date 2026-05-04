@@ -105,12 +105,13 @@ function BenefitEstimator() {
         />
         <span className="text-xs text-slate-400 w-8">$2M</span>
       </div>
-      <div className="bg-white border border-slate-200 rounded-xl px-5 py-4 flex items-center justify-between">
-        <div>
-          <p className="text-xs text-slate-500 mb-0.5">Purchase Price</p>
-          <p className="text-lg font-bold text-slate-900">{formatCurrency(sliderVal)}</p>
+      <div className="rounded-xl overflow-hidden flex">
+        <div className="flex-1 px-5 py-4" style={{ background: NAVY }}>
+          <p className="text-xs text-blue-300 mb-0.5">Purchase Price</p>
+          <p className="text-lg font-bold text-white">{formatCurrency(sliderVal)}</p>
         </div>
-        <div className="text-right">
+        <div className="w-px bg-white/20" />
+        <div className="flex-1 px-5 py-4 bg-white text-right">
           <p className="text-xs text-slate-500 mb-0.5">Est. Benefit (up to 1.5%)</p>
           <p className="text-lg font-bold" style={{ color: RED }}>{formatCurrency(benefit)}</p>
         </div>
@@ -242,12 +243,12 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Benefit Estimator ── */}
-      <section className="px-4 py-12 bg-slate-50">
+      <section className="px-4 py-12" style={{ background: NAVY }}>
         <div className="max-w-lg mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest mb-5" style={{ color: RED }}>
+          <p className="text-center text-xs font-black uppercase tracking-widest mb-5 text-white">
             Estimate Your Red White &amp; Blue Purchase Benefit
           </p>
-          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+          <div className="bg-white border border-white/20 rounded-2xl p-6 shadow-sm">
             <BenefitEstimator />
           </div>
         </div>
