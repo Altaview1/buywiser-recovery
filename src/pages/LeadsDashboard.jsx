@@ -9,6 +9,7 @@ import {
 import BulkLeadUpload from "@/components/BulkLeadUpload";
 import OutcomeSummary from "@/components/OutcomeSummary";
 import LeadsTable from "@/components/LeadsTable";
+import LeadsMapView from "@/components/LeadsMapView";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -466,7 +467,7 @@ export default function LeadsDashboard() {
   const [showBulk, setShowBulk] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [filterReason, setFilterReason] = useState("All");
-  const [viewMode, setViewMode] = useState("cards"); // "cards" or "table"
+  const [viewMode, setViewMode] = useState("cards"); // "cards", "table", or "map"
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -537,6 +538,14 @@ export default function LeadsDashboard() {
                     }`}
                   >
                     Table
+                  </button>
+                  <button
+                    onClick={() => setViewMode("map")}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded transition ${
+                      viewMode === "map" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
+                  >
+                    Map
                   </button>
                 </div>
               </div>
@@ -637,6 +646,8 @@ export default function LeadsDashboard() {
           </div>
         ) : viewMode === "table" ? (
           <LeadsTable leads={filtered} onUpdate={fetchLeads} />
+        ) : viewMode === "map" ? (
+          <LeadsMapView leads={filtered} />
         ) : (
           <div className="space-y-3">
             <p className="text-xs text-slate-400 font-medium">{filtered.length} lead{filtered.length !== 1 ? "s" : ""}</p>
