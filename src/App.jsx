@@ -30,6 +30,7 @@ import PartnerDashboard from './pages/PartnerDashboard';
 import PersonalizedBenefit from './pages/PersonalizedBenefit';
 import AgentQRDashboard from './pages/AgentQRDashboard';
 import FAQ from './pages/FAQ';
+import ProspectsDashboard from './pages/ProspectsDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -77,6 +78,7 @@ const AuthenticatedApp = () => {
       <Route path="/partner" element={<PartnerDashboard />} />
       <Route path="/b" element={<PersonalizedBenefit />} />
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
+      <Route path="/prospects" element={<ProspectsDashboard />} />
       <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
