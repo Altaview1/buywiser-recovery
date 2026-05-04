@@ -114,6 +114,22 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Handle ContactSubmission
+    if (entityType === 'ContactSubmission') {
+      const contact = data;
+      const contactName = contact.first_name || 'Contact';
+
+      if (eventType === 'create') {
+        subject = `🆕 New Contact: ${contactName}`;
+        adminBody = `New contact submission:\n\nName: ${contactName} ${contact.last_name || ''}\nEmail: ${contact.email || 'Not provided'}\nPhone: ${contact.phone || 'Not provided'}\nType: ${contact.form_type || 'contact'}\nStatus: ${contact.status || 'new'}\n\nLog in to the dashboard.`;
+        smsBody = `🆕 New Contact: ${contactName}\nEmail: ${contact.email || 'N/A'}\nType: ${contact.form_type || 'contact'}`;
+      } else if (eventType === 'update') {
+        subject = `📝 Contact Updated: ${contactName}`;
+        adminBody = `Contact updated:\n\nName: ${contactName} ${contact.last_name || ''}\nEmail: ${contact.email || 'Not provided'}\nPhone: ${contact.phone || 'Not provided'}\nStatus: ${contact.status || 'new'}\n\nLog in to review changes.`;
+        smsBody = `📝 Contact Update: ${contactName}\nStatus: ${contact.status || 'new'}`;
+      }
+    }
+
     if (!subject) return Response.json({ status: 'skipped', reason: 'No matching entity or event type' });
 
     // Send email to admin
