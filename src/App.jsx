@@ -27,6 +27,7 @@ import LeadsDashboard from './pages/LeadsDashboard';
 import FlagWatermark from './components/FlagWatermark';
 import VTON from './pages/VTON';
 import PartnerDashboard from './pages/PartnerDashboard';
+import PersonalizedBenefit from './pages/PersonalizedBenefit';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -72,6 +73,7 @@ const AuthenticatedApp = () => {
       <Route path="/leads" element={<LeadsDashboard />} />
       <Route path="/vton" element={<VTON />} />
       <Route path="/partner" element={<PartnerDashboard />} />
+      <Route path="/b" element={<PersonalizedBenefit />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />

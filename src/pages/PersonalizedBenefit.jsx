@@ -1,0 +1,392 @@
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { ArrowRight, Phone, Mail, MapPin, Shield, CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
+
+const NAVY = "#0B1F3B";
+const RED = "#C62828";
+
+function formatCurrency(val) {
+  if (!val) return "$0";
+  return Number(val).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+}
+
+function formatWritten(val) {
+  const n = Math.round(val);
+  if (n >= 1000000) return `${(n / 1000000).toFixed(2)} Million Dollars`;
+  if (n >= 1000) return `${Math.floor(n / 1000)},${String(n % 1000).padStart(3, "0")} Dollars`;
+  return `${n} Dollars`;
+}
+
+function RWBStripe() {
+  return (
+    <div className="flex" style={{ height: 5 }}>
+      <div style={{ flex: 1, background: RED }} />
+      <div style={{ flex: 1, background: "#ffffff", borderTop: "1px solid #e2e8f0", borderBottom: "1px solid #e2e8f0" }} />
+      <div style={{ flex: 1, background: NAVY }} />
+    </div>
+  );
+}
+
+function PersonalizedCheck({ homeownerName, address, price }) {
+  const [sliderPrice, setSliderPrice] = useState(price || 700000);
+  const benefit = sliderPrice * 0.015;
+  const payee = homeownerName || "The Veteran Homebuyer";
+
+  return (
+    <div>
+      <div className="mb-3 text-center">
+        <p className="text-sm font-bold text-slate-700">Estimated next home purchase price</p>
+        <p className="text-lg font-black text-slate-900 mt-0.5">{formatCurrency(sliderPrice)}</p>
+      </div>
+      <div className="flex items-center gap-3 mb-5 px-1">
+        <span className="text-xs font-semibold text-slate-400 w-12 text-right">$100K</span>
+        <input
+          type="range" min={100000} max={2000000} step={25000}
+          value={sliderPrice}
+          onChange={(e) => setSliderPrice(Number(e.target.value))}
+          className="flex-1"
+          style={{ accentColor: "#16a34a" }}
+        />
+        <span className="text-xs font-semibold text-slate-400 w-8">$2M</span>
+      </div>
+
+      {/* The Check */}
+      <div className="rounded-lg overflow-hidden shadow-xl border border-slate-300" style={{
+        background: "#f5f0e8",
+        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px)",
+        fontFamily: "Georgia, serif"
+      }}>
+        <div className="flex items-center justify-between px-5 py-2 border-b border-slate-300" style={{ background: NAVY }}>
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-80" />
+          <span className="text-white text-xs font-bold tracking-widest opacity-70">No. 001</span>
+        </div>
+
+        <div className="px-6 pt-5 pb-4 space-y-3">
+          <div className="flex justify-end">
+            <div className="text-right">
+              <span className="text-xs text-slate-400 mr-2">DATE</span>
+              <span className="text-xs font-semibold text-slate-600 border-b border-slate-400 pb-0.5">Upon Closing</span>
+            </div>
+          </div>
+
+          <div className="flex items-end gap-2">
+            <span className="text-xs text-slate-500 whitespace-nowrap font-semibold uppercase tracking-wider">Pay to the order of</span>
+            <div className="flex-1 border-b-2 border-slate-400 pb-0.5">
+              <span className={`text-base font-bold ${homeownerName ? "text-slate-900" : "text-slate-400 italic"}`}>{payee}</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 border-b border-slate-300 pb-0.5">
+              <span className="text-xs text-slate-500 italic">{formatWritten(benefit)} and 00/100 -----</span>
+            </div>
+            <div className="flex-shrink-0 border-2 rounded px-3 py-1.5 min-w-[130px] text-right" style={{ borderColor: NAVY, background: "#eef4ff" }}>
+              <span className="text-xl font-black" style={{ color: "#16a34a", fontFamily: "Georgia, serif" }}>
+                {formatCurrency(benefit)}
+              </span>
+            </div>
+          </div>
+
+          <div className="pt-1">
+            <span className="text-xs text-slate-400 uppercase tracking-wider mr-2">Memo</span>
+            <span className="text-xs text-slate-600 border-b border-slate-300 pb-0.5">
+              Red White &amp; Blue Purchase Benefit · {address || `${formatCurrency(sliderPrice)} home`}
+            </span>
+          </div>
+
+          <div className="pt-2 border-t border-dashed border-slate-300 flex justify-between">
+            <span className="text-xs text-slate-300 tracking-widest font-mono">⑆ 122105045 ⑆ 0001887767 ⑈</span>
+            <span className="text-xs text-slate-300 font-mono">001</span>
+          </div>
+        </div>
+      </div>
+      <p className="text-[10px] text-slate-400 text-center mt-3">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
+    </div>
+  );
+}
+
+function AgentCard({ agent }) {
+  if (!agent) return null;
+  return (
+    <div className="bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <div className="px-5 py-3 flex items-center gap-2" style={{ background: NAVY }}>
+        <Shield className="h-4 w-4 text-white/60" />
+        <p className="text-xs font-black uppercase tracking-widest text-white/80">Your VTON Benefit Representative</p>
+      </div>
+      <div className="p-5 flex items-center gap-4">
+        {agent.photo_url ? (
+          <img
+            src={agent.photo_url}
+            alt={agent.name}
+            className="w-20 h-20 rounded-full object-cover border-2 border-slate-200 flex-shrink-0"
+          />
+        ) : (
+          <div className="w-20 h-20 rounded-full bg-slate-200 flex items-center justify-center flex-shrink-0 text-2xl font-black text-slate-400">
+            {agent.name?.charAt(0) || "A"}
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <p className="text-base font-black text-slate-900">{agent.name}</p>
+          {agent.title && <p className="text-xs text-slate-500 mb-1">{agent.title}</p>}
+          {agent.territory && (
+            <p className="text-xs text-slate-500 flex items-center gap-1 mb-2">
+              <MapPin className="h-3 w-3" /> {agent.territory}
+            </p>
+          )}
+          <div className="space-y-1">
+            {agent.phone && (
+              <a href={`tel:${agent.phone}`} className="flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900 transition">
+                <Phone className="h-3.5 w-3.5" /> {agent.phone}
+              </a>
+            )}
+            {agent.email && (
+              <a href={`mailto:${agent.email}`} className="flex items-center gap-2 text-sm font-semibold text-blue-700 hover:text-blue-900 transition truncate">
+                <Mail className="h-3.5 w-3.5" /> {agent.email}
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+      {agent.license_number && (
+        <div className="px-5 pb-3">
+          <p className="text-xs text-slate-400">License #: {agent.license_number}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function PersonalizedBenefit() {
+  const [opp, setOpp] = useState(null);
+  const [agent, setAgent] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const [ctaSubmitted, setCtaSubmitted] = useState(false);
+  const [ctaEmail, setCtaEmail] = useState("");
+  const [ctaPhone, setCtaPhone] = useState("");
+  const [ctaLoading, setCtaLoading] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const oppId = params.get("opp");
+    if (!oppId) { setNotFound(true); setLoading(false); return; }
+
+    const load = async () => {
+      const opps = await base44.entities.VTONOpportunity.filter({ id: oppId });
+      if (!opps.length) { setNotFound(true); setLoading(false); return; }
+      const o = opps[0];
+      setOpp(o);
+
+      // Mark QR as scanned
+      if (!o.qr_scanned) {
+        base44.entities.VTONOpportunity.update(o.id, { qr_scanned: true });
+      }
+
+      // Load agent profile
+      if (o.partner_email) {
+        const agents = await base44.entities.PartnerApplication.filter({ email: o.partner_email, status: "approved" });
+        if (agents.length) setAgent(agents[0]);
+      }
+      setLoading(false);
+    };
+    load();
+  }, []);
+
+  const handleCTASubmit = async (e) => {
+    e.preventDefault();
+    setCtaLoading(true);
+    await base44.entities.ContactSubmission.create({
+      first_name: opp?.homeowner_name || "Veteran",
+      email: ctaEmail,
+      phone: ctaPhone,
+      form_type: "contact",
+      status: "new",
+      how_heard: "vton_qr",
+      comments: `Scanned QR from opportunity ${opp?.id}. Property: ${opp?.property_address}. Agent: ${agent?.name || opp?.partner_email}`,
+    });
+    setCtaLoading(false);
+    setCtaSubmitted(true);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: NAVY }}>
+        <div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (notFound) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center" style={{ background: NAVY }}>
+        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
+        <p className="text-white font-bold text-lg mb-2">Benefit Package Not Found</p>
+        <p className="text-blue-300 text-sm">Please contact your Buywiser representative for a valid link.</p>
+        <a href="tel:+18183002642" className="mt-6 text-sm font-bold text-white underline">(818) 300-2642</a>
+      </div>
+    );
+  }
+
+  const price = opp?.estimated_price || 700000;
+  const homeownerName = opp?.homeowner_name || null;
+  const address = opp?.property_address ? `${opp.property_address}${opp.city ? ", " + opp.city : ""}${opp.state ? ", " + opp.state : ""}` : null;
+
+  return (
+    <div className="min-h-screen flex flex-col bg-white">
+      {/* Nav */}
+      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
+        {agent?.phone && (
+          <a href={`tel:${agent.phone}`} className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition hidden sm:block">
+            {agent.phone}
+          </a>
+        )}
+      </header>
+
+      <RWBStripe />
+
+      {/* Hero — personalized */}
+      <section style={{ background: NAVY }} className="px-4 py-12 sm:py-16">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-white/20 bg-white/10">
+            <span className="text-xs font-black uppercase tracking-widest text-white/80">Veteran's Next Home™ by Buywiser</span>
+          </div>
+          {homeownerName ? (
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
+              {homeownerName},<br />
+              <span style={{ color: "#ef9a9a" }}>Your Red White &amp; Blue Purchase Benefit is Ready.</span>
+            </h1>
+          ) : (
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
+              Your Red White &amp; Blue Purchase Benefit —{" "}
+              <span style={{ color: "#ef9a9a" }}>Up to 1.5% Cash Back.</span>
+            </h1>
+          )}
+          {address && (
+            <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-xl px-4 py-2 mb-4">
+              <MapPin className="h-4 w-4 text-white/60 flex-shrink-0" />
+              <p className="text-sm text-blue-100 font-medium">{address}</p>
+            </div>
+          )}
+          <p className="text-blue-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+            As a veteran homeowner with an active VA loan, you may qualify for up to <strong className="text-white">1.5% cash back</strong> on your next home purchase — coordinated through Buywiser.
+          </p>
+        </div>
+      </section>
+
+      <RWBStripe />
+
+      {/* Agent Card */}
+      {agent && (
+        <section className="px-4 py-8 bg-white">
+          <div className="max-w-lg mx-auto">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 text-center mb-4">Prepared Exclusively For You By</p>
+            <AgentCard agent={agent} />
+          </div>
+        </section>
+      )}
+
+      {/* Personalized Check Estimator */}
+      <section className="px-4 py-10 bg-slate-100">
+        <div className="max-w-lg mx-auto">
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-xl">🇺🇸</span>
+              <span className="text-xl">⭐</span>
+              <span className="text-xl">🇺🇸</span>
+            </div>
+            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
+              Estimate Your
+            </h2>
+            <div className="flex items-center justify-center gap-2 my-1">
+              <span className="text-lg font-black" style={{ color: RED }}>Red</span>
+              <span className="text-lg font-black text-white bg-slate-400 px-1 rounded">White</span>
+              <span className="text-lg font-black" style={{ color: NAVY }}>&amp; Blue</span>
+            </div>
+            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
+              Purchase Benefit
+            </h2>
+            <div className="mt-2 h-1 w-32 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${RED}, #ffffff, ${NAVY})` }} />
+          </div>
+          <PersonalizedCheck homeownerName={homeownerName} address={address} price={price} />
+        </div>
+      </section>
+
+      {/* Qualification checklist */}
+      <section className="px-4 py-10 bg-white">
+        <div className="max-w-lg mx-auto">
+          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Why You Were Selected</p>
+          <div className="space-y-2.5">
+            {[
+              "You have an active VA loan on the home you're selling",
+              "You served in the U.S. military (any branch)",
+              "You plan to purchase another home",
+              "Your next purchase will be in a qualifying market",
+            ].map((item) => (
+              <div key={item} className="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5">
+                <CheckCircle className="h-4 w-4 flex-shrink-0 text-green-500" />
+                <p className="text-sm text-slate-700 font-medium">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="px-4 py-12" style={{ background: NAVY }}>
+        <div className="max-w-lg mx-auto">
+          {ctaSubmitted ? (
+            <div className="text-center">
+              <CheckCircle className="h-12 w-12 text-green-400 mx-auto mb-3" />
+              <p className="text-white font-black text-lg mb-1">You're Connected!</p>
+              <p className="text-blue-200 text-sm">
+                {agent?.name || "Your Buywiser representative"} will be in touch shortly to walk you through your benefit.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="text-center mb-6">
+                <p className="text-white font-black text-lg mb-1">Ready to Claim Your Benefit?</p>
+                <p className="text-blue-200 text-sm">
+                  {agent ? `Connect with ${agent.name} today — no cost, no obligation.` : "Start your Veteran's Next Home™ Benefit Review — no cost, no obligation."}
+                </p>
+              </div>
+              <form onSubmit={handleCTASubmit} className="space-y-3">
+                <input
+                  type="email" required value={ctaEmail} onChange={e => setCtaEmail(e.target.value)}
+                  placeholder="Your email address"
+                  className="w-full px-4 py-3 text-sm border-2 border-white/20 rounded-xl bg-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/50 transition"
+                />
+                <input
+                  type="tel" required value={ctaPhone} onChange={e => setCtaPhone(e.target.value)}
+                  placeholder="Your phone number"
+                  className="w-full px-4 py-3 text-sm border-2 border-white/20 rounded-xl bg-white/10 text-white placeholder-white/40 focus:outline-none focus:border-white/50 transition"
+                />
+                <button type="submit" disabled={ctaLoading}
+                  className="w-full py-4 font-bold text-base rounded-xl flex items-center justify-center gap-2 transition disabled:opacity-50"
+                  style={{ background: RED, color: "#fff" }}>
+                  {ctaLoading ? "Submitting..." : <>Connect With My Representative <ArrowRight className="h-4 w-4" /></>}
+                </button>
+              </form>
+              {agent?.phone && (
+                <p className="text-center text-blue-300 text-sm mt-4">
+                  Or call directly: <a href={`tel:${agent.phone}`} className="text-white font-bold underline">{agent.phone}</a>
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-8 px-4 text-center border-t border-slate-100 bg-white">
+        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mx-auto mb-3 opacity-40" />
+        <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
+          Veteran's Next Home™ and the Red White &amp; Blue Purchase Benefit are private programs offered through Buywiser. Not affiliated with or endorsed by the U.S. Department of Veterans Affairs.{" "}
+          <a href="/Disclosures" className="underline hover:text-slate-600">Licensing &amp; Disclosures</a>
+        </p>
+        <p className="text-xs text-slate-300 mt-2">BuyWiser Technology, Inc. NMLS #1887767 · CA DRE #01107013</p>
+      </footer>
+    </div>
+  );
+}

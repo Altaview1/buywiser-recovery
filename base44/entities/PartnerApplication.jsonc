@@ -49,6 +49,18 @@
     "quiz_answers": {
       "type": "object",
       "description": "Answers from the pre-screening quiz"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Agent profile photo URL"
+    },
+    "title": {
+      "type": "string",
+      "description": "Agent title or designation, e.g. VTON Partner Agent"
+    },
+    "license_number": {
+      "type": "string",
+      "description": "Real estate license number"
     }
   },
   "required": [

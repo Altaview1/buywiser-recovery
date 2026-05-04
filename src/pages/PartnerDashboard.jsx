@@ -8,8 +8,9 @@ import PartnerProgressTracker from "@/components/vton/PartnerProgressTracker";
 import {
   MapPin, Home, DollarSign, Shield, CheckCircle, Clock,
   Phone, Calendar, XCircle, ChevronDown, ChevronUp,
-  AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer, Star, Target, TrendingUp
+  AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer, Star, Target, TrendingUp, Upload
 } from "lucide-react";
+import OpportunityQRGenerator from "@/components/vton/OpportunityQRGenerator";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -451,6 +452,7 @@ export default function PartnerDashboard() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState("opportunities");
   const [approvedPartnerCount, setApprovedPartnerCount] = useState(0);
 
   const fetchOpportunities = async (partnerEmail) => {
@@ -667,7 +669,33 @@ export default function PartnerDashboard() {
           <Leaderboard currentPartnerEmail={partner.email} currentPartnerVerified={partner.verified_conversations || 0} />
         )}
 
-        {/* Filter tabs */}
+        {/* Main tab switcher */}
+        <div className="flex gap-2 border-b border-slate-200 pb-2">
+          <button onClick={() => setActiveTab("opportunities")}
+            className={`px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "opportunities" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
+            Opportunities
+          </button>
+          <button onClick={() => setActiveTab("qr")}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "qr" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
+            <QrCode className="h-3.5 w-3.5" /> QR Benefit Packets
+          </button>
+        </div>
+
+        {/* QR Packets panel */}
+        {activeTab === "qr" && (
+          <div className="space-y-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4">
+              <p className="text-sm font-black text-blue-900 mb-1">🇺🇸 Personalized Benefit QR Codes</p>
+              <p className="text-xs text-blue-700 leading-relaxed">
+                Each QR code links to a personalized benefit page for that specific homeowner — showing their name, address, estimated benefit check, <strong>and your agent profile card</strong>. Print and include in your outreach packet.
+              </p>
+            </div>
+            <OpportunityQRGenerator opportunities={opportunities} partner={partner} />
+          </div>
+        )}
+
+        {/* Filter tabs — only shown in opportunities tab */}
+        {activeTab === "opportunities" && (
         <div className="flex flex-wrap gap-2">
           <button onClick={() => setFilter("all")}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${filter === "all" ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
@@ -683,25 +711,28 @@ export default function PartnerDashboard() {
             );
           })}
         </div>
+        )}
 
         {/* Opportunities list */}
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
-            <MapPin className="h-10 w-10 mx-auto mb-3 text-slate-200" />
-            <p className="font-semibold text-slate-500">No opportunities in this view</p>
-            <p className="text-sm text-slate-400 mt-1">Check back soon — new opportunities are assigned as they are identified.</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-xs text-slate-400 font-medium">{filtered.length} opportunit{filtered.length !== 1 ? "ies" : "y"}</p>
-            {filtered.map(opp => (
-              <OpportunityCard key={opp.id} opp={opp} onUpdate={handleUpdate} />
-            ))}
-          </div>
+        {activeTab === "opportunities" && (
+          loading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+              <MapPin className="h-10 w-10 mx-auto mb-3 text-slate-200" />
+              <p className="font-semibold text-slate-500">No opportunities in this view</p>
+              <p className="text-sm text-slate-400 mt-1">Check back soon — new opportunities are assigned as they are identified.</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <p className="text-xs text-slate-400 font-medium">{filtered.length} opportunit{filtered.length !== 1 ? "ies" : "y"}</p>
+              {filtered.map(opp => (
+                <OpportunityCard key={opp.id} opp={opp} onUpdate={handleUpdate} />
+              ))}
+            </div>
+          )
         )}
 
         {/* VTON Insight Module */}
