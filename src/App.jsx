@@ -28,6 +28,7 @@ import FlagWatermark from './components/FlagWatermark';
 import VTON from './pages/VTON';
 import PartnerDashboard from './pages/PartnerDashboard';
 import PersonalizedBenefit from './pages/PersonalizedBenefit';
+import AgentQRDashboard from './pages/AgentQRDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -74,6 +75,7 @@ const AuthenticatedApp = () => {
       <Route path="/vton" element={<VTON />} />
       <Route path="/partner" element={<PartnerDashboard />} />
       <Route path="/b" element={<PersonalizedBenefit />} />
+      <Route path="/agent-qr" element={<AgentQRDashboard />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
