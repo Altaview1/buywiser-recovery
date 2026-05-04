@@ -371,7 +371,7 @@ function LandingView() {
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition"
               style={{ background: RED, color: "#fff" }}
             >
-              Secure My Next Home Benefits <ArrowRight className="h-4 w-4" />
+              Secure My Next Home™ Benefits <ArrowRight className="h-4 w-4" />
             </button>
           </div>
 
@@ -593,7 +593,7 @@ function LandingView() {
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 font-bold rounded-xl text-sm transition"
               style={{ background: RED, color: "#fff" }}
             >
-              Secure My Next Home Benefits <ArrowRight className="h-4 w-4" />
+              Secure My Next Home™ Benefits <ArrowRight className="h-4 w-4" />
             </button>
             <a
               href="tel:+18183002642"
