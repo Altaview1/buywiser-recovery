@@ -12,6 +12,7 @@ export default function PartnerProfileEditor({ partner, onSaved }) {
     license_number: partner.license_number || "",
     photo_url: partner.photo_url || "",
     territory: partner.territory || "",
+    calendar_url: partner.calendar_url || "",
   });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -35,6 +36,7 @@ export default function PartnerProfileEditor({ partner, onSaved }) {
       title: form.title,
       license_number: form.license_number,
       photo_url: form.photo_url,
+      calendar_url: form.calendar_url,
     });
     setSaving(false);
     setSaved(true);
@@ -121,6 +123,13 @@ export default function PartnerProfileEditor({ partner, onSaved }) {
               <input className={inputCls} placeholder="e.g. 01234567" value={form.license_number}
                 onChange={e => setForm(f => ({ ...f, license_number: e.target.value }))} />
             </div>
+          </div>
+
+          <div>
+            <label className={labelCls}>Booking / Calendar Link</label>
+            <input type="url" className={inputCls} placeholder="https://calendly.com/your-link"
+              value={form.calendar_url} onChange={e => setForm(f => ({ ...f, calendar_url: e.target.value }))} />
+            <p className="text-xs text-slate-400 mt-1">Paste your Calendly, Cal.com, or any booking URL — leads will see a "Book My Appointment" button on their benefit page.</p>
           </div>
 
           <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-xs text-slate-500 flex items-start gap-2">

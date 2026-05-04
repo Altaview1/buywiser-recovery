@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { ArrowRight, Phone, Mail, MapPin, Shield, CheckCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, Phone, Mail, MapPin, Shield, CheckCircle, Calendar } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -374,6 +374,37 @@ export default function PersonalizedBenefit() {
           <PersonalizedCheck homeownerName={homeownerName} address={address} price={price} />
         </div>
       </section>
+
+      {/* Book Appointment CTA — appears right after check */}
+      {agent?.calendar_url && (
+        <section className="px-4 py-8 bg-white">
+          <div className="max-w-lg mx-auto">
+            <div className="rounded-2xl overflow-hidden border-2 shadow-sm" style={{ borderColor: NAVY }}>
+              <div className="px-5 py-4 flex items-center gap-3" style={{ background: NAVY }}>
+                <Calendar className="h-5 w-5 text-white/70 flex-shrink-0" />
+                <div>
+                  <p className="text-white font-black text-sm uppercase tracking-widest">Ready to Claim Your Benefit?</p>
+                  <p className="text-blue-300 text-xs mt-0.5">Book a free 15-min call with {agent.name}</p>
+                </div>
+              </div>
+              <div className="px-5 py-5 bg-white flex flex-col sm:flex-row items-center gap-4">
+                <div className="flex-1 text-sm text-slate-600 leading-relaxed">
+                  See your personalized benefit estimate above? Lock in your spot — {agent.name} will walk you through exactly how much you qualify for and how it works.
+                </div>
+                <a
+                  href={agent.calendar_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white transition hover:opacity-90"
+                  style={{ background: RED }}
+                >
+                  <Calendar className="h-4 w-4" /> Book My Appointment
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Qualification checklist */}
       <section className="px-4 py-10 bg-white">

@@ -61,6 +61,10 @@
     "license_number": {
       "type": "string",
       "description": "Real estate license number"
+    },
+    "calendar_url": {
+      "type": "string",
+      "description": "Booking/calendar link for prospects to schedule appointments (e.g. Calendly URL)"
     }
   },
   "required": [
