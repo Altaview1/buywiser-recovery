@@ -1,6 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
-import twilio from 'npm:twilio@4.19.3';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 const ADMIN_EMAIL = 'bennett@buywiser.com';
@@ -12,6 +11,9 @@ const TWILIO_FROM = Deno.env.get('TWILIO_FROM_NUMBER');
 
 function formatPhone(phone) {
   if (!phone) return null;
+  // If already has +, return as-is
+  if (phone.startsWith('+')) return phone;
+  // Otherwise clean and format
   const cleaned = phone.replace(/\D/g, '');
   if (cleaned.length === 10) return `+1${cleaned}`;
   if (cleaned.length === 11) return `+${cleaned}`;
@@ -22,9 +24,16 @@ async function sendSMS(to, body) {
   if (!to || !TWILIO_SID || !TWILIO_TOKEN || !TWILIO_FROM) return;
   try {
     const formattedTo = formatPhone(to);
-    const client = twilio(TWILIO_SID, TWILIO_TOKEN);
-    await client.messages.create({ from: TWILIO_FROM, to: formattedTo, body });
-    console.log(`SMS sent to ${formattedTo}`);
+    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${TWILIO_SID}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${btoa(`${TWILIO_SID}:${TWILIO_TOKEN}`)}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ To: formattedTo, From: TWILIO_FROM, Body: body }),
+    });
+    const data = await response.json();
+    console.log(`SMS sent to ${formattedTo}: ${data.sid}`);
   } catch (err) {
     console.error('SMS error:', err.message);
   }
