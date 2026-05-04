@@ -154,6 +154,66 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </div>
 
+          {/* Trust Badges */}
+          <div className="border-t border-slate-800 pt-6 mb-6">
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {/* Equal Housing Lender */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700">
+                <svg className="h-7 w-7 text-slate-300 flex-shrink-0" viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 4L2 16h4v20h28V16h4L20 4zm0 3.5L34 17v1h-2V34H8V18H6L20 7.5zM16 20h8v2h-8v-2zm0 4h8v2h-8v-2z"/>
+                </svg>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">Equal Housing</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">Lender</p>
+                </div>
+              </div>
+
+              {/* NMLS */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700">
+                <div className="w-7 h-7 rounded bg-blue-700 flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-[9px] font-black">NMLS</span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">NMLS Registered</p>
+                  <p className="text-[10px] text-slate-400 leading-tight">#1887767</p>
+                </div>
+              </div>
+
+              {/* CA DFPI Licensed */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700">
+                <div className="w-7 h-7 rounded bg-amber-600 flex items-center justify-center flex-shrink-0">
+                  <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">CA DFPI</p>
+                  <p className="text-[10px] text-slate-400 leading-tight">Licensed Lender</p>
+                </div>
+              </div>
+
+              {/* SSL Secure */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700">
+                <div className="w-7 h-7 rounded bg-green-700 flex items-center justify-center flex-shrink-0">
+                  <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">SSL Secure</p>
+                  <p className="text-[10px] text-slate-400 leading-tight">256-bit Encrypted</p>
+                </div>
+              </div>
+
+              {/* BBB */}
+              <div className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 rounded-lg border border-slate-700">
+                <div className="w-7 h-7 rounded bg-blue-900 border border-blue-600 flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-[9px] font-black">BBB</span>
+                </div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-300 leading-tight">BBB Accredited</p>
+                  <p className="text-[10px] text-slate-400 leading-tight">Business</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="border-t border-slate-800 pt-6">
             <div className="flex flex-col md:flex-row justify-between gap-4">
               <p className="text-xs text-slate-500 leading-relaxed max-w-3xl">
