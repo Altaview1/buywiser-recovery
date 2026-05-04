@@ -30,6 +30,10 @@ Deno.serve(async (req) => {
       ? (opp.estimated_price * 0.015).toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
       : null;
 
+    // SMS notification setup
+    const adminPhone = Deno.env.get("BENNETT_PHONE");
+    const smsBody = `🎯 VTON Opp: ${homeowner}\n${fullAddress}${price ? `\nEst. ${price}` : ''}${benefit ? ` (up to ${benefit})` : ''}\nPriority: ${priority}`;
+
     const date = new Date().toLocaleString('en-US', {
       timeZone: 'America/Los_Angeles',
       dateStyle: 'medium',
@@ -156,7 +160,59 @@ Deno.serve(async (req) => {
       console.log(`SMS sent to partner ${partnerPhone}`);
     }
 
-    console.log(`Partner notification sent to ${partnerEmail} for opportunity at ${fullAddress}`);
+    // Send SMS to admin
+    if (adminPhone) {
+      const twilioSid = Deno.env.get('TWILIO_ACCOUNT_SID');
+      const twilioAuth = Deno.env.get('TWILIO_AUTH_TOKEN');
+      const twilioFrom = Deno.env.get('TWILIO_FROM_NUMBER');
+      
+      if (twilioSid && twilioAuth && twilioFrom) {
+        try {
+          const cleanPhone = adminPhone.replace(/\D/g, '');
+          const formattedPhone = cleanPhone.length === 10 ? `+1${cleanPhone}` : `+${cleanPhone}`;
+          
+          await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Basic ${btoa(`${twilioSid}:${twilioAuth}`)}`,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ To: formattedPhone, From: twilioFrom, Body: smsBody }),
+          });
+          console.log(`Admin SMS sent to ${adminPhone}`);
+        } catch (err) {
+          console.error('Admin SMS error:', err.message);
+        }
+      }
+    }
+
+    // Send SMS to partner if they have phone
+    if (partnerPhone) {
+      const twilioSid = Deno.env.get('TWILIO_ACCOUNT_SID');
+      const twilioAuth = Deno.env.get('TWILIO_AUTH_TOKEN');
+      const twilioFrom = Deno.env.get('TWILIO_FROM_NUMBER');
+      
+      if (twilioSid && twilioAuth && twilioFrom) {
+        try {
+          const cleanPhone = partnerPhone.replace(/\D/g, '');
+          const formattedPhone = cleanPhone.length === 10 ? `+1${cleanPhone}` : `+${cleanPhone}`;
+          
+          await fetch(`https://api.twilio.com/2010-04-01/Accounts/${twilioSid}/Messages.json`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Basic ${btoa(`${twilioSid}:${twilioAuth}`)}`,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({ To: formattedPhone, From: twilioFrom, Body: smsBody }),
+          });
+          console.log(`Partner SMS sent to ${partnerPhone}`);
+        } catch (err) {
+          console.error('Partner SMS error:', err.message);
+        }
+      }
+    }
+
+    console.log(`Opportunity notification sent to ${partnerEmail} at ${fullAddress}`);
     return Response.json({ success: true });
   } catch (error) {
     console.error('notifyPartnerNewOpportunity error:', error.message);

@@ -33,6 +33,7 @@ import FAQ from './pages/FAQ';
 import MortgageFAQ from './pages/MortgageFAQ';
 import ProspectsDashboard from './pages/ProspectsDashboard';
 import PartnerLeadsDashboard from './pages/PartnerLeadsDashboard';
+import AdminSettings from './pages/AdminSettings';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -82,6 +83,7 @@ const AuthenticatedApp = () => {
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
       <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
       <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
+      <Route path="/admin-settings" element={<AdminSettings />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
