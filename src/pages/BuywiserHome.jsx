@@ -310,7 +310,25 @@ function LandingView() {
       {/* ── Benefit Estimator ── */}
       <section className="px-4 py-12 bg-slate-100">
         <div className="max-w-lg mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest mb-5 text-slate-500">Estimate Your Red White &amp; Blue Purchase Benefit</p>
+          <div className="text-center mb-6">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <span className="text-xl">🇺🇸</span>
+              <span className="text-xl">⭐</span>
+              <span className="text-xl">🇺🇸</span>
+            </div>
+            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
+              Estimate Your
+            </h2>
+            <div className="flex items-center justify-center gap-2 my-1">
+              <span className="text-lg font-black" style={{ color: RED }}>Red</span>
+              <span className="text-lg font-black text-white bg-slate-400 px-1 rounded">White</span>
+              <span className="text-lg font-black" style={{ color: NAVY }}>&amp; Blue</span>
+            </div>
+            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
+              Purchase Benefit
+            </h2>
+            <div className="mt-2 h-1 w-32 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${RED}, #ffffff, ${NAVY})` }} />
+          </div>
           <CheckEstimator />
         </div>
       </section>
