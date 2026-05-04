@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { Resend } from 'npm:resend@3.2.0';
+
+const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 Deno.serve(async (req) => {
   try {
@@ -11,7 +14,6 @@ Deno.serve(async (req) => {
 
     const lead = data;
     const adminEmail = 'bennett@buywiser.com';
-    const partnerEmail = lead.assigned_agent ? null : null;
 
     // Get partner email if assigned
     let partner = null;
@@ -39,20 +41,20 @@ Internal Notes: ${lead.internal_notes || 'None'}
 `;
 
     // Email to admin
-    await base44.integrations.Core.SendEmail({
+    await resend.emails.send({
+      from: 'BuyWiser <notifications@buywiser.com>',
       to: adminEmail,
-      from_name: 'BuyWiser',
       subject: `New Lead Submitted: ${lead.name || 'Unknown'}`,
-      body: `A new lead has been submitted.\n\n${leadDetails}\n\nLog in to the dashboard to view and manage this lead.`,
+      text: `A new lead has been submitted.\n\n${leadDetails}\n\nLog in to the dashboard to view and manage this lead.`,
     });
 
     // Email to assigned partner if applicable
     if (partner && partner.email) {
-      await base44.integrations.Core.SendEmail({
+      await resend.emails.send({
+        from: 'BuyWiser <notifications@buywiser.com>',
         to: partner.email,
-        from_name: 'BuyWiser',
         subject: `New Lead Assigned: ${lead.name || 'Unknown'}`,
-        body: `A new lead has been assigned to you.\n\n${leadDetails}\n\nLog in to your partner dashboard to view details and follow up.`,
+        text: `A new lead has been assigned to you.\n\n${leadDetails}\n\nLog in to your partner dashboard to view details and follow up.`,
       });
     }
 
