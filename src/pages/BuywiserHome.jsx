@@ -174,17 +174,12 @@ function CheckEstimator() {
             </div>
           </div>
 
-          {/* Memo + signature row */}
-          <div className="flex items-end justify-between gap-4 pt-1">
-            <div className="flex-1">
-              <span className="text-xs text-slate-400 uppercase tracking-wider mr-2">Memo</span>
-              <span className="text-xs text-slate-600 border-b border-slate-300 pb-0.5">
-                Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home
-              </span>
-            </div>
-            <div className="text-right border-b border-slate-400 pb-0.5 min-w-[120px]">
-              <span className="text-sm text-slate-600" style={{ fontFamily: "cursive" }}>Bennett Liss</span>
-            </div>
+          {/* Memo line */}
+          <div className="pt-1">
+            <span className="text-xs text-slate-400 uppercase tracking-wider mr-2">Memo</span>
+            <span className="text-xs text-slate-600 border-b border-slate-300 pb-0.5">
+              Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home
+            </span>
           </div>
 
           {/* Routing numbers bar */}
