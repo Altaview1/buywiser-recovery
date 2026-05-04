@@ -400,17 +400,10 @@ function AccessGate({ onAccess }) {
     setLoading(true);
     setError("");
     try {
-      const emailLower = email.toLowerCase().trim();
-      const allPartners = await base44.entities.PartnerApplication.list();
-      const match = allPartners.find(p => p.status === "approved" && p.email?.toLowerCase() === emailLower);
-      
-      if (match) {
-        onAccess(match);
-      } else {
-        setError("No approved partner account found for this email.");
-      }
+      const response = await base44.functions.invoke('verifyPartner', { email });
+      onAccess(response.data.partner);
     } catch (err) {
-      setError("Error verifying account. Please try again.");
+      setError(err.response?.data?.error || "Error verifying account. Please try again.");
     }
     setLoading(false);
   };
