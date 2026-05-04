@@ -399,11 +399,18 @@ function AccessGate({ onAccess }) {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const results = await base44.entities.PartnerApplication.filter({ email: email.toLowerCase().trim(), status: "approved" });
-    if (results.length > 0) {
-      onAccess(results[0]);
-    } else {
-      setError("No approved partner account found for this email. Contact VTON to request access.");
+    try {
+      const allPartners = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 500);
+      const emailLower = email.toLowerCase().trim();
+      const match = allPartners.find(p => p.email && p.email.toLowerCase() === emailLower);
+      if (match) {
+        onAccess(match);
+      } else {
+        setError("No approved partner account found for this email. Contact VTON to request access.");
+      }
+    } catch (err) {
+      setError("Error checking account. Please try again.");
+      console.error(err);
     }
     setLoading(false);
   };
