@@ -323,7 +323,7 @@ function LandingView() {
           {oppAddress && vaLoanConfirmed === true ? (
             <div className="mb-6 max-w-xl mx-auto">
               <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
-                Be smart like Veterans Frank &amp; Cody — get your next home benefits on the sale of{" "}
+                Be smart like Veterans Frank &amp; Cody — get your Next Home™ benefits on the sale of{" "}
                 <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
               </p>
               <p className="text-blue-300 text-xs italic">
@@ -333,7 +333,7 @@ function LandingView() {
           ) : oppAddress && vaLoanConfirmed === false ? (
             <div className="mb-6 max-w-xl mx-auto">
               <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
-                Explore next-home benefits on the sale of{" "}
+                Secure your Next Home™ benefits on the sale of{" "}
                 <span style={{ color: "#fbbf24" }}>{oppAddress}</span>{" "}
                 — our team will confirm your eligibility.
               </p>
@@ -431,12 +431,12 @@ function LandingView() {
               {
                 n: "2",
                 title: "Structure your next purchase through Buywiser",
-                desc: "Buywiser coordinates home search support, touring access, offer strategy, financing, and transaction support."
+                desc: "Buywiser coordinates Next Home™ search support, touring access, offer strategy, financing, and transaction support."
               },
               {
                 n: "3",
                 title: "Maximize your Red White & Blue Purchase Benefit",
-                desc: "When properly structured through Buywiser, the benefit can provide up to 1.5% back toward your next home."
+                desc: "When properly structured through Buywiser, the benefit can provide up to 1.5% back toward your Next Home™."
               },
             ].map(({ n, title, desc }) => (
               <div key={n} className="flex gap-4 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4">
@@ -482,7 +482,7 @@ function LandingView() {
           <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Full Service</p>
           <h2 className="text-2xl font-extrabold text-center mb-3" style={{ color: NAVY }}>What Buywiser Coordinates</h2>
           <p className="text-sm text-slate-500 text-center leading-relaxed mb-8 max-w-md mx-auto">
-            Buywiser modernizes the next-home process for veteran homeowners — coordinating the professional pieces that still matter.
+            Buywiser modernizes the Next Home™ process for veteran homeowners — coordinating the professional pieces that still matter.
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {COORDINATES.map(({ icon: Icon, label }) => (
@@ -511,7 +511,7 @@ function LandingView() {
               "Planning to buy another home",
               "Comparing VA and conventional financing options",
               "Interested in receiving a meaningful purchase benefit",
-              "Open to a modern, efficient next-home process",
+              "Open to a modern, efficient Next Home™ process",
             ].map((item) => (
               <div key={item} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3.5">
                 <CheckCircle className="h-4 w-4 flex-shrink-0" style={{ color: RED }} />
@@ -585,7 +585,7 @@ function LandingView() {
       <section className="px-4 py-12" style={{ background: NAVY }}>
         <div className="max-w-xl mx-auto text-center">
           <p className="text-white text-sm leading-relaxed mb-5 max-w-md mx-auto">
-            Before major next-home decisions are finalized, review how Buywiser can structure your Red White &amp; Blue Purchase Benefit.
+            Before major Next Home™ decisions are finalized, review how Buywiser can structure your Red White &amp; Blue Purchase Benefit.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
