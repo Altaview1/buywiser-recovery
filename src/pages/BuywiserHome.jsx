@@ -343,7 +343,7 @@ function LandingView() {
             </div>
           ) : (
             <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-              <span className="text-white font-bold">If the home you're selling has a VA loan — you may qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through Buywiser.
+              <span className="text-white font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through Buywiser.
             </p>
           )}
 
