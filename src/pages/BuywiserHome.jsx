@@ -361,7 +361,7 @@ function LandingView() {
 
           {/* Support line */}
           <p className="text-blue-300 text-sm italic mb-8">
-            Before major next-home decisions are finalized, start your Veteran's Next Home™ Benefit Review.
+            Secure your Veteran's Next Home™ Benefits before your next purchase is finalized.
           </p>
 
           {/* CTAs */}
@@ -371,7 +371,7 @@ function LandingView() {
               className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition"
               style={{ background: RED, color: "#fff" }}
             >
-              Explore My Next Home Benefit <ArrowRight className="h-4 w-4" />
+              Secure My Next Home Benefits <ArrowRight className="h-4 w-4" />
             </button>
           </div>
 
@@ -593,7 +593,7 @@ function LandingView() {
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 font-bold rounded-xl text-sm transition"
               style={{ background: RED, color: "#fff" }}
             >
-              Explore My Next Home Benefit <ArrowRight className="h-4 w-4" />
+              Secure My Next Home Benefits <ArrowRight className="h-4 w-4" />
             </button>
             <a
               href="tel:+18183002642"
