@@ -11,6 +11,7 @@ import {
   AlertCircle, RefreshCw, LogOut, Save, X, QrCode, Timer, Star, Target, TrendingUp, Upload
 } from "lucide-react";
 import OpportunityQRGenerator from "@/components/vton/OpportunityQRGenerator";
+import PartnerProfileEditor from "@/components/vton/PartnerProfileEditor";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -136,7 +137,7 @@ function OpportunityCard({ opp, onUpdate }) {
     onUpdate({ ...opp, lead_quality_rating: stars, lead_quality_feedback: ratingFeedback });
   };
 
-  const qrValue = `https://buywiser.base44.app/partner?verify=${opp.id}&partner=${encodeURIComponent(opp.partner_email || "")}`;
+  const qrValue = `${window.location.origin}/b?opp=${opp.id}`;
   const repCode = `VTON-${opp.id.slice(-6).toUpperCase()}`;
   const estBenefit = opp.estimated_price ? (opp.estimated_price * 0.015).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }) : null;
 
@@ -679,6 +680,10 @@ export default function PartnerDashboard() {
             className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "qr" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
             <QrCode className="h-3.5 w-3.5" /> QR Benefit Packets
           </button>
+          <button onClick={() => setActiveTab("profile")}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "profile" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
+            My Profile
+          </button>
         </div>
 
         {/* QR Packets panel */}
@@ -692,6 +697,11 @@ export default function PartnerDashboard() {
             </div>
             <OpportunityQRGenerator opportunities={opportunities} partner={partner} />
           </div>
+        )}
+
+        {/* Profile tab */}
+        {activeTab === "profile" && (
+          <PartnerProfileEditor partner={partner} onSaved={(updated) => setPartner(updated)} />
         )}
 
         {/* Filter tabs — only shown in opportunities tab */}
