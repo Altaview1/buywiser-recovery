@@ -255,6 +255,7 @@ function PageFooter() {
 function LandingView() {
   const [code, setCode] = useState("");
   const [oppAddress, setOppAddress] = useState(null);
+  const [vaLoanConfirmed, setVaLoanConfirmed] = useState(null);
   const ctaRef = useRef(null);
 
   useEffect(() => {
@@ -269,6 +270,7 @@ function LandingView() {
           const o = results[0];
           const parts = [o.property_address, o.city, o.state].filter(Boolean);
           if (parts.length) setOppAddress(parts.join(", "));
+          setVaLoanConfirmed(o.va_loan_confirmed ?? null);
         }
       });
     }
@@ -317,12 +319,23 @@ function LandingView() {
             <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Up to 1.5% Cash Back.</span>
           </h1>
 
-          {/* Subheadline — personalized if opp param present */}
-          {oppAddress ? (
+          {/* Subheadline — personalized based on opp QR data */}
+          {oppAddress && vaLoanConfirmed === true ? (
             <div className="mb-6 max-w-xl mx-auto">
               <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
                 Be smart like Veterans Frank &amp; Cody — get your next home benefits on the sale of{" "}
                 <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
+              </p>
+              <p className="text-blue-300 text-xs italic">
+                Only available through Buywiser's Veteran's Next Home™ Program.
+              </p>
+            </div>
+          ) : oppAddress && vaLoanConfirmed === false ? (
+            <div className="mb-6 max-w-xl mx-auto">
+              <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
+                Explore next-home benefits on the sale of{" "}
+                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>{" "}
+                — our team will confirm your eligibility.
               </p>
               <p className="text-blue-300 text-xs italic">
                 Only available through Buywiser's Veteran's Next Home™ Program.
