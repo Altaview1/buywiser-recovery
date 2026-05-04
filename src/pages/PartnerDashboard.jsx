@@ -399,13 +399,19 @@ function AccessGate({ onAccess }) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    
     try {
-      const response = await base44.functions.invoke('verifyPartner', { email });
-      onAccess(response.data.partner);
+      const res = await base44.functions.invoke('verifyPartner', { email: email.trim() });
+      if (res.data?.partner) {
+        onAccess(res.data.partner);
+      } else {
+        setError('Partner account not found.');
+      }
     } catch (err) {
-      setError(err.response?.data?.error || "Error verifying account. Please try again.");
+      setError(err?.response?.data?.error || 'Unable to verify account.');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -414,18 +420,22 @@ function AccessGate({ onAccess }) {
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
           <p className="text-white font-black text-sm uppercase tracking-widest">VTON Partner Dashboard</p>
-          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network — Cycle 1</p>
-          <p className="text-blue-400 text-xs mt-2 italic font-medium">For Approved Field Partners Only</p>
+          <p className="text-blue-300 text-xs mt-1">Veteran Transition Opportunity Network</p>
         </div>
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs text-slate-600 leading-relaxed">
-            VTON partners enjoy a <strong>48-hour decision window</strong> on every opportunity. After acceptance, your deposit is earned back through <strong>protocol execution</strong> — not sales outcomes.
+            48-hour decision window on every opportunity. Deposit earned back through protocol execution.
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
-            <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+            <input 
+              type="email" 
+              required 
+              value={email} 
+              onChange={e => setEmail(e.target.value)}
               placeholder="your@email.com"
-              className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition" />
+              className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition" 
+            />
           </div>
           {error && (
             <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
@@ -433,14 +443,16 @@ function AccessGate({ onAccess }) {
               <p className="text-xs text-red-600">{error}</p>
             </div>
           )}
-          <button type="submit" disabled={loading}
+          <button 
+            type="submit" 
+            disabled={loading}
             className="w-full py-3.5 font-bold text-sm rounded-xl text-white transition disabled:opacity-50"
-            style={{ background: loading ? "#888" : RED }}>
-            {loading ? "Checking…" : "Access My Dashboard"}
+            style={{ background: loading ? "#888" : RED }}
+          >
+            {loading ? "Verifying…" : "Access My Dashboard"}
           </button>
           <p className="text-xs text-slate-400 text-center">
-            Not a partner yet?{" "}
-            <a href="/vton" className="underline hover:text-slate-600">Apply for VTON Partner Access</a>
+            <a href="/vton" className="underline hover:text-slate-600">Apply for Partner Access</a>
           </p>
         </form>
       </div>

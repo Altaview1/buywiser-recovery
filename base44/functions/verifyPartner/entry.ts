@@ -1,25 +1,33 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
+  if (req.method !== 'POST') {
+    return Response.json({ error: 'POST required' }, { status: 405 });
+  }
+
   try {
+    const { email } = await req.json();
+    
+    if (!email || typeof email !== 'string') {
+      return Response.json({ error: 'Email required' }, { status: 400 });
+    }
+
     const base44 = createClientFromRequest(req);
-    const body = await req.json();
-    const email = body.email?.toLowerCase().trim();
+    const emailLower = email.toLowerCase().trim();
 
-    if (!email) {
-      return Response.json({ error: 'Email is required' }, { status: 400 });
+    // Service role query to bypass RLS
+    const partners = await base44.asServiceRole.entities.PartnerApplication.list();
+    const partner = partners.find(p => 
+      p.status === 'approved' && p.email?.toLowerCase() === emailLower
+    );
+
+    if (!partner) {
+      return Response.json({ error: 'No approved partner found' }, { status: 404 });
     }
 
-    // Use service role to bypass RLS and find approved partner
-    const allPartners = await base44.asServiceRole.entities.PartnerApplication.list();
-    const match = allPartners.find(p => p.status === 'approved' && p.email?.toLowerCase() === email);
-
-    if (match) {
-      return Response.json({ partner: match });
-    } else {
-      return Response.json({ error: 'No approved partner account found for this email.' }, { status: 404 });
-    }
+    return Response.json({ success: true, partner });
   } catch (error) {
+    console.error('Partner verification error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
   }
 });
