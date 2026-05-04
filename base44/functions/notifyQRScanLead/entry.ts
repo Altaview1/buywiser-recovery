@@ -1,6 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import twilio from 'npm:twilio@4.19.3';
 
 const ADMIN_EMAIL = "bennett@buywiser.com";
+const ADMIN_PHONE = Deno.env.get("BENNETT_PHONE");
+const TWILIO_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
+const TWILIO_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");
+const TWILIO_FROM = Deno.env.get("TWILIO_FROM_NUMBER");
+
+async function sendSMS(to, body) {
+  if (!to) return;
+  const client = twilio(TWILIO_SID, TWILIO_TOKEN);
+  await client.messages.create({ from: TWILIO_FROM, to, body });
+}
 
 Deno.serve(async (req) => {
   try {
@@ -100,17 +111,33 @@ Deno.serve(async (req) => {
       recipients.push({ email: ADMIN_EMAIL, name: "Bennett (Admin)" });
     }
 
-    // Send to all recipients
-    await Promise.all(recipients.map(r =>
-      base44.asServiceRole.integrations.Core.SendEmail({
-        to: r.email,
-        from_name: "BuyWiser VTON",
-        subject: `🔔 QR Scan Alert — ${prospectName} just filled out the benefit calculator`,
-        body: emailBody,
-      })
-    ));
+    const smsBody = `🔔 BuyWiser QR Alert: ${prospectName} just scanned your QR code & filled out the benefit calculator.\nPhone: ${prospectPhone}\nEmail: ${prospectEmail}${propertyAddress ? `\nProperty: ${propertyAddress}` : ""}\nFollow up now!`;
 
-    return Response.json({ sent: true, recipients: recipients.map(r => r.email) });
+    // Look up agent phone from PartnerApplication if we have agentEmail
+    let agentPhone = null;
+    if (agentEmail && oppId) {
+      const agents = await base44.asServiceRole.entities.PartnerApplication.filter({ email: agentEmail, status: "approved" });
+      if (agents.length) agentPhone = agents[0].phone || null;
+    }
+
+    // Send emails + SMS in parallel
+    await Promise.all([
+      // Emails
+      ...recipients.map(r =>
+        base44.asServiceRole.integrations.Core.SendEmail({
+          to: r.email,
+          from_name: "BuyWiser VTON",
+          subject: `🔔 QR Scan Alert — ${prospectName} just filled out the benefit calculator`,
+          body: emailBody,
+        })
+      ),
+      // SMS to agent
+      agentPhone ? sendSMS(agentPhone, smsBody) : Promise.resolve(),
+      // SMS to admin (always)
+      ADMIN_PHONE ? sendSMS(ADMIN_PHONE, `[Admin copy] ${smsBody}`) : Promise.resolve(),
+    ]);
+
+    return Response.json({ sent: true, recipients: recipients.map(r => r.email), sms: { agent: agentPhone, admin: ADMIN_PHONE } });
   } catch (error) {
     console.error("notifyQRScanLead error:", error);
     return Response.json({ error: error.message }, { status: 500 });
