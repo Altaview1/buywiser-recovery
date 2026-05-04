@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import BulkLeadUpload from "@/components/BulkLeadUpload";
 import OutcomeSummary from "@/components/OutcomeSummary";
+import LeadsTable from "@/components/LeadsTable";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -465,6 +466,7 @@ export default function LeadsDashboard() {
   const [showBulk, setShowBulk] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [filterReason, setFilterReason] = useState("All");
+  const [viewMode, setViewMode] = useState("cards"); // "cards" or "table"
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -516,10 +518,28 @@ export default function LeadsDashboard() {
               />
             </Link>
             <div className="h-6 w-px bg-slate-200" />
-            <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-slate-500" />
-              <h1 className="text-base font-bold text-slate-800">Leads Dashboard</h1>
-            </div>
+            <div className="flex items-center gap-3">
+                <Users className="h-5 w-5 text-slate-500" />
+                <h1 className="text-base font-bold text-slate-800">Leads Dashboard</h1>
+                <div className="flex items-center gap-1 border border-slate-200 rounded-lg p-1 bg-slate-50">
+                  <button
+                    onClick={() => setViewMode("cards")}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded transition ${
+                      viewMode === "cards" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
+                  >
+                    Cards
+                  </button>
+                  <button
+                    onClick={() => setViewMode("table")}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded transition ${
+                      viewMode === "table" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={fetchLeads} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
@@ -615,6 +635,8 @@ export default function LeadsDashboard() {
             <p className="font-semibold">No leads found</p>
             <p className="text-sm mt-1">Try adjusting your search or filter.</p>
           </div>
+        ) : viewMode === "table" ? (
+          <LeadsTable leads={filtered} onUpdate={fetchLeads} />
         ) : (
           <div className="space-y-3">
             <p className="text-xs text-slate-400 font-medium">{filtered.length} lead{filtered.length !== 1 ? "s" : ""}</p>
