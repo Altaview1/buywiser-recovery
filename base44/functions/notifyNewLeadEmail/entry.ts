@@ -5,7 +5,7 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const { event, data } = await req.json();
 
-    if (!data || event.type !== 'create') {
+    if (!data || (event.type !== 'create' && event.type !== 'update')) {
       return Response.json({ status: 'skipped' });
     }
 

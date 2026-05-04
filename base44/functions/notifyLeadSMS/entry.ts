@@ -20,9 +20,10 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const payload = await req.json();
-    const lead = payload.data;
+    const { event, data: lead } = payload;
 
-    if (!lead) {
+    // Handle both create and update events
+    if (!lead || (event && event.type !== 'create' && event.type !== 'update')) {
       return Response.json({ skipped: true });
     }
 
