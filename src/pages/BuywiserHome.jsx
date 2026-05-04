@@ -320,22 +320,12 @@ function LandingView() {
           </h1>
 
           {/* Subheadline — personalized based on opp QR data */}
-          {oppAddress && vaLoanConfirmed === true ? (
+          {oppAddress ? (
             <div className="mb-6 max-w-xl mx-auto">
               <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
-                Be smart like Veterans Frank &amp; Cody — get your Next Home™ benefits on the sale of{" "}
-                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
-              </p>
-              <p className="text-blue-300 text-xs italic">
-                Only available through Buywiser's Veteran's Next Home™ Program.
-              </p>
-            </div>
-          ) : oppAddress && vaLoanConfirmed === false ? (
-            <div className="mb-6 max-w-xl mx-auto">
-              <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
-                Secure your Next Home™ benefits on the sale of{" "}
-                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>{" "}
-                — our team will confirm your eligibility.
+                Congratulations on listing{" "}
+                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.{" "}
+                Verification has proceeded and you are entitled to the Veteran's Next Home™ Benefit.
               </p>
               <p className="text-blue-300 text-xs italic">
                 Only available through Buywiser's Veteran's Next Home™ Program.
