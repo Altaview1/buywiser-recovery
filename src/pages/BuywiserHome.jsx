@@ -145,6 +145,41 @@ function BenefitEstimator() {
   );
 }
 
+// ── Currency Slider (interactive inner component) ──────────────────────────────
+function CurrencySlider() {
+  const [val, setVal] = useState(700000);
+  const benefit = val * 0.015;
+  return (
+    <>
+      <div className="flex items-center gap-3">
+        <span className="text-xs font-black text-green-900 w-10 text-right">$100K</span>
+        <input
+          type="range"
+          min={100000}
+          max={2000000}
+          step={25000}
+          value={val}
+          onChange={(e) => setVal(Number(e.target.value))}
+          className="flex-1"
+          style={{ accentColor: "#14532d" }}
+        />
+        <span className="text-xs font-black text-green-900 w-8">$2M</span>
+      </div>
+      <div className="flex gap-4">
+        <div className="flex-1 rounded-xl border-2 border-green-900/30 bg-green-900/10 px-4 py-4 text-center">
+          <p className="text-xs font-black text-green-800 uppercase tracking-widest mb-1">Purchase Price</p>
+          <p className="text-2xl font-black text-green-950">{formatCurrency(val)}</p>
+        </div>
+        <div className="flex-1 rounded-xl border-2 border-green-900/30 px-4 py-4 text-center" style={{ background: "rgba(0,60,0,0.2)" }}>
+          <p className="text-xs font-black text-green-800 uppercase tracking-widest mb-1">Your Benefit</p>
+          <p className="text-2xl font-black text-green-950">{formatCurrency(benefit)}</p>
+          <p className="text-xs text-green-800 mt-0.5">up to 1.5%</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
 // ── Page Footer ────────────────────────────────────────────────────────────────
 function PageFooter() {
   return (
@@ -267,14 +302,46 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Benefit Estimator ── */}
-      <section className="px-4 py-12 bg-white">
+      <section className="px-4 py-12" style={{
+        background: "#85bb65",
+        backgroundImage: `
+          repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px),
+          repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px)
+        `
+      }}>
         <div className="max-w-lg mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest mb-5" style={{ color: NAVY }}>
-            Estimate Your Red White &amp; Blue Purchase Benefit
-          </p>
-          <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
-            <BenefitEstimator />
+          {/* Currency-style header */}
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border-2 border-green-900/40 bg-green-900/20 mb-2">
+              <span className="text-green-900 font-black text-sm tracking-widest uppercase">★ Estimate Your Benefit ★</span>
+            </div>
           </div>
+
+          {/* The "bill" */}
+          <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-green-900/30" style={{ background: "#85bb65" }}>
+            {/* Bill top band */}
+            <div className="px-6 py-3 flex items-center justify-between border-b-2 border-green-900/20" style={{ background: "rgba(0,60,0,0.15)" }}>
+              <span className="text-xs font-black text-green-900 uppercase tracking-widest">The United States of Veterans</span>
+              <span className="text-xs font-black text-green-900">Series 2025</span>
+            </div>
+
+            {/* Bill body */}
+            <div className="p-6 space-y-5" style={{
+              backgroundImage: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 70%)`
+            }}>
+              <p className="text-xs text-green-900/70 italic text-center font-semibold">Move the slider to estimate your benefit</p>
+
+              <CurrencySlider />
+            </div>
+
+            {/* Bill bottom band */}
+            <div className="px-6 py-2.5 flex items-center justify-between border-t-2 border-green-900/20" style={{ background: "rgba(0,60,0,0.15)" }}>
+              <span className="text-xs font-black text-green-900">VETERAN'S NEXT HOME™</span>
+              <span className="text-xs font-black text-green-900">BUYWISER · NMLS #1887767</span>
+            </div>
+          </div>
+
+          <p className="text-[10px] text-green-900/60 text-center mt-3 font-semibold">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
         </div>
       </section>
 
