@@ -4,6 +4,7 @@ import twilio from 'npm:twilio@4.19.3';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 const ADMIN_EMAIL = 'bennett@buywiser.com';
+const PARTNER_EMAIL = 'bennett@buywiser.com';
 const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
 const TWILIO_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
 const TWILIO_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
@@ -118,15 +119,15 @@ Deno.serve(async (req) => {
     // Send SMS to admin
     await sendSMS(ADMIN_PHONE, smsBody);
 
-    // Send email to partner if applicable
+    // Send email to partner using unified email address
     if (partnerEmail && partnerEmail !== 'unassigned') {
       await resend.emails.send({
         from: 'BuyWiser <notifications@buywiser.com>',
-        to: partnerEmail,
+        to: PARTNER_EMAIL,
         subject,
         text: adminBody.replace('Log in to the dashboard', 'Log in to your partner dashboard'),
       });
-      console.log(`Email sent to partner: ${partnerEmail}`);
+      console.log(`Email sent to partner address: ${PARTNER_EMAIL}`);
     }
 
     // Send SMS to partner if applicable
