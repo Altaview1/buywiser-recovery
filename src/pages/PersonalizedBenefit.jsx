@@ -331,9 +331,15 @@ export default function PersonalizedBenefit() {
               <p className="text-sm text-blue-100 font-medium">{address}</p>
             </div>
           )}
-          <p className="text-blue-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto">
+          <p className="text-blue-200 text-sm sm:text-base leading-relaxed max-w-xl mx-auto mb-6">
             As a veteran homeowner with an active VA loan, you may qualify for up to <strong className="text-white">1.5% cash back</strong> on your next home purchase — coordinated through Buywiser.
           </p>
+          <button
+            onClick={() => document.querySelector('[style*="C62828"]')?.scrollIntoView({ behavior: "smooth" })}
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition hover:opacity-90"
+            style={{ background: RED, color: "#fff" }}>
+            Ready to Claim Your Benefit <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </section>
 
