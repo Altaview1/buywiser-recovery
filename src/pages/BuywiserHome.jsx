@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Search, FileText, DollarSign, Users, Briefcase } from "lucide-react";
 import LeadCaptureForm from "../components/LeadCaptureForm";
 import VeteranTestimonials from "../components/VeteranTestimonials";
@@ -253,11 +254,24 @@ function PageFooter() {
 // ── Main Landing View ──────────────────────────────────────────────────────────
 function LandingView() {
   const [code, setCode] = useState("");
+  const [oppAddress, setOppAddress] = useState(null);
   const ctaRef = useRef(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("code")) setCode(params.get("code").toUpperCase());
+
+    // If an opp ID is in the URL, fetch the property address for the personalized subheader
+    const oppId = params.get("opp");
+    if (oppId) {
+      base44.entities.VTONOpportunity.filter({ id: oppId }).then(results => {
+        if (results.length) {
+          const o = results[0];
+          const parts = [o.property_address, o.city, o.state].filter(Boolean);
+          if (parts.length) setOppAddress(parts.join(", "));
+        }
+      });
+    }
   }, []);
 
   const scrollToCTA = () => ctaRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -303,10 +317,22 @@ function LandingView() {
             <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Up to 1.5% Cash Back.</span>
           </h1>
 
-          {/* Subheadline */}
-          <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-            <span className="text-white font-bold">If the home you're selling has a VA loan — you may qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through Buywiser.
-          </p>
+          {/* Subheadline — personalized if opp param present */}
+          {oppAddress ? (
+            <div className="mb-6 max-w-xl mx-auto">
+              <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
+                Be smart like Veterans Frank &amp; Cody — get your next home benefits on the sale of{" "}
+                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
+              </p>
+              <p className="text-blue-300 text-xs italic">
+                Only available through Buywiser's Veteran's Next Home™ Program.
+              </p>
+            </div>
+          ) : (
+            <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
+              <span className="text-white font-bold">If the home you're selling has a VA loan — you may qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through Buywiser.
+            </p>
+          )}
 
           {/* Cody & Frank callout */}
           <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 mb-6 mx-auto max-w-xl">
