@@ -400,17 +400,17 @@ function AccessGate({ onAccess }) {
     setLoading(true);
     setError("");
     try {
-      const allPartners = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 500);
       const emailLower = email.toLowerCase().trim();
-      const match = allPartners.find(p => p.email && p.email.toLowerCase() === emailLower);
+      const allPartners = await base44.entities.PartnerApplication.list();
+      const match = allPartners.find(p => p.status === "approved" && p.email?.toLowerCase() === emailLower);
+      
       if (match) {
         onAccess(match);
       } else {
-        setError("No approved partner account found for this email. Contact VTON to request access.");
+        setError("No approved partner account found for this email.");
       }
     } catch (err) {
-      setError("Error checking account. Please try again.");
-      console.error(err);
+      setError("Error verifying account. Please try again.");
     }
     setLoading(false);
   };
