@@ -132,60 +132,95 @@ function CheckEstimator() {
       </div>
 
       {/* The Check */}
-      <div className="rounded-lg overflow-hidden shadow-xl border border-slate-300" style={{
-        background: "#f5f0e8",
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px)",
-        fontFamily: "Georgia, serif"
+      <div className="rounded-xl overflow-hidden shadow-2xl" style={{
+        background: "#f7f2e4",
+        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(100,120,80,0.07) 28px, rgba(100,120,80,0.07) 29px), repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(100,120,80,0.04) 28px, rgba(100,120,80,0.04) 29px)",
+        fontFamily: "'Georgia', serif",
+        border: "1px solid #c9bfa0",
+        boxShadow: "0 4px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6)"
       }}>
-        {/* Check top bar */}
-        <div className="flex items-center justify-between px-5 py-2 border-b border-slate-300" style={{ background: NAVY }}>
-          <div className="flex items-center gap-2">
-            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-80" />
+        {/* Check header band */}
+        <div className="flex items-center justify-between px-5 py-2.5" style={{ background: NAVY, borderBottom: "3px solid #C62828" }}>
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-6 w-auto brightness-0 invert opacity-90" />
+          <div className="text-right">
+            <div className="text-white/40 text-[9px] uppercase tracking-widest">Check No.</div>
+            <div className="text-white text-sm font-bold tracking-widest">0001</div>
           </div>
-          <span className="text-white text-xs font-bold tracking-widest opacity-70">No. 001</span>
         </div>
 
-        <div className="px-6 pt-5 pb-4 space-y-3">
-          {/* Date line */}
-          <div className="flex justify-end">
-            <div className="text-right">
-              <span className="text-xs text-slate-400 mr-2">DATE</span>
-              <span className="text-xs font-semibold text-slate-600 border-b border-slate-400 pb-0.5">Upon Closing</span>
+        <div className="px-6 pt-4 pb-3">
+          {/* Date row */}
+          <div className="flex justify-end mb-3">
+            <div className="flex items-baseline gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Date</span>
+              <div className="border-b border-slate-400 pb-0.5 min-w-[120px] text-center">
+                <span className="text-xs font-semibold text-slate-600">Upon Closing</span>
+              </div>
             </div>
           </div>
 
           {/* Pay to line */}
-          <div className="flex items-end gap-2">
-            <span className="text-xs text-slate-500 whitespace-nowrap font-semibold uppercase tracking-wider">Pay to the order of</span>
-            <div className="flex-1 border-b-2 border-slate-400 pb-0.5">
-              <span className={`text-base font-bold ${name.trim() ? "text-slate-900" : "text-slate-400 italic"}`}>{payeeName}</span>
+          <div className="flex items-end gap-3 mb-3">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap pb-1">Pay to the<br/>Order of</span>
+            <div className="flex-1 relative">
+              <div className="border-b-2 border-slate-500 pb-1 min-h-[28px] flex items-end">
+                <span className={`text-lg leading-tight ${name.trim() ? "font-bold text-slate-900" : "italic text-slate-400"}`} style={{ fontFamily: "Georgia, serif" }}>
+                  {payeeName}
+                </span>
+              </div>
+              <div className="absolute -bottom-[1px] left-0 right-0 border-b border-slate-300" />
+            </div>
+            {/* Amount box */}
+            <div className="flex-shrink-0 ml-2" style={{
+              border: "2px solid #1a3a6b",
+              borderRadius: "4px",
+              background: "linear-gradient(135deg, #eef6ff 0%, #dbeafe 100%)",
+              minWidth: "140px",
+              boxShadow: "inset 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(255,255,255,0.8)"
+            }}>
+              <div className="px-1 pt-0.5 text-center" style={{ borderBottom: "1px solid #93c5fd" }}>
+                <span className="text-[8px] font-bold uppercase tracking-widest text-blue-400">$ Amount</span>
+              </div>
+              <div className="px-3 py-2 text-center">
+                <span className="text-2xl font-black tabular-nums" style={{ color: "#15803d", fontFamily: "Georgia, serif", textShadow: "0 1px 0 rgba(255,255,255,0.8)" }}>
+                  {formatCurrency(benefit)}
+                </span>
+              </div>
             </div>
           </div>
 
-          {/* Amount box */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex-1 border-b border-slate-300 pb-0.5">
-              <span className="text-xs text-slate-500 italic">{formatWritten(benefit)} and 00/100 -----</span>
+          {/* Written amount line */}
+          <div className="flex items-end gap-2 mb-3">
+            <div className="flex-1 border-b border-slate-400 pb-1">
+              <span className="text-xs text-slate-500 italic">{formatWritten(benefit)}&nbsp;&nbsp;and&nbsp;&nbsp;00/100&nbsp;–––––––––––––––––––</span>
             </div>
-            <div className="flex-shrink-0 border-2 rounded px-3 py-1.5 min-w-[130px] text-right" style={{ borderColor: NAVY, background: "#eef4ff" }}>
-              <span className="text-xl font-black" style={{ color: "#16a34a", fontFamily: "Georgia, serif" }}>
-                {formatCurrency(benefit)}
-              </span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap pb-1 ml-2">Dollars</span>
+          </div>
+
+          {/* Bank + Memo row */}
+          <div className="flex items-start justify-between gap-4 mb-3">
+            <div className="flex-1">
+              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Memo</div>
+              <div className="border-b border-slate-400 pb-1">
+                <span className="text-xs text-slate-600">Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home</span>
+              </div>
+            </div>
+            <div className="flex-shrink-0 text-right">
+              <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Authorized Signature</div>
+              <div className="border-b border-slate-400 min-w-[130px] pb-1">
+                <span className="text-sm text-slate-400 italic" style={{ fontFamily: "Dancing Script, cursive, Georgia, serif" }}>BuyWiser Home Loans</span>
+              </div>
             </div>
           </div>
 
-          {/* Memo line */}
-          <div className="pt-1">
-            <span className="text-xs text-slate-400 uppercase tracking-wider mr-2">Memo</span>
-            <span className="text-xs text-slate-600 border-b border-slate-300 pb-0.5">
-              Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home
-            </span>
-          </div>
-
-          {/* Routing numbers bar */}
-          <div className="pt-2 border-t border-dashed border-slate-300 flex justify-between">
-            <span className="text-xs text-slate-300 tracking-widest font-mono">⑆ 122105045 ⑆ 0001887767 ⑈</span>
-            <span className="text-xs text-slate-300 font-mono">001</span>
+          {/* MICR routing strip */}
+          <div className="flex items-center justify-between pt-2.5" style={{ borderTop: "1px dashed #c9bfa0" }}>
+            <div className="flex items-center gap-1">
+              <span className="text-[11px] text-slate-300 font-mono tracking-widest">⑆ 1221 05045 ⑆</span>
+              <span className="text-[11px] text-slate-300 font-mono tracking-widest">0001887767 ⑈</span>
+              <span className="text-[11px] text-slate-300 font-mono">0001</span>
+            </div>
+            <div className="text-[9px] text-slate-300 font-mono">MP · CRMLA · NMLS 1887767</div>
           </div>
         </div>
       </div>
