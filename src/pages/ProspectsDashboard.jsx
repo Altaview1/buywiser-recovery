@@ -40,12 +40,13 @@ function AccessGate({ onAccess }) {
       }, "-created_date", 500);
       
       const emailLower = email.toLowerCase().trim();
+      console.log("Searching for email:", emailLower, "Found partners:", allPartners.map(p => ({ name: p.name, email: p.email })));
       const match = allPartners.find(p => p.email && p.email.toLowerCase() === emailLower);
       
       if (match) {
         onAccess(match);
       } else {
-        setError("No approved partner account found for this email.");
+        setError("No approved partner account found for this email. Found: " + allPartners.map(p => p.email).join(", "));
       }
     } catch (err) {
       setError("Error checking account. Please try again.");
