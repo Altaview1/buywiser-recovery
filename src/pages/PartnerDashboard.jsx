@@ -13,6 +13,7 @@ import {
 import OpportunityQRGenerator from "@/components/vton/OpportunityQRGenerator";
 import PartnerProfileEditor from "@/components/vton/PartnerProfileEditor";
 import DoorKnockOutcomeLogger from "@/components/vton/DoorKnockOutcomeLogger";
+import OpportunityMapView from "@/components/vton/OpportunityMapView";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -693,6 +694,10 @@ export default function PartnerDashboard() {
             className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "profile" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
             My Profile
           </button>
+          <button onClick={() => setActiveTab("map")}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-bold rounded-t-lg transition ${activeTab === "map" ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"}`}>
+            📍 Map View
+          </button>
         </div>
 
         {/* QR Packets panel */}
@@ -711,6 +716,13 @@ export default function PartnerDashboard() {
         {/* Profile tab */}
         {activeTab === "profile" && (
           <PartnerProfileEditor partner={partner} onSaved={(updated) => setPartner(updated)} />
+        )}
+
+        {/* Map tab */}
+        {activeTab === "map" && (
+          <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden h-[600px]">
+            <OpportunityMapView opportunities={opportunities} />
+          </div>
         )}
 
         {/* Filter tabs — only shown in opportunities tab */}
