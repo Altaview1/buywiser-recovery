@@ -99,7 +99,7 @@ function App() {
           <Route path="/prospects" element={<ProspectsDashboard />} />
           
           {/* All other routes wrapped in auth */}
-          <Route element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
+          <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
         </Routes>
         <Toaster />
       </Router>
