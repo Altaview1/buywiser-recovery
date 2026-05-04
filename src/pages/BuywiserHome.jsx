@@ -84,99 +84,99 @@ function formatCurrency(val) {
   return Number(val).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-function BenefitEstimator() {
-  const [sliderVal, setSliderVal] = useState(700000);
-  const benefit = sliderVal * 0.015;
+function formatWritten(val) {
+  // Simple written-out dollar amount for the check
+  const n = Math.round(val);
+  if (n >= 1000000) return `${(n / 1000000).toFixed(2)} Million Dollars`;
+  if (n >= 1000) return `${Math.floor(n / 1000)},${String(n % 1000).padStart(3, "0")} Dollars`;
+  return `${n} Dollars`;
+}
+
+function CheckEstimator() {
+  const [price, setPrice] = useState(700000);
+  const benefit = price * 0.015;
 
   return (
     <div>
-      {/* RWB top stripe */}
-      <div className="flex" style={{ height: 6 }}>
-        <div style={{ flex: 1, background: RED }} />
-        <div style={{ flex: 1, background: "#ffffff", borderTop: "1px solid #e2e8f0" }} />
-        <div style={{ flex: 1, background: NAVY }} />
-      </div>
-
-      <div className="p-6 space-y-4 bg-white">
-        <p className="text-xs text-slate-500 italic text-center">Move the slider to estimate your benefit</p>
-
-        {/* Slider */}
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-slate-400 w-10 text-right">$100K</span>
-          <input
-            type="range"
-            min={100000}
-            max={2000000}
-            step={25000}
-            value={sliderVal}
-            onChange={(e) => setSliderVal(Number(e.target.value))}
-            className="flex-1"
-            style={{ accentColor: "#16a34a" }}
-          />
-          <span className="text-xs font-semibold text-slate-400 w-8">$2M</span>
-        </div>
-
-        {/* RWB result panels */}
-        <div className="flex rounded-xl overflow-hidden border border-slate-200">
-          {/* Red — Purchase Price */}
-          <div className="flex-1 px-5 py-4 text-center" style={{ background: RED }}>
-            <p className="text-xs font-bold text-red-200 mb-1 uppercase tracking-widest">Purchase Price</p>
-            <p className="text-xl font-black text-white">{formatCurrency(sliderVal)}</p>
-          </div>
-          {/* White divider */}
-          <div className="w-px bg-slate-200" />
-          {/* Blue — Benefit */}
-          <div className="flex-1 px-5 py-4 text-center" style={{ background: NAVY }}>
-            <p className="text-xs font-bold text-blue-300 mb-1 uppercase tracking-widest">Est. Benefit (1.5%)</p>
-            <p className="text-xl font-black" style={{ color: "#4ade80" }}>{formatCurrency(benefit)}</p>
-          </div>
-        </div>
-
-        <p className="text-[10px] text-slate-400 text-center">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
-      </div>
-
-      {/* RWB bottom stripe */}
-      <div className="flex" style={{ height: 6 }}>
-        <div style={{ flex: 1, background: NAVY }} />
-        <div style={{ flex: 1, background: "#ffffff", borderBottom: "1px solid #e2e8f0" }} />
-        <div style={{ flex: 1, background: RED }} />
-      </div>
-    </div>
-  );
-}
-
-// ── Currency Slider (interactive inner component) ──────────────────────────────
-function CurrencySlider() {
-  const [val, setVal] = useState(700000);
-  const benefit = val * 0.015;
-  return (
-    <>
-      <div className="flex items-center gap-3">
-        <span className="text-xs font-black text-green-900 w-10 text-right">$100K</span>
+      {/* Slider above check */}
+      <div className="flex items-center gap-3 mb-5 px-1">
+        <span className="text-xs font-semibold text-slate-400 w-12 text-right">$100K</span>
         <input
-          type="range"
-          min={100000}
-          max={2000000}
-          step={25000}
-          value={val}
-          onChange={(e) => setVal(Number(e.target.value))}
+          type="range" min={100000} max={2000000} step={25000}
+          value={price}
+          onChange={(e) => setPrice(Number(e.target.value))}
           className="flex-1"
-          style={{ accentColor: "#14532d" }}
+          style={{ accentColor: "#16a34a" }}
         />
-        <span className="text-xs font-black text-green-900 w-8">$2M</span>
+        <span className="text-xs font-semibold text-slate-400 w-8">$2M</span>
       </div>
-      <div className="flex gap-4">
-        <div className="flex-1 rounded-xl border-2 border-green-900/30 bg-green-900/10 px-4 py-4 text-center">
-          <p className="text-xs font-black text-green-800 uppercase tracking-widest mb-1">Purchase Price</p>
-          <p className="text-2xl font-black text-green-950">{formatCurrency(val)}</p>
+
+      {/* The Check */}
+      <div className="rounded-lg overflow-hidden shadow-xl border border-slate-300" style={{
+        background: "#f5f0e8",
+        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(0,0,0,0.04) 24px, rgba(0,0,0,0.04) 25px)",
+        fontFamily: "Georgia, serif"
+      }}>
+        {/* Check top bar */}
+        <div className="flex items-center justify-between px-5 py-2 border-b border-slate-300" style={{ background: NAVY }}>
+          <div className="flex items-center gap-2">
+            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-5 w-auto brightness-0 invert opacity-80" />
+          </div>
+          <span className="text-white text-xs font-bold tracking-widest opacity-70">No. 001</span>
         </div>
-        <div className="flex-1 rounded-xl border-2 border-green-900/30 px-4 py-4 text-center" style={{ background: "rgba(0,60,0,0.2)" }}>
-          <p className="text-xs font-black text-green-800 uppercase tracking-widest mb-1">Your Benefit</p>
-          <p className="text-2xl font-black text-green-950">{formatCurrency(benefit)}</p>
-          <p className="text-xs text-green-800 mt-0.5">up to 1.5%</p>
+
+        <div className="px-6 pt-5 pb-4 space-y-3">
+          {/* Date line */}
+          <div className="flex justify-end">
+            <div className="text-right">
+              <span className="text-xs text-slate-400 mr-2">DATE</span>
+              <span className="text-xs font-semibold text-slate-600 border-b border-slate-400 pb-0.5">Upon Closing</span>
+            </div>
+          </div>
+
+          {/* Pay to line */}
+          <div className="flex items-end gap-2">
+            <span className="text-xs text-slate-500 whitespace-nowrap font-semibold uppercase tracking-wider">Pay to the order of</span>
+            <div className="flex-1 border-b-2 border-slate-400 pb-0.5">
+              <span className="text-base font-bold text-slate-800">The Veteran Homebuyer</span>
+            </div>
+          </div>
+
+          {/* Amount box */}
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 border-b border-slate-300 pb-0.5">
+              <span className="text-xs text-slate-500 italic">{formatWritten(benefit)} and 00/100 -----</span>
+            </div>
+            <div className="flex-shrink-0 border-2 rounded px-3 py-1.5 min-w-[130px] text-right" style={{ borderColor: NAVY, background: "#eef4ff" }}>
+              <span className="text-xl font-black" style={{ color: "#16a34a", fontFamily: "Georgia, serif" }}>
+                {formatCurrency(benefit)}
+              </span>
+            </div>
+          </div>
+
+          {/* Memo + signature row */}
+          <div className="flex items-end justify-between gap-4 pt-1">
+            <div className="flex-1">
+              <span className="text-xs text-slate-400 uppercase tracking-wider mr-2">Memo</span>
+              <span className="text-xs text-slate-600 border-b border-slate-300 pb-0.5">
+                Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home
+              </span>
+            </div>
+            <div className="text-right border-b border-slate-400 pb-0.5 min-w-[120px]">
+              <span className="text-sm text-slate-600" style={{ fontFamily: "cursive" }}>Bennett Liss</span>
+            </div>
+          </div>
+
+          {/* Routing numbers bar */}
+          <div className="pt-2 border-t border-dashed border-slate-300 flex justify-between">
+            <span className="text-xs text-slate-300 tracking-widest font-mono">⑆ 122105045 ⑆ 0001887767 ⑈</span>
+            <span className="text-xs text-slate-300 font-mono">001</span>
+          </div>
         </div>
       </div>
-    </>
+
+      <p className="text-[10px] text-slate-400 text-center mt-3">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
+    </div>
   );
 }
 
@@ -302,46 +302,10 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Benefit Estimator ── */}
-      <section className="px-4 py-12" style={{
-        background: "#85bb65",
-        backgroundImage: `
-          repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px),
-          repeating-linear-gradient(90deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 20px)
-        `
-      }}>
+      <section className="px-4 py-12 bg-slate-100">
         <div className="max-w-lg mx-auto">
-          {/* Currency-style header */}
-          <div className="text-center mb-4">
-            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-full border-2 border-green-900/40 bg-green-900/20 mb-2">
-              <span className="text-green-900 font-black text-sm tracking-widest uppercase">★ Estimate Your Benefit ★</span>
-            </div>
-          </div>
-
-          {/* The "bill" */}
-          <div className="rounded-2xl overflow-hidden shadow-2xl border-4 border-green-900/30" style={{ background: "#85bb65" }}>
-            {/* Bill top band */}
-            <div className="px-6 py-3 flex items-center justify-between border-b-2 border-green-900/20" style={{ background: "rgba(0,60,0,0.15)" }}>
-              <span className="text-xs font-black text-green-900 uppercase tracking-widest">The United States of Veterans</span>
-              <span className="text-xs font-black text-green-900">Series 2025</span>
-            </div>
-
-            {/* Bill body */}
-            <div className="p-6 space-y-5" style={{
-              backgroundImage: `radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 70%)`
-            }}>
-              <p className="text-xs text-green-900/70 italic text-center font-semibold">Move the slider to estimate your benefit</p>
-
-              <CurrencySlider />
-            </div>
-
-            {/* Bill bottom band */}
-            <div className="px-6 py-2.5 flex items-center justify-between border-t-2 border-green-900/20" style={{ background: "rgba(0,60,0,0.15)" }}>
-              <span className="text-xs font-black text-green-900">VETERAN'S NEXT HOME™</span>
-              <span className="text-xs font-black text-green-900">BUYWISER · NMLS #1887767</span>
-            </div>
-          </div>
-
-          <p className="text-[10px] text-green-900/60 text-center mt-3 font-semibold">Estimate only. Final benefit depends on transaction structure and qualifying details.</p>
+          <p className="text-center text-xs font-black uppercase tracking-widest mb-5 text-slate-500">Estimate Your Red White &amp; Blue Purchase Benefit</p>
+          <CheckEstimator />
         </div>
       </section>
 
