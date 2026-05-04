@@ -120,7 +120,7 @@ function PersonalizedCheck({ homeownerName, address, price }) {
             <div className="flex-1">
               <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Memo</div>
               <div className="border-b border-slate-400 pb-1">
-                <span className="text-xs text-slate-600">Red White &amp; Blue Purchase Benefit · {address || `${formatCurrency(sliderPrice)} home`}</span>
+                <span className="text-xs text-slate-600">Qualifying Property: {address || `${formatCurrency(sliderPrice)} home`}</span>
               </div>
             </div>
             <div className="flex-shrink-0 text-right">

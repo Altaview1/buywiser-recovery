@@ -202,7 +202,7 @@ function CheckEstimator() {
             <div className="flex-1">
               <div className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Memo</div>
               <div className="border-b border-slate-400 pb-1">
-                <span className="text-xs text-slate-600">Red White &amp; Blue Purchase Benefit · {formatCurrency(price)} home</span>
+                <span className="text-xs text-slate-600">Qualifying Property: {formatCurrency(price)} home</span>
               </div>
             </div>
             <div className="flex-shrink-0 text-right">
