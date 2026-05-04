@@ -94,10 +94,24 @@ function formatWritten(val) {
 
 function CheckEstimator() {
   const [price, setPrice] = useState(700000);
+  const [name, setName] = useState("");
   const benefit = price * 0.015;
+  const payeeName = name.trim() || "The Veteran Homebuyer";
 
   return (
     <div>
+      {/* Name input */}
+      <div className="mb-4">
+        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Your Name <span className="font-normal text-slate-400 normal-case">(personalizes the check)</span></label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. John & Sarah Smith"
+          className="w-full px-4 py-2.5 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-500 transition bg-white"
+        />
+      </div>
+
       {/* Slider label */}
       <div className="mb-3 text-center">
         <p className="text-sm font-bold text-slate-700">Enter the approximate price of your next home</p>
@@ -144,7 +158,7 @@ function CheckEstimator() {
           <div className="flex items-end gap-2">
             <span className="text-xs text-slate-500 whitespace-nowrap font-semibold uppercase tracking-wider">Pay to the order of</span>
             <div className="flex-1 border-b-2 border-slate-400 pb-0.5">
-              <span className="text-base font-bold text-slate-800">The Veteran Homebuyer</span>
+              <span className={`text-base font-bold ${name.trim() ? "text-slate-900" : "text-slate-400 italic"}`}>{payeeName}</span>
             </div>
           </div>
 
