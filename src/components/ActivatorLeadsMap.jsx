@@ -40,17 +40,33 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
           return;
         }
 
+        // Check if script already exists to avoid duplicates
+        if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+          console.log("Google Maps script already loading");
+          return;
+        }
+
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry`;
         script.async = true;
+        
+        const timeout = setTimeout(() => {
+          console.error("Google Maps API load timeout after 10s");
+          setMapsReady(false);
+        }, 10000);
+
         script.onload = () => {
+          clearTimeout(timeout);
           console.log("Google Maps loaded successfully");
           setMapsReady(true);
         };
+        
         script.onerror = (err) => {
+          clearTimeout(timeout);
           console.error("Failed to load Google Maps API:", err);
           setMapsReady(false);
         };
+        
         document.head.appendChild(script);
       } catch (err) {
         console.error("Failed to load maps config:", err);
@@ -331,13 +347,16 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
         {!mapsReady ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50">
-            <div className="text-center max-w-xs">
-              <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-2" />
-              <p className="text-slate-400 text-sm">Loading Google Maps...</p>
-              <p className="text-xs text-slate-400 mt-2">
-                If this takes too long, your API key may need domain restrictions updated to allow this preview domain.
+            <div className="text-center max-w-xs px-4">
+              <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-slate-400 text-sm font-semibold">Loading Google Maps...</p>
+              <p className="text-xs text-slate-500 mt-2">
+                <strong>Open your browser Developer Tools (F12)</strong> and check the Console tab for error messages.
               </p>
-              <p className="text-xs text-slate-500 mt-2 font-mono">
+              <p className="text-xs text-slate-500 mt-2">
+                If you see "Maps API error," the key may be invalid or API not enabled in Google Cloud.
+              </p>
+              <p className="text-xs text-slate-500 mt-3 font-mono bg-slate-100 px-2 py-1 rounded">
                 {window.location.host}
               </p>
             </div>
