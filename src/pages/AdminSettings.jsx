@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Settings, LogOut, AlertCircle } from "lucide-react";
 import AdminSMSSettings from "@/components/AdminSMSSettings";
+import AdminPartnerApprovals from "@/components/AdminPartnerApprovals";
 
 export default function AdminSettings() {
   const [user, setUser] = useState(null);
@@ -67,6 +68,12 @@ export default function AdminSettings() {
             <p className="font-bold mb-1">Admin Settings</p>
             <p>Configure SMS notifications, partner assignments, and system-wide settings.</p>
           </div>
+        </div>
+
+        {/* Partner Approvals Section */}
+        <div className="mb-10">
+          <h2 className="text-xl font-bold text-slate-900 mb-4">👥 Partner Applications</h2>
+          <AdminPartnerApprovals />
         </div>
 
         {/* SMS Settings Section */}
