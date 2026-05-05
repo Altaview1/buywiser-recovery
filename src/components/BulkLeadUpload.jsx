@@ -50,13 +50,15 @@ export default function BulkLeadUpload({ onClose, onImported }) {
   const fileRef = useRef();
 
   useEffect(() => {
-    base44.entities.FieldActivator.list("name", 100).then(activators => {
+    const loadAgents = async () => {
+      const activators = await base44.entities.FieldActivator.list("-created_date", 100);
       setAgents(activators);
       const barry = activators.find(a => a.name === "Barry Mendoza");
       const byron = activators.find(a => a.name === "Byron Mendoza");
       const defaultActivator = barry || byron || activators[0];
       if (defaultActivator) setGlobalAgent(defaultActivator.name);
-    });
+    };
+    loadAgents();
   }, []);
 
   const handleFile = (file) => {
@@ -268,7 +270,8 @@ export default function BulkLeadUpload({ onClose, onImported }) {
             <div className="px-6 py-4 border-t border-slate-100 flex items-center gap-3 flex-shrink-0 bg-white">
               <button
                 onClick={handleImport}
-                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition"
+                disabled={importing || agents.length === 0}
+                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                 {importing ? `Importing…` : `Import ${parsedRows.length} Lead${parsedRows.length !== 1 ? "s" : ""}`}
