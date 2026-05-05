@@ -150,29 +150,42 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
 
       for (const lead of filtered) {
         try {
+          console.log(`[Geocoding] Processing: ${lead.property_address}`);
           const result = await new Promise((resolve) => {
             geocoder.geocode({ address: lead.property_address }, (results, status) => {
+              console.log(`[Geocoding Result] ${lead.property_address} - Status: ${status}`);
               if (status === "OK" && results[0]) {
                 const loc = results[0].geometry.location;
+                console.log(`[Geocoding Success] ${lead.property_address} - Lat: ${loc.lat()}, Lng: ${loc.lng()}`);
                 resolve({ ...lead, lat: loc.lat(), lng: loc.lng() });
               } else {
-                console.warn(`Geocoding failed for ${lead.property_address}: ${status}`);
+                console.warn(`[Geocoding Failed] ${lead.property_address}: ${status}`);
                 resolve(null);
               }
             });
           });
-          if (result) geocoded.push(result);
+          if (result) {
+            geocoded.push(result);
+            console.log(`[Geocoding Count] ${geocoded.length}/${filtered.length} completed`);
+          }
         } catch (err) {
-          console.error(`Geocoding error for ${lead.property_address}:`, err);
+          console.error(`[Geocoding Error] ${lead.property_address}:`, err);
         }
       }
 
       console.log("Geocoded leads:", geocoded.length);
       setGeocodedLeads(geocoded);
 
-      // Initialize or update map
-      if (mapRef.current && geocoded.length > 0) {
-        initializeMap(geocoded);
+      // Initialize or update map even if some leads failed to geocode
+      if (mapRef.current) {
+        console.log("[Map Init] Initializing map with", geocoded.length, "geocoded leads");
+        if (geocoded.length > 0) {
+          initializeMap(geocoded);
+        } else {
+          console.warn("[Map Init] No geocoded leads available. Map may show blank.");
+        }
+      } else {
+        console.warn("[Map Init] Map container not ready yet");
       }
 
       setLoading(false);
