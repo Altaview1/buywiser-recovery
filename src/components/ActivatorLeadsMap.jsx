@@ -16,6 +16,9 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [geocodedLeads, setGeocodedLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mapsReady, setMapsReady] = useState(false);
+  const [selectedLeadIds, setSelectedLeadIds] = useState([]);
+  const [routeInfo, setRouteInfo] = useState(null);
+  const routePolylineRef = useRef(null);
 
   // Load Google Maps API from environment/secret
   useEffect(() => {
@@ -111,15 +114,20 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
       });
     }
 
-    // Clear old markers
+    // Clear old markers and polylines
     if (mapInstance.current.markers) {
       mapInstance.current.markers.forEach(m => m.setMap(null));
+    }
+    if (routePolylineRef.current) {
+      routePolylineRef.current.setMap(null);
+      routePolylineRef.current = null;
     }
     mapInstance.current.markers = [];
 
     // Add markers
     const infoWindows = [];
     leadsData.forEach((lead, idx) => {
+      const isSelected = selectedLeadIds.includes(lead.id);
       const marker = new window.google.maps.Marker({
         position: { lat: lead.lat, lng: lead.lng },
         map: mapInstance.current,
@@ -127,11 +135,11 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         label: { text: String(idx + 1), color: "white", fontSize: "12px", fontWeight: "bold" },
         icon: {
           path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 12,
-          fillColor: STATUS_COLORS[lead.status] || "#64748b",
+          scale: isSelected ? 16 : 12,
+          fillColor: isSelected ? "#dc2626" : STATUS_COLORS[lead.status] || "#64748b",
           fillOpacity: 1,
           strokeColor: "white",
-          strokeWeight: 2,
+          strokeWeight: isSelected ? 3 : 2,
         },
       });
 
@@ -147,6 +155,10 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
             <button onclick="window.dispatchEvent(new CustomEvent('selectLead', { detail: '${lead.id}' }))" 
               style="margin-top: 8px; padding: 4px 8px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">
               View Details
+            </button>
+            <button onclick="window.dispatchEvent(new CustomEvent('toggleSelect', { detail: '${lead.id}' }))" 
+              style="margin-top: 4px; margin-left: 4px; padding: 4px 8px; background: ${isSelected ? '#dc2626' : '#10b981'}; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">
+              ${isSelected ? 'Deselect' : 'Select for Route'}
             </button>
           </div>
         `,
@@ -164,31 +176,132 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     // Fit bounds
     mapInstance.current.fitBounds(bounds);
 
-    // Custom event listener for marker clicks
+    // Custom event listeners
     window.addEventListener("selectLead", (e) => {
       const leadId = e.detail;
       const lead = leadsData.find(l => l.id === leadId);
       if (lead) onSelectLead(lead);
     });
+
+    window.addEventListener("toggleSelect", (e) => {
+      const leadId = e.detail;
+      setSelectedLeadIds(prev => 
+        prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
+      );
+    });
+  };
+
+  // Calculate optimal route when leads are selected
+  const calculateRoute = async () => {
+    if (selectedLeadIds.length < 2) {
+      alert("Please select at least 2 locations for route optimization");
+      return;
+    }
+
+    const selected = geocodedLeads.filter(l => selectedLeadIds.includes(l.id));
+    if (selected.length < 2) return;
+
+    const directionsService = new window.google.maps.DirectionsService();
+    const origin = selected[0];
+    const destination = selected[selected.length - 1];
+    const waypoints = selected.slice(1, -1).map(l => ({
+      location: { lat: l.lat, lng: l.lng },
+      stopover: true,
+    }));
+
+    try {
+      const result = await directionsService.route({
+        origin: { lat: origin.lat, lng: origin.lng },
+        destination: { lat: destination.lat, lng: destination.lng },
+        waypoints,
+        optimizeWaypoints: true,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      });
+
+      // Draw polyline
+      const route = result.routes[0];
+      if (routePolylineRef.current) {
+        routePolylineRef.current.setMap(null);
+      }
+
+      routePolylineRef.current = new window.google.maps.Polyline({
+        path: route.overview_path,
+        geodesic: true,
+        strokeColor: "#2563eb",
+        strokeOpacity: 0.8,
+        strokeWeight: 3,
+        map: mapInstance.current,
+      });
+
+      // Calculate total distance and time
+      let totalDistance = 0;
+      let totalTime = 0;
+      route.legs.forEach(leg => {
+        totalDistance += leg.distance.value;
+        totalTime += leg.duration.value;
+      });
+
+      setRouteInfo({
+        distance: (totalDistance / 1609.34).toFixed(1), // miles
+        time: Math.round(totalTime / 60), // minutes
+        stops: selected.length,
+      });
+    } catch (err) {
+      console.error("Route calculation failed:", err);
+      alert("Could not calculate route. Try selecting different locations.");
+    }
   };
 
   return (
     <div className="space-y-4">
-      {/* Filter */}
-      <div className="flex gap-2 flex-wrap">
-        {["All", "SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(status => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
-              filter === status
-                ? "bg-slate-800 text-white"
-                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {status}
-          </button>
-        ))}
+      {/* Filter & Route Controls */}
+      <div className="space-y-3">
+        <div className="flex gap-2 flex-wrap">
+          {["All", "SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(status => (
+            <button
+              key={status}
+              onClick={() => setFilter(status)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
+                filter === status
+                  ? "bg-slate-800 text-white"
+                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+
+        {/* Route Optimization Controls */}
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-slate-600">
+            Selected: {selectedLeadIds.length}
+          </span>
+          {selectedLeadIds.length > 0 && (
+            <button
+              onClick={calculateRoute}
+              className="px-3 py-1.5 rounded-lg bg-blue-600 text-white text-xs font-bold hover:bg-blue-700 transition"
+            >
+              📍 Optimize Route ({selectedLeadIds.length})
+            </button>
+          )}
+          {selectedLeadIds.length > 0 && (
+            <button
+              onClick={() => setSelectedLeadIds([])}
+              className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 transition"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
+        {/* Route Info */}
+        {routeInfo && (
+          <div className="bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-xs space-y-1">
+            <p className="font-bold text-green-800">✓ Route Optimized</p>
+            <p className="text-green-700">📏 Distance: <strong>{routeInfo.distance} mi</strong> | ⏱ Est. Time: <strong>{routeInfo.time} min</strong> | 📍 Stops: <strong>{routeInfo.stops}</strong></p>
+          </div>
+        )}
       </div>
 
       {/* Map */}
