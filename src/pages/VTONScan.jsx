@@ -59,7 +59,7 @@ export default function VTONScan() {
         property_address: propertyAddress,
         rep_code: repCode,
         activator_id: activatorId,
-        status: "VERIFIED",
+        status: "QUALIFIED",
         scan_timestamp: new Date().toISOString(),
       });
       setLeadId(lead.id);
