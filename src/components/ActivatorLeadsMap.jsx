@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { base44 } from "@/api/base44Client";
 
 const STATUS_COLORS = {
   SCANNED: "#64748b",
@@ -30,9 +31,8 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     // Fetch API key from backend secret
     const loadMaps = async () => {
       try {
-        const response = await fetch('/api/maps-config');
-        const data = await response.json();
-        const apiKey = data.apiKey;
+        const res = await base44.functions.invoke('getMapsConfig', {});
+        const apiKey = res.data?.apiKey;
 
         if (!apiKey) {
           console.warn("Google Maps API key not available");
