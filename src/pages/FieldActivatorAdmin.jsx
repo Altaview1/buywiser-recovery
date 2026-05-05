@@ -119,7 +119,7 @@ export default function FieldActivatorAdmin() {
       base44.entities.FieldActivator.list("-created_date", 200),
       base44.entities.ActivatorLead.list("-created_date", 500),
       base44.entities.ActivatorPayment.list("-created_date", 500),
-      base44.entities.PartnerApplication.filter({ status: "approved" }, "name", 200),
+      base44.entities.PartnerApplication.filter({ status: "approved" }),
     ]);
     setActivators(a);
     setLeads(l);
