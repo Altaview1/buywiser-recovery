@@ -52,7 +52,10 @@ export default function BulkLeadUpload({ onClose, onImported }) {
   useEffect(() => {
     base44.entities.FieldActivator.list("name", 100).then(activators => {
       setAgents(activators);
-      if (activators.length > 0) setGlobalAgent(activators[0].name);
+      const barry = activators.find(a => a.name === "Barry Mendoza");
+      const byron = activators.find(a => a.name === "Byron Mendoza");
+      const defaultActivator = barry || byron || activators[0];
+      if (defaultActivator) setGlobalAgent(defaultActivator.name);
     });
   }, []);
 
