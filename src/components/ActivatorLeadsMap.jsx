@@ -27,22 +27,30 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
       return;
     }
 
-    // Try multiple sources for API key
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 
-                   window.GOOGLE_MAPS_API_KEY ||
-                   localStorage.getItem("GOOGLE_MAPS_API_KEY");
-    
-    if (!apiKey) {
-      console.warn("Google Maps API key not found. Set VITE_GOOGLE_MAPS_API_KEY in .env.local");
-      return;
-    }
+    // Fetch API key from backend secret
+    const loadMaps = async () => {
+      try {
+        const response = await fetch('/api/maps-config');
+        const data = await response.json();
+        const apiKey = data.apiKey;
 
-    const script = document.createElement("script");
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
-    script.async = true;
-    script.onload = () => setMapsReady(true);
-    script.onerror = () => console.error("Failed to load Google Maps API");
-    document.head.appendChild(script);
+        if (!apiKey) {
+          console.warn("Google Maps API key not available");
+          return;
+        }
+
+        const script = document.createElement("script");
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.async = true;
+        script.onload = () => setMapsReady(true);
+        script.onerror = () => console.error("Failed to load Google Maps API");
+        document.head.appendChild(script);
+      } catch (err) {
+        console.error("Failed to load maps config:", err);
+      }
+    };
+
+    loadMaps();
   }, []);
 
   // Geocode and plot leads
