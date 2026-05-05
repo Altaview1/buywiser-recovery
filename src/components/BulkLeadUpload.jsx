@@ -249,8 +249,7 @@ export default function BulkLeadUpload({ onClose, onImported }) {
             <div className="px-6 py-4 border-t border-slate-100 flex items-center gap-3 flex-shrink-0 bg-white">
               <button
                 onClick={handleImport}
-                disabled={importing}
-                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-lg hover:bg-slate-800 transition"
               >
                 {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                 {importing ? `Importing…` : `Import ${parsedRows.length} Lead${parsedRows.length !== 1 ? "s" : ""}`}
