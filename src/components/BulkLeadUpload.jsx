@@ -14,8 +14,15 @@ const COL_MAP = {
 
 function guessColumn(headers, fieldAliases) {
   for (const alias of fieldAliases) {
-    const match = headers.find(h => h.toLowerCase().trim() === alias);
-    if (match) return match;
+    // Exact match first
+    const exactMatch = headers.find(h => h.toLowerCase().trim() === alias.toLowerCase());
+    if (exactMatch) return exactMatch;
+    // Fuzzy match: check if header contains alias
+    const fuzzyMatch = headers.find(h => 
+      h.toLowerCase().includes(alias.toLowerCase()) || 
+      alias.toLowerCase().includes(h.toLowerCase())
+    );
+    if (fuzzyMatch) return fuzzyMatch;
   }
   return null;
 }
@@ -98,12 +105,16 @@ export default function BulkLeadUpload({ onClose, onImported }) {
       const agentName = rowAgents[i] || globalAgent || getMapped(row, "assigned_agent");
       const agent = agents.find(a => a.name === agentName);
       
+      // Extract name and split into first/last
+      const fullName = getMapped(row, "name");
+      const nameParts = fullName ? fullName.trim().split(/\s+/) : [];
+      
       const activatorLead = {
-        first_name:       getMapped(row, "name")?.split(" ")[0] || "",
-        last_name:        getMapped(row, "name")?.split(" ").slice(1).join(" ") || "",
-        email:            getMapped(row, "email"),
-        phone:            getMapped(row, "phone"),
-        property_address: getMapped(row, "address_or_link"),
+        first_name:       nameParts[0] || "",
+        last_name:        nameParts.slice(1).join(" ") || "",
+        email:            getMapped(row, "email").trim() || "",
+        phone:            getMapped(row, "phone").trim() || "",
+        property_address: getMapped(row, "address_or_link").trim() || "",
         rep_code:         agent?.rep_code || "",
         activator_id:     agent?.id || "",
         status:           "SCANNED",
@@ -230,6 +241,7 @@ export default function BulkLeadUpload({ onClose, onImported }) {
                     <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider">#</th>
                     <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider">Address / URL</th>
                     <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider">Name</th>
+                    <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider">Email</th>
                     <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider">Phone</th>
                     <th className="text-left px-3 py-2 font-bold text-slate-500 uppercase tracking-wider min-w-40">Assign to Agent</th>
                   </tr>
@@ -243,6 +255,7 @@ export default function BulkLeadUpload({ onClose, onImported }) {
                         <td className="px-3 py-2 text-slate-400">{i + 1}</td>
                         <td className="px-3 py-2 text-slate-700 max-w-xs truncate">{getMapped(row, "address_or_link")}</td>
                         <td className="px-3 py-2 text-slate-600">{getMapped(row, "name") || <span className="text-slate-300">—</span>}</td>
+                        <td className="px-3 py-2 text-slate-600 max-w-xs truncate">{getMapped(row, "email") || <span className="text-slate-300">—</span>}</td>
                         <td className="px-3 py-2 text-slate-600">{getMapped(row, "phone") || <span className="text-slate-300">—</span>}</td>
                         <td className="px-3 py-2">
                           {globalAgent ? (
