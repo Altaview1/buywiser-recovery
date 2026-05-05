@@ -22,7 +22,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     ? encodeURIComponent(filtered[0].property_address)
     : "California";
   
-  const mapUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyDummyKey&q=${mapAddress}`;
+  const mapUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyBk4X5r3IuozWjNDkDkWJL-RI69zs9PNLc&q=${mapAddress}`;
 
   return (
     <div className="space-y-4">
