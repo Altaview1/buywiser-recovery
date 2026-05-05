@@ -415,9 +415,30 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
               {/* Partner assignment */}
               {detectedFormat === "propertyradar" && (
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(required)</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(required)</span>
+                    </label>
+                    {partnersError && (
+                      <button
+                        onClick={async () => {
+                          setLoadingPartners(true);
+                          try {
+                            const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
+                            setPartners(data);
+                            setPartnersError(data.length === 0 ? "No approved partners found. Add partners before uploading PropertyRadar leads." : null);
+                          } catch (err) {
+                            setPartnersError(`Failed to load partners: ${err.message}`);
+                          } finally {
+                            setLoadingPartners(false);
+                          }
+                        }}
+                        className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold"
+                      >
+                        Refresh
+                      </button>
+                    )}
+                  </div>
 
                   {partnersError && (
                     <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl mb-2">
