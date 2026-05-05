@@ -6,6 +6,7 @@ import FieldRepHeader from "@/components/field-rep/FieldRepHeader";
 import AssignedLeadsList from "@/components/field-rep/AssignedLeadsList";
 import LeadDetailView from "@/components/field-rep/LeadDetailView";
 import DailyChecklist from "@/components/field-rep/DailyChecklist";
+import BulkLeadImport from "@/components/field-rep/BulkLeadImport";
 
 const NAVY = "#0B1F3B";
 
@@ -95,6 +96,7 @@ export default function FieldRepDashboard() {
             {[
               { id: "leads", label: "Assigned Leads" },
               { id: "checklist", label: "Daily Checklist" },
+              { id: "import", label: "Import Leads" },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -127,8 +129,18 @@ export default function FieldRepDashboard() {
                 visits={visits}
                 onSelectLead={setSelectedLead}
               />
+            ) : activeTab === "checklist" ? (
+              <DailyChecklist
+                leads={leads}
+                rep={rep}
+                selectedLead={selectedLead}
+                onChecklistComplete={() => {
+                  // After completing, show next lead hint
+                  alert("Great job! Move to the next property when ready.");
+                }}
+              />
             ) : (
-              <DailyChecklist leads={leads} rep={rep} />
+              <BulkLeadImport repCode={rep.rep_code} onSuccess={() => fetchData(rep)} />
             )}
           </div>
         </div>
