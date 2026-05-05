@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search } from "lucide-react";
+import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search, FileSpreadsheet } from "lucide-react";
+import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -100,6 +101,7 @@ export default function FieldActivatorAdmin() {
   const [payments, setPayments] = useState([]);
   const [activeTab, setActiveTab] = useState("leads");
   const [showAddActivator, setShowAddActivator] = useState(false);
+  const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
 
@@ -172,6 +174,13 @@ export default function FieldActivatorAdmin() {
           onCreated={(a) => setActivators(prev => [a, ...prev])}
         />
       )}
+      {showBulkUpload && (
+        <BulkProspectUpload
+          activators={activators}
+          onClose={() => setShowBulkUpload(false)}
+          onImported={(count) => { fetchAll(); setActiveTab("leads"); }}
+        />
+      )}
 
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
@@ -186,6 +195,10 @@ export default function FieldActivatorAdmin() {
           <div className="flex items-center gap-2">
             <button onClick={fetchAll} className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition">
               <RefreshCw className="h-4 w-4" />
+            </button>
+            <button onClick={() => setShowBulkUpload(true)}
+              className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white transition bg-blue-700 hover:bg-blue-800">
+              <FileSpreadsheet className="h-3.5 w-3.5" /> Bulk Upload Prospects
             </button>
             <button onClick={() => setShowAddActivator(true)}
               className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white transition"
