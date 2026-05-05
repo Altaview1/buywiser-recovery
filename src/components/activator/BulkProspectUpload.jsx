@@ -69,7 +69,7 @@ function mapPropertyRadarRow(row, partnerEmail) {
 }
 
 // Map standard CSV row → ActivatorLead
-function mapActivatorRow(row, repCode, activatorId) {
+function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
   const get = (...keys) => {
     for (const k of keys) {
       const norm = k.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
@@ -78,10 +78,14 @@ function mapActivatorRow(row, repCode, activatorId) {
     }
     return "";
   };
+  
   const fullName = get("name", "full_name", "fullname");
-  return {
-    first_name: get("first_name", "firstname", "fname") || (fullName ? fullName.split(" ")[0] : ""),
-    last_name: get("last_name", "lastname", "lname") || (fullName ? fullName.split(" ").slice(1).join(" ") : ""),
+  const firstName = get("first_name", "firstname", "fname") || (fullName ? fullName.split(" ")[0] : "");
+  const lastName = get("last_name", "lastname", "lname") || (fullName ? fullName.split(" ").slice(1).join(" ") : "");
+  
+  const lead = {
+    first_name: firstName,
+    last_name: lastName,
     email: get("email", "email_address"),
     phone: get("phone", "phone_number", "mobile", "cell"),
     property_address: get("property_address", "address", "street_address"),
@@ -90,6 +94,24 @@ function mapActivatorRow(row, repCode, activatorId) {
     status: "SCANNED",
     scan_timestamp: new Date().toISOString(),
   };
+  
+  // Try to extract qualification fields if present
+  const planning = get("planning_to_buy", "planning", "interested");
+  if (planning && ["yes", "no", "not_sure"].includes(planning.toLowerCase())) {
+    lead.planning_to_buy = planning.toLowerCase();
+  }
+  
+  const timeline = get("timeline", "purchase_timeline", "timeframe");
+  if (timeline && ["0-3months", "3-6months", "6plus"].includes(timeline.toLowerCase())) {
+    lead.timeline = timeline.toLowerCase();
+  }
+  
+  const homeType = get("next_home_type", "home_type", "property_type");
+  if (homeType && ["primary", "investment", "not_sure"].includes(homeType.toLowerCase())) {
+    lead.next_home_type = homeType.toLowerCase();
+  }
+  
+  return lead;
 }
 
 const SAMPLE_CSV = `first_name,last_name,email,phone,property_address
@@ -267,7 +289,8 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       entityName = "VTONOpportunity";
     } else {
       const activator = activators.find(a => a.id === selectedActivator);
-      records = rows.map(r => mapActivatorRow(r, activator?.rep_code, activator?.id));
+      const headers = rows.length > 0 ? Object.keys(rows[0]) : [];
+      records = rows.map(r => mapActivatorRow(r, activator?.rep_code, activator?.id, headers));
       entityName = "ActivatorLead";
     }
 
