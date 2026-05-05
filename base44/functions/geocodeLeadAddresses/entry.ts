@@ -25,9 +25,16 @@ Deno.serve(async (req) => {
 
     for (const lead of leads) {
       try {
-        // Geocode using Google Maps Geocoding API with region bias
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(lead.property_address)}&componentRestrictions=country:us&key=${apiKey}`;
-        console.log(`Geocoding: ${lead.property_address}`);
+        // Format address for API: normalize whitespace, remove special chars
+        const formattedAddress = lead.property_address
+          .trim()
+          .replace(/\s+/g, ' ')
+          .replace(/,\s*,/g, ',')
+          .replace(/\b(CA|California)\b/gi, 'California')
+          .replace(/\b(US|USA|United States)\b/gi, 'USA');
+        
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formattedAddress)}&components=country:US&key=${apiKey}`;
+        console.log(`Geocoding: ${formattedAddress}`);
         
         const res = await fetch(url);
         const data = await res.json();
@@ -36,14 +43,14 @@ Deno.serve(async (req) => {
         
         if (data.status === 'OK' && data.results && data.results.length > 0) {
           const { lat, lng } = data.results[0].geometry.location;
-          console.log(`✓ Found coords for ${lead.property_address}: ${lat}, ${lng}`);
+          console.log(`✓ Found coords for ${formattedAddress}: ${lat}, ${lng}`);
           
           // Update lead with coordinates (using user's auth context)
           await base44.entities.ActivatorLead.update(lead.id, { lat, lng });
           processedCount++;
         } else {
-          errors.push({ address: lead.property_address, error: data.status || 'No results' });
-          console.log(`✗ ${data.status || 'No results'}: ${lead.property_address}`);
+          errors.push({ address: formattedAddress, error: data.status || 'No results' });
+          console.log(`✗ ${data.status || 'No results'}: ${formattedAddress}`);
         }
       } catch (err) {
         const errMsg = String(err);
