@@ -34,13 +34,19 @@ function MapFitBounds({ leads }) {
 }
 
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
-  const [filter, setFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [repFilter, setRepFilter] = useState("All");
   const [geocoding, setGeocoding] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 34.1602, lng: -118.2583 }); // Default: Glendale, CA
 
+  // Get unique rep codes
+  const repCodes = ["All", ...new Set(leads.map(l => l.rep_code).filter(Boolean))];
+
   // Filter leads with valid geocoding
   const filtered = leads.filter(l => 
-    (filter === "All" || l.status === filter) && l.property_address && l.lat && l.lng
+    (statusFilter === "All" || l.status === statusFilter) && 
+    (repFilter === "All" || l.rep_code === repFilter) &&
+    l.property_address && l.lat && l.lng
   );
 
   // Update map center when filtered leads change
@@ -56,9 +62,11 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     try {
       const res = await base44.functions.invoke('geocodeLeadAddresses', {});
       if (res.data.success) {
-        alert(`✓ Geocoded ${res.data.processed} leads`);
-        // Reload leads by refreshing the page or fetching fresh data
-        window.location.reload();
+        alert(`✓ Force-refreshed ${res.data.processed} out of ${res.data.totalAddresses} addresses`);
+        // Small delay then reload to see updated map
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        alert(`Geocoding error: ${res.data.error}`);
       }
     } catch (err) {
       alert('Geocoding failed: ' + err.message);
@@ -75,8 +83,8 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         <p className="font-bold text-blue-900">📍 Lead Map</p>
         <div className="grid grid-cols-3 gap-2">
           <div><span className="text-blue-600">Total:</span> {leads.length}</div>
+          <div><span className="text-blue-600">Geocoded:</span> {leads.filter(l => l.lat && l.lng).length}</div>
           <div><span className="text-blue-600">Visible:</span> {filtered.length}</div>
-          <div><span className="text-blue-600">Filter:</span> {filter}</div>
         </div>
       </div>
 
@@ -85,28 +93,51 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         <button
           onClick={handleGeocodeAll}
           disabled={geocoding}
-          className="px-4 py-2 rounded-lg font-bold text-sm text-white transition disabled:opacity-50"
-          style={{ background: "#0B1F3B" }}
+          className="px-4 py-2 rounded-lg font-bold text-sm text-white transition disabled:opacity-50 active:scale-95"
+          style={{ background: geocoding ? "#888" : "#0B1F3B" }}
         >
-          {geocoding ? "Processing…" : "🗺️ Geocode All Addresses"}
+          {geocoding ? "⏳ Geocoding…" : "🗺️ Force Geocode All"}
         </button>
       </div>
 
-      {/* Filter Buttons */}
-      <div className="flex gap-2 flex-wrap">
-        {["All", "SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(status => (
-          <button
-            key={status}
-            onClick={() => setFilter(status)}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
-              filter === status
-                ? "bg-slate-800 text-white"
-                : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            {status}
-          </button>
-        ))}
+      {/* Status Filter Buttons */}
+      <div>
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Status</p>
+        <div className="flex gap-2 flex-wrap">
+          {["All", "SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(status => (
+            <button
+              key={status}
+              onClick={() => setStatusFilter(status)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
+                statusFilter === status
+                  ? "bg-slate-800 text-white"
+                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {status}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Rep Filter Buttons */}
+      <div>
+        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Field Activator</p>
+        <div className="flex gap-2 flex-wrap">
+          {repCodes.map(rep => (
+            <button
+              key={rep}
+              onClick={() => setRepFilter(rep)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition ${
+                repFilter === rep
+                  ? "bg-blue-600 text-white"
+                  : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              {rep || "No Rep"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Interactive Leaflet Map */}
