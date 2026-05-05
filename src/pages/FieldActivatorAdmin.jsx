@@ -67,6 +67,24 @@ function LeadDetailModal({ lead, onClose }) {
             <div className="space-y-2 text-sm">
               {lead.property_address && (
                 <div className="flex items-start gap-2 text-slate-700">
+                  <span>📍</span> {lead.property_address}
+                </div>
+              )}
+              {lead.property_type && <p><span className="font-semibold text-slate-600">Type:</span> {lead.property_type}</p>}
+              {lead.estimated_price && <p><span className="font-semibold text-slate-600">Est Value:</span> ${(lead.estimated_price/1000).toFixed(0)}K</p>}
+              {lead.estimated_equity && <p><span className="font-semibold text-slate-600">Est Equity:</span> ${(lead.estimated_equity/1000).toFixed(0)}K</p>}
+              {lead.distress_score >= 0 && <p><span className="font-semibold text-slate-600">Distress Score:</span> {lead.distress_score}</p>}
+              {lead.listing_dom && <p><span className="font-semibold text-slate-600">Days on Market:</span> {lead.listing_dom}</p>}
+            </div>
+          </div>
+          </div>
+
+          {/* Property Info */}
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Property Details</p>
+            <div className="space-y-2 text-sm">
+              {lead.property_address && (
+                <div className="flex items-start gap-2 text-slate-700">
                   <span>📍</span> {lead.property_address}{lead.city ? `, ${lead.city}` : ""}
                 </div>
               )}

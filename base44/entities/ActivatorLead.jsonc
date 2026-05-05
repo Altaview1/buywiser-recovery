@@ -18,6 +18,26 @@
     "property_address": {
       "type": "string"
     },
+    "property_type": {
+      "type": "string",
+      "description": "Property type (SFR, Condo, etc.)"
+    },
+    "estimated_price": {
+      "type": "number",
+      "description": "Estimated property value"
+    },
+    "estimated_equity": {
+      "type": "number",
+      "description": "Estimated equity value"
+    },
+    "distress_score": {
+      "type": "number",
+      "description": "PropertyRadar distress score 0-100"
+    },
+    "listing_dom": {
+      "type": "number",
+      "description": "Days on market"
+    },
     "rep_code": {
       "type": "string",
       "description": "Rep code from QR scan"

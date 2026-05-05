@@ -94,6 +94,11 @@ function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
   const fullName = get("name", "full_name", "fullname");
   const firstName = get("first_name", "firstname", "fname") || (fullName ? fullName.split(" ")[0] : "");
   const lastName = get("last_name", "lastname", "lname") || (fullName ? fullName.split(" ").slice(1).join(" ") : "");
+  const propType = get("type", "property_type", "prop_type") || "";
+  const estPrice = parseFloat((get("est_value", "estimated_price", "price") || "0").replace(/[^0-9.-]/g, "")) || null;
+  const estEquity = parseFloat((get("est_equity", "est_equity_$", "equity") || "0").replace(/[^0-9.-]/g, "")) || null;
+  const distress = parseFloat(get("distress_score", "distress") || "0") || null;
+  const dom = parseFloat(get("listing_dom", "dom", "days_on_market") || "0") || null;
   
   const lead = {
     first_name: firstName,
@@ -101,6 +106,11 @@ function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
     email: get("email", "email_address"),
     phone: get("phone", "phone_number", "mobile", "cell"),
     property_address: get("property_address", "address", "street_address"),
+    property_type: propType,
+    estimated_price: estPrice,
+    estimated_equity: estEquity,
+    distress_score: distress,
+    listing_dom: dom,
     rep_code: get("rep_code", "repcode") || repCode || "",
     activator_id: activatorId || "",
     status: "SCANNED",
@@ -118,7 +128,7 @@ function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
     lead.timeline = timeline.toLowerCase();
   }
   
-  const homeType = get("next_home_type", "home_type", "property_type");
+  const homeType = get("next_home_type", "home_type");
   if (homeType && ["primary", "investment", "not_sure"].includes(homeType.toLowerCase())) {
     lead.next_home_type = homeType.toLowerCase();
   }
