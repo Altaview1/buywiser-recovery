@@ -300,7 +300,11 @@ export default function FieldActivatorAdmin() {
         <BulkProspectUpload
           activators={activators}
           onClose={() => setShowBulkUpload(false)}
-          onImported={(count) => { fetchAll(); setActiveTab("leads"); }}
+          onImported={async (count) => { 
+            setShowBulkUpload(false);
+            await fetchAll(); 
+            setActiveTab("summary");
+          }}
         />
       )}
       {selectedLead && (
@@ -469,10 +473,10 @@ export default function FieldActivatorAdmin() {
                       ) : (
                         <div className="space-y-2">
                           {repLeads.map(lead => (
-                            <div key={lead.id} className="bg-white rounded-lg p-3 border border-slate-200 text-sm">
+                            <button key={lead.id} onClick={() => setSelectedLead(lead)} className="w-full text-left bg-white rounded-lg p-3 border border-slate-200 text-sm hover:border-blue-400 hover:bg-blue-50 transition">
                               <div className="flex items-start justify-between gap-2 mb-1">
                                 <div className="flex-1">
-                                  <p className="font-semibold text-slate-800">{lead.first_name} {lead.last_name}</p>
+                                  <p className="font-semibold text-blue-600 hover:underline">{lead.first_name} {lead.last_name}</p>
                                   <p className="text-xs text-slate-500">{lead.email}</p>
                                   {lead.phone && <p className="text-xs text-slate-500">{lead.phone}</p>}
                                 </div>
@@ -488,7 +492,7 @@ export default function FieldActivatorAdmin() {
                               {lead.charity_selected && (
                                 <p className="text-xs text-slate-500 mt-1">Charity: {lead.charity_selected}</p>
                               )}
-                            </div>
+                            </button>
                           ))}
                         </div>
                       )}
