@@ -94,7 +94,6 @@ function AddActivatorModal({ onClose, onCreated }) {
 }
 
 export default function FieldActivatorAdmin() {
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activators, setActivators] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -106,12 +105,6 @@ export default function FieldActivatorAdmin() {
 
   useEffect(() => {
     const init = async () => {
-      const me = await base44.auth.me();
-      if (!me || me.role !== "admin") {
-        base44.auth.redirectToLogin();
-        return;
-      }
-      setUser(me);
       await fetchAll();
       setLoading(false);
     };
