@@ -1,0 +1,50 @@
+{
+  "name": "Resource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Resource title"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "sales_script",
+        "objection_handler",
+        "offer_guideline",
+        "training"
+      ],
+      "description": "Resource category"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full resource content or script"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short summary for list view"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Tags for search and filtering"
+    },
+    "updated_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the resource was last updated"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show in featured section"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "content"
+  ]
+}

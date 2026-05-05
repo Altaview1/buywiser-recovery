@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Send, Loader2, LogOut, BookOpen, Lightbulb } from "lucide-react";
+import { Send, Loader2, LogOut, BookOpen, Lightbulb, Library } from "lucide-react";
+import ResourceHub from "./ResourceHub";
 
 const NAVY = "#0B1F3B";
 
@@ -71,6 +72,7 @@ export default function SalesCoachChat() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
+  const [showResourceHub, setShowResourceHub] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -155,6 +157,10 @@ export default function SalesCoachChat() {
 
   if (!activator) return <AccessGate onAccess={setActivator} />;
 
+  if (showResourceHub) {
+    return <ResourceHub onClose={() => setShowResourceHub(false)} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Header */}
@@ -201,37 +207,29 @@ export default function SalesCoachChat() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick Coaching Prompts */}
+      {/* Quick Coaching & Resources */}
       {messages.length < 3 && (
-        <div className="px-4 py-3 border-t border-slate-200 bg-white">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Quick coaching topics:</p>
-          <div className="grid grid-cols-2 gap-2">
-            {COACHING_TIPS.slice(0, 4).map((tip, i) => (
-              <button key={i} onClick={() => handleCoachingPrompt(tip.prompt)}
-                className="px-3 py-2 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 active:bg-blue-50 transition text-left">
-                <Lightbulb className="h-3 w-3 inline mr-1" /> {tip.title}
-              </button>
-            ))}
+        <div className="px-4 py-3 border-t border-slate-200 bg-white space-y-2">
+          <button onClick={() => setShowResourceHub(true)}
+            className="w-full px-4 py-3 rounded-lg font-bold text-sm border-2 border-slate-200 text-slate-700 hover:bg-slate-50 active:bg-slate-100 transition flex items-center justify-center gap-2">
+            <Library className="h-4 w-4" /> Browse Sales Resources
+          </button>
+          <div>
+            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Coaching topics:</p>
+            <div className="grid grid-cols-2 gap-2">
+              {COACHING_TIPS.slice(0, 4).map((tip, i) => (
+                <button key={i} onClick={() => handleCoachingPrompt(tip.prompt)}
+                  className="px-3 py-2 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 active:bg-blue-50 transition text-left">
+                  <Lightbulb className="h-3 w-3 inline mr-1" /> {tip.title}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
       {/* Input Area */}
       <div className="border-t border-slate-200 px-4 py-3 bg-white space-y-2">
-        {/* Resources */}
-        <details className="text-xs">
-          <summary className="font-bold text-slate-600 cursor-pointer flex items-center gap-1 mb-2">
-            <BookOpen className="h-3.5 w-3.5" /> Resources
-          </summary>
-          <div className="space-y-1 pl-4">
-            {RESOURCES.map((r, i) => (
-              <a key={i} href={r.url} className="block text-blue-600 hover:text-blue-800 font-semibold text-xs">
-                {r.title}
-              </a>
-            ))}
-          </div>
-        </details>
-
         {/* Message Input */}
         <div className="flex gap-2 touch-manipulation">
           <input type="text" value={input} onChange={e => setInput(e.target.value)}

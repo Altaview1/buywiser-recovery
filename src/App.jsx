@@ -40,6 +40,7 @@ import FieldActivatorAdmin from './pages/FieldActivatorAdmin';
 import FieldActivatorPortal from './pages/FieldActivatorPortal';
 import SalesCoachChat from './pages/SalesCoachChat';
 import ManagementDashboard from './pages/ManagementDashboard';
+import ResourceHub from './pages/ResourceHub';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -97,6 +98,7 @@ const AuthenticatedApp = () => {
 
       {/* Admin Routes */}
       <Route path="/management-dashboard" element={<ManagementDashboard />} />
+      <Route path="/resources" element={<ResourceHub />} />
 
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
