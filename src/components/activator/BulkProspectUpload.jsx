@@ -198,32 +198,13 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const [preview, setPreview] = useState([]);
   const [previewTotal, setPreviewTotal] = useState(0);
   const [errors, setErrors] = useState([]);
+  const [selectedActivatorForPropertyRadar, setSelectedActivatorForPropertyRadar] = useState("");
   const [selectedActivator, setSelectedActivator] = useState("");
-  const [selectedPartner, setSelectedPartner] = useState("");
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
   const [rowResults, setRowResults] = useState(null);
   const [detectedFormat, setDetectedFormat] = useState(null);
-  const [partners, setPartners] = useState([]);
-  const [loadingPartners, setLoadingPartners] = useState(true);
-  const [partnersError, setPartnersError] = useState(null);
   const fileRef = useRef();
-
-  // Fetch all partners on mount
-  useEffect(() => {
-    const fetchPartners = async () => {
-      try {
-        const data = await base44.entities.PartnerApplication.list("-created_date", 100);
-        setPartners(data);
-      } catch (err) {
-        setPartnersError(`Failed to load partners: ${err.message}`);
-        console.error("Partner fetch error:", err);
-      } finally {
-        setLoadingPartners(false);
-      }
-    };
-    fetchPartners();
-  }, []);
 
   const handleFile = (e) => {
     const f = e.target.files?.[0];
@@ -279,7 +260,10 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
     let records, entityName;
     if (detectedFormat === "propertyradar") {
       const validRows = rows.filter(r => r.address && r.address.trim() !== "");
-      records = validRows.map(r => mapPropertyRadarRow(r, selectedPartner));
+      // For PropertyRadar, use the selected field activator's rep_code as the partner identifier
+      const selectedActivatorObj = activators.find(a => a.id === selectedActivatorForPropertyRadar);
+      const partnerIdentifier = selectedActivatorObj ? selectedActivatorObj.rep_code : "";
+      records = validRows.map(r => mapPropertyRadarRow(r, partnerIdentifier));
       entityName = "VTONOpportunity";
     } else {
       const activator = activators.find(a => a.id === selectedActivator);
@@ -403,47 +387,20 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                 </div>
               )}
 
-              {/* Partner assignment */}
+              {/* Field Activator assignment for PropertyRadar */}
               {detectedFormat === "propertyradar" && (
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                      Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(optional)</span>
-                    </label>
-                    {partnersError && (
-                      <button
-                        onClick={async () => {
-                          setLoadingPartners(true);
-                          try {
-                            const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
-                            setPartners(data);
-                            setPartnersError(data.length === 0 ? "No approved partners found. Add partners before uploading PropertyRadar leads." : null);
-                          } catch (err) {
-                            setPartnersError(`Failed to load partners: ${err.message}`);
-                          } finally {
-                            setLoadingPartners(false);
-                          }
-                        }}
-                        className="text-xs text-blue-600 hover:text-blue-800 underline font-semibold"
-                      >
-                        Refresh
-                      </button>
-                    )}
-                  </div>
-
-
-
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                    Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
+                  </label>
                   <select
-                    value={selectedPartner}
-                    onChange={e => setSelectedPartner(e.target.value)}
-                    disabled={loadingPartners || partners.length === 0}
-                    className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 disabled:opacity-50"
+                    value={selectedActivatorForPropertyRadar}
+                    onChange={e => setSelectedActivatorForPropertyRadar(e.target.value)}
+                    className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
                   >
-                    <option value="">
-                      {loadingPartners ? "Loading partners…" : partners.length === 0 ? "No approved partners available" : "Select partner email…"}
-                    </option>
-                    {partners.map(p => (
-                      <option key={p.id} value={p.email}>{p.name} — {p.email}</option>
+                    <option value="">No assignment</option>
+                    {activators.map(a => (
+                      <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
                     ))}
                   </select>
                 </div>
