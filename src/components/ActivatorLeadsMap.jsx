@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 const STATUS_COLORS = {
   SCANNED: "#64748b",
@@ -10,19 +13,39 @@ const STATUS_COLORS = {
   CLOSED: "#059669",
 };
 
+// Custom marker icons for each status
+const createMarkerIcon = (color) => {
+  return L.divIcon({
+    className: "custom-marker",
+    html: `<div style="background: ${color}; width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;"><div style="width: 6px; height: 6px; background: white; border-radius: 50%;"></div></div>`,
+    iconSize: [32, 32],
+    popupAnchor: [0, -16],
+  });
+};
+
+function MapFitBounds({ leads }) {
+  const map = useMap();
+  useEffect(() => {
+    if (leads.length === 0) return;
+    const bounds = L.latLngBounds(leads.map(l => [l.lat, l.lng]));
+    map.fitBounds(bounds, { padding: [50, 50] });
+  }, [leads, map]);
+  return null;
+}
+
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [filter, setFilter] = useState("All");
   const [geocoding, setGeocoding] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 34.1602, lng: -118.2583 }); // Default: Glendale, CA
 
-  // Filter leads
+  // Filter leads with valid geocoding
   const filtered = leads.filter(l => 
-    (filter === "All" || l.status === filter) && l.property_address
+    (filter === "All" || l.status === filter) && l.property_address && l.lat && l.lng
   );
 
   // Update map center when filtered leads change
   useEffect(() => {
-    if (filtered.length > 0 && filtered[0].lat && filtered[0].lng) {
+    if (filtered.length > 0) {
       setMapCenter({ lat: filtered[0].lat, lng: filtered[0].lng });
     }
   }, [filtered]);
@@ -86,16 +109,31 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         ))}
       </div>
 
-      {/* Google Map Embed */}
+      {/* Interactive Leaflet Map */}
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px]">
-        <iframe
-          src={mapUrl}
-          style={{ width: "100%", height: "100%", border: "none" }}
-          allowFullScreen=""
-          loading="lazy"
-          referrerPolicy="no-referrer-when-downgrade"
-          title="Lead locations map"
-        />
+        <MapContainer center={[mapCenter.lat, mapCenter.lng]} zoom={11} style={{ width: "100%", height: "100%" }}>
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; OpenStreetMap contributors'
+          />
+          <MapFitBounds leads={filtered} />
+          {filtered.map(lead => (
+            <Marker
+              key={lead.id}
+              position={[lead.lat, lead.lng]}
+              icon={createMarkerIcon(STATUS_COLORS[lead.status])}
+              eventHandlers={{ click: () => onSelectLead(lead) }}
+            >
+              <Popup className="text-sm">
+                <div className="space-y-1">
+                  <p className="font-bold">{lead.first_name} {lead.last_name}</p>
+                  <p className="text-xs text-slate-600">{lead.property_address}</p>
+                  <p className="text-xs font-semibold text-slate-700">{lead.status}</p>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       </div>
 
       {/* Lead List */}
