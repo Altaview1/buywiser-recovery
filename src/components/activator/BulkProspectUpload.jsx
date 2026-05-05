@@ -13,6 +13,7 @@ function parseCSV(text) {
   // Strip BOM (Excel UTF-8 with BOM exports include \uFEFF at the start)
   const firstLine = lines[0].replace(/^\uFEFF/, "").replace(/"/g, "");
   const headers = firstLine.split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
+  console.log("[BulkUpload] Detected CSV headers:", headers);
   return lines.slice(1).map(line => {
     const cols = [];
     let current = "";
@@ -30,14 +31,26 @@ function parseCSV(text) {
 }
 
 // Map CSV row to ActivatorLead fields
+// Supports many common header variations
 function mapRow(row, repCode, activatorId) {
+  // Helper: find first matching key (case-insensitive, normalized)
+  const get = (...keys) => {
+    for (const k of keys) {
+      const norm = k.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+      const val = row[norm] || row[k] || "";
+      if (val) return val;
+    }
+    return "";
+  };
+
+  const fullName = get("name", "full_name", "fullname", "full name");
   return {
-    first_name: row.first_name || row.firstname || row.name?.split(" ")[0] || "",
-    last_name: row.last_name || row.lastname || row.name?.split(" ").slice(1).join(" ") || "",
-    email: row.email || "",
-    phone: row.phone || row.phone_number || "",
-    property_address: row.property_address || row.address || row.street_address || "",
-    rep_code: row.rep_code || repCode || "",
+    first_name: get("first_name", "firstname", "first name", "fname") || (fullName ? fullName.split(" ")[0] : ""),
+    last_name: get("last_name", "lastname", "last name", "lname") || (fullName ? fullName.split(" ").slice(1).join(" ") : ""),
+    email: get("email", "email_address", "e_mail", "e-mail"),
+    phone: get("phone", "phone_number", "phonenumber", "phone number", "mobile", "cell", "telephone"),
+    property_address: get("property_address", "address", "street_address", "street address", "home_address", "home address", "property"),
+    rep_code: get("rep_code", "repcode", "rep code") || repCode || "",
     activator_id: activatorId || "",
     status: "SCANNED",
     scan_timestamp: new Date().toISOString(),
