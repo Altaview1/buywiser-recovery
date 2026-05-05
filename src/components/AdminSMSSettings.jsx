@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Phone, Trash2, Plus, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { Phone, Trash2, Loader2, CheckCircle, AlertCircle, Send } from "lucide-react";
 
 export default function AdminSMSSettings() {
   const [partners, setPartners] = useState([]);
@@ -8,6 +8,8 @@ export default function AdminSMSSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [testSMS, setTestSMS] = useState(false);
+  const [testResult, setTestResult] = useState(null); // null | "success" | "error"
+  const [testError, setTestError] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -38,21 +40,68 @@ export default function AdminSMSSettings() {
   };
 
   const handleTestSMS = async () => {
-    if (!adminPhone) return;
     setTestSMS(true);
+    setTestResult(null);
+    setTestError("");
     try {
-      await base44.functions.invoke("sendSMS", {
-        message: "🧪 Test SMS from BuyWiser notification system — working!",
-        phone: adminPhone
+      // No phone arg — sendSMS will fall back to BENNETT_PHONE secret
+      const res = await base44.functions.invoke("sendSMS", {
+        message: `🧪 BuyWiser SMS test — ${new Date().toLocaleTimeString("en-US")}. If you see this, Twilio is connected!`,
       });
+      if (res.data?.sid) {
+        setTestResult("success");
+      } else {
+        setTestResult("error");
+        setTestError(res.data?.error || "No SID returned");
+      }
     } catch (err) {
-      console.error("Test SMS error:", err);
+      setTestResult("error");
+      setTestError(err?.response?.data?.error || err.message || "Unknown error");
     }
     setTestSMS(false);
   };
 
   return (
     <div className="space-y-6 max-w-3xl">
+
+      {/* Manual SMS Test */}
+      <div className="bg-white border-2 border-dashed border-slate-300 rounded-2xl p-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Send className="h-5 w-5 text-slate-600" />
+              <h3 className="text-base font-bold text-slate-900">Manual SMS Connection Test</h3>
+            </div>
+            <p className="text-xs text-slate-500">Sends a test SMS directly to your <strong>BENNETT_PHONE</strong> number to verify Twilio is working.</p>
+          </div>
+          <button
+            onClick={handleTestSMS}
+            disabled={testSMS}
+            className="flex items-center gap-2 px-5 py-2.5 text-sm font-bold rounded-xl text-white bg-blue-700 hover:bg-blue-800 transition disabled:opacity-50 flex-shrink-0"
+          >
+            {testSMS ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+            {testSMS ? "Sending…" : "Send Test SMS Now"}
+          </button>
+        </div>
+
+        {testResult === "success" && (
+          <div className="mt-4 flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700 font-semibold">
+            <CheckCircle className="h-4 w-4 flex-shrink-0" />
+            ✅ SMS sent successfully! Check your phone. If it doesn't arrive within 30 seconds, verify your number is confirmed in Twilio console.
+          </div>
+        )}
+        {testResult === "error" && (
+          <div className="mt-4 flex items-start gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+            <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="font-semibold">SMS failed to send</p>
+              {testError && <p className="text-xs mt-0.5 text-red-600">{testError}</p>}
+              <p className="text-xs mt-1 text-red-500">Check that TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, and TWILIO_FROM_NUMBER secrets are correct.</p>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Admin Phone */}
       <div className="bg-white border border-slate-200 rounded-2xl p-6">
         <div className="flex items-center gap-2 mb-3">
