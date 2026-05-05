@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download } from "lucide-react";
+import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 
@@ -10,7 +10,6 @@ function parseCSV(text) {
   if (lines.length < 2) return [];
   const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
   return lines.slice(1).map(line => {
-    // Handle quoted fields
     const cols = [];
     let current = "";
     let inQuotes = false;
@@ -23,7 +22,7 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h, i) => { obj[h] = cols[i] || ""; });
     return obj;
-  }).filter(row => row.first_name || row.email); // skip empty rows
+  }).filter(row => row.first_name || row.email);
 }
 
 // Map CSV row to ActivatorLead fields
@@ -46,20 +45,122 @@ Jane,Smith,jane@email.com,(818) 555-1001,123 Oak St Glendale CA
 John,Doe,john@email.com,(818) 555-1002,456 Elm Ave Burbank CA
 Maria,Garcia,maria@email.com,(818) 555-1003,789 Pine Rd Pasadena CA`;
 
+function ImportStatusReport({ rowResults, onClose }) {
+  const [filter, setFilter] = useState("all");
+  const succeeded = rowResults.filter(r => r.status === "success");
+  const failed = rowResults.filter(r => r.status === "error");
+
+  const displayed = filter === "errors" ? failed : filter === "success" ? succeeded : rowResults;
+
+  const downloadErrorCSV = () => {
+    const headers = "row,first_name,last_name,email,phone,error";
+    const rows = failed.map(r =>
+      `${r.rowNum},"${r.data.first_name}","${r.data.last_name}","${r.data.email}","${r.data.phone}","${r.error}"`
+    ).join("\n");
+    const blob = new Blob([headers + "\n" + rows], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "import_errors.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Summary */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
+          <p className="text-xl font-black text-slate-800">{rowResults.length}</p>
+          <p className="text-xs text-slate-500 mt-0.5">Total Rows</p>
+        </div>
+        <div className="bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+          <p className="text-xl font-black text-green-700">{succeeded.length}</p>
+          <p className="text-xs text-green-600 mt-0.5">Succeeded</p>
+        </div>
+        <div className={`rounded-xl p-3 text-center border ${failed.length > 0 ? "bg-red-50 border-red-200" : "bg-slate-50 border-slate-200"}`}>
+          <p className={`text-xl font-black ${failed.length > 0 ? "text-red-700" : "text-slate-400"}`}>{failed.length}</p>
+          <p className={`text-xs mt-0.5 ${failed.length > 0 ? "text-red-600" : "text-slate-400"}`}>Failed</p>
+        </div>
+      </div>
+
+      {/* Filter tabs */}
+      <div className="flex gap-2">
+        {["all", "success", "errors"].map(f => (
+          <button key={f} onClick={() => setFilter(f)}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold capitalize transition border ${
+              filter === f ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+            }`}>
+            {f === "all" ? `All (${rowResults.length})` : f === "success" ? `✓ Succeeded (${succeeded.length})` : `✗ Errors (${failed.length})`}
+          </button>
+        ))}
+        {failed.length > 0 && (
+          <button onClick={downloadErrorCSV}
+            className="ml-auto flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 transition">
+            <Download className="h-3 w-3" /> Error CSV
+          </button>
+        )}
+      </div>
+
+      {/* Row-by-row results */}
+      <div className="border border-slate-200 rounded-xl overflow-hidden max-h-64 overflow-y-auto">
+        <table className="w-full text-xs">
+          <thead className="bg-slate-50 sticky top-0">
+            <tr>
+              <th className="px-3 py-2 text-left font-bold text-slate-500 w-12">Row</th>
+              <th className="px-3 py-2 text-left font-bold text-slate-500">Name</th>
+              <th className="px-3 py-2 text-left font-bold text-slate-500">Email</th>
+              <th className="px-3 py-2 text-left font-bold text-slate-500">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {displayed.map((r, i) => (
+              <tr key={i} className={r.status === "error" ? "bg-red-50" : ""}>
+                <td className="px-3 py-2 text-slate-400 font-mono">{r.rowNum}</td>
+                <td className="px-3 py-2 text-slate-700">{r.data.first_name} {r.data.last_name}</td>
+                <td className="px-3 py-2 text-slate-500">{r.data.email || "—"}</td>
+                <td className="px-3 py-2">
+                  {r.status === "success" ? (
+                    <span className="inline-flex items-center gap-1 text-green-700 font-semibold">
+                      <CheckCircle className="h-3 w-3" /> Imported
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-red-600 font-semibold" title={r.error}>
+                      <XCircle className="h-3 w-3" /> {r.error?.slice(0, 40) || "Failed"}
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <button onClick={onClose}
+        className="w-full py-2.5 font-bold text-sm rounded-lg text-white transition"
+        style={{ background: NAVY }}>
+        Done
+      </button>
+    </div>
+  );
+}
+
 export default function BulkProspectUpload({ activators, onImported, onClose }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
+  const [previewTotal, setPreviewTotal] = useState(0);
   const [errors, setErrors] = useState([]);
   const [selectedActivator, setSelectedActivator] = useState("");
   const [importing, setImporting] = useState(false);
-  const [result, setResult] = useState(null);
+  const [importProgress, setImportProgress] = useState(0);
+  const [rowResults, setRowResults] = useState(null);
   const fileRef = useRef();
 
   const handleFile = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     setFile(f);
-    setResult(null);
+    setRowResults(null);
 
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -69,8 +170,8 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
         if (!r.first_name && !r.email) errs.push(`Row ${i + 2}: missing first_name and email`);
       });
       setPreview(rows.slice(0, 5));
+      setPreviewTotal(rows.length);
       setErrors(errs);
-
     };
     reader.readAsText(f);
   };
@@ -78,10 +179,10 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const handleImport = async () => {
     if (!file) return;
     setImporting(true);
+    setImportProgress(0);
 
     const activator = activators.find(a => a.id === selectedActivator);
 
-    // Read file as a Promise so we can await it
     const text = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (ev) => resolve(ev.target.result);
@@ -92,21 +193,30 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
     const rows = parseCSV(text);
     const records = rows.map(r => mapRow(r, activator?.rep_code, activator?.id));
 
-    let success = 0;
-    let failed = 0;
-    // Batch create in chunks of 20
+    const results = [];
     const chunkSize = 20;
+
     for (let i = 0; i < records.length; i += chunkSize) {
       const chunk = records.slice(i, i + chunkSize);
-      const results = await Promise.allSettled(
+      const chunkResults = await Promise.allSettled(
         chunk.map(r => base44.entities.ActivatorLead.create(r))
       );
-      results.forEach(r => r.status === "fulfilled" ? success++ : failed++);
+      chunkResults.forEach((r, j) => {
+        const rowIndex = i + j;
+        results.push({
+          rowNum: rowIndex + 2, // +2 for header row + 1-based
+          data: records[rowIndex],
+          status: r.status === "fulfilled" ? "success" : "error",
+          error: r.status === "rejected" ? (r.reason?.message || "Unknown error") : null,
+        });
+      });
+      setImportProgress(Math.round(((i + chunk.length) / records.length) * 100));
     }
 
-    setResult({ success, failed, total: records.length });
+    const succeeded = results.filter(r => r.status === "success").length;
+    setRowResults(results);
     setImporting(false);
-    if (success > 0) onImported(success);
+    if (succeeded > 0) onImported(succeeded);
   };
 
   const downloadSample = () => {
@@ -122,12 +232,14 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 overflow-auto" style={{ background: "rgba(0,0,0,0.6)" }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
-        
+
         {/* Header */}
         <div className="px-6 py-4 flex items-center justify-between" style={{ background: NAVY }}>
           <div className="flex items-center gap-2">
             <FileSpreadsheet className="h-4 w-4 text-white/60" />
-            <p className="text-sm font-bold text-white">Bulk Upload Prospects</p>
+            <p className="text-sm font-bold text-white">
+              {rowResults ? "Import Status Report" : "Bulk Upload Prospects"}
+            </p>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition">
             <X className="h-4 w-4" />
@@ -136,135 +248,134 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
 
         <div className="p-6 space-y-5">
 
-          {/* Sample download */}
-          <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
-            <div>
-              <p className="text-xs font-bold text-slate-700">CSV Template</p>
-              <p className="text-xs text-slate-400">Columns: first_name, last_name, email, phone, property_address</p>
-            </div>
-            <button onClick={downloadSample}
-              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 transition">
-              <Download className="h-3.5 w-3.5" /> Download
-            </button>
-          </div>
-
-          {/* Assign to activator */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-              Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
-            </label>
-            <select
-              value={selectedActivator}
-              onChange={e => setSelectedActivator(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
-            >
-              <option value="">No assignment (use rep_code from CSV)</option>
-              {activators.map(a => (
-                <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* File upload */}
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Upload CSV File</label>
-            <div
-              onClick={() => fileRef.current?.click()}
-              className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition"
-            >
-              <Upload className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-              {file ? (
-                <p className="text-sm font-semibold text-slate-700">{file.name}</p>
-              ) : (
-                <>
-                  <p className="text-sm font-semibold text-slate-500">Click to upload CSV</p>
-                  <p className="text-xs text-slate-400 mt-1">or drag and drop</p>
-                </>
-              )}
-              <input ref={fileRef} type="file" accept=".csv,.txt,text/csv,text/plain,application/vnd.ms-excel" className="hidden" onChange={handleFile} />
-            </div>
-          </div>
-
-          {/* Errors */}
-          {errors.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1">
-              <p className="text-xs font-bold text-red-700 flex items-center gap-1.5"><AlertCircle className="h-3.5 w-3.5" /> Warnings</p>
-              {errors.slice(0, 5).map((e, i) => (
-                <p key={i} className="text-xs text-red-600">{e}</p>
-              ))}
-            </div>
-          )}
-
-          {/* Preview */}
-          {preview.length > 0 && !result && (
-            <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Preview — {preview.length} rows detected</p>
-              <div className="border border-slate-200 rounded-xl overflow-hidden">
-                <table className="w-full text-xs">
-                  <thead className="bg-slate-50">
-                    <tr>
-                      {["First Name", "Last Name", "Email", "Phone"].map(h => (
-                        <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {preview.map((row, i) => (
-                      <tr key={i}>
-                        <td className="px-3 py-2 text-slate-700">{row.first_name || row.firstname || "—"}</td>
-                        <td className="px-3 py-2 text-slate-700">{row.last_name || row.lastname || "—"}</td>
-                        <td className="px-3 py-2 text-slate-500">{row.email || "—"}</td>
-                        <td className="px-3 py-2 text-slate-500">{row.phone || "—"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          {/* Show import status report after import */}
+          {rowResults ? (
+            <ImportStatusReport rowResults={rowResults} onClose={onClose} />
+          ) : (
+            <>
+              {/* Sample download */}
+              <div className="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-xl px-4 py-3">
+                <div>
+                  <p className="text-xs font-bold text-slate-700">CSV Template</p>
+                  <p className="text-xs text-slate-400">Columns: first_name, last_name, email, phone, property_address</p>
+                </div>
+                <button onClick={downloadSample}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold border border-slate-300 rounded-lg text-slate-600 hover:bg-slate-100 transition">
+                  <Download className="h-3.5 w-3.5" /> Download
+                </button>
               </div>
-            </div>
-          )}
 
-          {/* Result */}
-          {result && (
-            <div className={`rounded-xl p-4 flex items-start gap-3 ${result.failed === 0 ? "bg-green-50 border border-green-200" : "bg-amber-50 border border-amber-200"}`}>
-              <CheckCircle className={`h-5 w-5 flex-shrink-0 mt-0.5 ${result.failed === 0 ? "text-green-600" : "text-amber-600"}`} />
+              {/* Assign to activator */}
               <div>
-                <p className={`text-sm font-bold ${result.failed === 0 ? "text-green-800" : "text-amber-800"}`}>
-                  Import Complete
-                </p>
-                <p className="text-xs text-slate-600 mt-0.5">
-                  {result.success} of {result.total} prospects imported successfully.
-                  {result.failed > 0 && ` ${result.failed} failed.`}
-                </p>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
+                </label>
+                <select
+                  value={selectedActivator}
+                  onChange={e => setSelectedActivator(e.target.value)}
+                  className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                >
+                  <option value="">No assignment (use rep_code from CSV)</option>
+                  {activators.map(a => (
+                    <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
+                  ))}
+                </select>
               </div>
-            </div>
-          )}
 
-          {/* Actions */}
-          <div className="flex gap-2 pt-1">
-            {!result ? (
-              <button
-                onClick={handleImport}
-                disabled={!file || importing}
-                className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
-                style={{ background: NAVY }}
-              >
-                <Upload className="h-4 w-4" />
-                {importing ? "Importing…" : `Import ${preview.length > 0 ? "Prospects" : ""}`}
-              </button>
-            ) : (
-              <button onClick={onClose}
-                className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition"
-                style={{ background: NAVY }}>
-                Done
-              </button>
-            )}
-            {!result && (
-              <button onClick={onClose}
-                className="px-5 py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
-                Cancel
-              </button>
-            )}
-          </div>
+              {/* File upload */}
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Upload CSV File</label>
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  className="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition"
+                >
+                  <Upload className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+                  {file ? (
+                    <p className="text-sm font-semibold text-slate-700">{file.name}</p>
+                  ) : (
+                    <>
+                      <p className="text-sm font-semibold text-slate-500">Click to upload CSV</p>
+                      <p className="text-xs text-slate-400 mt-1">or drag and drop</p>
+                    </>
+                  )}
+                  <input ref={fileRef} type="file" accept=".csv,.txt,text/csv,text/plain,application/vnd.ms-excel" className="hidden" onChange={handleFile} />
+                </div>
+              </div>
+
+              {/* Validation errors */}
+              {errors.length > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1">
+                  <p className="text-xs font-bold text-red-700 flex items-center gap-1.5"><AlertCircle className="h-3.5 w-3.5" /> Warnings</p>
+                  {errors.slice(0, 5).map((e, i) => (
+                    <p key={i} className="text-xs text-red-600">{e}</p>
+                  ))}
+                </div>
+              )}
+
+              {/* Preview */}
+              {preview.length > 0 && (
+                <div>
+                  <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    Preview — {previewTotal} row{previewTotal !== 1 ? "s" : ""} detected
+                  </p>
+                  <div className="border border-slate-200 rounded-xl overflow-hidden">
+                    <table className="w-full text-xs">
+                      <thead className="bg-slate-50">
+                        <tr>
+                          {["First Name", "Last Name", "Email", "Phone"].map(h => (
+                            <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {preview.map((row, i) => (
+                          <tr key={i}>
+                            <td className="px-3 py-2 text-slate-700">{row.first_name || row.firstname || "—"}</td>
+                            <td className="px-3 py-2 text-slate-700">{row.last_name || row.lastname || "—"}</td>
+                            <td className="px-3 py-2 text-slate-500">{row.email || "—"}</td>
+                            <td className="px-3 py-2 text-slate-500">{row.phone || "—"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {previewTotal > 5 && (
+                    <p className="text-xs text-slate-400 mt-1.5">…and {previewTotal - 5} more rows</p>
+                  )}
+                </div>
+              )}
+
+              {/* Progress bar while importing */}
+              {importing && (
+                <div>
+                  <div className="flex justify-between text-xs text-slate-500 mb-1">
+                    <span>Importing…</span>
+                    <span>{importProgress}%</span>
+                  </div>
+                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-300 bg-blue-600" style={{ width: `${importProgress}%` }} />
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-2 pt-1">
+                <button
+                  onClick={handleImport}
+                  disabled={!file || importing}
+                  className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
+                  style={{ background: NAVY }}
+                >
+                  <Upload className="h-4 w-4" />
+                  {importing ? `Importing… ${importProgress}%` : `Import ${previewTotal > 0 ? `${previewTotal} Prospects` : ""}`}
+                </button>
+                <button onClick={onClose}
+                  className="px-5 py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
