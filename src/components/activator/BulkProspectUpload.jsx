@@ -167,7 +167,11 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       const rows = parseCSV(ev.target.result);
       const errs = [];
       rows.forEach((r, i) => {
-        if (!r.first_name && !r.email) errs.push(`Row ${i + 2}: missing first_name and email`);
+        const missing = [];
+        if (!r.first_name && !r.firstname && !r.name) missing.push("first_name");
+        if (!r.email) missing.push("email");
+        if (!r.phone && !r.phone_number) missing.push("phone");
+        if (missing.length > 0) errs.push({ rowNum: i + 2, missing, row: r });
       });
       setPreview(rows.slice(0, 5));
       setPreviewTotal(rows.length);
@@ -304,11 +308,23 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
 
               {/* Validation errors */}
               {errors.length > 0 && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3 space-y-1">
-                  <p className="text-xs font-bold text-red-700 flex items-center gap-1.5"><AlertCircle className="h-3.5 w-3.5" /> Warnings</p>
-                  {errors.slice(0, 5).map((e, i) => (
-                    <p key={i} className="text-xs text-red-600">{e}</p>
-                  ))}
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2">
+                  <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
+                    <AlertCircle className="h-3.5 w-3.5" /> {errors.length} row{errors.length !== 1 ? "s" : ""} with missing fields — will still be imported
+                  </p>
+                  <div className="space-y-1 max-h-32 overflow-y-auto">
+                    {errors.map((e, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs">
+                        <span className="font-mono text-amber-700 font-bold w-12 flex-shrink-0">Row {e.rowNum}</span>
+                        <span className="text-amber-600">
+                          Missing: {e.missing.map(f => (
+                            <span key={f} className="inline-block bg-amber-200 text-amber-800 font-bold px-1.5 py-0.5 rounded mr-1">{f}</span>
+                          ))}
+                        </span>
+                        <span className="text-amber-500 truncate">{e.row.first_name || e.row.firstname || e.row.email || "unknown"}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -328,14 +344,23 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {preview.map((row, i) => (
-                          <tr key={i}>
-                            <td className="px-3 py-2 text-slate-700">{row.first_name || row.firstname || "—"}</td>
-                            <td className="px-3 py-2 text-slate-700">{row.last_name || row.lastname || "—"}</td>
-                            <td className="px-3 py-2 text-slate-500">{row.email || "—"}</td>
-                            <td className="px-3 py-2 text-slate-500">{row.phone || "—"}</td>
-                          </tr>
-                        ))}
+                        {preview.map((row, i) => {
+                          const rowErr = errors.find(e => e.rowNum === i + 2);
+                          return (
+                            <tr key={i} className={rowErr ? "bg-amber-50" : ""}>
+                              <td className={`px-3 py-2 ${rowErr?.missing.includes("first_name") ? "text-amber-600 font-bold" : "text-slate-700"}`}>
+                                {row.first_name || row.firstname || <span className="italic text-amber-500">missing</span>}
+                              </td>
+                              <td className="px-3 py-2 text-slate-700">{row.last_name || row.lastname || "—"}</td>
+                              <td className={`px-3 py-2 ${rowErr?.missing.includes("email") ? "text-amber-600 font-bold" : "text-slate-500"}`}>
+                                {row.email || <span className="italic text-amber-500">missing</span>}
+                              </td>
+                              <td className={`px-3 py-2 ${rowErr?.missing.includes("phone") ? "text-amber-600 font-bold" : "text-slate-500"}`}>
+                                {row.phone || <span className="italic text-amber-500">missing</span>}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
