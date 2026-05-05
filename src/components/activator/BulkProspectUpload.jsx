@@ -53,13 +53,21 @@ function mapPropertyRadarRow(row, partnerEmail) {
   const address = (row.address || "").trim();
   const city = (row.city || "").trim();
   const estValue = parseFloat((row.est_value || "0").replace(/[^0-9.-]/g, "")) || null;
+  const estEquity = parseFloat((row.est_equity_$ || "0").replace(/[^0-9.-]/g, "")) || null;
+  const distressScore = parseFloat(row.distress_score || "0") || null;
+  const listingDom = parseFloat(row.listing_dom || "0") || null;
+  const propType = (row.type || "").trim() || "SFR";
 
   return {
     homeowner_name: `${first_name} ${last_name}`.trim(),
     property_address: address,
     city: city,
     state: "CA",
+    property_type: propType,
     estimated_price: estValue,
+    estimated_equity: estEquity,
+    distress_score: distressScore,
+    listing_dom: listingDom,
     va_loan_confirmed: true,
     listing_status: "active",
     opportunity_status: "assigned",
@@ -469,8 +477,8 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                       <thead className="bg-slate-50">
                         <tr>
                           {detectedFormat === "propertyradar"
-                            ? ["Owner", "Address", "City"].map(h => (
-                                <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
+                            ? ["Type", "Address", "Est Value", "Owner"].map(h => (
+                                <th key={h} className="px-3 py-2 text-left font-bold text-slate-500 text-xs">{h}</th>
                               ))
                             : ["First Name", "Last Name", "Email"].map(h => (
                                 <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
@@ -483,9 +491,10 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                           <tr key={i}>
                             {detectedFormat === "propertyradar" ? (
                               <>
-                                <td className="px-3 py-2 text-slate-700 font-medium">{row.owner || "—"}</td>
-                                <td className="px-3 py-2 text-slate-600">{row.address || "—"}</td>
-                                <td className="px-3 py-2 text-slate-500">{row.city || "—"}</td>
+                                <td className="px-3 py-2 text-slate-700 font-medium text-xs">{row.type || "—"}</td>
+                                <td className="px-3 py-2 text-slate-600 text-xs">{row.address || "—"}</td>
+                                <td className="px-3 py-2 text-slate-500 text-xs">${row.est_value || "—"}</td>
+                                <td className="px-3 py-2 text-slate-500 text-xs">{row.owner?.split(',')[0] || "—"}</td>
                               </>
                             ) : (
                               <>
@@ -495,7 +504,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                               </>
                             )}
                           </tr>
-                        ))}
+                          ))}
                       </tbody>
                     </table>
                   </div>

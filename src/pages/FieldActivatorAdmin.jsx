@@ -523,6 +523,13 @@ export default function FieldActivatorAdmin() {
                       {fullName && lead.property_address && (
                         <p className="text-xs text-slate-600 mb-2">📍 {lead.property_address}</p>
                       )}
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2 text-xs">
+                        {lead.property_type && <div className="bg-blue-50 rounded px-2 py-1"><span className="text-blue-600 font-semibold">Type:</span> {lead.property_type}</div>}
+                        {lead.estimated_price && <div className="bg-green-50 rounded px-2 py-1"><span className="text-green-600 font-semibold">Est:</span> ${(lead.estimated_price/1000).toFixed(0)}K</div>}
+                        {lead.estimated_equity && <div className="bg-purple-50 rounded px-2 py-1"><span className="text-purple-600 font-semibold">Equity:</span> ${(lead.estimated_equity/1000).toFixed(0)}K</div>}
+                        {lead.distress_score >= 0 && <div className={`rounded px-2 py-1 ${lead.distress_score > 30 ? "bg-red-50" : "bg-slate-50"}`}><span className={`font-semibold ${lead.distress_score > 30 ? "text-red-600" : "text-slate-600"}`}>Distress:</span> {lead.distress_score}</div>}
+                        {lead.listing_dom && <div className="bg-amber-50 rounded px-2 py-1"><span className="text-amber-600 font-semibold">DOM:</span> {lead.listing_dom}</div>}
+                      </div>
                       <div className="flex flex-wrap gap-2 text-xs">
                         {lead.rep_code && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Rep: {lead.rep_code}</span>}
                         {lead.charity_selected && <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded">{lead.charity_selected}</span>}

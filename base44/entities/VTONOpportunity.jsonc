@@ -22,8 +22,24 @@
     "state": {
       "type": "string"
     },
+    "property_type": {
+      "type": "string",
+      "description": "Property type (SFR, Condo, etc.)"
+    },
     "estimated_price": {
       "type": "number"
+    },
+    "estimated_equity": {
+      "type": "number",
+      "description": "Estimated equity value"
+    },
+    "distress_score": {
+      "type": "number",
+      "description": "PropertyRadar distress score 0-100"
+    },
+    "listing_dom": {
+      "type": "number",
+      "description": "Days on market (listing DOM)"
     },
     "va_loan_confirmed": {
       "type": "boolean",
