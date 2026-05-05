@@ -1,0 +1,45 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "Unique conversation thread ID"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Email of the message sender"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "activator"
+      ],
+      "description": "Role of sender"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message text"
+    },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "coaching_prompt",
+        "resource_link"
+      ],
+      "default": "text",
+      "description": "Type of message"
+    },
+    "resource_url": {
+      "type": "string",
+      "description": "Optional URL for resource messages"
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_email",
+    "content"
+  ]
+}

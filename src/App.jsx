@@ -38,6 +38,8 @@ import VTONScan from './pages/VTONScan';
 import FieldActivatorDashboard from './pages/FieldActivatorDashboard';
 import FieldActivatorAdmin from './pages/FieldActivatorAdmin';
 import FieldActivatorPortal from './pages/FieldActivatorPortal';
+import SalesCoachChat from './pages/SalesCoachChat';
+import ManagementDashboard from './pages/ManagementDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -89,8 +91,12 @@ const AuthenticatedApp = () => {
       <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
       <Route path="/vton-scan" element={<VTONScan />} />
       <Route path="/activator" element={<FieldActivatorDashboard />} />
-      {/* Field Activator Portal */}
+      {/* Field Activator Portal & Coach */}
       <Route path="/field-activator" element={<FieldActivatorPortal />} />
+      <Route path="/sales-coach" element={<SalesCoachChat />} />
+
+      {/* Admin Routes */}
+      <Route path="/management-dashboard" element={<ManagementDashboard />} />
 
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
