@@ -70,8 +70,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       });
       setPreview(rows.slice(0, 5));
       setErrors(errs);
-      // Store parsed rows count for import button label
-      setFile(prev => Object.assign(prev, { _rowCount: rows.length }));
+
     };
     reader.readAsText(f);
   };
