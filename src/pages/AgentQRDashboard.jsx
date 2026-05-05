@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
-import { QrCode, ScanLine, MapPin, CheckCircle, AlertCircle, RefreshCw, Save, Upload, Loader2, X, ExternalLink, User, Phone, ChevronDown } from "lucide-react";
+import { QrCode, ScanLine, MapPin, CheckCircle, AlertCircle, RefreshCw, Save, Upload, Loader2, X, ExternalLink, User, Phone, ChevronDown, TrendingUp, Award } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -295,6 +295,8 @@ export default function AgentQRDashboard() {
   const [opps, setOpps] = useState([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("qr");
+  const [activatorLeads, setActivatorLeads] = useState([]);
+  const [activators, setActivators] = useState([]);
 
   const handleOppUpdate = (updated) => {
     setOpps(prev => prev.map(o => o.id === updated.id ? updated : o));
@@ -302,8 +304,14 @@ export default function AgentQRDashboard() {
 
   const fetchOpps = async (email) => {
     setLoading(true);
-    const data = await base44.entities.VTONOpportunity.filter({ partner_email: email }, "-created_date", 100);
+    const [data, leads, acts] = await Promise.all([
+      base44.entities.VTONOpportunity.filter({ partner_email: email }, "-created_date", 100),
+      base44.entities.ActivatorLead.list("-created_date", 500),
+      base44.entities.FieldActivator.list("name", 100),
+    ]);
     setOpps(data);
+    setActivatorLeads(leads);
+    setActivators(acts);
     setLoading(false);
   };
 
@@ -381,6 +389,10 @@ export default function AgentQRDashboard() {
             className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition ${activeTab === "profile" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
             Contact Details
           </button>
+          <button onClick={() => setActiveTab("engagement")}
+            className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition flex items-center gap-1.5 ${activeTab === "engagement" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
+            <TrendingUp className="h-3.5 w-3.5" /> Activator Engagement
+          </button>
         </div>
 
         {activeTab === "qr" && (
@@ -432,6 +444,99 @@ export default function AgentQRDashboard() {
         {activeTab === "profile" && (
           <ProfileEditor agent={agent} onSaved={setAgent} />
         )}
+
+        {activeTab === "engagement" && (() => {
+          // Build per-activator stats from ActivatorLead records
+          const ranked = activators.map(a => {
+            const aLeads = activatorLeads.filter(l => l.rep_code === a.rep_code);
+            const scans = aLeads.length;
+            const verified = aLeads.filter(l => l.status !== "SCANNED").length;
+            const scheduled = aLeads.filter(l => ["SCHEDULED","COMPLETED","CLOSED"].includes(l.status)).length;
+            const closed = aLeads.filter(l => l.status === "CLOSED").length;
+            const rate = scans > 0 ? Math.round((verified / scans) * 100) : 0;
+            return { ...a, scans, verified, scheduled, closed, rate };
+          }).sort((a, b) => b.verified - a.verified);
+
+          if (ranked.length === 0) return (
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+              <TrendingUp className="h-10 w-10 mx-auto mb-3 text-slate-200" />
+              <p className="font-semibold text-slate-500">No Field Activator data yet</p>
+              <p className="text-sm text-slate-400 mt-1">Engagement data will appear once activators start collecting scans.</p>
+            </div>
+          );
+
+          const maxVerified = Math.max(...ranked.map(r => r.verified), 1);
+
+          return (
+            <div className="space-y-4">
+              <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Ranked by verified leads</p>
+
+              {/* Summary totals */}
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Total Scans", value: activatorLeads.length, color: "text-slate-800" },
+                  { label: "Verified", value: activatorLeads.filter(l => l.status !== "SCANNED").length, color: "text-blue-700" },
+                  { label: "Scheduled", value: activatorLeads.filter(l => ["SCHEDULED","COMPLETED","CLOSED"].includes(l.status)).length, color: "text-purple-700" },
+                ].map(({ label, value, color }) => (
+                  <div key={label} className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+                    <p className={`text-2xl font-black ${color}`}>{value}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Leaderboard */}
+              {ranked.map((a, i) => (
+                <div key={a.id} className="bg-white border border-slate-200 rounded-2xl p-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 ${
+                      i === 0 ? "bg-amber-100 text-amber-700" :
+                      i === 1 ? "bg-slate-100 text-slate-600" :
+                      i === 2 ? "bg-orange-100 text-orange-600" :
+                      "bg-slate-50 text-slate-400"
+                    }`}>
+                      {i === 0 ? <Award className="h-4 w-4" /> : `#${i + 1}`}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-slate-800">{a.name}</p>
+                      <p className="text-xs text-slate-400">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
+                    </div>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
+                      a.rate >= 70 ? "bg-green-50 text-green-700 border-green-200" :
+                      a.rate >= 40 ? "bg-amber-50 text-amber-700 border-amber-200" :
+                      "bg-slate-100 text-slate-500 border-slate-200"
+                    }`}>{a.rate}% conversion</span>
+                  </div>
+
+                  {/* Bar */}
+                  <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${(a.verified / maxVerified) * 100}%`,
+                        background: i === 0 ? "#f59e0b" : "#0B1F3B"
+                      }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 gap-2 text-center">
+                    {[
+                      { label: "Scans", value: a.scans },
+                      { label: "Verified", value: a.verified },
+                      { label: "Scheduled", value: a.scheduled },
+                      { label: "Closed", value: a.closed },
+                    ].map(({ label, value }) => (
+                      <div key={label} className="bg-slate-50 rounded-lg py-1.5">
+                        <p className="text-base font-black text-slate-800">{value}</p>
+                        <p className="text-xs text-slate-400">{label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
       </div>
     </div>
   );
