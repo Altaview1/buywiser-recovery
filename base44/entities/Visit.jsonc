@@ -1,0 +1,62 @@
+{
+  "name": "Visit",
+  "type": "object",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "description": "ID of the ActivatorLead being visited"
+    },
+    "activator_id": {
+      "type": "string",
+      "description": "ID of the FieldActivator conducting the visit"
+    },
+    "visit_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the visit occurred"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "no_answer",
+        "spoke_homeowner",
+        "code_scanned",
+        "not_interested",
+        "callback_scheduled"
+      ],
+      "description": "Outcome of the visit"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Field rep notes from the visit"
+    },
+    "door_photo_url": {
+      "type": "string",
+      "description": "Photo of the door/property"
+    },
+    "homeowner_name": {
+      "type": "string",
+      "description": "Name of person at door if spoken with"
+    },
+    "homeowner_phone": {
+      "type": "string",
+      "description": "Phone number if collected"
+    },
+    "code_scanned": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether QR code was scanned during visit"
+    },
+    "callback_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When to call back if scheduled"
+    }
+  },
+  "required": [
+    "lead_id",
+    "activator_id",
+    "visit_date",
+    "status"
+  ]
+}

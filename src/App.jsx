@@ -37,6 +37,7 @@ import AdminSettings from './pages/AdminSettings';
 import VTONScan from './pages/VTONScan';
 import FieldActivatorDashboard from './pages/FieldActivatorDashboard';
 import FieldActivatorAdmin from './pages/FieldActivatorAdmin';
+import FieldActivatorPortal from './pages/FieldActivatorPortal';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -88,6 +89,9 @@ const AuthenticatedApp = () => {
       <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
       <Route path="/vton-scan" element={<VTONScan />} />
       <Route path="/activator" element={<FieldActivatorDashboard />} />
+      {/* Field Activator Portal */}
+      <Route path="/field-activator" element={<FieldActivatorPortal />} />
+
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
