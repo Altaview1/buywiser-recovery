@@ -10,7 +10,9 @@ function parseCSV(text) {
   const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   const lines = normalized.trim().split("\n").filter(l => l.trim() !== "");
   if (lines.length < 2) return [];
-  const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
+  // Strip BOM (Excel UTF-8 with BOM exports include \uFEFF at the start)
+  const firstLine = lines[0].replace(/^\uFEFF/, "").replace(/"/g, "");
+  const headers = firstLine.split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
   return lines.slice(1).map(line => {
     const cols = [];
     let current = "";
@@ -24,7 +26,7 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h, i) => { obj[h] = cols[i] || ""; });
     return obj;
-  }).filter(row => row.first_name || row.email);
+  }).filter(row => Object.values(row).some(v => v.trim() !== ""));
 }
 
 // Map CSV row to ActivatorLead fields
