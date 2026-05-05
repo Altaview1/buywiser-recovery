@@ -346,12 +346,22 @@ export default function FieldActivatorPortal() {
 
                 {/* Last Visit Summary */}
                 {lastVisit && (
-                  <div className="bg-slate-50 rounded-lg px-3 py-2 mb-2 sm:mb-3 text-xs">
-                    <p className="font-bold text-slate-700 mb-1 text-xs sm:text-sm">Last: {new Date(lastVisit.visit_date).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
-                    <p className="text-slate-600 text-xs truncate">
-                      <strong>{lastVisit.status.replace(/_/g, " ")}</strong>
-                      {lastVisit.notes && ` — ${lastVisit.notes.slice(0, 40)}…`}
-                    </p>
+                  <div className="bg-slate-50 rounded-lg px-3 py-2 mb-2 sm:mb-3 space-y-2">
+                    <div className="text-xs">
+                      <p className="font-bold text-slate-700 mb-1 text-xs sm:text-sm">Last: {new Date(lastVisit.visit_date).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+                      <p className="text-slate-600 text-xs truncate">
+                        <strong>{lastVisit.status.replace(/_/g, " ")}</strong>
+                        {lastVisit.notes && ` — ${lastVisit.notes.slice(0, 40)}…`}
+                      </p>
+                    </div>
+                    {lastVisit.door_photo_url && (
+                      <div className="relative rounded-lg overflow-hidden h-24 bg-slate-200">
+                        <img src={lastVisit.door_photo_url} alt="Property" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-black/0 hover:bg-black/20 transition flex items-center justify-center">
+                          <p className="text-white text-xs font-bold bg-black/40 px-2 py-1 rounded opacity-0 hover:opacity-100">📸 Photo</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
