@@ -175,34 +175,59 @@ export default function FieldActivatorDashboard() {
           ))}
         </div>
 
-        {/* Pending earnings */}
-        {pendingEarnings > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 flex items-center gap-3">
-            <DollarSign className="h-5 w-5 text-amber-600" />
-            <div>
-              <p className="text-sm font-bold text-amber-800">${pendingEarnings} pending earnings</p>
-              <p className="text-xs text-amber-600">Awaiting admin approval</p>
-            </div>
-          </div>
-        )}
-
-        {/* Payments */}
-        {payments.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-2xl p-5">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Earnings Breakdown</p>
-            <div className="space-y-2">
-              {payments.map(p => (
-                <div key={p.id} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
-                  <div>
-                    <span className="text-xs font-bold text-slate-700">{p.type}</span>
-                    <span className={`ml-2 px-2 py-0.5 text-xs rounded-full border font-semibold ${PAYMENT_STATUS[p.status]}`}>{p.status}</span>
-                  </div>
-                  <span className="text-sm font-black text-slate-800">${p.amount}</span>
+        {/* Earnings Summary */}
+        {payments.length > 0 && (() => {
+          const paid = payments.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0);
+          const approved = payments.filter(p => p.status === "APPROVED").reduce((s, p) => s + p.amount, 0);
+          const pending = payments.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0);
+          const total = paid + approved + pending;
+          return (
+            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+              <div className="px-5 py-4" style={{ background: NAVY }}>
+                <p className="text-xs font-black uppercase tracking-widest text-blue-300 mb-1">Earnings Summary</p>
+                <p className="text-3xl font-black text-white">${total.toLocaleString()}</p>
+                <p className="text-xs text-blue-300 mt-0.5">Lifetime earnings across all payouts</p>
+              </div>
+              <div className="grid grid-cols-3 divide-x divide-slate-100">
+                <div className="px-4 py-4 text-center">
+                  <p className="text-xl font-black text-green-600">${paid.toLocaleString()}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Paid Out</p>
+                  <p className="text-xs text-green-600 font-semibold mt-1">✓ Received</p>
                 </div>
-              ))}
+                <div className="px-4 py-4 text-center">
+                  <p className="text-xl font-black text-blue-600">${approved.toLocaleString()}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Approved</p>
+                  <p className="text-xs text-blue-600 font-semibold mt-1">Processing</p>
+                </div>
+                <div className="px-4 py-4 text-center">
+                  <p className="text-xl font-black text-amber-600">${pending.toLocaleString()}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Pending</p>
+                  <p className="text-xs text-amber-600 font-semibold mt-1">Awaiting Review</p>
+                </div>
+              </div>
+
+              {/* Itemized breakdown */}
+              <div className="border-t border-slate-100 px-5 py-4">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Itemized Payouts</p>
+                <div className="space-y-2">
+                  {payments.map(p => (
+                    <div key={p.id} className="flex items-center justify-between py-2 border-b border-slate-50 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 text-xs rounded-full border font-bold ${
+                          p.type === "CLOSE" ? "bg-emerald-100 text-emerald-800 border-emerald-200" :
+                          p.type === "CONSULT" ? "bg-purple-100 text-purple-700 border-purple-200" :
+                          "bg-blue-100 text-blue-700 border-blue-200"
+                        }`}>{p.type}</span>
+                        <span className={`px-2 py-0.5 text-xs rounded-full border font-semibold ${PAYMENT_STATUS[p.status]}`}>{p.status}</span>
+                      </div>
+                      <span className="text-sm font-black text-slate-800">${p.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Leads list */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
