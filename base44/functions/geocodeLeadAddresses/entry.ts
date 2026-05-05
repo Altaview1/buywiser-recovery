@@ -14,16 +14,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Maps API key not configured' }, { status: 500 });
     }
 
-    // Get all ActivatorLeads with valid addresses (using user's auth context)
-    const allLeads = await base44.entities.ActivatorLead.list('-created_date', 1000);
-    const leads = allLeads.filter(l => l.property_address && !l.lat);
+    // Get all ActivatorLeads with valid addresses (force refresh on all)
+    const leads = await base44.entities.ActivatorLead.list('-created_date', 1000);
+    const validLeads = leads.filter(l => l.property_address && l.property_address.trim() !== '');
     
-    console.log(`Found ${leads.length} leads to geocode`);
+    console.log(`Found ${validLeads.length} leads to geocode (forcing refresh on all)`);
     
     let processedCount = 0;
     const errors = [];
 
-    for (const lead of leads) {
+    for (const lead of validLeads) {
       try {
         // Format address for API: normalize whitespace, remove special chars
         const formattedAddress = lead.property_address
@@ -70,9 +70,10 @@ Deno.serve(async (req) => {
     return Response.json({
       success: true,
       processed: processedCount,
-      skipped: allLeads.length - leads.length,
+      skipped: leads.length - validLeads.length,
       errors: errors.length,
-      message: `Geocoded ${processedCount} leads`
+      totalAddresses: validLeads.length,
+      message: `Force-refreshed ${processedCount}/${validLeads.length} leads`
     });
   } catch (error) {
     console.error('Geocoding error:', error);
