@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
-import { AlertCircle, RefreshCw, LogOut, DollarSign, Users, QrCode, MapPin, TrendingUp } from "lucide-react";
+import { AlertCircle, RefreshCw, LogOut, DollarSign, Users, QrCode, MapPin, TrendingUp, Printer } from "lucide-react";
+import QRFlyerPrint from "@/components/activator/QRFlyerPrint";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -77,6 +78,7 @@ export default function FieldActivatorDashboard() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showQR, setShowQR] = useState(false);
+  const [showFlyer, setShowFlyer] = useState(false);
 
   const fetchData = async (a) => {
     setLoading(true);
@@ -105,6 +107,7 @@ export default function FieldActivatorDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {showFlyer && <QRFlyerPrint activator={activator} onClose={() => setShowFlyer(false)} />}
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
@@ -135,10 +138,16 @@ export default function FieldActivatorDashboard() {
               <p className="text-3xl font-black tracking-widest mt-1" style={{ color: NAVY }}>{activator.rep_code}</p>
               <p className="text-xs text-slate-400 mt-1">Share this QR to attribute scans to you</p>
             </div>
-            <button onClick={() => setShowQR(!showQR)}
-              className="p-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 transition">
-              <QrCode className="h-6 w-6" />
-            </button>
+            <div className="flex gap-2">
+              <button onClick={() => setShowFlyer(true)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 transition text-xs font-bold">
+                <Printer className="h-4 w-4" /> Print Flyer
+              </button>
+              <button onClick={() => setShowQR(!showQR)}
+                className="p-3 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 transition">
+                <QrCode className="h-6 w-6" />
+              </button>
+            </div>
           </div>
           {showQR && (
             <div className="flex flex-col items-center mt-4 pt-4 border-t border-slate-100">
