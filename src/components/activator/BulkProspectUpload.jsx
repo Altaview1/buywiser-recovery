@@ -431,12 +431,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                     )}
                   </div>
 
-                  {partnersError && (
-                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl mb-2">
-                      <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
-                      <p className="text-xs text-red-600">{partnersError}</p>
-                    </div>
-                  )}
+
 
                   <select
                     value={selectedPartner}
@@ -533,14 +528,14 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
               {/* Actions */}
               <div className="flex gap-2 pt-1">
                 <button
-                  onClick={handleImport}
-                  disabled={!file || importing || (detectedFormat === "propertyradar" && !selectedPartner)}
-                  className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
-                  style={{ background: NAVY }}
-                >
-                  <Upload className="h-4 w-4" />
-                  {importing ? `Importing… ${importProgress}%` : `Import ${previewTotal > 0 ? `${previewTotal} Prospects` : ""}`}
-                </button>
+                   onClick={handleImport}
+                   disabled={!file || importing}
+                   className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
+                   style={{ background: NAVY }}
+                 >
+                   <Upload className="h-4 w-4" />
+                   {importing ? `Importing… ${importProgress}%` : `Import ${previewTotal > 0 ? `${previewTotal} Prospects` : ""}`}
+                 </button>
                 <button onClick={onClose}
                   className="px-5 py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
                   Cancel
