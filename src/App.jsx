@@ -86,7 +86,6 @@ const AuthenticatedApp = () => {
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
       <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
       <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
-      <Route path="/admin-settings" element={<AdminSettings />} />
       <Route path="/vton-scan" element={<VTONScan />} />
       <Route path="/activator" element={<FieldActivatorDashboard />} />
       {/* Redirects for old/alternate URLs */}
@@ -109,6 +108,7 @@ function App() {
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<FieldActivatorAdmin />} />
+          <Route path="/admin-settings" element={<AdminSettings />} />
           
           {/* All other routes wrapped in auth */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
