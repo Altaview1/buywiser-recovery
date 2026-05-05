@@ -1,0 +1,47 @@
+{
+  "name": "FieldActivator",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "rep_code": {
+      "type": "string",
+      "description": "Unique rep code used in QR links"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "assigned_area": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "total_scans": {
+      "type": "number",
+      "default": 0
+    },
+    "total_earnings": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "rep_code",
+    "email"
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "name": "ActivatorLead",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "property_address": {
+      "type": "string"
+    },
+    "rep_code": {
+      "type": "string",
+      "description": "Rep code from QR scan"
+    },
+    "activator_id": {
+      "type": "string",
+      "description": "ID of linked FieldActivator"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "SCANNED",
+        "VERIFIED",
+        "QUALIFIED",
+        "SCHEDULED",
+        "COMPLETED",
+        "CLOSED"
+      ],
+      "default": "SCANNED"
+    },
+    "planning_to_buy": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "not_sure"
+      ]
+    },
+    "timeline": {
+      "type": "string",
+      "enum": [
+        "0-3months",
+        "3-6months",
+        "6plus"
+      ]
+    },
+    "next_home_type": {
+      "type": "string",
+      "enum": [
+        "primary",
+        "investment",
+        "not_sure"
+      ]
+    },
+    "charity_selected": {
+      "type": "string"
+    },
+    "appointment_scheduled": {
+      "type": "boolean",
+      "default": false
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "scan_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "first_name",
+    "email"
+  ]
+}

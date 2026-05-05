@@ -1,0 +1,45 @@
+{
+  "name": "ActivatorPayment",
+  "type": "object",
+  "properties": {
+    "activator_id": {
+      "type": "string"
+    },
+    "lead_id": {
+      "type": "string"
+    },
+    "rep_code": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "SCAN",
+        "CONSULT",
+        "CLOSE"
+      ],
+      "description": "Type of payout trigger"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "PAID"
+      ],
+      "default": "PENDING"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "activator_id",
+    "lead_id",
+    "type",
+    "amount"
+  ]
+}
