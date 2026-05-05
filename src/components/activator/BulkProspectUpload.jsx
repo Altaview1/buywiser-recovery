@@ -209,15 +209,12 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const [partnersError, setPartnersError] = useState(null);
   const fileRef = useRef();
 
-  // Fetch approved partners on mount
+  // Fetch all partners on mount
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
+        const data = await base44.entities.PartnerApplication.list("-created_date", 100);
         setPartners(data);
-        if (data.length === 0) {
-          setPartnersError("No approved partners found. Add partners before uploading PropertyRadar leads.");
-        }
       } catch (err) {
         setPartnersError(`Failed to load partners: ${err.message}`);
         console.error("Partner fetch error:", err);
@@ -260,13 +257,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const handleImport = async () => {
     if (!file) return;
 
-    // Validation
-    if (detectedFormat === "propertyradar") {
-      if (!selectedPartner) {
-        setErrors([{ message: "Please select a partner agent" }]);
-        return;
-      }
-    }
+    // No validation needed for partner selection anymore
 
     setImporting(true);
     setImportProgress(0);
@@ -417,7 +408,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
-                      Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(required)</span>
+                      Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(optional)</span>
                     </label>
                     {partnersError && (
                       <button
