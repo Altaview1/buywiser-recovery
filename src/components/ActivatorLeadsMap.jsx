@@ -1,15 +1,4 @@
-import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-
-// Fix leaflet marker icons
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
+import { useState, useEffect, useRef } from "react";
 
 const STATUS_COLORS = {
   SCANNED: "#64748b",
@@ -21,29 +10,26 @@ const STATUS_COLORS = {
 };
 
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
-  const [validLeads, setValidLeads] = useState([]);
+  const mapRef = useRef(null);
+  const mapInstance = useRef(null);
   const [filter, setFilter] = useState("All");
   const [geocodedLeads, setGeocodedLeads] = useState([]);
-  const [mapCenter, setMapCenter] = useState([34.0522, -118.2437]);
-  const [mapZoom, setMapZoom] = useState(10);
-  const [geocodingLoading, setGeocodingLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Geocode addresses using Nominatim (OpenStreetMap)
-  const geocodeAddress = async (address) => {
-    try {
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
-      );
-      const data = await response.json();
-      if (data.length > 0) {
-        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-      }
-    } catch (err) {
-      console.error(`Geocoding failed for ${address}:`, err);
+  // Load Google Maps API
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || localStorage.getItem("gmapsKey");
+    
+    if (!window.google && apiKey) {
+      const script = document.createElement("script");
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      document.head.appendChild(script);
     }
-    return null;
-  };
+  }, []);
 
+  // Geocode and plot leads
   useEffect(() => {
     const init = async () => {
       const filtered = leads.filter(l => {
@@ -51,38 +37,124 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         return matchFilter && l.property_address;
       });
 
-      setGeocodingLoading(true);
-      const geocoded = await Promise.all(
-        filtered.map(async (lead) => {
-          const coords = await geocodeAddress(lead.property_address);
-          return coords ? { ...lead, coordinates: coords } : null;
-        })
-      );
-
-      const validGeocoded = geocoded.filter(l => l !== null);
-      setValidLeads(validGeocoded);
-
-      // Calculate center and bounds from geocoded leads
-      if (validGeocoded.length > 0) {
-        const lats = validGeocoded.map(l => l.coordinates[0]);
-        const lons = validGeocoded.map(l => l.coordinates[1]);
-        const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
-        const centerLon = (Math.max(...lons) + Math.min(...lons)) / 2;
-        setMapCenter([centerLat, centerLon]);
-
-        // Adjust zoom based on spread
-        const latDiff = Math.max(...lats) - Math.min(...lats);
-        const lonDiff = Math.max(...lons) - Math.min(...lons);
-        const maxDiff = Math.max(latDiff, lonDiff);
-        const zoom = maxDiff > 0.5 ? 9 : maxDiff > 0.1 ? 11 : 12;
-        setMapZoom(zoom);
+      if (filtered.length === 0 || !window.google) {
+        setGeocodedLeads([]);
+        return;
       }
 
-      setGeocodingLoading(false);
+      setLoading(true);
+      const geocoder = new window.google.maps.Geocoder();
+      const geocoded = [];
+
+      for (const lead of filtered) {
+        try {
+          const result = await new Promise((resolve) => {
+            geocoder.geocode({ address: lead.property_address }, (results, status) => {
+              if (status === "OK" && results[0]) {
+                const loc = results[0].geometry.location;
+                resolve({ ...lead, lat: loc.lat(), lng: loc.lng() });
+              } else {
+                resolve(null);
+              }
+            });
+          });
+          if (result) geocoded.push(result);
+        } catch (err) {
+          console.error(`Geocoding failed for ${lead.property_address}:`, err);
+        }
+      }
+
+      setGeocodedLeads(geocoded);
+
+      // Initialize or update map
+      if (mapRef.current && geocoded.length > 0) {
+        initializeMap(geocoded);
+      }
+
+      setLoading(false);
     };
 
     init();
   }, [leads, filter]);
+
+  const initializeMap = (leadsData) => {
+    if (!window.google || !mapRef.current) return;
+
+    // Calculate bounds
+    const bounds = new window.google.maps.LatLngBounds();
+    leadsData.forEach(lead => {
+      bounds.extend(new window.google.maps.LatLng(lead.lat, lead.lng));
+    });
+
+    // Create or update map
+    if (!mapInstance.current) {
+      mapInstance.current = new window.google.maps.Map(mapRef.current, {
+        zoom: 10,
+        center: bounds.getCenter(),
+        mapTypeId: "roadmap",
+      });
+    }
+
+    // Clear old markers
+    if (mapInstance.current.markers) {
+      mapInstance.current.markers.forEach(m => m.setMap(null));
+    }
+    mapInstance.current.markers = [];
+
+    // Add markers
+    const infoWindows = [];
+    leadsData.forEach((lead, idx) => {
+      const marker = new window.google.maps.Marker({
+        position: { lat: lead.lat, lng: lead.lng },
+        map: mapInstance.current,
+        title: `${lead.first_name} ${lead.last_name}`,
+        label: { text: String(idx + 1), color: "white", fontSize: "12px", fontWeight: "bold" },
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 12,
+          fillColor: STATUS_COLORS[lead.status] || "#64748b",
+          fillOpacity: 1,
+          strokeColor: "white",
+          strokeWeight: 2,
+        },
+      });
+
+      const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: `
+          <div style="font-size: 12px; max-width: 200px;">
+            <strong>#${idx + 1} ${fullName || "Prospect"}</strong><br/>
+            ${lead.property_address}<br/>
+            ${lead.property_type ? `Type: ${lead.property_type}<br/>` : ""}
+            ${lead.estimated_price ? `Est: $${(lead.estimated_price/1000).toFixed(0)}K<br/>` : ""}
+            ${lead.listing_dom != null && lead.listing_dom > 0 ? `DOM: ${lead.listing_dom}<br/>` : ""}
+            <button onclick="window.dispatchEvent(new CustomEvent('selectLead', { detail: '${lead.id}' }))" 
+              style="margin-top: 8px; padding: 4px 8px; background: #2563eb; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: bold;">
+              View Details
+            </button>
+          </div>
+        `,
+      });
+
+      marker.addListener("click", () => {
+        infoWindows.forEach(iw => iw.close());
+        infoWindow.open(mapInstance.current, marker);
+      });
+
+      mapInstance.current.markers.push(marker);
+      infoWindows.push(infoWindow);
+    });
+
+    // Fit bounds
+    mapInstance.current.fitBounds(bounds);
+
+    // Custom event listener for marker clicks
+    window.addEventListener("selectLead", (e) => {
+      const leadId = e.detail;
+      const lead = leadsData.find(l => l.id === leadId);
+      if (lead) onSelectLead(lead);
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -103,75 +175,32 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         ))}
       </div>
 
-      {/* Geocoding Status */}
-      {geocodingLoading && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
-          🔄 Geocoding {leads.filter(l => l.property_address).length} addresses... This may take a moment.
-        </div>
-      )}
-
       {/* Map */}
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
-        {validLeads.length === 0 && !geocodingLoading ? (
+        {geocodedLeads.length === 0 && !loading ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
             <div className="text-center">
               <p className="font-semibold mb-1">No leads to display</p>
               <p className="text-sm">Select a different filter or add leads with valid addresses</p>
             </div>
           </div>
-        ) : geocodingLoading ? (
-          <div className="w-full h-full flex items-center justify-center bg-slate-50">
-            <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
-          </div>
         ) : (
-          <MapContainer center={mapCenter} zoom={mapZoom} style={{ height: "100%", width: "100%" }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
-            {validLeads.map((lead, idx) => {
-              const [lat, lon] = lead.coordinates;
-              const color = STATUS_COLORS[lead.status] || "#64748b";
-              const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
-              
-              return (
-                <Marker
-                  key={lead.id}
-                  position={[lat, lon]}
-                  icon={L.icon({
-                    iconUrl: `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDMyIDQwIj48cGF0aCBmaWxsPSIke2NvbG9yfSIgZD0iTTE2IDAgQzExLjYgMCA4IDMuNiA4IDggYzAgNCA4IDE2IDggMTZzMTYtMTIgMTYtMTZjMC00LjQtMy42LTgtOC04eiIvPjx0ZXh0IHg9IjE2IiB5PSI4IiBmaWxsPSIjZmZmIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPiR7aWR4ICsgMX08L3RleHQ+PC9zdmc+`.replace("${color}", color).replace("${idx + 1}", idx + 1),
-                    iconSize: [32, 40],
-                    iconAnchor: [16, 40],
-                    popupAnchor: [0, -40],
-                  })}
-                >
-                  <Popup>
-                    <div className="text-xs space-y-1 w-48">
-                      <p className="font-bold">#{idx + 1} {fullName || "Prospect"}</p>
-                      <p className="text-slate-600">{lead.property_address}</p>
-                      {lead.property_type && <p><span className="font-semibold">Type:</span> {lead.property_type}</p>}
-                      {lead.estimated_price && <p><span className="font-semibold">Est:</span> ${(lead.estimated_price/1000).toFixed(0)}K</p>}
-                      {lead.listing_dom != null && lead.listing_dom > 0 && <p><span className="font-semibold">DOM:</span> {lead.listing_dom}</p>}
-                      <button
-                        onClick={() => onSelectLead(lead)}
-                        className="mt-2 w-full px-2 py-1 bg-blue-600 text-white text-xs font-bold rounded hover:bg-blue-700 transition"
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
+          <>
+            <div ref={mapRef} style={{ width: "100%", height: "100%" }} />
+            {loading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-white/50">
+                <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* Stats & Routing Tips */}
+      {/* Stats */}
       <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 space-y-1 text-xs">
-        <p className="font-bold text-amber-900">📍 {validLeads.length} prospect{validLeads.length !== 1 ? "s" : ""} with geocoded addresses</p>
-        {validLeads.length > 1 && (
-          <p className="text-amber-700">💡 <strong>Route Tip:</strong> Numbered markers show suggested door-knock sequence. Visit in order 1 → {validLeads.length} for optimal efficiency.</p>
+        <p className="font-bold text-amber-900">📍 {geocodedLeads.length} prospect{geocodedLeads.length !== 1 ? "s" : ""} mapped</p>
+        {geocodedLeads.length > 1 && (
+          <p className="text-amber-700">💡 <strong>Route Tip:</strong> Numbered markers show suggested door-knock sequence.</p>
         )}
       </div>
     </div>
