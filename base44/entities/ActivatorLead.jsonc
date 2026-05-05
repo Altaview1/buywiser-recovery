@@ -96,6 +96,14 @@
     "scan_timestamp": {
       "type": "string",
       "format": "date-time"
+    },
+    "lat": {
+      "type": "number",
+      "description": "Latitude coordinate for map display"
+    },
+    "lng": {
+      "type": "number",
+      "description": "Longitude coordinate for map display"
     }
   },
   "required": [

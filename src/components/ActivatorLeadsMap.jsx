@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 
 const STATUS_COLORS = {
   SCANNED: "#64748b",
@@ -11,18 +12,38 @@ const STATUS_COLORS = {
 
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [filter, setFilter] = useState("All");
+  const [geocoding, setGeocoding] = useState(false);
+  const [mapCenter, setMapCenter] = useState({ lat: 34.1602, lng: -118.2583 }); // Default: Glendale, CA
 
   // Filter leads
   const filtered = leads.filter(l => 
     (filter === "All" || l.status === filter) && l.property_address
   );
 
-  // Build map URL with first filtered address
-  const mapAddress = filtered.length > 0 
-    ? encodeURIComponent(filtered[0].property_address)
-    : "California";
-  
-  const mapUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyBk4X5r3IuozWjNDkDkWJL-RI69zs9PNLc&q=${mapAddress}`;
+  // Update map center when filtered leads change
+  useEffect(() => {
+    if (filtered.length > 0 && filtered[0].lat && filtered[0].lng) {
+      setMapCenter({ lat: filtered[0].lat, lng: filtered[0].lng });
+    }
+  }, [filtered]);
+
+  // Geocode all addresses
+  const handleGeocodeAll = async () => {
+    setGeocoding(true);
+    try {
+      const res = await base44.functions.invoke('geocodeLeadAddresses', {});
+      if (res.data.success) {
+        alert(`✓ Geocoded ${res.data.processed} leads`);
+        // Reload leads by refreshing the page or fetching fresh data
+        window.location.reload();
+      }
+    } catch (err) {
+      alert('Geocoding failed: ' + err.message);
+    }
+    setGeocoding(false);
+  };
+
+  const mapUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyBk4X5r3IuozWjNDkDkWJL-RI69zs9PNLc&q=${mapCenter.lat},${mapCenter.lng}`;
 
   return (
     <div className="space-y-4">
@@ -34,6 +55,18 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
           <div><span className="text-blue-600">Visible:</span> {filtered.length}</div>
           <div><span className="text-blue-600">Filter:</span> {filter}</div>
         </div>
+      </div>
+
+      {/* Geocode Button */}
+      <div className="flex gap-2 flex-wrap justify-between items-center">
+        <button
+          onClick={handleGeocodeAll}
+          disabled={geocoding}
+          className="px-4 py-2 rounded-lg font-bold text-sm text-white transition disabled:opacity-50"
+          style={{ background: "#0B1F3B" }}
+        >
+          {geocoding ? "Processing…" : "🗺️ Geocode All Addresses"}
+        </button>
       </div>
 
       {/* Filter Buttons */}
