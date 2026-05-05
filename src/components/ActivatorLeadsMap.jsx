@@ -1,42 +1,4 @@
-import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
-import { base44 } from "@/api/base44Client";
-
-// Test data
-const SAMPLE_LEADS = [
-  {
-    id: "test-1",
-    first_name: "John",
-    last_name: "Smith",
-    email: "john@test.com",
-    property_address: "123 Oak Street, Glendale, CA 91205",
-    lat: 34.1602,
-    lng: -118.2583,
-    status: "VERIFIED",
-  },
-  {
-    id: "test-2",
-    first_name: "Jane",
-    last_name: "Doe",
-    email: "jane@test.com",
-    property_address: "456 Elm Avenue, Burbank, CA 91502",
-    lat: 34.1659,
-    lng: -118.3079,
-    status: "QUALIFIED",
-  },
-  {
-    id: "test-3",
-    first_name: "Bob",
-    last_name: "Johnson",
-    email: "bob@test.com",
-    property_address: "789 Maple Drive, Pasadena, CA 91101",
-    lat: 34.1478,
-    lng: -118.1445,
-    status: "SCHEDULED",
-  },
-];
+import { useState } from "react";
 
 const STATUS_COLORS = {
   SCANNED: "#64748b",
@@ -49,33 +11,23 @@ const STATUS_COLORS = {
 
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [filter, setFilter] = useState("All");
-  const [selectedLeadIds, setSelectedLeadIds] = useState([]);
 
-  // Use test data for map (real leads would need geocoding)
-  // In production, geocode real leads to get lat/lng
-  const displayLeads = SAMPLE_LEADS;
+  // Filter leads
+  const filtered = leads.filter(l => 
+    (filter === "All" || l.status === filter) && l.property_address
+  );
 
-  const filtered = displayLeads.filter(l => {
-    const matchFilter = filter === "All" || l.status === filter;
-    return matchFilter && l.lat && l.lng;
-  });
-
-  // Default center (Glendale, CA area)
-  const center = filtered.length > 0 
-    ? [filtered[0].lat, filtered[0].lng]
-    : [34.1602, -118.2583];
+  const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.6729857776827!2d-118.2583!3d34.1602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bce0e0e0e0e1%3A0x0!2sGlendale%2C%20CA!5e0!3m2!1sen!2sus!4v1234567890`;
 
   return (
     <div className="space-y-4">
-      {/* Diagnostic Panel */}
-      <div className={`rounded-lg p-4 space-y-2 text-xs font-mono ${leads.length === 0 ? 'bg-amber-50 border-2 border-amber-400' : 'bg-blue-50 border-2 border-blue-300'}`}>
-        <p className={`font-bold ${leads.length === 0 ? 'text-amber-900' : 'text-blue-900'}`}>
-          {leads.length === 0 ? '⚠️ USING TEST DATA' : '📊 MAP READY'}
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          <div><span className="text-blue-600">Leads:</span> {displayLeads.length}</div>
+      {/* Status Summary */}
+      <div className="rounded-lg p-4 bg-blue-50 border-2 border-blue-300 space-y-2 text-xs font-mono">
+        <p className="font-bold text-blue-900">📍 Lead Map</p>
+        <div className="grid grid-cols-3 gap-2">
+          <div><span className="text-blue-600">Total:</span> {leads.length}</div>
           <div><span className="text-blue-600">Visible:</span> {filtered.length}</div>
-          <div><span className="text-blue-600">Selected:</span> {selectedLeadIds.length}</div>
+          <div><span className="text-blue-600">Filter:</span> {filter}</div>
         </div>
       </div>
 
@@ -96,72 +48,54 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         ))}
       </div>
 
-      {/* Map */}
+      {/* Google Map Embed */}
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px]">
-        {filtered.length === 0 ? (
-          <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
-            <p className="text-center">
-              <p className="font-semibold">No leads to display</p>
-              <p className="text-sm">Add leads with coordinates to see them on the map</p>
-            </p>
-          </div>
-        ) : (
-          <MapContainer center={center} zoom={11} style={{ height: "100%" }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; OpenStreetMap contributors'
-            />
-            {filtered.map((lead, idx) => {
-              const isSelected = selectedLeadIds.includes(lead.id);
-              return (
-                <Marker
-                  key={lead.id}
-                  position={[lead.lat, lead.lng]}
-                  icon={L.divIcon({
-                    html: `
-                      <div style="
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: ${isSelected ? '32px' : '24px'};
-                        height: ${isSelected ? '32px' : '24px'};
-                        border-radius: 50%;
-                        background: ${STATUS_COLORS[lead.status] || '#64748b'};
-                        border: ${isSelected ? '3px solid #dc2626' : '2px solid white'};
-                        color: white;
-                        font-weight: bold;
-                        font-size: 12px;
-                        cursor: pointer;
-                      ">
-                        ${idx + 1}
-                      </div>
-                    `,
-                    className: "",
-                    iconSize: [isSelected ? 32 : 24, isSelected ? 32 : 24],
-                  })}
-                  eventHandlers={{
-                    click: () => onSelectLead(lead),
-                  }}
-                >
-                  <Popup>
-                    <div style={{ fontSize: "12px", maxWidth: "200px" }}>
-                      <strong>${idx + 1} {lead.first_name} {lead.last_name}</strong>
-                      <br />
-                      {lead.property_address}
-                      <br />
-                      <span style={{ fontSize: "10px", color: "#666" }}>{lead.status}</span>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
-        )}
+        <iframe
+          src={mapUrl}
+          style={{ width: "100%", height: "100%", border: "none" }}
+          allowFullScreen=""
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          title="Lead locations map"
+        />
       </div>
 
-      {/* Stats */}
-      <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 text-xs">
-        <p className="font-bold text-amber-900">📍 {filtered.length} prospect{filtered.length !== 1 ? "s" : ""} mapped</p>
+      {/* Lead List */}
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <div className="px-4 py-3 bg-slate-50 border-b border-slate-100">
+          <h3 className="text-sm font-bold text-slate-900">Leads ({filtered.length})</h3>
+        </div>
+        <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+          {filtered.length === 0 ? (
+            <div className="px-4 py-8 text-center text-slate-400 text-sm">
+              No leads to display
+            </div>
+          ) : (
+            filtered.map(lead => (
+              <button
+                key={lead.id}
+                onClick={() => onSelectLead(lead)}
+                className="w-full text-left px-4 py-3 hover:bg-slate-50 transition"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="h-3 w-3 rounded-full flex-shrink-0"
+                    style={{ background: STATUS_COLORS[lead.status] }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-900 truncate">
+                      {lead.first_name} {lead.last_name}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">{lead.property_address}</p>
+                  </div>
+                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded flex-shrink-0">
+                    {lead.status}
+                  </span>
+                </div>
+              </button>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
