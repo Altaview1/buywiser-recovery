@@ -509,12 +509,14 @@ export default function FieldActivatorAdmin() {
                           {fullName ? (
                             <>
                               <p className="text-base font-bold text-slate-900">{fullName}</p>
-                              {lead.email && <p className="text-sm text-blue-600">{lead.email}</p>}
+                              <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                                {lead.homeowner_phone && <a href={`tel:${lead.homeowner_phone}`} className="text-xs text-green-600 hover:text-green-800 underline">📞 {lead.homeowner_phone}</a>}
+                                {lead.homeowner_email && <a href={`mailto:${lead.homeowner_email}`} className="text-xs text-blue-600 hover:text-blue-800 underline">✉ {lead.homeowner_email}</a>}
+                              </div>
                             </>
                           ) : (
                             <p className="text-base font-bold text-slate-900">{lead.property_address || 'Prospect'}</p>
                           )}
-                          {lead.phone && <p className="text-sm text-slate-500">{lead.phone}</p>}
                         </div>
                         <span className={`px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
                           {lead.status}

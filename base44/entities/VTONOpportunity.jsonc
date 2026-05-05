@@ -13,6 +13,10 @@
       "type": "string",
       "description": "Homeowner phone number for partner outreach"
     },
+    "homeowner_email": {
+      "type": "string",
+      "description": "Homeowner email address"
+    },
     "property_address": {
       "type": "string"
     },

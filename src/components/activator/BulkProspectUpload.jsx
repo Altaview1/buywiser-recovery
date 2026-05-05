@@ -57,9 +57,13 @@ function mapPropertyRadarRow(row, partnerEmail) {
   const distressScore = parseFloat(row.distress_score || "0") || null;
   const listingDom = parseFloat(row.listing_dom || "0") || null;
   const propType = (row.type || "").trim() || "SFR";
+  const phone = (row.phone || row.phone_number || "").trim();
+  const email = (row.email || row.email_address || "").trim();
 
   return {
     homeowner_name: `${first_name} ${last_name}`.trim(),
+    homeowner_phone: phone,
+    homeowner_email: email,
     property_address: address,
     city: city,
     state: "CA",
@@ -477,7 +481,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                       <thead className="bg-slate-50">
                         <tr>
                           {detectedFormat === "propertyradar"
-                            ? ["Type", "Address", "Est Value", "Owner"].map(h => (
+                            ? ["Type", "Address", "Owner", "Phone", "Email"].map(h => (
                                 <th key={h} className="px-3 py-2 text-left font-bold text-slate-500 text-xs">{h}</th>
                               ))
                             : ["First Name", "Last Name", "Email"].map(h => (
@@ -492,9 +496,10 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                             {detectedFormat === "propertyradar" ? (
                               <>
                                 <td className="px-3 py-2 text-slate-700 font-medium text-xs">{row.type || "—"}</td>
-                                <td className="px-3 py-2 text-slate-600 text-xs">{row.address || "—"}</td>
-                                <td className="px-3 py-2 text-slate-500 text-xs">${row.est_value || "—"}</td>
+                                <td className="px-3 py-2 text-slate-600 text-xs truncate">{row.address || "—"}</td>
                                 <td className="px-3 py-2 text-slate-500 text-xs">{row.owner?.split(',')[0] || "—"}</td>
+                                <td className="px-3 py-2 text-slate-500 text-xs">{row.phone || row.phone_number || "—"}</td>
+                                <td className="px-3 py-2 text-slate-500 text-xs truncate">{row.email || row.email_address || "—"}</td>
                               </>
                             ) : (
                               <>
