@@ -35,18 +35,26 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         const apiKey = res.data?.apiKey;
 
         if (!apiKey) {
-          console.warn("Google Maps API key not available");
+          console.error("Google Maps API key not available");
+          setMapsReady(false);
           return;
         }
 
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places,geometry`;
         script.async = true;
-        script.onload = () => setMapsReady(true);
-        script.onerror = () => console.error("Failed to load Google Maps API");
+        script.onload = () => {
+          console.log("Google Maps loaded successfully");
+          setMapsReady(true);
+        };
+        script.onerror = (err) => {
+          console.error("Failed to load Google Maps API:", err);
+          setMapsReady(false);
+        };
         document.head.appendChild(script);
       } catch (err) {
         console.error("Failed to load maps config:", err);
+        setMapsReady(false);
       }
     };
 
@@ -315,8 +323,12 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
       {/* Map */}
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
         {!mapsReady ? (
-          <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
-            <p>Loading Google Maps...</p>
+          <div className="w-full h-full flex items-center justify-center bg-slate-50">
+            <div className="text-center">
+              <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-2" />
+              <p className="text-slate-400 text-sm">Loading Google Maps...</p>
+              <p className="text-xs text-slate-400 mt-1">Check browser console for errors</p>
+            </div>
           </div>
         ) : geocodedLeads.length === 0 && !loading ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
