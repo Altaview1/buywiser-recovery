@@ -63,7 +63,10 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
 
   // Geocode and plot leads
   useEffect(() => {
-    if (!mapsReady || !window.google) return;
+    if (!mapsReady || !window.google) {
+      console.log("Waiting for Google Maps to load...", { mapsReady, hasGoogle: !!window.google });
+      return;
+    }
 
     const init = async () => {
       const filtered = leads.filter(l => {
@@ -71,8 +74,11 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         return matchFilter && l.property_address;
       });
 
+      console.log("Filtered leads:", filtered.length, "from", leads.length);
+
       if (filtered.length === 0) {
         setGeocodedLeads([]);
+        setLoading(false);
         return;
       }
 
@@ -88,7 +94,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
                 const loc = results[0].geometry.location;
                 resolve({ ...lead, lat: loc.lat(), lng: loc.lng() });
               } else {
-                console.warn(`Geocoding failed for: ${lead.property_address}`);
+                console.warn(`Geocoding failed for ${lead.property_address}: ${status}`);
                 resolve(null);
               }
             });
@@ -99,6 +105,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         }
       }
 
+      console.log("Geocoded leads:", geocoded.length);
       setGeocodedLeads(geocoded);
 
       // Initialize or update map
@@ -324,10 +331,15 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
         {!mapsReady ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50">
-            <div className="text-center">
+            <div className="text-center max-w-xs">
               <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-2" />
               <p className="text-slate-400 text-sm">Loading Google Maps...</p>
-              <p className="text-xs text-slate-400 mt-1">Check browser console for errors</p>
+              <p className="text-xs text-slate-400 mt-2">
+                If this takes too long, your API key may need domain restrictions updated to allow this preview domain.
+              </p>
+              <p className="text-xs text-slate-500 mt-2 font-mono">
+                {window.location.host}
+              </p>
             </div>
           </div>
         ) : geocodedLeads.length === 0 && !loading ? (
