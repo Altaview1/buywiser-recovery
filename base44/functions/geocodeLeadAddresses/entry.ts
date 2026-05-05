@@ -37,27 +37,25 @@ Deno.serve(async (req) => {
         console.log(`Geocoding: ${formattedAddress}`);
         
         const res = await fetch(url);
-        
-        if (!res.ok) {
-          errors.push({ address: formattedAddress, error: `HTTP ${res.status}` });
-          console.log(`✗ HTTP ${res.status}: ${formattedAddress}`);
-          continue;
-        }
-        
         const data = await res.json();
 
-        console.log(`Response status: ${data.status}`);
+        console.log(`Status: ${data.status}, Address: ${formattedAddress}`);
         
         if (data.status === 'OK' && data.results && data.results.length > 0) {
           const { lat, lng } = data.results[0].geometry.location;
-          console.log(`✓ Found coords for ${formattedAddress}: ${lat}, ${lng}`);
+          console.log(`✓ Geocoded: ${lat}, ${lng}`);
           
-          // Update lead with coordinates (using user's auth context)
           await base44.entities.ActivatorLead.update(lead.id, { lat, lng });
           processedCount++;
         } else {
-          errors.push({ address: formattedAddress, error: data.status || 'No results' });
-          console.log(`✗ ${data.status || 'No results'}: ${formattedAddress}`);
+          const errorMsg = data.error_message || data.status || 'Unknown error';
+          errors.push({ address: formattedAddress, error: errorMsg });
+          console.log(`✗ Error - ${errorMsg}`);
+          
+          // If REQUEST_DENIED, log API key issue
+          if (data.status === 'REQUEST_DENIED') {
+            console.error('CRITICAL: API key restricted or billing disabled. Check Google Cloud Console.');
+          }
         }
       } catch (err) {
         const errMsg = String(err);
