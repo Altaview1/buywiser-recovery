@@ -70,6 +70,8 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       });
       setPreview(rows.slice(0, 5));
       setErrors(errs);
+      // Store parsed rows count for import button label
+      setFile(prev => Object.assign(prev, { _rowCount: rows.length }));
     };
     reader.readAsText(f);
   };
@@ -79,28 +81,33 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
     setImporting(true);
 
     const activator = activators.find(a => a.id === selectedActivator);
-    const reader = new FileReader();
-    reader.onload = async (ev) => {
-      const rows = parseCSV(ev.target.result);
-      const records = rows.map(r => mapRow(r, activator?.rep_code, activator?.id));
 
-      let success = 0;
-      let failed = 0;
-      // Batch create in chunks of 20
-      const chunkSize = 20;
-      for (let i = 0; i < records.length; i += chunkSize) {
-        const chunk = records.slice(i, i + chunkSize);
-        const results = await Promise.allSettled(
-          chunk.map(r => base44.entities.ActivatorLead.create(r))
-        );
-        results.forEach(r => r.status === "fulfilled" ? success++ : failed++);
-      }
+    // Read file as a Promise so we can await it
+    const text = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => resolve(ev.target.result);
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
 
-      setResult({ success, failed, total: records.length });
-      setImporting(false);
-      if (success > 0) onImported(success);
-    };
-    reader.readAsText(file);
+    const rows = parseCSV(text);
+    const records = rows.map(r => mapRow(r, activator?.rep_code, activator?.id));
+
+    let success = 0;
+    let failed = 0;
+    // Batch create in chunks of 20
+    const chunkSize = 20;
+    for (let i = 0; i < records.length; i += chunkSize) {
+      const chunk = records.slice(i, i + chunkSize);
+      const results = await Promise.allSettled(
+        chunk.map(r => base44.entities.ActivatorLead.create(r))
+      );
+      results.forEach(r => r.status === "fulfilled" ? success++ : failed++);
+    }
+
+    setResult({ success, failed, total: records.length });
+    setImporting(false);
+    if (success > 0) onImported(success);
   };
 
   const downloadSample = () => {
