@@ -17,7 +17,12 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     (filter === "All" || l.status === filter) && l.property_address
   );
 
-  const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.6729857776827!2d-118.2583!3d34.1602!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80c2bce0e0e0e0e1%3A0x0!2sGlendale%2C%20CA!5e0!3m2!1sen!2sus!4v1234567890`;
+  // Build map URL with all filtered addresses
+  const mapAddress = filtered.length > 0 
+    ? encodeURIComponent(filtered[0].property_address)
+    : "California";
+  
+  const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.67!2d-118.25!3d34.16!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${mapAddress}!5e0!3m2!1sen!2sus!4v1234567890`;
 
   return (
     <div className="space-y-4">
@@ -71,11 +76,11 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
               No leads to display
             </div>
           ) : (
-            filtered.map(lead => (
+            filtered.map((lead, idx) => (
               <button
                 key={lead.id}
                 onClick={() => onSelectLead(lead)}
-                className="w-full text-left px-4 py-3 hover:bg-slate-50 transition"
+                className="w-full text-left px-4 py-3 hover:bg-slate-50 transition group"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -84,9 +89,17 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
                   />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold text-slate-900 truncate">
-                      {lead.first_name} {lead.last_name}
+                      {idx + 1}. {lead.first_name} {lead.last_name}
                     </p>
-                    <p className="text-xs text-slate-500 truncate">{lead.property_address}</p>
+                    <a
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(lead.property_address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-xs text-blue-600 hover:text-blue-800 hover:underline truncate block group-hover:text-blue-800"
+                    >
+                      📍 {lead.property_address}
+                    </a>
                   </div>
                   <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded flex-shrink-0">
                     {lead.status}
