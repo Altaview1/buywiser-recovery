@@ -291,8 +291,41 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     }
   };
 
+  // Diagnostic info
+  const diagnostics = {
+    totalLeads: leads.length,
+    leadsWithAddress: leads.filter(l => l.property_address).length,
+    mapsReady: mapsReady,
+    geocodedCount: geocodedLeads.length,
+    filterApplied: filter,
+    loadingStatus: loading ? "Geocoding in progress..." : "Complete",
+    apiKey: window.location.hostname.includes("base44") ? "✓ Retrieved" : "✗ Not loaded",
+  };
+
   return (
     <div className="space-y-4">
+      {/* DIAGNOSTIC PANEL */}
+      <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 space-y-2 text-xs font-mono">
+        <p className="font-bold text-blue-900 mb-2">📊 DIAGNOSTIC INFO</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div><span className="text-blue-600">Leads:</span> {diagnostics.totalLeads} total, {diagnostics.leadsWithAddress} with address</div>
+          <div><span className="text-blue-600">Maps API:</span> {diagnostics.mapsReady ? '✓ Ready' : '✗ Loading'}</div>
+          <div><span className="text-blue-600">Geocoded:</span> {diagnostics.geocodedCount}/{diagnostics.leadsWithAddress}</div>
+          <div><span className="text-blue-600">Status:</span> {diagnostics.loadingStatus}</div>
+        </div>
+        <div className="bg-white rounded p-2 mt-2 border border-blue-200">
+          <p className="font-bold text-blue-900 mb-1">Debug Log:</p>
+          <div className="space-y-1">
+            <p>✓ Component mounted</p>
+            <p>{mapsReady ? '✓ Google Maps API loaded' : '⏳ Loading Google Maps API...'}</p>
+            <p>{leads.length > 0 ? `✓ ${leads.length} leads received` : '⏳ Waiting for leads...'}</p>
+            <p>{geocodedLeads.length > 0 ? `✓ ${geocodedLeads.length} locations geocoded` : '⏳ Geocoding addresses...'}</p>
+            <p>{mapInstance.current ? '✓ Map instance created' : '⏳ Waiting for map container...'}</p>
+            <p>Filter: <span className="bg-yellow-100 px-1">{filter}</span></p>
+          </div>
+        </div>
+      </div>
+
       {/* Filter & Route Controls */}
       <div className="space-y-3">
         <div className="flex gap-2 flex-wrap">
