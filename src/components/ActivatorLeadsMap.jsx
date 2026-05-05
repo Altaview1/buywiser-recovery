@@ -17,12 +17,12 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     (filter === "All" || l.status === filter) && l.property_address
   );
 
-  // Build map URL with all filtered addresses
+  // Build map URL with first filtered address
   const mapAddress = filtered.length > 0 
     ? encodeURIComponent(filtered[0].property_address)
     : "California";
   
-  const mapUrl = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3305.67!2d-118.25!3d34.16!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s${mapAddress}!5e0!3m2!1sen!2sus!4v1234567890`;
+  const mapUrl = `https://www.google.com/maps/embed/v1/search?key=AIzaSyDummyKey&q=${mapAddress}`;
 
   return (
     <div className="space-y-4">
