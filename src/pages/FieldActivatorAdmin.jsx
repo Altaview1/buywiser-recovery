@@ -182,7 +182,7 @@ export default function FieldActivatorAdmin() {
   const [partners, setPartners] = useState([]);
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [activeTab, setActiveTab] = useState("summary");
+  const [activeTab, setActiveTab] = useState("leads");
   const [showAddActivator, setShowAddActivator] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [search, setSearch] = useState("");
@@ -490,43 +490,39 @@ export default function FieldActivatorAdmin() {
               </select>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 border-b border-slate-200">
-                  <tr>
-                    {["Name", "Contact", "Rep Code", "Status", "Charity", "Date"].map(h => (
-                      <th key={h} className="px-4 py-3 text-left text-xs font-black uppercase tracking-wider text-slate-500">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {filteredLeads.length === 0 ? (
-                    <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">No leads found</td></tr>
-                  ) : filteredLeads.map(lead => (
-                    <tr key={lead.id} className="hover:bg-slate-50 transition cursor-pointer">
-                      <td className="px-4 py-3 font-semibold text-blue-600 hover:underline" onClick={() => setSelectedLead(lead)}>
-                        {lead.first_name} {lead.last_name}
-                      </td>
-                      <td className="px-4 py-3 text-slate-500 text-xs">
-                        <div>{lead.email}</div>
-                        <div>{lead.phone}</div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="font-mono text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded">{lead.rep_code || "—"}</span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
-                          {lead.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-xs text-slate-500">{lead.charity_selected?.replace("_", " ") || "—"}</td>
-                      <td className="px-4 py-3 text-xs text-slate-400">
-                        {lead.created_date ? new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="space-y-3">
+              {filteredLeads.length === 0 ? (
+                <div className="text-center py-12 bg-white border border-slate-200 rounded-2xl text-slate-400">
+                  <p className="text-sm">No leads found</p>
+                </div>
+              ) : (
+                filteredLeads.map(lead => (
+                  <button
+                    key={lead.id}
+                    onClick={() => setSelectedLead(lead)}
+                    className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md hover:bg-blue-50 transition"
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-base font-bold text-slate-900">{lead.first_name} {lead.last_name}</p>
+                        <p className="text-sm text-blue-600 hover:underline">{lead.email}</p>
+                        {lead.phone && <p className="text-sm text-slate-500">{lead.phone}</p>}
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
+                        {lead.status}
+                      </span>
+                    </div>
+                    {lead.property_address && (
+                      <p className="text-xs text-slate-600 mb-2">📍 {lead.property_address}</p>
+                    )}
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      {lead.rep_code && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Rep: {lead.rep_code}</span>}
+                      {lead.charity_selected && <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded">{lead.charity_selected}</span>}
+                      {lead.created_date && <span className="text-slate-400">{new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>}
+                    </div>
+                  </button>
+                ))
+              )}
             </div>
           </div>
         )}
