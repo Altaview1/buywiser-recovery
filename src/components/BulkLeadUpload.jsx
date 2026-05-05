@@ -93,19 +93,23 @@ export default function BulkLeadUpload({ onClose, onImported }) {
 
     for (let i = 0; i < parsedRows.length; i++) {
       const row = parsedRows[i];
-      const agent = rowAgents[i] || globalAgent || getMapped(row, "assigned_agent");
-      const lead = {
-        address_or_link: getMapped(row, "address_or_link"),
-        name:            getMapped(row, "name"),
-        email:           getMapped(row, "email"),
-        phone:           getMapped(row, "phone"),
-        assigned_agent:  agent,
-        internal_notes:  getMapped(row, "internal_notes"),
-        utm_source:      "bulk_upload",
-        status:          "New",
+      const agentName = rowAgents[i] || globalAgent || getMapped(row, "assigned_agent");
+      const agent = agents.find(a => a.name === agentName);
+      
+      const activatorLead = {
+        first_name:       getMapped(row, "name")?.split(" ")[0] || "",
+        last_name:        getMapped(row, "name")?.split(" ").slice(1).join(" ") || "",
+        email:            getMapped(row, "email"),
+        phone:            getMapped(row, "phone"),
+        property_address: getMapped(row, "address_or_link"),
+        rep_code:         agent?.rep_code || "",
+        activator_id:     agent?.id || "",
+        status:           "SCANNED",
+        scan_timestamp:   new Date().toISOString(),
       };
+      
       try {
-        await base44.entities.Lead.create(lead);
+        await base44.entities.ActivatorLead.create(activatorLead);
         success++;
       } catch {
         failedRows.push(i + 1);
