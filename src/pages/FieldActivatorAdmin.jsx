@@ -278,35 +278,57 @@ export default function FieldActivatorAdmin() {
       )}
 
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <Link to="/">
-              <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-80" />
-            </Link>
-            <div className="h-5 w-px bg-slate-200" />
-            <h1 className="text-sm font-bold text-slate-800">Field Activation Management</h1>
+      <div className="bg-white border-b border-slate-200 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between gap-2 sm:gap-3 mb-3">
+            <div className="flex items-center gap-2 min-w-0">
+              <Link to="/">
+                <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-6 sm:h-7 w-auto opacity-80" />
+              </Link>
+              <div className="h-4 sm:h-5 w-px bg-slate-200 hidden sm:block" />
+              <h1 className="text-xs sm:text-sm font-bold text-slate-800 hidden sm:block">Field Activation</h1>
+            </div>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <button onClick={fetchAll} className="p-2 sm:p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition touch-manipulation" title="Refresh">
+                <RefreshCw className="h-4 w-4" />
+              </button>
+              <button onClick={() => setShowBulkUpload(true)}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-bold rounded-lg text-white transition bg-blue-700 hover:bg-blue-800 touch-manipulation whitespace-nowrap">
+                <FileSpreadsheet className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Upload</span>
+              </button>
+              <button onClick={() => setShowAddActivator(true)}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-bold rounded-lg text-white transition touch-manipulation whitespace-nowrap"
+                style={{ background: NAVY }}>
+                <Plus className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Add</span>
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={fetchAll} className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition">
-              <RefreshCw className="h-4 w-4" />
-            </button>
-            <button onClick={() => setShowBulkUpload(true)}
-              className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white transition bg-blue-700 hover:bg-blue-800">
-              <FileSpreadsheet className="h-3.5 w-3.5" /> Bulk Upload
-            </button>
-            <button onClick={() => setShowAddActivator(true)}
-              className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold rounded-lg text-white transition"
-              style={{ background: NAVY }}>
-              <Plus className="h-3.5 w-3.5" /> Add Activator
-            </button>
+
+          {/* Quick Stats - Mobile */}
+          <div className="grid grid-cols-4 gap-1.5 sm:hidden">
+            <div className="bg-slate-100 rounded px-2 py-1.5 text-center">
+              <p className="text-sm font-black text-slate-800">{totalLeads}</p>
+              <p className="text-xs text-slate-500">Total</p>
+            </div>
+            <div className="bg-blue-100 rounded px-2 py-1.5 text-center">
+              <p className="text-sm font-black text-blue-700">{totalContacted}</p>
+              <p className="text-xs text-blue-600">Contacted</p>
+            </div>
+            <div className="bg-purple-100 rounded px-2 py-1.5 text-center">
+              <p className="text-sm font-black text-purple-700">{totalScheduled}</p>
+              <p className="text-xs text-purple-600">Scheduled</p>
+            </div>
+            <div className="bg-green-100 rounded px-2 py-1.5 text-center">
+              <p className="text-sm font-black text-green-700">${(totalPaid/1000).toFixed(0)}K</p>
+              <p className="text-xs text-green-600">Paid</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        {/* Stats Cards - Hidden on mobile (shown in header) */}
+        <div className="hidden sm:grid grid-cols-4 gap-3">
           <div className="bg-white border border-slate-200 rounded-lg p-4 text-center">
             <p className="text-2xl font-black text-slate-800">{totalLeads}</p>
             <p className="text-xs text-slate-500 mt-0.5">Total Leads</p>
@@ -357,15 +379,15 @@ export default function FieldActivatorAdmin() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-200">
+        <div className="flex gap-1 border-b border-slate-200 overflow-x-auto touch-manipulation">
           {["leads", "map", "activators", "payments"].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 text-sm font-bold rounded-t-lg transition capitalize ${
+              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold rounded-t-lg transition capitalize whitespace-nowrap ${
                 activeTab === tab ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"
               }`}>
               {tab === "leads" && "Leads"}
-              {tab === "map" && "📍 Map"}
-              {tab === "activators" && "Activators"}
+              {tab === "map" && "Map"}
+              {tab === "activators" && "Reps"}
               {tab === "payments" && "Payments"}
             </button>
           ))}
@@ -390,7 +412,7 @@ export default function FieldActivatorAdmin() {
 
         {/* ACTIVATORS TAB */}
         {activeTab === "activators" && (
-          <div className="space-y-3">
+          <div className="space-y-2 sm:space-y-3">
             {repPerf.length === 0 ? (
               <div className="text-center py-12 bg-white border border-slate-200 rounded-lg text-slate-400">
                 <Users className="h-10 w-10 mx-auto mb-3 opacity-30" />
@@ -400,41 +422,41 @@ export default function FieldActivatorAdmin() {
               repPerf.map(a => {
                 const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
                 return (
-                  <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <p className="text-sm font-bold text-slate-900">{a.name}</p>
-                        <p className="text-xs text-slate-500">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
+                  <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3 sm:p-4 touch-manipulation">
+                    <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold text-slate-900 truncate">{a.name}</p>
+                        <p className="text-xs text-slate-500 truncate">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
                       </div>
-                      <span className={`text-lg font-black ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
+                      <span className={`text-lg font-black flex-shrink-0 ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
                         {rate}%
                       </span>
                     </div>
-                    <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
+                    <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden mb-2 sm:mb-3">
                       <div
-                        className="h-full rounded-full"
+                        className="h-full rounded-full transition-all"
                         style={{
                           width: `${rate}%`,
                           background: rate >= 50 ? "#16a34a" : rate >= 25 ? "#f59e0b" : "#0B1F3B"
                         }}
                       />
                     </div>
-                    <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                      <div className="bg-slate-50 rounded p-2">
+                    <div className="grid grid-cols-4 gap-1 sm:gap-2 text-center text-xs">
+                      <div className="bg-slate-50 rounded px-1 py-2">
                         <p className="font-black text-slate-800">{a.leadCount}</p>
-                        <p className="text-slate-500">Leads</p>
+                        <p className="text-slate-500 text-xs">Leads</p>
                       </div>
-                      <div className="bg-blue-50 rounded p-2">
+                      <div className="bg-blue-50 rounded px-1 py-2">
                         <p className="font-black text-blue-700">{a.verifiedCount}</p>
-                        <p className="text-blue-500">Contacted</p>
+                        <p className="text-blue-500 text-xs">Hit</p>
                       </div>
-                      <div className="bg-purple-50 rounded p-2">
+                      <div className="bg-purple-50 rounded px-1 py-2">
                         <p className="font-black text-purple-700">{a.scheduledCount}</p>
-                        <p className="text-purple-500">Scheduled</p>
+                        <p className="text-purple-500 text-xs">Sched</p>
                       </div>
-                      <div className="bg-green-50 rounded p-2">
-                        <p className="font-black text-green-700">${a.paidAmount}</p>
-                        <p className="text-green-500">Paid</p>
+                      <div className="bg-green-50 rounded px-1 py-2">
+                        <p className="font-black text-green-700 text-sm">${a.paidAmount}</p>
+                        <p className="text-green-500 text-xs">Paid</p>
                       </div>
                     </div>
                   </div>
