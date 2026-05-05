@@ -6,7 +6,9 @@ const NAVY = "#0B1F3B";
 
 // Parse CSV text into array of objects
 function parseCSV(text) {
-  const lines = text.trim().split("\n");
+  // Normalize line endings (Windows \r\n, old Mac \r, Unix \n)
+  const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const lines = normalized.trim().split("\n").filter(l => l.trim() !== "");
   if (lines.length < 2) return [];
   const headers = lines[0].split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
   return lines.slice(1).map(line => {
@@ -165,6 +167,12 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
     const reader = new FileReader();
     reader.onload = (ev) => {
       const rows = parseCSV(ev.target.result);
+      if (rows.length === 0) {
+        setErrors([{ rowNum: null, missing: [], row: {}, parseError: true }]);
+        setPreview([]);
+        setPreviewTotal(0);
+        return;
+      }
       const errs = [];
       rows.forEach((r, i) => {
         const missing = [];
@@ -195,6 +203,11 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
     });
 
     const rows = parseCSV(text);
+    if (rows.length === 0) {
+      setRowResults([]);
+      setImporting(false);
+      return;
+    }
     const records = rows.map(r => mapRow(r, activator?.rep_code, activator?.id));
 
     const results = [];
@@ -307,7 +320,14 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
               </div>
 
               {/* Validation errors */}
-              {errors.length > 0 && (
+              {errors.length > 0 && errors[0]?.parseError ? (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+                  <p className="text-xs font-bold text-red-700 flex items-center gap-1.5">
+                    <AlertCircle className="h-3.5 w-3.5" /> Could not read any rows from this file
+                  </p>
+                  <p className="text-xs text-red-600 mt-1">Make sure the file is a valid CSV with headers: <strong>first_name, last_name, email, phone, property_address</strong>. Try opening in Excel and re-saving as CSV (UTF-8).</p>
+                </div>
+              ) : errors.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-2">
                   <p className="text-xs font-bold text-amber-800 flex items-center gap-1.5">
                     <AlertCircle className="h-3.5 w-3.5" /> {errors.length} row{errors.length !== 1 ? "s" : ""} with missing fields — will still be imported
