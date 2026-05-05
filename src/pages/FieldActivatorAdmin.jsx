@@ -270,7 +270,7 @@ export default function FieldActivatorAdmin() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200 pb-2">
-          {["summary", "leads", "activators", "payments"].map(tab => (
+          {["summary", "leads", "activators", "payments", "partners"].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 text-sm font-bold rounded-t-lg transition capitalize ${
                 activeTab === tab ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"
@@ -424,6 +424,111 @@ export default function FieldActivatorAdmin() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* PARTNERS TAB */}
+        {activeTab === "partners" && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Users className="h-4 w-4 text-slate-400" />
+              <p className="text-xs font-black uppercase tracking-wider text-slate-400">Manage Partner Applications</p>
+            </div>
+            {(() => {
+              const allPartners = partners;
+              const pending = allPartners.filter(p => p.status === "pending");
+              const approved = allPartners.filter(p => p.status === "approved");
+              const suspended = allPartners.filter(p => p.status === "suspended");
+
+              return (
+                <div className="space-y-4">
+                  {/* Pending approvals */}
+                  {pending.length > 0 && (
+                    <div className="bg-amber-50 border border-amber-200 rounded-2xl overflow-hidden">
+                      <div className="px-5 py-3 bg-amber-100 border-b border-amber-200">
+                        <p className="text-xs font-black uppercase tracking-wider text-amber-900">{pending.length} Pending Approval</p>
+                      </div>
+                      <div className="divide-y divide-amber-100">
+                        {pending.map(p => (
+                          <div key={p.id} className="px-5 py-3 flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-bold text-slate-900">{p.name}</p>
+                              <p className="text-xs text-slate-500">{p.email} · {p.phone}</p>
+                              <p className="text-xs text-slate-400 mt-0.5">{p.market || "No market specified"}</p>
+                            </div>
+                            <button
+                              onClick={async () => {
+                                await base44.entities.PartnerApplication.update(p.id, { status: "approved" });
+                                setPartners(prev => prev.map(x => x.id === p.id ? { ...x, status: "approved" } : x));
+                              }}
+                              className="px-3 py-1.5 text-xs font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex-shrink-0">
+                              Approve
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Approved partners */}
+                  <div className="bg-green-50 border border-green-200 rounded-2xl overflow-hidden">
+                    <div className="px-5 py-3 bg-green-100 border-b border-green-200">
+                      <p className="text-xs font-black uppercase tracking-wider text-green-900">{approved.length} Approved Partners</p>
+                    </div>
+                    {approved.length === 0 ? (
+                      <p className="px-5 py-4 text-xs text-slate-400">No approved partners yet.</p>
+                    ) : (
+                      <div className="divide-y divide-green-100">
+                        {approved.map(p => (
+                          <div key={p.id} className="px-5 py-3 flex items-start justify-between gap-3">
+                            <div>
+                              <p className="text-sm font-bold text-slate-900">{p.name}</p>
+                              <p className="text-xs text-slate-500">{p.email}</p>
+                              <p className="text-xs text-green-700 mt-0.5 font-semibold">Territory: {p.territory || "Unassigned"}</p>
+                            </div>
+                            <button
+                              onClick={async () => {
+                                await base44.entities.PartnerApplication.update(p.id, { status: "suspended" });
+                                setPartners(prev => prev.map(x => x.id === p.id ? { ...x, status: "suspended" } : x));
+                              }}
+                              className="px-3 py-1.5 text-xs font-bold border border-red-200 text-red-600 hover:bg-red-50 rounded-lg transition flex-shrink-0">
+                              Suspend
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Suspended */}
+                  {suspended.length > 0 && (
+                    <div className="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden">
+                      <div className="px-5 py-3 bg-slate-100 border-b border-slate-200">
+                        <p className="text-xs font-black uppercase tracking-wider text-slate-600">{suspended.length} Suspended</p>
+                      </div>
+                      <div className="divide-y divide-slate-100">
+                        {suspended.map(p => (
+                          <div key={p.id} className="px-5 py-3 flex items-start justify-between gap-3 opacity-60">
+                            <div>
+                              <p className="text-sm font-bold text-slate-700">{p.name}</p>
+                              <p className="text-xs text-slate-400">{p.email}</p>
+                            </div>
+                            <button
+                              onClick={async () => {
+                                await base44.entities.PartnerApplication.update(p.id, { status: "approved" });
+                                setPartners(prev => prev.map(x => x.id === p.id ? { ...x, status: "approved" } : x));
+                              }}
+                              className="px-3 py-1.5 text-xs font-bold border border-slate-300 text-slate-600 hover:bg-white rounded-lg transition flex-shrink-0">
+                              Reactivate
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
 
