@@ -15,29 +15,44 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [filter, setFilter] = useState("All");
   const [geocodedLeads, setGeocodedLeads] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [mapsReady, setMapsReady] = useState(false);
 
-  // Load Google Maps API
+  // Load Google Maps API from environment/secret
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || localStorage.getItem("gmapsKey");
-    
-    if (!window.google && apiKey) {
-      const script = document.createElement("script");
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      document.head.appendChild(script);
+    if (window.google) {
+      setMapsReady(true);
+      return;
     }
+
+    // Try multiple sources for API key
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 
+                   window.GOOGLE_MAPS_API_KEY ||
+                   localStorage.getItem("GOOGLE_MAPS_API_KEY");
+    
+    if (!apiKey) {
+      console.warn("Google Maps API key not found. Set VITE_GOOGLE_MAPS_API_KEY in .env.local");
+      return;
+    }
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+    script.async = true;
+    script.onload = () => setMapsReady(true);
+    script.onerror = () => console.error("Failed to load Google Maps API");
+    document.head.appendChild(script);
   }, []);
 
   // Geocode and plot leads
   useEffect(() => {
+    if (!mapsReady || !window.google) return;
+
     const init = async () => {
       const filtered = leads.filter(l => {
         const matchFilter = filter === "All" || l.status === filter;
         return matchFilter && l.property_address;
       });
 
-      if (filtered.length === 0 || !window.google) {
+      if (filtered.length === 0) {
         setGeocodedLeads([]);
         return;
       }
@@ -54,13 +69,14 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
                 const loc = results[0].geometry.location;
                 resolve({ ...lead, lat: loc.lat(), lng: loc.lng() });
               } else {
+                console.warn(`Geocoding failed for: ${lead.property_address}`);
                 resolve(null);
               }
             });
           });
           if (result) geocoded.push(result);
         } catch (err) {
-          console.error(`Geocoding failed for ${lead.property_address}:`, err);
+          console.error(`Geocoding error for ${lead.property_address}:`, err);
         }
       }
 
@@ -75,7 +91,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     };
 
     init();
-  }, [leads, filter]);
+  }, [leads, filter, mapsReady]);
 
   const initializeMap = (leadsData) => {
     if (!window.google || !mapRef.current) return;
@@ -177,11 +193,15 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
 
       {/* Map */}
       <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
-        {geocodedLeads.length === 0 && !loading ? (
+        {!mapsReady ? (
+          <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
+            <p>Loading Google Maps...</p>
+          </div>
+        ) : geocodedLeads.length === 0 && !loading ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
             <div className="text-center">
               <p className="font-semibold mb-1">No leads to display</p>
-              <p className="text-sm">Select a different filter or add leads with valid addresses</p>
+              <p className="text-sm">Add leads with valid addresses to see them on the map</p>
             </div>
           </div>
         ) : (
