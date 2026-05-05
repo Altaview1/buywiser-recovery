@@ -136,7 +136,8 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         return matchFilter && l.property_address;
       });
 
-      console.log("Filtered leads:", filtered.length, "from", leads.length);
+      console.log("[Filter] Filtered leads:", filtered.length, "from", leadsToUse.length);
+      console.log("[Filter] Sample lead structure:", filtered[0]);
 
       if (filtered.length === 0) {
         setGeocodedLeads([]);
