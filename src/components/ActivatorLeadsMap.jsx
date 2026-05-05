@@ -23,32 +23,66 @@ const STATUS_COLORS = {
 export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [validLeads, setValidLeads] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [geocodedLeads, setGeocodedLeads] = useState([]);
+  const [mapCenter, setMapCenter] = useState([34.0522, -118.2437]);
+  const [mapZoom, setMapZoom] = useState(10);
+  const [geocodingLoading, setGeocodingLoading] = useState(false);
+
+  // Geocode addresses using Nominatim (OpenStreetMap)
+  const geocodeAddress = async (address) => {
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`
+      );
+      const data = await response.json();
+      if (data.length > 0) {
+        return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+      }
+    } catch (err) {
+      console.error(`Geocoding failed for ${address}:`, err);
+    }
+    return null;
+  };
 
   useEffect(() => {
-    // Filter and geocode leads that have addresses
-    const filtered = leads.filter(l => {
-      const matchFilter = filter === "All" || l.status === filter;
-      return matchFilter && l.property_address;
-    });
-    setValidLeads(filtered);
+    const init = async () => {
+      const filtered = leads.filter(l => {
+        const matchFilter = filter === "All" || l.status === filter;
+        return matchFilter && l.property_address;
+      });
+
+      setGeocodingLoading(true);
+      const geocoded = await Promise.all(
+        filtered.map(async (lead) => {
+          const coords = await geocodeAddress(lead.property_address);
+          return coords ? { ...lead, coordinates: coords } : null;
+        })
+      );
+
+      const validGeocoded = geocoded.filter(l => l !== null);
+      setValidLeads(validGeocoded);
+
+      // Calculate center and bounds from geocoded leads
+      if (validGeocoded.length > 0) {
+        const lats = validGeocoded.map(l => l.coordinates[0]);
+        const lons = validGeocoded.map(l => l.coordinates[1]);
+        const centerLat = (Math.max(...lats) + Math.min(...lats)) / 2;
+        const centerLon = (Math.max(...lons) + Math.min(...lons)) / 2;
+        setMapCenter([centerLat, centerLon]);
+
+        // Adjust zoom based on spread
+        const latDiff = Math.max(...lats) - Math.min(...lats);
+        const lonDiff = Math.max(...lons) - Math.min(...lons);
+        const maxDiff = Math.max(latDiff, lonDiff);
+        const zoom = maxDiff > 0.5 ? 9 : maxDiff > 0.1 ? 11 : 12;
+        setMapZoom(zoom);
+      }
+
+      setGeocodingLoading(false);
+    };
+
+    init();
   }, [leads, filter]);
-
-  // Calculate center from leads
-  const centerLat = 34.0522; // Los Angeles
-  const centerLon = -118.2437;
-
-  // Mock coordinates for demo (in production, would use geocoding)
-  const getCoordinates = (address) => {
-    const hash = address.split("").reduce((a, b) => {
-      a = ((a << 5) - a) + b.charCodeAt(0);
-      return a & a; // Convert to 32bit integer
-    }, 0);
-    
-    return [
-      centerLat + (hash % 100) / 1000 - 0.05,
-      centerLon + (hash % 100) / 1000 - 0.05,
-    ];
-  };
 
   return (
     <div className="space-y-4">
@@ -69,23 +103,34 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         ))}
       </div>
 
+      {/* Geocoding Status */}
+      {geocodingLoading && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-700">
+          🔄 Geocoding {leads.filter(l => l.property_address).length} addresses... This may take a moment.
+        </div>
+      )}
+
       {/* Map */}
-      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px]">
-        {validLeads.length === 0 ? (
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden h-[600px] relative">
+        {validLeads.length === 0 && !geocodingLoading ? (
           <div className="w-full h-full flex items-center justify-center bg-slate-50 text-slate-400">
             <div className="text-center">
               <p className="font-semibold mb-1">No leads to display</p>
-              <p className="text-sm">Select a different filter or add leads</p>
+              <p className="text-sm">Select a different filter or add leads with valid addresses</p>
             </div>
           </div>
+        ) : geocodingLoading ? (
+          <div className="w-full h-full flex items-center justify-center bg-slate-50">
+            <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+          </div>
         ) : (
-          <MapContainer center={[centerLat, centerLon]} zoom={10} style={{ height: "100%", width: "100%" }}>
+          <MapContainer center={mapCenter} zoom={mapZoom} style={{ height: "100%", width: "100%" }}>
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             />
-            {validLeads.map(lead => {
-              const [lat, lon] = getCoordinates(lead.property_address);
+            {validLeads.map((lead, idx) => {
+              const [lat, lon] = lead.coordinates;
               const color = STATUS_COLORS[lead.status] || "#64748b";
               const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
               
@@ -94,7 +139,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
                   key={lead.id}
                   position={[lat, lon]}
                   icon={L.icon({
-                    iconUrl: `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDMyIDQwIj48cGF0aCBmaWxsPSIke2NvbG9yfSIgZD0iTTE2IDAgQzExLjYgMCA4IDMuNiA4IDggYzAgNCA4IDE2IDggMTZzMTYtMTIgMTYtMTZjMC00LjQtMy42LTgtOC04eiIvPjxjaXJjbGUgY3g9IjE2IiBjeT0iOCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==`.replace("${color}", color),
+                    iconUrl: `data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDMyIDQwIj48cGF0aCBmaWxsPSIke2NvbG9yfSIgZD0iTTE2IDAgQzExLjYgMCA4IDMuNiA4IDggYzAgNCA4IDE2IDggMTZzMTYtMTIgMTYtMTZjMC00LjQtMy42LTgtOC04eiIvPjx0ZXh0IHg9IjE2IiB5PSI4IiBmaWxsPSIjZmZmIiBmb250LXdlaWdodD0iYm9sZCIgZm9udC1zaXplPSIxMiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9ImNlbnRyYWwiPiR7aWR4ICsgMX08L3RleHQ+PC9zdmc+`.replace("${color}", color).replace("${idx + 1}", idx + 1),
                     iconSize: [32, 40],
                     iconAnchor: [16, 40],
                     popupAnchor: [0, -40],
@@ -102,7 +147,7 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
                 >
                   <Popup>
                     <div className="text-xs space-y-1 w-48">
-                      <p className="font-bold">{fullName || "Prospect"}</p>
+                      <p className="font-bold">#{idx + 1} {fullName || "Prospect"}</p>
                       <p className="text-slate-600">{lead.property_address}</p>
                       {lead.property_type && <p><span className="font-semibold">Type:</span> {lead.property_type}</p>}
                       {lead.estimated_price && <p><span className="font-semibold">Est:</span> ${(lead.estimated_price/1000).toFixed(0)}K</p>}
@@ -122,9 +167,12 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
         )}
       </div>
 
-      {/* Stats */}
-      <div className="text-xs text-slate-500">
-        <p>{validLeads.length} prospect{validLeads.length !== 1 ? "s" : ""} displayed on map</p>
+      {/* Stats & Routing Tips */}
+      <div className="bg-amber-50 border border-amber-200 rounded-lg px-4 py-3 space-y-1 text-xs">
+        <p className="font-bold text-amber-900">📍 {validLeads.length} prospect{validLeads.length !== 1 ? "s" : ""} with geocoded addresses</p>
+        {validLeads.length > 1 && (
+          <p className="text-amber-700">💡 <strong>Route Tip:</strong> Numbered markers show suggested door-knock sequence. Visit in order 1 → {validLeads.length} for optimal efficiency.</p>
+        )}
       </div>
     </div>
   );
