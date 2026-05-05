@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search, FileSpreadsheet, BarChart2, Phone, Upload } from "lucide-react";
+import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search, FileSpreadsheet, BarChart2, Phone, Upload, ChevronDown, MapPin } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 
 const NAVY = "#0B1F3B";
@@ -105,6 +105,7 @@ export default function FieldActivatorAdmin() {
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [expandedActivator, setExpandedActivator] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -283,7 +284,7 @@ export default function FieldActivatorAdmin() {
         {/* SUMMARY TAB */}
         {activeTab === "summary" && (
           <div className="space-y-3">
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400">Per-Activator: Uploaded vs Contacted</p>
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400">Per-Activator: Click to view all leads</p>
             {repPerf.length === 0 ? (
               <div className="text-center py-12 text-slate-400">
                 <BarChart2 className="h-10 w-10 mx-auto mb-3 opacity-30" />
@@ -291,43 +292,89 @@ export default function FieldActivatorAdmin() {
               </div>
             ) : repPerf.map(a => {
               const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
+              const isExpanded = expandedActivator === a.id;
+              const repLeads = leads.filter(l => l.rep_code === a.rep_code);
+              
               return (
-                <div key={a.id} className="bg-white border border-slate-200 rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
+                <div key={a.id} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+                  <button
+                    onClick={() => setExpandedActivator(isExpanded ? null : a.id)}
+                    className="w-full px-5 py-4 flex items-center justify-between hover:bg-slate-50 transition text-left"
+                  >
+                    <div className="flex-1">
                       <p className="text-sm font-bold text-slate-900">{a.name}</p>
-                      <p className="text-xs text-slate-400">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
+                      <p className="text-xs text-slate-400 mt-0.5">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
                     </div>
-                    <span className={`text-lg font-black ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
-                      {rate}%
-                    </span>
-                  </div>
+                    <div className="flex items-center gap-4">
+                      <span className={`text-lg font-black ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
+                        {rate}%
+                      </span>
+                      <ChevronDown className={`h-5 w-5 text-slate-400 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                    </div>
+                  </button>
 
-                  {/* Progress bar */}
-                  <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden mb-3">
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{
-                        width: `${rate}%`,
-                        background: rate >= 50 ? "#16a34a" : rate >= 25 ? "#f59e0b" : "#0B1F3B"
-                      }}
-                    />
-                  </div>
+                  {/* Collapsed view */}
+                  {!isExpanded && (
+                    <div className="px-5 pb-4 space-y-2">
+                      <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: `${rate}%`,
+                            background: rate >= 50 ? "#16a34a" : rate >= 25 ? "#f59e0b" : "#0B1F3B"
+                          }}
+                        />
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div className="bg-slate-50 rounded-lg py-1.5">
+                          <p className="text-sm font-black text-slate-800">{a.leadCount}</p>
+                          <p className="text-xs text-slate-500">Uploaded</p>
+                        </div>
+                        <div className="bg-blue-50 rounded-lg py-1.5">
+                          <p className="text-sm font-black text-blue-700">{a.verifiedCount}</p>
+                          <p className="text-xs text-blue-500">Contacted</p>
+                        </div>
+                        <div className="bg-slate-50 rounded-lg py-1.5">
+                          <p className="text-sm font-black text-slate-500">{a.leadCount - a.verifiedCount}</p>
+                          <p className="text-xs text-slate-400">Not Reached</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-                  <div className="grid grid-cols-3 gap-2 text-center">
-                    <div className="bg-slate-50 rounded-xl py-2">
-                      <p className="text-lg font-black text-slate-800">{a.leadCount}</p>
-                      <p className="text-xs text-slate-500">Uploaded</p>
+                  {/* Expanded view — all leads */}
+                  {isExpanded && (
+                    <div className="border-t border-slate-100 bg-slate-50 p-4 max-h-96 overflow-y-auto">
+                      {repLeads.length === 0 ? (
+                        <p className="text-sm text-slate-400 text-center py-6">No leads assigned to this rep.</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {repLeads.map(lead => (
+                            <div key={lead.id} className="bg-white rounded-lg p-3 border border-slate-200 text-sm">
+                              <div className="flex items-start justify-between gap-2 mb-1">
+                                <div className="flex-1">
+                                  <p className="font-semibold text-slate-800">{lead.first_name} {lead.last_name}</p>
+                                  <p className="text-xs text-slate-500">{lead.email}</p>
+                                  {lead.phone && <p className="text-xs text-slate-500">{lead.phone}</p>}
+                                </div>
+                                <span className={`px-2 py-0.5 rounded-full text-xs font-bold border whitespace-nowrap ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
+                                  {lead.status}
+                                </span>
+                              </div>
+                              {lead.property_address && (
+                                <p className="text-xs text-slate-600 flex items-center gap-1">
+                                  <MapPin className="h-3 w-3" /> {lead.property_address}
+                                </p>
+                              )}
+                              {lead.charity_selected && (
+                                <p className="text-xs text-slate-500 mt-1">Charity: {lead.charity_selected}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                    <div className="bg-blue-50 rounded-xl py-2">
-                      <p className="text-lg font-black text-blue-700">{a.verifiedCount}</p>
-                      <p className="text-xs text-blue-500">Contacted</p>
-                    </div>
-                    <div className="bg-slate-50 rounded-xl py-2">
-                      <p className="text-lg font-black text-slate-500">{a.leadCount - a.verifiedCount}</p>
-                      <p className="text-xs text-slate-400">Not Reached</p>
-                    </div>
-                  </div>
+                  )}
                 </div>
               );
             })}
