@@ -190,14 +190,18 @@ export default function FieldActivatorAdmin() {
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
   const [partners, setPartners] = useState([]);
-  const [activeTab, setActiveTab] = useState("leads");
+  const [activeTab, setActiveTab] = useState("map");
   const [showAddActivator, setShowAddActivator] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
 
   useEffect(() => {
     const init = async () => {
-      await fetchAll();
+      try {
+        await fetchAll();
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
       setLoading(false);
     };
     init();
