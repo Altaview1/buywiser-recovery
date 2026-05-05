@@ -285,20 +285,22 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
     }
 
     const results = [];
-    const chunkSize = 20;
+    const chunkSize = 50;
 
     for (let i = 0; i < records.length; i += chunkSize) {
       const chunk = records.slice(i, i + chunkSize);
-      const chunkResults = await Promise.allSettled(
-        chunk.map(r => base44.entities[entityName].create(r))
-      );
+      const res = await base44.functions.invoke("bulkCreateOpportunities", {
+        records: chunk,
+        entityName,
+      });
+      const chunkResults = res.data?.results || [];
       chunkResults.forEach((r, j) => {
         const rowIndex = i + j;
         results.push({
           rowNum: rowIndex + 2,
           data: records[rowIndex],
-          status: r.status === "fulfilled" ? "success" : "error",
-          error: r.status === "rejected" ? (r.reason?.message || "Unknown error") : null,
+          status: r.status,
+          error: r.error || null,
         });
       });
       setImportProgress(Math.round(((i + chunk.length) / records.length) * 100));
