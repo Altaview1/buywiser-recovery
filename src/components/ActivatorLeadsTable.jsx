@@ -179,7 +179,9 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
                           disabled={updatingId === lead.id}
                           className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
                         >
-                          {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
+                          {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].filter(s => 
+                            s !== "SCANNED" || lead.code_scanned
+                          ).map(s => (
                             <option key={s} value={s}>{s}</option>
                           ))}
                         </select>
