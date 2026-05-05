@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle, Loader2 } from "lucide-react";
 
@@ -221,7 +221,19 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
   const [importProgress, setImportProgress] = useState(0);
   const [rowResults, setRowResults] = useState(null);
   const [detectedFormat, setDetectedFormat] = useState(null); // "propertyradar" | "activator"
+  const [partnersList, setPartnersList] = useState([]);
+  const [loadingPartners, setLoadingPartners] = useState(true);
   const fileRef = useRef();
+
+  // Fetch approved partners on mount
+  useEffect(() => {
+    const fetchPartners = async () => {
+      const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
+      setPartnersList(data);
+      setLoadingPartners(false);
+    };
+    fetchPartners();
+  }, []);
 
   const handleFile = (e) => {
     const f = e.target.files?.[0];
@@ -409,10 +421,11 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
                   <select
                     value={selectedPartner}
                     onChange={e => setSelectedPartner(e.target.value)}
-                    className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    disabled={loadingPartners}
+                    className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 disabled:opacity-50"
                   >
-                    <option value="">Select partner email…</option>
-                    {partners.map(p => (
+                    <option value="">{loadingPartners ? "Loading partners…" : "Select partner email…"}</option>
+                    {partnersList.map(p => (
                       <option key={p.id} value={p.email}>{p.name} — {p.email}</option>
                     ))}
                   </select>
