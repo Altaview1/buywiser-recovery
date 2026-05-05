@@ -25,13 +25,15 @@ const PAYMENT_STATUS_COLORS = {
 function LeadDetailModal({ lead, onClose }) {
   if (!lead) return null;
   
+  const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
+  
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 overflow-auto" style={{ background: "rgba(0,0,0,0.6)" }}>
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
         <div className="px-6 py-4 flex items-center justify-between bg-slate-900 sticky top-0 z-10">
           <div>
-            <p className="text-white font-bold text-sm">{lead.first_name} {lead.last_name}</p>
-            <p className="text-blue-300 text-xs mt-0.5">{lead.email || "—"}</p>
+            <p className="text-white font-bold text-sm">{fullName || lead.property_address || "Lead"}</p>
+            <p className="text-blue-300 text-xs mt-0.5">{lead.homeowner_email || lead.email || "—"}</p>
           </div>
           <button onClick={onClose} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition">
             <X className="h-4 w-4" />
@@ -39,25 +41,40 @@ function LeadDetailModal({ lead, onClose }) {
         </div>
 
         <div className="p-5 space-y-4">
-          {/* Contact Info */}
+          {/* Owner Contact Info */}
           <div>
-            <p className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Contact Details</p>
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Owner Contact</p>
             <div className="space-y-2 text-sm">
-              {lead.email && (
-                <a href={`mailto:${lead.email}`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
-                  <span>✉</span> {lead.email}
+              {fullName && (
+                <p className="font-bold text-slate-800">{fullName}</p>
+              )}
+              {(lead.homeowner_phone || lead.phone) && (
+                <a href={`tel:${lead.homeowner_phone || lead.phone}`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
+                  <span>☎</span> {lead.homeowner_phone || lead.phone}
                 </a>
               )}
-              {lead.phone && (
-                <a href={`tel:${lead.phone}`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
-                  <span>☎</span> {lead.phone}
+              {(lead.homeowner_email || lead.email) && (
+                <a href={`mailto:${lead.homeowner_email || lead.email}`} className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition">
+                  <span>✉</span> {lead.homeowner_email || lead.email}
                 </a>
               )}
+            </div>
+          </div>
+
+          {/* Property Info */}
+          <div>
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Property Details</p>
+            <div className="space-y-2 text-sm">
               {lead.property_address && (
                 <div className="flex items-start gap-2 text-slate-700">
-                  <span>📍</span> {lead.property_address}
+                  <span>📍</span> {lead.property_address}{lead.city ? `, ${lead.city}` : ""}
                 </div>
               )}
+              {lead.property_type && <p><span className="font-semibold text-slate-600">Type:</span> {lead.property_type}</p>}
+              {lead.estimated_price && <p><span className="font-semibold text-slate-600">Est Value:</span> ${(lead.estimated_price/1000).toFixed(0)}K</p>}
+              {lead.estimated_equity && <p><span className="font-semibold text-slate-600">Est Equity:</span> ${(lead.estimated_equity/1000).toFixed(0)}K</p>}
+              {lead.distress_score >= 0 && <p><span className="font-semibold text-slate-600">Distress Score:</span> {lead.distress_score}</p>}
+              {lead.listing_dom && <p><span className="font-semibold text-slate-600">Days on Market:</span> {lead.listing_dom}</p>}
             </div>
           </div>
 
