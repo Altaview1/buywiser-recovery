@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 import ActivatorLeadsTable from "@/components/ActivatorLeadsTable";
+import ActivatorLeadsMap from "@/components/ActivatorLeadsMap";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -357,12 +358,13 @@ export default function FieldActivatorAdmin() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200">
-          {["leads", "activators", "payments"].map(tab => (
+          {["leads", "map", "activators", "payments"].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 text-sm font-bold rounded-t-lg transition capitalize ${
                 activeTab === tab ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"
               }`}>
               {tab === "leads" && "Leads"}
+              {tab === "map" && "📍 Map"}
               {tab === "activators" && "Activators"}
               {tab === "payments" && "Payments"}
             </button>
@@ -375,6 +377,14 @@ export default function FieldActivatorAdmin() {
             leads={leads} 
             onSelectLead={setSelectedLead}
             loading={false}
+          />
+        )}
+
+        {/* MAP TAB */}
+        {activeTab === "map" && (
+          <ActivatorLeadsMap 
+            leads={leads}
+            onSelectLead={setSelectedLead}
           />
         )}
 
