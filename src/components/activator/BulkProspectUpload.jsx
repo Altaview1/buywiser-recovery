@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle } from "lucide-react";
+import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle, Loader2 } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 
@@ -248,7 +248,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 overflow-auto" style={{ background: "rgba(0,0,0,0.6)" }}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden relative">
 
         {/* Header */}
         <div className="px-6 py-4 flex items-center justify-between" style={{ background: NAVY }}>
@@ -263,7 +263,27 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
           </button>
         </div>
 
-        <div className="p-6 space-y-5">
+        {/* Import progress overlay */}
+        {importing && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/95 rounded-2xl gap-5 px-8">
+            <Loader2 className="h-10 w-10 animate-spin" style={{ color: NAVY }} />
+            <div className="w-full space-y-2">
+              <div className="flex justify-between text-sm font-semibold text-slate-700">
+                <span>Importing prospects…</span>
+                <span>{importProgress}%</span>
+              </div>
+              <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full rounded-full transition-all duration-300"
+                  style={{ width: `${importProgress}%`, background: NAVY }}
+                />
+              </div>
+              <p className="text-xs text-slate-400 text-center">Please wait, do not close this window</p>
+            </div>
+          </div>
+        )}
+
+        <div className="p-6 space-y-5 relative">
 
           {/* Show import status report after import */}
           {rowResults ? (
@@ -387,19 +407,6 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                   {previewTotal > 5 && (
                     <p className="text-xs text-slate-400 mt-1.5">…and {previewTotal - 5} more rows</p>
                   )}
-                </div>
-              )}
-
-              {/* Progress bar while importing */}
-              {importing && (
-                <div>
-                  <div className="flex justify-between text-xs text-slate-500 mb-1">
-                    <span>Importing…</span>
-                    <span>{importProgress}%</span>
-                  </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full rounded-full transition-all duration-300 bg-blue-600" style={{ width: `${importProgress}%` }} />
-                  </div>
                 </div>
               )}
 
