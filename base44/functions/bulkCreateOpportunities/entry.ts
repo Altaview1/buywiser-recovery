@@ -4,12 +4,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Verify the caller is authenticated
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     const { records, entityName } = await req.json();
 
     if (!records || !Array.isArray(records) || records.length === 0) {
@@ -20,7 +14,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid entity name' }, { status: 400 });
     }
 
-    // Use service role to bypass RLS
+    // Use service role to bypass RLS (public admin page — no user session)
     const results = await Promise.allSettled(
       records.map(r => base44.asServiceRole.entities[entityName].create(r))
     );
