@@ -22,6 +22,121 @@ const PAYMENT_STATUS_COLORS = {
   PAID:     "bg-green-50 text-green-700 border-green-200",
 };
 
+function LeadDetailModal({ lead, onClose }) {
+  if (!lead) return null;
+  
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.55)" }}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="px-6 py-4 flex items-center justify-between bg-slate-900 sticky top-0 z-10">
+          <p className="text-sm font-bold text-white">{lead.first_name} {lead.last_name}</p>
+          <button onClick={onClose} className="p-1.5 rounded-lg text-white/50 hover:text-white hover:bg-white/10 transition">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-5">
+          {/* Contact Info */}
+          <div className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+            <p className="text-xs font-black uppercase tracking-wider text-slate-500 mb-3">Contact Information</p>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center gap-2">
+                <span className="text-slate-500 w-20">Email:</span>
+                <a href={`mailto:${lead.email}`} className="text-blue-600 hover:underline">{lead.email}</a>
+              </div>
+              {lead.phone && (
+                <div className="flex items-center gap-2">
+                  <span className="text-slate-500 w-20">Phone:</span>
+                  <a href={`tel:${lead.phone}`} className="text-blue-600 hover:underline">{lead.phone}</a>
+                </div>
+              )}
+              {lead.property_address && (
+                <div className="flex items-start gap-2">
+                  <span className="text-slate-500 w-20">Address:</span>
+                  <span className="text-slate-700">{lead.property_address}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Status & Meta */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="bg-white border border-slate-200 rounded-lg p-3">
+              <p className="text-xs text-slate-500 mb-1">Status</p>
+              <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold border ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
+                {lead.status}
+              </span>
+            </div>
+            {lead.rep_code && (
+              <div className="bg-white border border-slate-200 rounded-lg p-3">
+                <p className="text-xs text-slate-500 mb-1">Rep Code</p>
+                <p className="text-sm font-mono font-bold text-slate-700">{lead.rep_code}</p>
+              </div>
+            )}
+            {lead.scan_timestamp && (
+              <div className="bg-white border border-slate-200 rounded-lg p-3">
+                <p className="text-xs text-slate-500 mb-1">Scanned</p>
+                <p className="text-sm font-semibold text-slate-700">{new Date(lead.scan_timestamp).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Qualifications */}
+          {(lead.planning_to_buy || lead.timeline || lead.next_home_type) && (
+            <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-blue-600 mb-3">Qualifications</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+                {lead.planning_to_buy && (
+                  <div>
+                    <p className="text-xs text-blue-600 font-semibold">Planning to Buy</p>
+                    <p className="text-slate-700 capitalize">{lead.planning_to_buy}</p>
+                  </div>
+                )}
+                {lead.timeline && (
+                  <div>
+                    <p className="text-xs text-blue-600 font-semibold">Timeline</p>
+                    <p className="text-slate-700 capitalize">{lead.timeline.replace("-", "–")}</p>
+                  </div>
+                )}
+                {lead.next_home_type && (
+                  <div>
+                    <p className="text-xs text-blue-600 font-semibold">Next Home Type</p>
+                    <p className="text-slate-700 capitalize">{lead.next_home_type}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Appointment Info */}
+          {lead.appointment_scheduled && (
+            <div className="bg-green-50 rounded-xl border border-green-200 p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-green-600 mb-2">Appointment Scheduled</p>
+              {lead.appointment_date && (
+                <p className="text-sm text-green-700">{new Date(lead.appointment_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+              )}
+            </div>
+          )}
+
+          {/* Charity */}
+          {lead.charity_selected && (
+            <div className="bg-amber-50 rounded-xl border border-amber-200 p-4">
+              <p className="text-xs font-black uppercase tracking-wider text-amber-600 mb-2">Charity Selected</p>
+              <p className="text-sm text-amber-800 font-semibold">{lead.charity_selected}</p>
+            </div>
+          )}
+
+          {/* Created/Updated dates */}
+          <div className="border-t border-slate-100 pt-4 text-xs text-slate-400 space-y-1">
+            <p>Created: {new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
+            {lead.created_by && <p>Created by: {lead.created_by}</p>}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AddActivatorModal({ onClose, onCreated }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", rep_code: "", assigned_area: "" });
   const [saving, setSaving] = useState(false);
@@ -106,6 +221,7 @@ export default function FieldActivatorAdmin() {
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [expandedActivator, setExpandedActivator] = useState(null);
+  const [selectedLead, setSelectedLead] = useState(null);
 
   useEffect(() => {
     const init = async () => {
@@ -186,6 +302,9 @@ export default function FieldActivatorAdmin() {
           onClose={() => setShowBulkUpload(false)}
           onImported={(count) => { fetchAll(); setActiveTab("leads"); }}
         />
+      )}
+      {selectedLead && (
+        <LeadDetailModal lead={selectedLead} onClose={() => setSelectedLead(null)} />
       )}
 
       {/* Header */}
@@ -413,8 +532,10 @@ export default function FieldActivatorAdmin() {
                   {filteredLeads.length === 0 ? (
                     <tr><td colSpan={6} className="px-4 py-8 text-center text-slate-400 text-sm">No leads found</td></tr>
                   ) : filteredLeads.map(lead => (
-                    <tr key={lead.id} className="hover:bg-slate-50 transition">
-                      <td className="px-4 py-3 font-semibold text-slate-800">{lead.first_name} {lead.last_name}</td>
+                    <tr key={lead.id} className="hover:bg-slate-50 transition cursor-pointer">
+                      <td className="px-4 py-3 font-semibold text-blue-600 hover:underline" onClick={() => setSelectedLead(lead)}>
+                        {lead.first_name} {lead.last_name}
+                      </td>
                       <td className="px-4 py-3 text-slate-500 text-xs">
                         <div>{lead.email}</div>
                         <div>{lead.phone}</div>
