@@ -1,6 +1,49 @@
 import { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 
+// HARDCODED TEST DATA FOR DEBUGGING
+const SAMPLE_LEADS = [
+  {
+    id: "test-1",
+    first_name: "John",
+    last_name: "Smith",
+    email: "john@test.com",
+    phone: "(818) 555-1001",
+    property_address: "123 Oak Street, Glendale, CA 91205",
+    property_type: "Single Family",
+    estimated_price: 450000,
+    listing_dom: 15,
+    status: "VERIFIED",
+    rep_code: "TEST01",
+  },
+  {
+    id: "test-2",
+    first_name: "Jane",
+    last_name: "Doe",
+    email: "jane@test.com",
+    phone: "(818) 555-1002",
+    property_address: "456 Elm Avenue, Burbank, CA 91502",
+    property_type: "Condo",
+    estimated_price: 550000,
+    listing_dom: 22,
+    status: "QUALIFIED",
+    rep_code: "TEST02",
+  },
+  {
+    id: "test-3",
+    first_name: "Bob",
+    last_name: "Johnson",
+    email: "bob@test.com",
+    phone: "(818) 555-1003",
+    property_address: "789 Maple Drive, Pasadena, CA 91101",
+    property_type: "Single Family",
+    estimated_price: 750000,
+    listing_dom: 8,
+    status: "SCHEDULED",
+    rep_code: "TEST03",
+  },
+];
+
 const STATUS_COLORS = {
   SCANNED: "#64748b",
   VERIFIED: "#3b82f6",
@@ -85,7 +128,10 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
     }
 
     const init = async () => {
-      const filtered = leads.filter(l => {
+      // Use sample leads if no real leads available (for testing)
+      const leadsToUse = leads.length === 0 ? SAMPLE_LEADS : leads;
+      
+      const filtered = leadsToUse.filter(l => {
         const matchFilter = filter === "All" || l.status === filter;
         return matchFilter && l.property_address;
       });
@@ -305,8 +351,10 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   return (
     <div className="space-y-4">
       {/* DIAGNOSTIC PANEL */}
-      <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 space-y-2 text-xs font-mono">
-        <p className="font-bold text-blue-900 mb-2">📊 DIAGNOSTIC INFO</p>
+      <div className={`rounded-lg p-4 space-y-2 text-xs font-mono ${leads.length === 0 ? 'bg-amber-50 border-2 border-amber-400' : 'bg-blue-50 border-2 border-blue-300'}`}>
+        <p className={`font-bold mb-2 ${leads.length === 0 ? 'text-amber-900' : 'text-blue-900'}`}>
+          {leads.length === 0 ? '⚠️ USING TEST DATA' : '📊 DIAGNOSTIC INFO'}
+        </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           <div><span className="text-blue-600">Leads:</span> {diagnostics.totalLeads} total, {diagnostics.leadsWithAddress} with address</div>
           <div><span className="text-blue-600">Maps API:</span> {diagnostics.mapsReady ? '✓ Ready' : '✗ Loading'}</div>
