@@ -51,8 +51,9 @@ export default function ActivatorLeadsMap({ leads, onSelectLead }) {
   const [filter, setFilter] = useState("All");
   const [selectedLeadIds, setSelectedLeadIds] = useState([]);
 
-  // Use sample data if no real leads
-  const displayLeads = leads.length === 0 ? SAMPLE_LEADS : leads;
+  // Use test data for map (real leads would need geocoding)
+  // In production, geocode real leads to get lat/lng
+  const displayLeads = SAMPLE_LEADS;
 
   const filtered = displayLeads.filter(l => {
     const matchFilter = filter === "All" || l.status === filter;
