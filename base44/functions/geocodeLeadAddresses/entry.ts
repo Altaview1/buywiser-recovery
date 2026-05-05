@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
           .replace(/\b(CA|California)\b/gi, 'California')
           .replace(/\b(US|USA|United States)\b/gi, 'USA');
         
-        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formattedAddress)}&components=country:US&key=${apiKey}`;
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(formattedAddress)}&key=${apiKey}`;
         console.log(`Geocoding: ${formattedAddress}`);
         
         const res = await fetch(url);
