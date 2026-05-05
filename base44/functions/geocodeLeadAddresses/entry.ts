@@ -15,7 +15,7 @@ Deno.serve(async (req) => {
     }
 
     // Get all ActivatorLeads with valid addresses
-    const allLeads = await base44.entities.ActivatorLead.list('-created_date', 1000);
+    const allLeads = await base44.asServiceRole.entities.ActivatorLead.list('-created_date', 1000);
     const leads = allLeads.filter(l => l.property_address && !l.lat);
     
     let processedCount = 0;
@@ -25,22 +25,25 @@ Deno.serve(async (req) => {
       try {
         // Geocode using Google Maps Geocoding API
         const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(lead.property_address)}&key=${apiKey}`;
-        const res = await fetch(url, { timeout: 5000 });
+        console.log(`Geocoding: ${lead.property_address}`);
         
-        if (!res.ok) {
-          throw new Error(`API returned ${res.status}`);
-        }
-
+        const res = await fetch(url);
         const data = await res.json();
 
-        if (data.results && data.results.length > 0) {
+        console.log(`Response status:`, data.status);
+        
+        if (data.status === 'OK' && data.results && data.results.length > 0) {
           const { lat, lng } = data.results[0].geometry.location;
+          console.log(`✓ Found coords for ${lead.property_address}: ${lat}, ${lng}`);
           
           // Update lead with coordinates
-          await base44.entities.ActivatorLead.update(lead.id, { lat, lng });
+          await base44.asServiceRole.entities.ActivatorLead.update(lead.id, { lat, lng });
           processedCount++;
+        } else {
+          errors.push({ address: lead.property_address, error: data.status || 'No results' });
         }
       } catch (err) {
+        console.error(`Error geocoding ${lead.property_address}:`, err);
         errors.push({ address: lead.property_address, error: String(err) });
       }
       
