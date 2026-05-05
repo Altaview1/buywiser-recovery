@@ -181,7 +181,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                   <p className="text-xs text-slate-400 mt-1">or drag and drop</p>
                 </>
               )}
-              <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={handleFile} />
+              <input ref={fileRef} type="file" accept=".csv,.txt,text/csv,text/plain,application/vnd.ms-excel" className="hidden" onChange={handleFile} />
             </div>
           </div>
 
@@ -198,7 +198,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
           {/* Preview */}
           {preview.length > 0 && !result && (
             <div>
-              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Preview (first 5 rows)</p>
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Preview — {preview.length} rows detected</p>
               <div className="border border-slate-200 rounded-xl overflow-hidden">
                 <table className="w-full text-xs">
                   <thead className="bg-slate-50">
@@ -244,7 +244,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
             {!result ? (
               <button
                 onClick={handleImport}
-                disabled={!file || importing || errors.length > preview.length}
+                disabled={!file || importing}
                 className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
                 style={{ background: NAVY }}
               >
