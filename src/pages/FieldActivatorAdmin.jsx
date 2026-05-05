@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search, FileSpreadsheet } from "lucide-react";
+import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, Search, FileSpreadsheet, BarChart2, Phone, Upload } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 
 const NAVY = "#0B1F3B";
@@ -100,7 +100,7 @@ export default function FieldActivatorAdmin() {
   const [partners, setPartners] = useState([]);
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
-  const [activeTab, setActiveTab] = useState("leads");
+  const [activeTab, setActiveTab] = useState("summary");
   const [showAddActivator, setShowAddActivator] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [search, setSearch] = useState("");
@@ -151,10 +151,12 @@ export default function FieldActivatorAdmin() {
   });
 
   // Stats
-  const totalVerified = leads.filter(l => l.status !== "SCANNED").length;
+  const totalUploaded = leads.length;
+  const totalContacted = leads.filter(l => l.status !== "SCANNED").length;
   const totalScheduled = leads.filter(l => ["SCHEDULED", "COMPLETED", "CLOSED"].includes(l.status)).length;
   const totalPaid = payments.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0);
   const pendingApproval = payments.filter(p => p.status === "PENDING").length;
+  const contactRate = totalUploaded > 0 ? Math.round((totalContacted / totalUploaded) * 100) : 0;
 
   // Rep performance
   const repPerf = activators.map(a => {
@@ -218,16 +220,42 @@ export default function FieldActivatorAdmin() {
         {/* Summary stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Total Leads", value: leads.length, color: "text-slate-800" },
-            { label: "Verified", value: totalVerified, color: "text-blue-700" },
-            { label: "Scheduled", value: totalScheduled, color: "text-purple-700" },
-            { label: "Paid Out", value: `$${totalPaid}`, color: "text-green-700" },
-          ].map(({ label, value, color }) => (
+            { label: "Uploaded Prospects", value: totalUploaded, color: "text-slate-800", icon: Upload },
+            { label: "Contacted", value: totalContacted, color: "text-blue-700", icon: Phone },
+            { label: "Scheduled", value: totalScheduled, color: "text-purple-700", icon: TrendingUp },
+            { label: "Paid Out", value: `$${totalPaid}`, color: "text-green-700", icon: DollarSign },
+          ].map(({ label, value, color, icon: Icon }) => (
             <div key={label} className="bg-white border border-slate-200 rounded-xl p-4 text-center">
               <p className={`text-2xl font-black ${color}`}>{value}</p>
               <p className="text-xs text-slate-500 mt-0.5">{label}</p>
             </div>
           ))}
+        </div>
+
+        {/* Uploaded vs Contacted progress bar */}
+        <div className="bg-white border border-slate-200 rounded-2xl px-5 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <BarChart2 className="h-4 w-4 text-slate-400" />
+              <p className="text-xs font-black uppercase tracking-wider text-slate-500">Prospect Contact Rate</p>
+            </div>
+            <span className={`text-sm font-black ${contactRate >= 50 ? "text-green-600" : contactRate >= 25 ? "text-amber-600" : "text-slate-500"}`}>
+              {contactRate}%
+            </span>
+          </div>
+          <div className="relative h-3 bg-slate-100 rounded-full overflow-hidden mb-2">
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{
+                width: `${contactRate}%`,
+                background: contactRate >= 50 ? "#16a34a" : contactRate >= 25 ? "#f59e0b" : "#0B1F3B"
+              }}
+            />
+          </div>
+          <div className="flex justify-between text-xs text-slate-400">
+            <span>{totalContacted} contacted out of {totalUploaded} uploaded</span>
+            <span>{totalUploaded - totalContacted} not yet reached</span>
+          </div>
         </div>
 
         {/* Pending approvals banner */}
@@ -243,7 +271,7 @@ export default function FieldActivatorAdmin() {
 
         {/* Tabs */}
         <div className="flex gap-2 border-b border-slate-200 pb-2">
-          {["leads", "activators", "payments"].map(tab => (
+          {["summary", "leads", "activators", "payments"].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 text-sm font-bold rounded-t-lg transition capitalize ${
                 activeTab === tab ? "bg-slate-800 text-white" : "text-slate-600 hover:bg-slate-100"
@@ -252,6 +280,60 @@ export default function FieldActivatorAdmin() {
             </button>
           ))}
         </div>
+
+        {/* SUMMARY TAB */}
+        {activeTab === "summary" && (
+          <div className="space-y-3">
+            <p className="text-xs font-black uppercase tracking-wider text-slate-400">Per-Activator: Uploaded vs Contacted</p>
+            {repPerf.length === 0 ? (
+              <div className="text-center py-12 text-slate-400">
+                <BarChart2 className="h-10 w-10 mx-auto mb-3 opacity-30" />
+                <p>No data yet.</p>
+              </div>
+            ) : repPerf.map(a => {
+              const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
+              return (
+                <div key={a.id} className="bg-white border border-slate-200 rounded-2xl p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm font-bold text-slate-900">{a.name}</p>
+                      <p className="text-xs text-slate-400">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
+                    </div>
+                    <span className={`text-lg font-black ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
+                      {rate}%
+                    </span>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="relative h-2.5 bg-slate-100 rounded-full overflow-hidden mb-3">
+                    <div
+                      className="h-full rounded-full transition-all duration-700"
+                      style={{
+                        width: `${rate}%`,
+                        background: rate >= 50 ? "#16a34a" : rate >= 25 ? "#f59e0b" : "#0B1F3B"
+                      }}
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="bg-slate-50 rounded-xl py-2">
+                      <p className="text-lg font-black text-slate-800">{a.leadCount}</p>
+                      <p className="text-xs text-slate-500">Uploaded</p>
+                    </div>
+                    <div className="bg-blue-50 rounded-xl py-2">
+                      <p className="text-lg font-black text-blue-700">{a.verifiedCount}</p>
+                      <p className="text-xs text-blue-500">Contacted</p>
+                    </div>
+                    <div className="bg-slate-50 rounded-xl py-2">
+                      <p className="text-lg font-black text-slate-500">{a.leadCount - a.verifiedCount}</p>
+                      <p className="text-xs text-slate-400">Not Reached</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* LEADS TAB */}
         {activeTab === "leads" && (
