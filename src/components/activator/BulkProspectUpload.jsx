@@ -6,11 +6,9 @@ const NAVY = "#0B1F3B";
 
 // Parse CSV text into array of objects
 function parseCSV(text) {
-  // Normalize line endings (Windows \r\n, old Mac \r, Unix \n)
   const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   const lines = normalized.trim().split("\n").filter(l => l.trim() !== "");
   if (lines.length < 2) return [];
-  // Strip BOM (Excel UTF-8 with BOM exports include \uFEFF at the start)
   const firstLine = lines[0].replace(/^\uFEFF/, "").replace(/"/g, "");
   const headers = firstLine.split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
   console.log("[BulkUpload] Detected CSV headers:", headers);
@@ -30,36 +28,31 @@ function parseCSV(text) {
   }).filter(row => Object.values(row).some(v => v.trim() !== ""));
 }
 
-// Detect if CSV is PropertyRadar format (has Address + Owner columns)
+// Detect PropertyRadar format
 function isPropertyRadarFormat(headers) {
   return headers.includes("address") && headers.includes("owner");
 }
 
-// Parse "LASTNAME,FIRSTNAME MIDDLENAME" → { first_name, last_name }
+// Parse owner name "LASTNAME,FIRSTNAME" format
 function parseOwnerName(owner) {
   if (!owner) return { first_name: "", last_name: "" };
-  // Format: "JOHNSON,CATHERINE NOEL & ANDREW" — take first owner only
   const firstOwner = owner.split("&")[0].trim();
   const commaIdx = firstOwner.indexOf(",");
   if (commaIdx === -1) {
-    // No comma — treat whole thing as first name
     return { first_name: firstOwner, last_name: "" };
   }
   const last = firstOwner.slice(0, commaIdx).trim();
-  // First name is first word after comma (ignore middle names)
   const firstPart = firstOwner.slice(commaIdx + 1).trim().split(" ")[0];
-  // Title-case
   const tc = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
   return { first_name: tc(firstPart), last_name: tc(last) };
 }
 
-// Map PropertyRadar CSV row → VTONOpportunity
+// Map PropertyRadar row → VTONOpportunity
 function mapPropertyRadarRow(row, partnerEmail) {
   const { first_name, last_name } = parseOwnerName(row.owner);
   const address = (row.address || "").trim();
   const city = (row.city || "").trim();
   const estValue = parseFloat((row.est_value || "0").replace(/[^0-9.-]/g, "")) || null;
-  const estEquity = parseFloat((row.est_equity_ || row["est_equity_$"] || "0").replace(/[^0-9.-]/g, "")) || null;
 
   return {
     homeowner_name: `${first_name} ${last_name}`.trim(),
@@ -72,16 +65,10 @@ function mapPropertyRadarRow(row, partnerEmail) {
     opportunity_status: "assigned",
     partner_email: partnerEmail || "",
     priority: "medium",
-    crm_notes: [
-      estEquity !== null ? `Est. Equity: $${estEquity.toLocaleString()}` : "",
-      row.distress_score ? `Distress Score: ${row.distress_score}` : "",
-      row.listing_dom ? `Days on Market: ${row.listing_dom}` : "",
-      row.type ? `Type: ${row.type}` : "",
-    ].filter(Boolean).join(" | "),
   };
 }
 
-// Map standard CSV row → ActivatorLead fields
+// Map standard CSV row → ActivatorLead
 function mapActivatorRow(row, repCode, activatorId) {
   const get = (...keys) => {
     for (const k of keys) {
@@ -107,13 +94,12 @@ function mapActivatorRow(row, repCode, activatorId) {
 
 const SAMPLE_CSV = `first_name,last_name,email,phone,property_address
 Jane,Smith,jane@email.com,(818) 555-1001,123 Oak St Glendale CA
-John,Doe,john@email.com,(818) 555-1002,456 Elm Ave Burbank CA
-Maria,Garcia,maria@email.com,(818) 555-1003,789 Pine Rd Pasadena CA`;
+John,Doe,john@email.com,(818) 555-1002,456 Elm Ave Burbank CA`;
 
 function ImportStatusReport({ rowResults, onClose }) {
-  const [filter, setFilter] = useState("all");
   const succeeded = rowResults.filter(r => r.status === "success");
   const failed = rowResults.filter(r => r.status === "error");
+  const [filter, setFilter] = useState("all");
 
   const displayed = filter === "errors" ? failed : filter === "success" ? succeeded : rowResults;
 
@@ -133,7 +119,6 @@ function ImportStatusReport({ rowResults, onClose }) {
 
   return (
     <div className="space-y-4">
-      {/* Summary */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-center">
           <p className="text-xl font-black text-slate-800">{rowResults.length}</p>
@@ -149,7 +134,6 @@ function ImportStatusReport({ rowResults, onClose }) {
         </div>
       </div>
 
-      {/* Filter tabs */}
       <div className="flex gap-2">
         {["all", "success", "errors"].map(f => (
           <button key={f} onClick={() => setFilter(f)}
@@ -167,7 +151,6 @@ function ImportStatusReport({ rowResults, onClose }) {
         )}
       </div>
 
-      {/* Row-by-row results */}
       <div className="border border-slate-200 rounded-xl overflow-hidden max-h-64 overflow-y-auto">
         <table className="w-full text-xs">
           <thead className="bg-slate-50 sticky top-0">
@@ -210,7 +193,7 @@ function ImportStatusReport({ rowResults, onClose }) {
   );
 }
 
-export default function BulkProspectUpload({ activators, partners = [], onImported, onClose }) {
+export default function BulkProspectUpload({ activators, onImported, onClose }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
   const [previewTotal, setPreviewTotal] = useState(0);
@@ -220,17 +203,27 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
   const [importing, setImporting] = useState(false);
   const [importProgress, setImportProgress] = useState(0);
   const [rowResults, setRowResults] = useState(null);
-  const [detectedFormat, setDetectedFormat] = useState(null); // "propertyradar" | "activator"
-  const [partnersList, setPartnersList] = useState([]);
+  const [detectedFormat, setDetectedFormat] = useState(null);
+  const [partners, setPartners] = useState([]);
   const [loadingPartners, setLoadingPartners] = useState(true);
+  const [partnersError, setPartnersError] = useState(null);
   const fileRef = useRef();
 
   // Fetch approved partners on mount
   useEffect(() => {
     const fetchPartners = async () => {
-      const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
-      setPartnersList(data);
-      setLoadingPartners(false);
+      try {
+        const data = await base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100);
+        setPartners(data);
+        if (data.length === 0) {
+          setPartnersError("No approved partners found. Add partners before uploading PropertyRadar leads.");
+        }
+      } catch (err) {
+        setPartnersError(`Failed to load partners: ${err.message}`);
+        console.error("Partner fetch error:", err);
+      } finally {
+        setLoadingPartners(false);
+      }
     };
     fetchPartners();
   }, []);
@@ -252,14 +245,12 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
         setDetectedFormat(null);
         return;
       }
-      // Detect format from headers of first row
+
       const headers = Object.keys(rows[0]);
       const fmt = isPropertyRadarFormat(headers) ? "propertyradar" : "activator";
       setDetectedFormat(fmt);
 
-      // Filter out disclaimer/empty rows (PropertyRadar appends a license row)
       const validRows = rows.filter(r => r.address && r.address.trim() !== "");
-
       setPreview(validRows.slice(0, 5));
       setPreviewTotal(validRows.length);
     };
@@ -268,6 +259,15 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
 
   const handleImport = async () => {
     if (!file) return;
+
+    // Validation
+    if (detectedFormat === "propertyradar") {
+      if (!selectedPartner) {
+        setErrors([{ message: "Please select a partner agent" }]);
+        return;
+      }
+    }
+
     setImporting(true);
     setImportProgress(0);
 
@@ -412,25 +412,38 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
                 </div>
               )}
 
-              {/* Assignment selector — depends on format */}
-              {detectedFormat === "propertyradar" ? (
+              {/* Partner assignment */}
+              {detectedFormat === "propertyradar" && (
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                     Assign to Partner Agent <span className="text-slate-400 font-normal normal-case">(required)</span>
                   </label>
+
+                  {partnersError && (
+                    <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl mb-2">
+                      <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs text-red-600">{partnersError}</p>
+                    </div>
+                  )}
+
                   <select
                     value={selectedPartner}
                     onChange={e => setSelectedPartner(e.target.value)}
-                    disabled={loadingPartners}
+                    disabled={loadingPartners || partners.length === 0}
                     className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 disabled:opacity-50"
                   >
-                    <option value="">{loadingPartners ? "Loading partners…" : "Select partner email…"}</option>
-                    {partnersList.map(p => (
+                    <option value="">
+                      {loadingPartners ? "Loading partners…" : partners.length === 0 ? "No approved partners available" : "Select partner email…"}
+                    </option>
+                    {partners.map(p => (
                       <option key={p.id} value={p.email}>{p.name} — {p.email}</option>
                     ))}
                   </select>
                 </div>
-              ) : detectedFormat === "activator" ? (
+              )}
+
+              {/* Activator assignment */}
+              {detectedFormat === "activator" && (
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
                     Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
@@ -446,7 +459,7 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
                     ))}
                   </select>
                 </div>
-              ) : null}
+              )}
 
               {/* Validation errors */}
               {errors.length > 0 && errors[0]?.parseError && (
@@ -469,10 +482,10 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
                       <thead className="bg-slate-50">
                         <tr>
                           {detectedFormat === "propertyradar"
-                            ? ["Owner", "Address", "City", "Est Value", "DOM"].map(h => (
+                            ? ["Owner", "Address", "City"].map(h => (
                                 <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
                               ))
-                            : ["First Name", "Last Name", "Email", "Phone"].map(h => (
+                            : ["First Name", "Last Name", "Email"].map(h => (
                                 <th key={h} className="px-3 py-2 text-left font-bold text-slate-500">{h}</th>
                               ))
                           }
@@ -486,15 +499,12 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
                                 <td className="px-3 py-2 text-slate-700 font-medium">{row.owner || "—"}</td>
                                 <td className="px-3 py-2 text-slate-600">{row.address || "—"}</td>
                                 <td className="px-3 py-2 text-slate-500">{row.city || "—"}</td>
-                                <td className="px-3 py-2 text-slate-500">{row.est_value ? `$${Number(row.est_value).toLocaleString()}` : "—"}</td>
-                                <td className="px-3 py-2 text-slate-500">{row.listing_dom || "—"}</td>
                               </>
                             ) : (
                               <>
                                 <td className="px-3 py-2 text-slate-700">{row.first_name || row.firstname || "—"}</td>
                                 <td className="px-3 py-2 text-slate-700">{row.last_name || row.lastname || "—"}</td>
                                 <td className="px-3 py-2 text-slate-500">{row.email || "—"}</td>
-                                <td className="px-3 py-2 text-slate-500">{row.phone || "—"}</td>
                               </>
                             )}
                           </tr>
@@ -512,7 +522,7 @@ export default function BulkProspectUpload({ activators, partners = [], onImport
               <div className="flex gap-2 pt-1">
                 <button
                   onClick={handleImport}
-                  disabled={!file || importing}
+                  disabled={!file || importing || (detectedFormat === "propertyradar" && !selectedPartner)}
                   className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-40"
                   style={{ background: NAVY }}
                 >

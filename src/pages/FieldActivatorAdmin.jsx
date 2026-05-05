@@ -182,7 +182,6 @@ export default function FieldActivatorAdmin() {
       {showBulkUpload && (
         <BulkProspectUpload
           activators={activators}
-          partners={partners}
           onClose={() => setShowBulkUpload(false)}
           onImported={(count) => { fetchAll(); setActiveTab("leads"); }}
         />
