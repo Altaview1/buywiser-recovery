@@ -14,47 +14,49 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Maps API key not configured' }, { status: 500 });
     }
 
-    // Get all ActivatorLeads
-    const leads = await base44.asServiceRole.entities.ActivatorLead.list('-created_date', 1000);
+    // Get all ActivatorLeads with valid addresses
+    const allLeads = await base44.entities.ActivatorLead.list('-created_date', 1000);
+    const leads = allLeads.filter(l => l.property_address && !l.lat);
     
     let processedCount = 0;
-    let errorCount = 0;
+    const errors = [];
 
     for (const lead of leads) {
-      if (!lead.property_address) continue;
-
       try {
-        // Geocode the address using Google Maps Geocoding API
-        const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(lead.property_address)}&key=${apiKey}`;
-        const geocodeRes = await fetch(geocodeUrl);
-        const geocodeData = await geocodeRes.json();
+        // Geocode using Google Maps Geocoding API
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(lead.property_address)}&key=${apiKey}`;
+        const res = await fetch(url, { timeout: 5000 });
+        
+        if (!res.ok) {
+          throw new Error(`API returned ${res.status}`);
+        }
 
-        if (geocodeData.results && geocodeData.results.length > 0) {
-          const location = geocodeData.results[0].geometry.location;
+        const data = await res.json();
+
+        if (data.results && data.results.length > 0) {
+          const { lat, lng } = data.results[0].geometry.location;
           
-          // Update lead with lat/lng
-          await base44.asServiceRole.entities.ActivatorLead.update(lead.id, {
-            lat: location.lat,
-            lng: location.lng,
-          });
-          
+          // Update lead with coordinates
+          await base44.entities.ActivatorLead.update(lead.id, { lat, lng });
           processedCount++;
         }
       } catch (err) {
-        console.error(`Failed to geocode ${lead.property_address}:`, err);
-        errorCount++;
+        errors.push({ address: lead.property_address, error: String(err) });
       }
+      
+      // Small delay to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 100));
     }
 
     return Response.json({
       success: true,
       processed: processedCount,
-      errors: errorCount,
-      total: leads.length,
-      message: `Geocoded ${processedCount} leads successfully`
+      skipped: allLeads.length - leads.length,
+      errors: errors.length,
+      message: `Geocoded ${processedCount} leads`
     });
   } catch (error) {
-    console.error('Error:', error);
-    return Response.json({ error: error.message }, { status: 500 });
+    console.error('Geocoding error:', error);
+    return Response.json({ error: String(error) }, { status: 500 });
   }
 });
