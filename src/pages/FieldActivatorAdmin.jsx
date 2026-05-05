@@ -496,32 +496,41 @@ export default function FieldActivatorAdmin() {
                   <p className="text-sm">No leads found</p>
                 </div>
               ) : (
-                filteredLeads.map(lead => (
-                  <button
-                    key={lead.id}
-                    onClick={() => setSelectedLead(lead)}
-                    className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md hover:bg-blue-50 transition"
-                  >
-                    <div className="flex items-start justify-between gap-3 mb-2">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-base font-bold text-slate-900">{lead.first_name} {lead.last_name}</p>
-                        <p className="text-sm text-blue-600 hover:underline">{lead.email}</p>
-                        {lead.phone && <p className="text-sm text-slate-500">{lead.phone}</p>}
+                filteredLeads.map(lead => {
+                  const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
+                  return (
+                    <button
+                      key={lead.id}
+                      onClick={() => setSelectedLead(lead)}
+                      className="w-full text-left bg-white border border-slate-200 rounded-xl p-4 hover:border-blue-400 hover:shadow-md hover:bg-blue-50 transition"
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <div className="flex-1 min-w-0">
+                          {fullName ? (
+                            <>
+                              <p className="text-base font-bold text-slate-900">{fullName}</p>
+                              {lead.email && <p className="text-sm text-blue-600">{lead.email}</p>}
+                            </>
+                          ) : (
+                            <p className="text-base font-bold text-slate-900">{lead.property_address || 'Prospect'}</p>
+                          )}
+                          {lead.phone && <p className="text-sm text-slate-500">{lead.phone}</p>}
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
+                          {lead.status}
+                        </span>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-bold border whitespace-nowrap ${STATUS_COLORS[lead.status] || "bg-slate-100 text-slate-500 border-slate-200"}`}>
-                        {lead.status}
-                      </span>
-                    </div>
-                    {lead.property_address && (
-                      <p className="text-xs text-slate-600 mb-2">📍 {lead.property_address}</p>
-                    )}
-                    <div className="flex flex-wrap gap-2 text-xs">
-                      {lead.rep_code && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Rep: {lead.rep_code}</span>}
-                      {lead.charity_selected && <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded">{lead.charity_selected}</span>}
-                      {lead.created_date && <span className="text-slate-400">{new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>}
-                    </div>
-                  </button>
-                ))
+                      {fullName && lead.property_address && (
+                        <p className="text-xs text-slate-600 mb-2">📍 {lead.property_address}</p>
+                      )}
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        {lead.rep_code && <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded">Rep: {lead.rep_code}</span>}
+                        {lead.charity_selected && <span className="bg-amber-100 text-amber-700 px-2 py-1 rounded">{lead.charity_selected}</span>}
+                        {lead.created_date && <span className="text-slate-400">{new Date(lead.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>}
+                      </div>
+                    </button>
+                  );
+                })
               )}
             </div>
           </div>
