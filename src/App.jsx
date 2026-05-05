@@ -89,7 +89,6 @@ const AuthenticatedApp = () => {
       <Route path="/admin-settings" element={<AdminSettings />} />
       <Route path="/vton-scan" element={<VTONScan />} />
       <Route path="/activator" element={<FieldActivatorDashboard />} />
-      <Route path="/activator-admin" element={<FieldActivatorAdmin />} />
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
@@ -109,6 +108,7 @@ function App() {
           {/* Public partner portals — no auth required */}
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
+          <Route path="/activator-admin" element={<FieldActivatorAdmin />} />
           
           {/* All other routes wrapped in auth */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
