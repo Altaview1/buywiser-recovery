@@ -97,6 +97,7 @@ function AddActivatorModal({ onClose, onCreated }) {
 export default function FieldActivatorAdmin() {
   const [loading, setLoading] = useState(true);
   const [activators, setActivators] = useState([]);
+  const [partners, setPartners] = useState([]);
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
   const [activeTab, setActiveTab] = useState("leads");
@@ -114,14 +115,16 @@ export default function FieldActivatorAdmin() {
   }, []);
 
   const fetchAll = async () => {
-    const [a, l, p] = await Promise.all([
+    const [a, l, p, pts] = await Promise.all([
       base44.entities.FieldActivator.list("-created_date", 200),
       base44.entities.ActivatorLead.list("-created_date", 500),
       base44.entities.ActivatorPayment.list("-created_date", 500),
+      base44.entities.PartnerApplication.filter({ status: "approved" }, "name", 200),
     ]);
     setActivators(a);
     setLeads(l);
     setPayments(p);
+    setPartners(pts);
   };
 
   const handleApprovePayment = async (payment) => {
@@ -177,6 +180,7 @@ export default function FieldActivatorAdmin() {
       {showBulkUpload && (
         <BulkProspectUpload
           activators={activators}
+          partners={partners}
           onClose={() => setShowBulkUpload(false)}
           onImported={(count) => { fetchAll(); setActiveTab("leads"); }}
         />
