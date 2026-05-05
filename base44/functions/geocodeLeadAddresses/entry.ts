@@ -37,6 +37,13 @@ Deno.serve(async (req) => {
         console.log(`Geocoding: ${formattedAddress}`);
         
         const res = await fetch(url);
+        
+        if (!res.ok) {
+          errors.push({ address: formattedAddress, error: `HTTP ${res.status}` });
+          console.log(`✗ HTTP ${res.status}: ${formattedAddress}`);
+          continue;
+        }
+        
         const data = await res.json();
 
         console.log(`Response status: ${data.status}`);
