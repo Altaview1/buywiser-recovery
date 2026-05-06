@@ -1,369 +1,294 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { AlertCircle, RefreshCw, LogOut, Phone, Mail, MapPin, CheckCircle, Clock, Target, TrendingUp } from "lucide-react";
+import { LogOut, RefreshCw, Eye, Phone, Mail, MapPin, CheckCircle, Clock, AlertCircle } from "lucide-react";
 
 const NAVY = "#0B1F3B";
-const RED = "#C62828";
-
-const LEAD_STATUSES = [
-  { value: "New", label: "New", color: "bg-blue-100 text-blue-700 border-blue-200" },
-  { value: "Contacted", label: "Contacted", color: "bg-amber-100 text-amber-700 border-amber-200" },
-  { value: "Qualified", label: "Qualified", color: "bg-purple-100 text-purple-700 border-purple-200" },
-  { value: "Closed", label: "Closed", color: "bg-green-100 text-green-700 border-green-200" },
-  { value: "Lost", label: "Lost", color: "bg-slate-100 text-slate-600 border-slate-200" },
-];
-
-function AccessGate({ onAccess }) {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const res = await base44.functions.invoke('verifyPartner', { email: email.trim() });
-      if (res.data?.partner) {
-        onAccess(res.data.partner);
-      } else {
-        setError('Partner account not found.');
-      }
-    } catch (err) {
-      setError(err?.response?.data?.error || 'Unable to verify account.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16" style={{ background: NAVY }}>
-      <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
-        <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
-          <p className="text-white font-black text-sm uppercase tracking-widest">Partner Leads Dashboard</p>
-          <p className="text-blue-300 text-xs mt-1">View your leads and VTON opportunities</p>
-        </div>
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Partner Email</label>
-            <input 
-              type="email" 
-              required 
-              value={email} 
-              onChange={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition" 
-            />
-          </div>
-          {error && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-xl">
-              <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
-              <p className="text-xs text-red-600">{error}</p>
-            </div>
-          )}
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full py-3.5 font-bold text-sm rounded-xl text-white transition disabled:opacity-50"
-            style={{ background: loading ? "#888" : RED }}
-          >
-            {loading ? "Verifying…" : "Access My Dashboard"}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function LeadsSection({ leads, onRefresh }) {
-  const newCount = leads.filter(l => (l.status || "New") === "New").length;
-  const contactedCount = leads.filter(l => (l.status || "New") === "Contacted").length;
-  const qualifiedCount = leads.filter(l => (l.status || "New") === "Qualified").length;
-
-  return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-      <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">My Leads</p>
-          <p className="text-sm font-semibold text-slate-800 mt-1">{leads.length} total</p>
-        </div>
-        <button onClick={onRefresh} className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 transition">
-          <RefreshCw className="h-4 w-4" />
-        </button>
-      </div>
-
-      {/* Stats row */}
-      <div className="grid grid-cols-4 gap-3 px-5 py-4 border-b border-slate-100">
-        <div className="text-center">
-          <p className="text-2xl font-black text-blue-600">{newCount}</p>
-          <p className="text-xs text-slate-500">New</p>
-        </div>
-        <div className="text-center">
-          <p className="text-2xl font-black text-amber-600">{contactedCount}</p>
-          <p className="text-xs text-slate-500">Contacted</p>
-        </div>
-        <div className="text-center">
-          <p className="text-2xl font-black text-purple-600">{qualifiedCount}</p>
-          <p className="text-xs text-slate-500">Qualified</p>
-        </div>
-        <div className="text-center">
-          <p className="text-2xl font-black text-slate-800">{leads.length > 0 ? Math.round((contactedCount / leads.length) * 100) : 0}%</p>
-          <p className="text-xs text-slate-500">Contacted</p>
-        </div>
-      </div>
-
-      {/* Leads list */}
-      {leads.length === 0 ? (
-        <div className="px-5 py-8 text-center text-slate-400">
-          <p className="text-sm">No leads assigned yet</p>
-        </div>
-      ) : (
-        <div className="divide-y divide-slate-100">
-          {leads.slice(0, 5).map(lead => {
-            const cfg = LEAD_STATUSES.find(s => s.value === (lead.status || "New")) || LEAD_STATUSES[0];
-            return (
-              <div key={lead.id} className="px-5 py-3 hover:bg-slate-50 transition">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-800 truncate">{lead.name || lead.address_or_link || "—"}</p>
-                    <div className="flex items-center gap-3 flex-wrap mt-1">
-                      {lead.email && (
-                        <a href={`mailto:${lead.email}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                          <Mail className="h-3 w-3" /> {lead.email}
-                        </a>
-                      )}
-                      {lead.phone && (
-                        <a href={`tel:${lead.phone}`} className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                          <Phone className="h-3 w-3" /> {lead.phone}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold border whitespace-nowrap flex-shrink-0 ${cfg.color}`}>
-                    {cfg.label}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-          {leads.length > 5 && (
-            <div className="px-5 py-3 bg-slate-50 text-center text-xs text-slate-500">
-              +{leads.length - 5} more leads
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function OpportunitiesSection({ opportunities, onRefresh }) {
-  const assigned = opportunities.length;
-  const contacted = opportunities.filter(o => !["assigned", "review_window", "forfeited"].includes(o.opportunity_status || "assigned")).length;
-  const completed = opportunities.filter(o => ["completed", "closed_won"].includes(o.opportunity_status)).length;
-  const earnedBack = Math.min((contacted || 0) * 200, 2000);
-
-  const OPPORTUNITY_STATUSES = [
-    { value: "assigned", label: "New", color: "#3B82F6", icon: "🆕" },
-    { value: "accepted", label: "Accepted", color: "#F59E0B", icon: "✅" },
-    { value: "in_progress", label: "In Progress", color: "#8B5CF6", icon: "⚡" },
-    { value: "completed", label: "Completed", color: "#10B981", icon: "🎉" },
-    { value: "forfeited", label: "Forfeited", color: "#EF4444", icon: "❌" },
-  ];
-
-  const getStatusProgress = (status) => {
-    const statusMap = { "assigned": 25, "review_window": 25, "accepted": 50, "in_progress": 75, "completed": 100, "closed_won": 100, "forfeited": 0 };
-    return statusMap[status] || 0;
-  };
-
-  return (
-    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-      <div className="px-5 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-        <div>
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400">VTON Opportunities</p>
-          <p className="text-sm font-semibold text-slate-800 mt-1">{assigned} assigned</p>
-        </div>
-        <button onClick={onRefresh} className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-100 transition">
-          <RefreshCw className="h-4 w-4" />
-        </button>
-      </div>
-
-      {/* Progress metrics */}
-      <div className="space-y-4 px-5 py-4 border-b border-slate-100">
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs font-semibold text-slate-500">Contacted / Assigned</p>
-            <p className="text-xs font-bold text-slate-700">{contacted} / {assigned}</p>
-          </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full rounded-full transition-all duration-500" 
-              style={{ width: `${assigned > 0 ? (contacted / assigned) * 100 : 0}%`, background: "#3B82F6" }}
-            />
-          </div>
-        </div>
-
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <p className="text-xs font-semibold text-slate-500">Deposit Earned Back</p>
-            <p className="text-xs font-bold text-slate-700">${earnedBack.toLocaleString()} / $2,000</p>
-          </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <div 
-              className="h-full rounded-full transition-all duration-500" 
-              style={{ width: `${(earnedBack / 2000) * 100}%`, background: "#10b981" }}
-            />
-          </div>
-          <p className="text-xs text-slate-400 mt-1">{contacted} verified actions × $200 refund each</p>
-        </div>
-
-        <div className="grid grid-cols-3 gap-2 pt-2">
-          <div className="bg-slate-50 rounded-lg p-2 text-center">
-            <p className="text-sm font-black text-slate-800">{assigned}</p>
-            <p className="text-xs text-slate-500">Assigned</p>
-          </div>
-          <div className="bg-slate-50 rounded-lg p-2 text-center">
-            <p className="text-sm font-black text-amber-600">{contacted}</p>
-            <p className="text-xs text-slate-500">Engaged</p>
-          </div>
-          <div className="bg-slate-50 rounded-lg p-2 text-center">
-            <p className="text-sm font-black text-green-600">{completed}</p>
-            <p className="text-xs text-slate-500">Completed</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Individual opportunity progress */}
-      {opportunities.length === 0 ? (
-        <div className="px-5 py-8 text-center text-slate-400">
-          <p className="text-sm">No opportunities assigned yet</p>
-        </div>
-      ) : (
-        <div className="divide-y divide-slate-100">
-          {opportunities.slice(0, 8).map(opp => {
-            const progress = getStatusProgress(opp.opportunity_status || "assigned");
-            const statusCfg = OPPORTUNITY_STATUSES.find(s => s.value === (opp.opportunity_status || "assigned")) || OPPORTUNITY_STATUSES[0];
-            const address = [opp.property_address, opp.city, opp.state].filter(Boolean).join(", ");
-            
-            return (
-              <div key={opp.id} className="px-5 py-3 hover:bg-slate-50 transition">
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-800">{opp.homeowner_name || "Homeowner"}</p>
-                    <p className="text-xs text-slate-500 flex items-center gap-1 truncate">
-                      <MapPin className="h-3 w-3 flex-shrink-0" /> {address || "—"}
-                    </p>
-                    {opp.estimated_price && (
-                      <p className="text-xs text-green-600 font-semibold mt-0.5">
-                        Est. benefit: ${Math.round(opp.estimated_price * 0.015).toLocaleString()}
-                      </p>
-                    )}
-                  </div>
-                  <span className="flex-shrink-0 text-2xl">{statusCfg.icon}</span>
-                </div>
-
-                {/* Progress bar */}
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-500">{statusCfg.label}</span>
-                    <span className="text-xs text-slate-400">{progress}%</span>
-                  </div>
-                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full rounded-full transition-all duration-500" 
-                      style={{ width: `${progress}%`, background: statusCfg.color }}
-                    />
-                  </div>
-                </div>
-
-                {/* Status badges */}
-                {opp.qr_scanned && (
-                  <span className="inline-flex items-center gap-1 mt-2 px-2 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                    <CheckCircle className="h-3 w-3" /> QR Validated
-                  </span>
-                )}
-              </div>
-            );
-          })}
-          {opportunities.length > 8 && (
-            <div className="px-5 py-3 bg-slate-50 text-center text-xs text-slate-500">
-              +{opportunities.length - 8} more opportunities
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 export default function PartnerLeadsDashboard() {
   const [partner, setPartner] = useState(null);
   const [leads, setLeads] = useState([]);
   const [opportunities, setOpportunities] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("all");
+  const [selectedLead, setSelectedLead] = useState(null);
 
-  const handleAccess = async (p) => {
-    setPartner(p);
-    await fetchData(p.email);
+  useEffect(() => {
+    const init = async () => {
+      const email = new URLSearchParams(window.location.search).get("email");
+      if (!email) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const partners = await base44.entities.PartnerApplication.filter({ email });
+        if (partners.length > 0) {
+          const p = partners[0];
+          setPartner(p);
+          const [leadsData, oppsData] = await Promise.all([
+            base44.entities.Lead.filter({ assigned_agent: p.name }),
+            base44.entities.VTONOpportunity.filter({ partner_email: p.email }),
+          ]);
+          setLeads(leadsData);
+          setOpportunities(oppsData);
+        }
+      } catch (err) {
+        console.error("Error loading data:", err);
+      }
+      setLoading(false);
+    };
+
+    init();
+  }, []);
+
+  const handleLogout = () => {
+    window.location.href = "/";
   };
 
-  const fetchData = async (email) => {
-    setLoading(true);
-    const [leadsData, oppsData] = await Promise.all([
-      base44.entities.Lead.filter({ assigned_agent: partner?.name }, "-created_date", 100),
-      base44.entities.VTONOpportunity.filter({ partner_email: email }, "-created_date", 100),
-    ]);
-    setLeads(leadsData);
-    setOpportunities(oppsData);
-    setLoading(false);
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-600 font-medium">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!partner) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: NAVY }}>
+        <div className="bg-white rounded-lg p-8 max-w-sm w-full text-center shadow-xl">
+          <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
+          <p className="text-lg font-bold text-slate-900 mb-2">Access Required</p>
+          <p className="text-sm text-slate-600">Please provide your email to access your leads.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Filter leads
+  const filteredLeads = leads.filter(l => {
+    if (filter === "all") return true;
+    if (filter === "new") return l.status === "New";
+    if (filter === "contacted") return l.status === "Contacted";
+    if (filter === "qualified") return l.status === "Qualified";
+    if (filter === "closed") return ["Closed", "Lost"].includes(l.status);
+    return true;
+  });
+
+  // Stats
+  const stats = {
+    total: leads.length,
+    new: leads.filter(l => l.status === "New").length,
+    contacted: leads.filter(l => l.status === "Contacted").length,
+    qualified: leads.filter(l => l.status === "Qualified").length,
+    closed: leads.filter(l => ["Closed", "Lost"].includes(l.status)).length,
   };
 
-  if (!partner) return <AccessGate onAccess={handleAccess} />;
+  const statusColor = {
+    New: "bg-blue-50 text-blue-700 border-blue-200",
+    Contacted: "bg-amber-50 text-amber-700 border-amber-200",
+    Qualified: "bg-purple-50 text-purple-700 border-purple-200",
+    Closed: "bg-green-50 text-green-700 border-green-200",
+    Lost: "bg-slate-50 text-slate-700 border-slate-200",
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto opacity-70" />
-            <div className="h-5 w-px bg-slate-200" />
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400">Partner Dashboard</p>
-              <p className="text-sm font-bold text-slate-800">{partner.name}</p>
-            </div>
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div>
+            <img
+              src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
+              alt="BuyWiser"
+              className="h-5 w-auto opacity-70"
+            />
+            <p className="text-xs text-slate-400 mt-1">{partner.name}</p>
           </div>
-          <button onClick={() => setPartner(null)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition"
+          >
             <LogOut className="h-3.5 w-3.5" /> Sign Out
           </button>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 space-y-5">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        {/* Welcome Section */}
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 mb-1">Your Leads</h1>
+          <p className="text-sm text-slate-600">Track and manage your assigned opportunities</p>
+        </div>
+
+        {/* Stats Bar */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {[
+            { label: "Total", value: stats.total, color: "slate" },
+            { label: "New", value: stats.new, color: "blue" },
+            { label: "Contacted", value: stats.contacted, color: "amber" },
+            { label: "Qualified", value: stats.qualified, color: "purple" },
+            { label: "Closed", value: stats.closed, color: "green" },
+          ].map(stat => (
+            <button
+              key={stat.label}
+              onClick={() => setFilter(stat.label === "Total" ? "all" : stat.label.toLowerCase())}
+              className={`p-3 rounded-lg border transition ${
+                filter === (stat.label === "Total" ? "all" : stat.label.toLowerCase())
+                  ? `bg-${stat.color}-50 border-${stat.color}-300`
+                  : "bg-white border-slate-200 hover:border-slate-300"
+              }`}
+            >
+              <p className={`text-lg font-bold ${
+                stat.color === "slate" ? "text-slate-900" :
+                stat.color === "blue" ? "text-blue-700" :
+                stat.color === "amber" ? "text-amber-700" :
+                stat.color === "purple" ? "text-purple-700" :
+                "text-green-700"
+              }`}>
+                {stat.value}
+              </p>
+              <p className="text-xs text-slate-600 mt-0.5">{stat.label}</p>
+            </button>
+          ))}
+        </div>
+
+        {/* Leads List */}
+        {filteredLeads.length === 0 ? (
+          <div className="text-center py-12">
+            <Clock className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+            <p className="text-slate-600 font-medium">No leads in this category</p>
           </div>
         ) : (
-          <>
-            <LeadsSection leads={leads} onRefresh={() => fetchData(partner.email)} />
-            <OpportunitiesSection opportunities={opportunities} onRefresh={() => fetchData(partner.email)} />
+          <div className="space-y-2">
+            {filteredLeads.map(lead => {
+              const status = lead.status || "New";
+              const colors = statusColor[status] || statusColor.New;
 
-            {/* Quick info */}
-            <div className="bg-blue-50 border border-blue-200 rounded-2xl px-5 py-4">
-              <p className="text-xs font-black uppercase tracking-widest text-blue-600 mb-2">Territory</p>
-              <p className="text-sm font-semibold text-blue-900">{partner.territory || "To be assigned"}</p>
-              {partner.calendar_url && (
-                <a href={partner.calendar_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition">
-                  📅 Schedule Appointment
-                </a>
-              )}
-            </div>
-          </>
+              return (
+                <div
+                  key={lead.id}
+                  className="bg-white border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-slate-900 truncate">{lead.name || "Unnamed Lead"}</h3>
+                        <span className={`px-2 py-1 rounded text-xs font-semibold border ${colors} whitespace-nowrap flex-shrink-0`}>
+                          {status}
+                        </span>
+                      </div>
+                      <p className="text-sm text-slate-600 truncate mb-2">{lead.address_or_link}</p>
+
+                      {/* Contact Info */}
+                      <div className="flex flex-wrap gap-3 text-xs text-slate-600">
+                        {lead.email && (
+                          <a href={`mailto:${lead.email}`} className="hover:text-blue-600 flex items-center gap-1">
+                            <Mail className="h-3 w-3" />
+                            {lead.email}
+                          </a>
+                        )}
+                        {lead.phone && (
+                          <a href={`tel:${lead.phone}`} className="hover:text-blue-600 flex items-center gap-1">
+                            <Phone className="h-3 w-3" />
+                            {lead.phone}
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Action Button */}
+                    <button
+                      onClick={() => setSelectedLead(lead)}
+                      className="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50 transition flex-shrink-0"
+                      title="View details"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  {/* Agent Notes */}
+                  {lead.agent_comment && (
+                    <div className="text-xs text-slate-600 italic bg-slate-50 rounded p-2 border-l-2 border-slate-300">
+                      {lead.agent_comment}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
+
+      {/* Lead Detail Modal */}
+      {selectedLead && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-96 overflow-y-auto shadow-2xl">
+            <div className="sticky top-0 bg-white border-b border-slate-200 p-4 flex items-center justify-between">
+              <h2 className="font-bold text-slate-900">{selectedLead.name || "Lead Details"}</h2>
+              <button
+                onClick={() => setSelectedLead(null)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Address</p>
+                <p className="text-sm text-slate-900">{selectedLead.address_or_link}</p>
+              </div>
+
+              {selectedLead.email && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Email</p>
+                  <a href={`mailto:${selectedLead.email}`} className="text-sm text-blue-600 hover:underline">
+                    {selectedLead.email}
+                  </a>
+                </div>
+              )}
+
+              {selectedLead.phone && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Phone</p>
+                  <a href={`tel:${selectedLead.phone}`} className="text-sm text-blue-600 hover:underline">
+                    {selectedLead.phone}
+                  </a>
+                </div>
+              )}
+
+              {selectedLead.agent_comment && (
+                <div>
+                  <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Notes</p>
+                  <p className="text-sm text-slate-700">{selectedLead.agent_comment}</p>
+                </div>
+              )}
+
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase mb-1">Status</p>
+                <span
+                  className={`inline-block px-2 py-1 rounded text-xs font-semibold border ${
+                    statusColor[selectedLead.status] || statusColor.New
+                  }`}
+                >
+                  {selectedLead.status || "New"}
+                </span>
+              </div>
+
+              <button
+                onClick={() => setSelectedLead(null)}
+                className="w-full mt-4 py-2 bg-slate-100 text-slate-900 font-semibold rounded-lg hover:bg-slate-200 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
