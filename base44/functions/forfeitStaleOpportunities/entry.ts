@@ -1,15 +1,15 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const FORFEIT_HOURS = 36;
+const FORFEIT_HOURS = 48;
 const OFFICE_EMAIL = 'bennett@buywiser.com';
 
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Get all opportunities still in "assigned" status
+    // Get all opportunities still in "assigned" or "review_window" status
     const opps = await base44.asServiceRole.entities.VTONOpportunity.filter(
-      { opportunity_status: 'assigned' },
+      { opportunity_status: { $in: ['assigned', 'review_window'] } },
       '-created_date',
       500
     );
@@ -67,14 +67,14 @@ Deno.serve(async (req) => {
               <div style="border:1px solid #e2e8f0;border-top:none;border-radius:0 0 8px 8px;padding:24px;">
                 <p style="font-size:15px;margin:0 0 12px;">Hi ${firstName},</p>
                 <p style="font-size:14px;color:#475569;line-height:1.6;margin:0 0 16px;">
-                  The following opportunity was <strong style="color:#C62828;">forfeited</strong> because no action was taken within <strong>${FORFEIT_HOURS} hours</strong> of assignment. It has been <strong>returned to the VTON pool</strong> for reassignment.
+                  The following opportunity was <strong style="color:#C62828;">forfeited</strong> because no action was taken within the <strong>48-hour decision window</strong>. It has been <strong>returned to the VTON pool</strong> for reassignment.
                 </p>
                 <div style="background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #C62828;border-radius:6px;padding:14px 18px;margin-bottom:20px;">
                   <p style="margin:0 0 4px;font-size:14px;font-weight:700;color:#0f172a;">${opp.homeowner_name || 'Homeowner'}</p>
                   <p style="margin:0;font-size:13px;color:#64748b;">${addr}</p>
                 </div>
                 <p style="font-size:13px;color:#64748b;line-height:1.6;">
-                  To avoid future forfeitures, log your first contact within 36 hours of assignment in the partner dashboard.
+                  To avoid future forfeitures, log your first contact within 48 hours of assignment in the partner dashboard.
                 </p>
                 <div style="text-align:center;margin-top:20px;">
                   <a href="https://buywiser.base44.app/partner" style="display:inline-block;padding:12px 28px;background:#0B1F3B;color:#fff;font-weight:700;border-radius:10px;text-decoration:none;font-size:14px;">View My Dashboard →</a>
@@ -95,7 +95,7 @@ Deno.serve(async (req) => {
             body: new URLSearchParams({
               To: partnerPhone,
               From: twilioFrom,
-              Body: `⚠️ VTON: Opportunity forfeited — ${addr}. No action in 36 hrs. Lead returned to pool. Log in: https://buywiser.base44.app/partner`,
+              Body: `⚠️ VTON: Opportunity forfeited — ${addr}. No action within 48-hour window. Lead returned to pool. Log in: https://buywiser.base44.app/partner`,
             }),
           });
         }
