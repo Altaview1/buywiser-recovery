@@ -132,8 +132,8 @@ function App() {
           <Route path="/activator-admin" element={<AdminDashboard />} />
           <Route path="/admin-settings" element={<AdminSettings />} />
           
-          {/* All other routes wrapped in auth */}
-          <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
+          {/* All other routes wrapped in auth — must be last */}
+          <Route element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
         </Routes>
         <Toaster />
       </Router>
