@@ -44,7 +44,7 @@ import ResourceHub from './pages/ResourceHub';
 import FieldRepDashboard from './pages/FieldRepDashboard';
 import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
 import QRScanDashboard from './pages/QRScanDashboard';
-import PortalHub from './pages/PortalHub.jsx';
+import PortalHub from './pages/PortalHub';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
