@@ -77,6 +77,7 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
   const [hasOwnerCol, setHasOwnerCol] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
+  const [rowLog, setRowLog] = useState([]);
 
   const handleFileSelect = (e) => {
     const f = e.target.files?.[0];
@@ -133,7 +134,10 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
       const normalizedHeaders = parseCSVLine(headerLine).map(normalizeHeader);
 
       const leads = [];
+      const log = [];
+
       for (let i = 1; i < lines.length; i++) {
+        const rowNum = i + 1;
         const vals = parseCSVLine(lines[i]);
         const row = {};
         normalizedHeaders.forEach((h, idx) => { row[h] = vals[idx] || ""; });
@@ -158,9 +162,18 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         }
 
         // Skip footer/empty rows
-        if (!lead.property_address && !lead.first_name) continue;
-        if ((lead.property_address || "").toLowerCase().includes("propertyradar")) continue;
-        if ((lead.property_address || "").toLowerCase().includes("information contained")) continue;
+        if (!lead.property_address && !lead.first_name) {
+          log.push({ rowNum, status: "skipped", reason: "Empty row — no address or name", preview: lines[i].slice(0, 60) });
+          continue;
+        }
+        if ((lead.property_address || "").toLowerCase().includes("propertyradar")) {
+          log.push({ rowNum, status: "skipped", reason: "Footer/disclaimer row", preview: lead.property_address });
+          continue;
+        }
+        if ((lead.property_address || "").toLowerCase().includes("information contained")) {
+          log.push({ rowNum, status: "skipped", reason: "Footer/disclaimer row", preview: lead.property_address });
+          continue;
+        }
 
         // Ensure required fields
         if (!lead.first_name) lead.first_name = "Owner";
@@ -176,11 +189,14 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
           else lead.property_address += ", CA";
         }
 
-        if (lead.property_address || lead.first_name) leads.push(lead);
+        log.push({ rowNum, status: "ok", preview: `${lead.first_name} ${lead.last_name || ""} — ${lead.property_address}` });
+        leads.push(lead);
       }
 
+      setRowLog(log);
+
       if (leads.length === 0) {
-        setResult({ success: false, error: "No valid rows found after applying your mapping. Make sure Property Address or First Name columns are mapped." });
+        setResult({ success: false, error: "No valid rows found after applying your mapping." });
         setUploading(false);
         return;
       }
@@ -333,9 +349,33 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         </div>
 
         {result?.success === false && (
-          <div className="mx-4 mb-4 flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-700">
-            <AlertCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
-            {result.error}
+          <div className="mx-4 mb-4 space-y-2">
+            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-xs text-red-700">
+              <AlertCircle className="h-3.5 w-3.5 flex-shrink-0 mt-0.5" />
+              {result.error}
+            </div>
+            {rowLog.length > 0 && (
+              <div className="border border-slate-200 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+                <p className="px-3 py-2 text-xs font-bold text-slate-500 bg-slate-50 border-b border-slate-100">Row Log ({rowLog.length} rows processed)</p>
+                <table className="w-full text-xs">
+                  <tbody className="divide-y divide-slate-100">
+                    {rowLog.map((r, i) => (
+                      <tr key={i} className={r.status === "skipped" ? "bg-amber-50" : ""}>
+                        <td className="px-3 py-1.5 text-slate-400 font-mono w-12">{r.rowNum}</td>
+                        <td className="px-3 py-1.5 w-20">
+                          {r.status === "ok"
+                            ? <span className="text-green-600 font-bold">✓ OK</span>
+                            : <span className="text-amber-600 font-bold">⚠ Skip</span>}
+                        </td>
+                        <td className="px-3 py-1.5 text-slate-600 truncate max-w-[180px]">
+                          {r.status === "skipped" ? <span className="text-amber-700">{r.reason}</span> : r.preview}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -344,14 +384,53 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
 
   // ── STEP: Done ────────────────────────────────────────────────
   if (step === "done") {
+    const skipped = rowLog.filter(r => r.status === "skipped");
+    const imported = rowLog.filter(r => r.status === "ok");
     return (
-      <div className="bg-green-50 border border-green-200 rounded-xl p-5 text-center">
-        <CheckCircle className="h-10 w-10 text-green-600 mx-auto mb-2" />
-        <p className="text-sm font-bold text-green-800 mb-1">✓ Imported {result?.count} leads successfully</p>
-        <button onClick={() => { setFile(null); setStep("upload"); setResult(null); }}
-          className="text-xs text-green-600 hover:text-green-800 underline flex items-center gap-1 mx-auto mt-2">
-          <RefreshCw className="h-3 w-3" /> Import another file
-        </button>
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="bg-green-50 border-b border-green-200 px-5 py-4 text-center">
+          <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-1" />
+          <p className="text-sm font-bold text-green-800">✓ Imported {result?.count} leads</p>
+          {skipped.length > 0 && (
+            <p className="text-xs text-amber-600 mt-1">{skipped.length} row{skipped.length > 1 ? "s" : ""} skipped</p>
+          )}
+        </div>
+
+        {rowLog.length > 0 && (
+          <div className="max-h-64 overflow-y-auto">
+            <table className="w-full text-xs">
+              <thead className="bg-slate-50 sticky top-0">
+                <tr>
+                  <th className="px-3 py-2 text-left font-bold text-slate-500 w-12">Row</th>
+                  <th className="px-3 py-2 text-left font-bold text-slate-500 w-20">Status</th>
+                  <th className="px-3 py-2 text-left font-bold text-slate-500">Detail</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {rowLog.map((r, i) => (
+                  <tr key={i} className={r.status === "skipped" ? "bg-amber-50" : ""}>
+                    <td className="px-3 py-1.5 text-slate-400 font-mono">{r.rowNum}</td>
+                    <td className="px-3 py-1.5">
+                      {r.status === "ok"
+                        ? <span className="text-green-600 font-bold">✓ OK</span>
+                        : <span className="text-amber-600 font-bold">⚠ Skipped</span>}
+                    </td>
+                    <td className="px-3 py-1.5 text-slate-600 truncate max-w-[200px]">
+                      {r.status === "skipped" ? <span className="text-amber-700">{r.reason}</span> : r.preview}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        <div className="px-5 py-3 border-t border-slate-100">
+          <button onClick={() => { setFile(null); setStep("upload"); setResult(null); setRowLog([]); }}
+            className="text-xs text-slate-500 hover:text-slate-700 underline flex items-center gap-1">
+            <RefreshCw className="h-3 w-3" /> Import another file
+          </button>
+        </div>
       </div>
     );
   }
