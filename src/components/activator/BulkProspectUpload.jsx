@@ -60,12 +60,22 @@ function parseOwnerName(owner) {
   return { first_name: tc(firstPart), last_name: tc(last) };
 }
 
+// Match a city string against a list of activators by their assigned_area field
+function findActivatorByCity(city, activators) {
+  if (!city) return null;
+  const cityLower = city.trim().toLowerCase();
+  return activators.find(a => {
+    if (!a.assigned_area) return false;
+    // assigned_area may be comma-separated list of cities/areas
+    return a.assigned_area.split(",").some(area => cityLower.includes(area.trim().toLowerCase()) || area.trim().toLowerCase().includes(cityLower));
+  }) || null;
+}
+
 // Map PropertyRadar row → VTONOpportunity
-function mapPropertyRadarRow(row, partnerEmail) {
+function mapPropertyRadarRow(row, partnerEmail, activators, autoAssign) {
   const { first_name, last_name } = parseOwnerName(row.owner);
   const address = (row.address || "").trim();
   const city = (row.city || "").trim();
-  // "Est Value" normalizes to "est_value"; "Est Equity $" normalizes to "est_equity_" ($ stripped)
   const estValue = parseFloat((row.est_value || row.estimated_price || row.value || "0").replace(/[^0-9.-]/g, "")) || null;
   const estEquity = parseFloat((row.est_equity_ || row.est_equity || row.estimated_equity || row.equity || "0").replace(/[^0-9.-]/g, "")) || null;
   const distressScore = parseFloat(row.distress_score || row.distress || "0") || null;
@@ -73,6 +83,12 @@ function mapPropertyRadarRow(row, partnerEmail) {
   const propType = (row.type || "").trim() || "SFR";
   const phone = (row.phone || row.phone_number || "").trim();
   const email = (row.email || row.email_address || "").trim();
+
+  let resolvedPartnerEmail = partnerEmail || "";
+  if (!resolvedPartnerEmail && autoAssign && city) {
+    const matched = findActivatorByCity(city, activators);
+    if (matched) resolvedPartnerEmail = matched.email || matched.rep_code || "";
+  }
 
   return {
     homeowner_name: `${first_name} ${last_name}`.trim(),
@@ -89,13 +105,13 @@ function mapPropertyRadarRow(row, partnerEmail) {
     va_loan_confirmed: true,
     listing_status: "active",
     opportunity_status: "assigned",
-    partner_email: partnerEmail || "",
+    partner_email: resolvedPartnerEmail,
     priority: "medium",
   };
 }
 
 // Map standard CSV row → ActivatorLead
-function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
+function mapActivatorRow(row, repCode, activatorId, csvHeaders, activators, autoAssign) {
   const get = (...keys) => {
     for (const k of keys) {
       const norm = k.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
@@ -113,7 +129,19 @@ function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
   const estEquity = parseFloat((get("est_equity", "est_equity_$", "equity") || "0").replace(/[^0-9.-]/g, "")) || null;
   const distress = parseFloat(get("distress_score", "distress") || "0") || null;
   const dom = parseFloat(get("listing_dom", "dom", "days_on_market") || "0") || null;
-  
+
+  // Auto-assign by city if no activator manually selected
+  let resolvedRepCode = repCode || get("rep_code", "repcode") || "";
+  let resolvedActivatorId = activatorId || "";
+  if (!resolvedRepCode && !resolvedActivatorId && autoAssign) {
+    const city = get("city", "city_name") || (get("property_address", "address") || "").split(",").slice(-2, -1)[0]?.trim() || "";
+    const matched = findActivatorByCity(city, activators);
+    if (matched) {
+      resolvedRepCode = matched.rep_code || "";
+      resolvedActivatorId = matched.id || "";
+    }
+  }
+
   const lead = {
     first_name: firstName,
     last_name: lastName,
@@ -125,9 +153,10 @@ function mapActivatorRow(row, repCode, activatorId, csvHeaders) {
     estimated_equity: estEquity,
     distress_score: distress,
     listing_dom: dom,
-    rep_code: get("rep_code", "repcode") || repCode || "",
-    activator_id: activatorId || "",
+    rep_code: resolvedRepCode,
+    activator_id: resolvedActivatorId,
     status: "SCANNED",
+    assigned_date: new Date().toISOString(),
     scan_timestamp: new Date().toISOString(),
   };
   
@@ -251,6 +280,34 @@ function ImportStatusReport({ rowResults, onClose }) {
   );
 }
 
+function AutoAssignToggle({ value, onChange, activators }) {
+  const withArea = activators.filter(a => a.assigned_area);
+  return (
+    <div className="flex items-start gap-2.5">
+      <button
+        type="button"
+        onClick={() => onChange(!value)}
+        className={`mt-0.5 w-8 h-4 rounded-full flex-shrink-0 transition-colors relative ${value ? "bg-blue-600" : "bg-slate-300"}`}
+        aria-pressed={value}
+      >
+        <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white shadow transition-transform ${value ? "translate-x-4" : "translate-x-0.5"}`} />
+      </button>
+      <div>
+        <p className="text-xs font-semibold text-slate-700">Auto-assign by city/area</p>
+        {value ? (
+          <p className="text-xs text-blue-600 mt-0.5">
+            {withArea.length > 0
+              ? `Matching against ${withArea.length} rep${withArea.length !== 1 ? "s" : ""} with assigned areas`
+              : <span className="text-amber-600">⚠ No reps have assigned areas set yet</span>}
+          </p>
+        ) : (
+          <p className="text-xs text-slate-400 mt-0.5">Leads matched to rep by their assigned city/area</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function TemplateSaveBar({ savedTemplate, detectedFormat, templateJustSaved, onSave, onClear }) {
   const hasMatchingTemplate = savedTemplate?.format === detectedFormat;
 
@@ -295,6 +352,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const [detectedFormat, setDetectedFormat] = useState(null);
   const [savedTemplate, setSavedTemplate] = useState(null);
   const [templateJustSaved, setTemplateJustSaved] = useState(false);
+  const [autoAssignByArea, setAutoAssignByArea] = useState(false);
   const fileRef = useRef();
 
   // Load saved template on mount
@@ -389,13 +447,13 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       const validRows = rows.filter(r => (r.address && r.address.trim() !== "") || (r.owner && r.owner.trim() !== ""));
       // For PropertyRadar, use the selected field activator's rep_code as the partner identifier
       const selectedActivatorObj = activators.find(a => a.id === selectedActivatorForPropertyRadar);
-      const partnerIdentifier = selectedActivatorObj ? selectedActivatorObj.rep_code : "";
-      records = validRows.map(r => mapPropertyRadarRow(r, partnerIdentifier));
+      const partnerIdentifier = selectedActivatorObj ? selectedActivatorObj.email || selectedActivatorObj.rep_code : "";
+      records = validRows.map(r => mapPropertyRadarRow(r, partnerIdentifier, activators, autoAssignByArea));
       entityName = "VTONOpportunity";
     } else {
       const activator = activators.find(a => a.id === selectedActivator);
       const headers = rows.length > 0 ? Object.keys(rows[0]) : [];
-      records = rows.map(r => mapActivatorRow(r, activator?.rep_code, activator?.id, headers));
+      records = rows.map(r => mapActivatorRow(r, activator?.rep_code, activator?.id, headers, activators, autoAssignByArea));
       entityName = "ActivatorLead";
     }
 
@@ -525,12 +583,14 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                     value={selectedActivatorForPropertyRadar}
                     onChange={e => setSelectedActivatorForPropertyRadar(e.target.value)}
                     className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    disabled={autoAssignByArea}
                   >
                     <option value="">No assignment</option>
                     {activators.map(a => (
                       <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
                     ))}
                   </select>
+                  <AutoAssignToggle value={autoAssignByArea} onChange={setAutoAssignByArea} activators={activators} />
                   <TemplateSaveBar
                     savedTemplate={savedTemplate}
                     detectedFormat={detectedFormat}
@@ -551,12 +611,14 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                     value={selectedActivator}
                     onChange={e => setSelectedActivator(e.target.value)}
                     className="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500"
+                    disabled={autoAssignByArea}
                   >
                     <option value="">No assignment (use rep_code from CSV)</option>
                     {activators.map(a => (
                       <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
                     ))}
                   </select>
+                  <AutoAssignToggle value={autoAssignByArea} onChange={setAutoAssignByArea} activators={activators} />
                   <TemplateSaveBar
                     savedTemplate={savedTemplate}
                     detectedFormat={detectedFormat}
