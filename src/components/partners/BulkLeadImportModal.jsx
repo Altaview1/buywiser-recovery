@@ -22,7 +22,23 @@ export default function BulkLeadImportModal({ partner, onClose, onSuccess }) {
         obj[h] = cols[i] || "";
       });
       return obj;
-    }).filter(r => r.address || r.email);
+    }).filter(r => r.address);
+  };
+
+  const isPropertyRadarFormat = (row) => {
+    return row.owner || (row["est value"] || row.est_value || row["estimated_price"]);
+  };
+
+  const parseOwnerName = (owner) => {
+    if (!owner) return { first_name: "", last_name: "" };
+    const firstOwner = owner.split("&")[0].trim();
+    const commaIdx = firstOwner.indexOf(",");
+    if (commaIdx === -1) {
+      return { first_name: firstOwner, last_name: "" };
+    }
+    const last = firstOwner.slice(0, commaIdx).trim();
+    const firstPart = firstOwner.slice(commaIdx + 1).trim().split(" ")[0];
+    return { first_name: firstPart, last_name: last };
   };
 
   const handleFileSelect = (e) => {
@@ -55,15 +71,40 @@ export default function BulkLeadImportModal({ partner, onClose, onSuccess }) {
     const successCount = await Promise.all(
       rows.map(async (row, i) => {
         try {
-          await base44.entities.Lead.create({
-            name: row.name || row.first_name || "",
-            email: row.email || "",
-            phone: row.phone || "",
-            address_or_link: row.address || row.property_address || "",
-            assigned_agent: partner.name,
-            status: "New",
-            internal_notes: row.notes || "",
-          });
+          const isPropertyRadar = isPropertyRadarFormat(row);
+          let leadData = {};
+
+          if (isPropertyRadar) {
+            const { first_name, last_name } = parseOwnerName(row.owner);
+            leadData = {
+              first_name,
+              last_name,
+              email: row.email || "",
+              phone: row.phone || row.phone_number || "",
+              property_address: row.address || "",
+              property_type: row.type || "SFR",
+              estimated_price: parseFloat(row["est value"] || row.est_value || row.estimated_price || "0") || null,
+              estimated_equity: parseFloat(row["est equity $"] || row.est_equity || row.estimated_equity || "0") || null,
+              distress_score: parseFloat(row["distress score"] || row.distress || "0") || null,
+              listing_dom: parseFloat(row["listing dom"] || row.dom || "0") || null,
+              assigned_agent: partner.name,
+              status: "New",
+              internal_notes: row.notes || `Source: PropertyRadar • City: ${row.city || ""}`,
+            };
+          } else {
+            leadData = {
+              name: row.name || row.first_name || "",
+              email: row.email || "",
+              phone: row.phone || "",
+              address_or_link: row.address || row.property_address || "",
+              assigned_agent: partner.name,
+              status: "New",
+              internal_notes: row.notes || "",
+            };
+          }
+
+          const entity = isPropertyRadar ? "ActivatorLead" : "Lead";
+          await base44.entities[entity].create(leadData);
           setProgress(Math.round(((i + 1) / rows.length) * 100));
           return true;
         } catch (err) {
@@ -161,10 +202,15 @@ export default function BulkLeadImportModal({ partner, onClose, onSuccess }) {
           )}
 
           {/* Required columns info */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-            <p className="text-xs font-semibold text-blue-900 mb-1">📋 Required Columns</p>
-            <p className="text-xs text-blue-800">Your CSV must have at least: <strong>address</strong> and <strong>email</strong></p>
-            <p className="text-xs text-blue-700 mt-1">Optional: name, phone, notes</p>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+            <div>
+              <p className="text-xs font-semibold text-blue-900">📋 PropertyRadar Format</p>
+              <p className="text-xs text-blue-800">Required: <strong>Address</strong> • Optional: Owner, Est Value, Est Equity, Distress Score, Listing DOM, Type, City</p>
+            </div>
+            <div className="border-t border-blue-200 pt-2">
+              <p className="text-xs font-semibold text-blue-900">📋 Standard Format</p>
+              <p className="text-xs text-blue-800">Required: <strong>address</strong> • Optional: name, email, phone, notes</p>
+            </div>
           </div>
 
           {/* Action buttons */}
