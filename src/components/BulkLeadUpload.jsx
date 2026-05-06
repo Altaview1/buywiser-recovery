@@ -133,13 +133,8 @@ export default function BulkLeadUpload({ onClose, onImported }) {
     return col ? (row[col] || "") : "";
   };
 
-  const handleImport = async () => {
-    setImporting(true);
-    let success = 0;
-    const failedRows = [];
-
-    for (let i = 0; i < parsedRows.length; i++) {
-      const row = parsedRows[i];
+  const buildLeads = () => {
+    return parsedRows.map((row, i) => {
       const agentName = rowAgents[i] || globalAgent || getMapped(row, "assigned_agent");
       const agent = agents.find(a => a.name === agentName);
 
@@ -166,46 +161,60 @@ export default function BulkLeadUpload({ onClose, onImported }) {
         address = `${address}, CA`;
       }
 
-      // Numeric fields
-      const estPrice = parseFloat(getMapped(row, "estimated_price").replace(/[^0-9.-]/g, "")) || null;
-      const estEquity = parseFloat(getMapped(row, "estimated_equity").replace(/[^0-9.-]/g, "")) || null;
-      const distress = parseFloat(getMapped(row, "distress_score")) || null;
-      const dom = parseInt(getMapped(row, "listing_dom")) || null;
+      // Numeric fields — safely parse, default null
+      const safeNum = (val) => { const n = parseFloat((val || "").replace(/[^0-9.-]/g, "")); return isNaN(n) ? null : n; };
+      const safeInt = (val) => { const n = parseInt(val || ""); return isNaN(n) ? null : n; };
 
       // Email fallback
       const email = getMapped(row, "email").trim() ||
-        `lead+${address.toLowerCase().replace(/\W+/g, "").slice(0, 12)}@placeholder.local`;
+        `lead+${(address || "lead").toLowerCase().replace(/\W+/g, "").slice(0, 12)}@placeholder.local`;
 
-      const activatorLead = {
-        first_name,
+      return {
+        first_name: first_name || "Owner",
         last_name,
         email,
         phone:            getMapped(row, "phone").trim() || "",
-        property_address: address,
+        property_address: address || "",
         property_type:    getMapped(row, "property_type").trim() || "",
-        estimated_price:  estPrice,
-        estimated_equity: estEquity,
-        distress_score:   distress,
-        listing_dom:      dom,
+        estimated_price:  safeNum(getMapped(row, "estimated_price")),
+        estimated_equity: safeNum(getMapped(row, "estimated_equity")),
+        distress_score:   safeNum(getMapped(row, "distress_score")),
+        listing_dom:      safeInt(getMapped(row, "listing_dom")),
         rep_code:         agent?.rep_code || "",
         activator_id:     agent?.id || "",
         status:           "SCANNED",
         scan_timestamp:   new Date().toISOString(),
       };
+    });
+  };
 
-      try {
-        await base44.entities.ActivatorLead.create(activatorLead);
-        success++;
-      } catch {
-        failedRows.push(i + 1);
+  const handleImport = async () => {
+    setImporting(true);
+    const leads = buildLeads();
+    try {
+      await base44.entities.ActivatorLead.bulkCreate(leads);
+      setResults({ success: leads.length, failed: 0 });
+      setErrors([]);
+      setStep("done");
+      onImported(leads.length);
+    } catch (err) {
+      // bulkCreate failed — fall back to one-by-one so partial success is captured
+      let success = 0;
+      const failedRows = [];
+      for (let i = 0; i < leads.length; i++) {
+        try {
+          await base44.entities.ActivatorLead.create(leads[i]);
+          success++;
+        } catch {
+          failedRows.push(i + 1);
+        }
       }
+      setResults({ success, failed: failedRows.length });
+      setErrors(failedRows);
+      setStep("done");
+      if (success > 0) onImported(success);
     }
-
-    setResults({ success, failed: failedRows.length });
-    setErrors(failedRows);
     setImporting(false);
-    setStep("done");
-    if (success > 0) onImported(success);
   };
 
   const downloadSample = () => {

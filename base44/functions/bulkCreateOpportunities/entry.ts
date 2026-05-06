@@ -14,19 +14,26 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid entity name' }, { status: 400 });
     }
 
-    // Use service role to bypass RLS (public admin page — no user session)
-    const results = await Promise.allSettled(
-      records.map(r => base44.asServiceRole.entities[entityName].create(r))
-    );
+    // Process in chunks of 50 to avoid timeouts
+    const chunkSize = 50;
+    const allResults = [];
 
-    const response = results.map((r, i) => ({
-      index: i,
-      status: r.status === 'fulfilled' ? 'success' : 'error',
-      data: r.status === 'fulfilled' ? r.value : null,
-      error: r.status === 'rejected' ? (r.reason?.message || 'Unknown error') : null,
-    }));
+    for (let i = 0; i < records.length; i += chunkSize) {
+      const chunk = records.slice(i, i + chunkSize);
+      const chunkResults = await Promise.allSettled(
+        chunk.map(r => base44.asServiceRole.entities[entityName].create(r))
+      );
+      chunkResults.forEach((r, j) => {
+        allResults.push({
+          index: i + j,
+          status: r.status === 'fulfilled' ? 'success' : 'error',
+          data: r.status === 'fulfilled' ? r.value : null,
+          error: r.status === 'rejected' ? (r.reason?.message || 'Unknown error') : null,
+        });
+      });
+    }
 
-    return Response.json({ results: response });
+    return Response.json({ results: allResults });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
