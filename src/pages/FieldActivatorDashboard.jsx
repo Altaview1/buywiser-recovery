@@ -170,19 +170,28 @@ export default function FieldActivatorDashboard() {
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: "Total Leads", value: leads.length, icon: Users, color: "text-slate-800" },
-            { label: "Verified", value: verifiedLeads, icon: TrendingUp, color: "text-blue-700" },
-            { label: "Scheduled", value: scheduledLeads, icon: TrendingUp, color: "text-purple-700" },
-            { label: "Paid Out", value: `$${totalEarnings}`, icon: DollarSign, color: "text-green-700" },
-          ].map(({ label, value, icon: Icon, color }) => (
-            <div key={label} className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-              <p className={`text-2xl font-black ${color}`}>{value}</p>
-              <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+        {(() => {
+          const scanPayments = payments.filter(p => p.type === "SCAN");
+          const consultPayments = payments.filter(p => p.type === "CONSULT");
+          const closePayments = payments.filter(p => p.type === "CLOSE");
+          return (
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+              {[
+                { label: "Scans", value: scanPayments.length, color: "text-blue-700" },
+                { label: "Consults", value: consultPayments.length, color: "text-purple-700" },
+                { label: "Closes", value: closePayments.length, color: "text-emerald-700" },
+                { label: "Pending", value: `$${payments.filter(p=>p.status==="PENDING").reduce((s,p)=>s+p.amount,0)}`, color: "text-amber-600" },
+                { label: "Approved", value: `$${payments.filter(p=>p.status==="APPROVED").reduce((s,p)=>s+p.amount,0)}`, color: "text-blue-600" },
+                { label: "Paid", value: `$${payments.filter(p=>p.status==="PAID").reduce((s,p)=>s+p.amount,0)}`, color: "text-green-700" },
+              ].map(({ label, value, color }) => (
+                <div key={label} className="bg-white border border-slate-200 rounded-xl p-3 text-center">
+                  <p className={`text-xl font-black ${color}`}>{value}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          );
+        })()}
 
         {/* Earnings Summary */}
         {payments.length > 0 && (() => {

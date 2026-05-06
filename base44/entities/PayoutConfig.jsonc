@@ -1,0 +1,26 @@
+{
+  "name": "PayoutConfig",
+  "type": "object",
+  "properties": {
+    "scan_bonus_amount": {
+      "type": "number",
+      "description": "Payout amount for a verified scan",
+      "default": 25
+    },
+    "consult_bonus_amount": {
+      "type": "number",
+      "description": "Payout amount for a completed consultation",
+      "default": 50
+    },
+    "close_bonus_amount": {
+      "type": "number",
+      "description": "Payout amount for a closed deal",
+      "default": 500
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes about current pay rate policy"
+    }
+  },
+  "required": []
+}
