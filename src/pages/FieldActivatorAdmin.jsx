@@ -339,6 +339,7 @@ export default function FieldActivatorAdmin() {
   const [showAddActivator, setShowAddActivator] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [tierOverrides, setTierOverrides] = useState({});
 
   useEffect(() => {
     const init = async () => {
@@ -382,14 +383,17 @@ export default function FieldActivatorAdmin() {
 
   const handleToggleTier = async (activator) => {
     const newTier = activator.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
-    // Update local state immediately for instant UI feedback
+    // Lock in the override to prevent UI flicker
+    setTierOverrides(prev => ({ ...prev, [activator.id]: newTier }));
     setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: newTier } : a));
     try {
       await base44.entities.FieldActivator.update(activator.id, { activator_tier: newTier });
+      // Clear override after 1 second to sync with DB
+      setTimeout(() => setTierOverrides(prev => { const n = { ...prev }; delete n[activator.id]; return n; }), 1000);
     } catch (err) {
       console.error("Failed to update tier:", err);
-      // Revert on error
       setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: activator.activator_tier } : a));
+      setTierOverrides(prev => { const n = { ...prev }; delete n[activator.id]; return n; });
     }
   };
 
@@ -607,8 +611,9 @@ export default function FieldActivatorAdmin() {
               </div>
             ) : (
               repPerf.map(a => {
-                const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
-                const isSenior = a.activator_tier === "SENIOR_FIELD_ACTIVATOR";
+                 const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
+                 const effectiveTier = tierOverrides[a.id] || a.activator_tier;
+                 const isSenior = effectiveTier === "SENIOR_FIELD_ACTIVATOR";
                 return (
                   <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3 sm:p-4 touch-manipulation">
                     <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
