@@ -82,10 +82,10 @@ export default function PortalHubPage() {
             <span className="text-3xl">🇺🇸</span>
           </div>
           <h1 className="text-5xl font-black mb-4 leading-tight" style={{ color: NAVY }}>
-            Veteran's Next Home™ Benefits
+            Veteran's Next Home™ Program
           </h1>
           <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-            Sell your VA-financed home and receive up to 1.5% cash back on your next purchase through BuyWiser.
+            <span className="text-slate-900 font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through BuyWiser.
           </p>
           <a
             href="/vton-scan"
