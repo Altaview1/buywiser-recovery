@@ -26,9 +26,11 @@ const PAYMENT_STATUS_COLORS = {
 };
 
 const PAYMENT_TYPE_CONFIG = {
-  IN_PERSON_SCHEDULED:   { label: "In-Person Scheduled",   color: "bg-blue-100 text-blue-800 border-blue-200" },
-  IN_PERSON_ATTENDED:    { label: "In-Person Attended",     color: "bg-green-100 text-green-800 border-green-200" },
-  LEAVE_BEHIND_ATTENDED: { label: "Leave-Behind Attended",  color: "bg-purple-100 text-purple-800 border-purple-200" },
+  VERIFIED_DOOR:           { label: "Verified Door",           color: "bg-slate-100 text-slate-700 border-slate-200" },
+  IN_PERSON_VERIFIED_SCAN: { label: "In-Person Verified Scan", color: "bg-blue-100 text-blue-800 border-blue-200" },
+  IN_PERSON_SCHEDULED:     { label: "In-Person Scheduled",     color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
+  IN_PERSON_ATTENDED:      { label: "In-Person Attended",      color: "bg-green-100 text-green-800 border-green-200" },
+  LEAVE_BEHIND_ATTENDED:   { label: "Leave-Behind Attended",   color: "bg-purple-100 text-purple-800 border-purple-200" },
 };
 
 function LeadDetailModal({ lead, onClose }) {
@@ -120,7 +122,7 @@ function LeadDetailModal({ lead, onClose }) {
 }
 
 function AddActivatorModal({ onClose, onCreated }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", rep_code: "", assigned_area: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", rep_code: "", assigned_area: "", activator_tier: "FIELD_ACTIVATOR" });
   const [saving, setSaving] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -174,6 +176,14 @@ function AddActivatorModal({ onClose, onCreated }) {
                 onChange={e => setForm(f => ({ ...f, assigned_area: e.target.value }))} />
             </div>
           </div>
+          <div>
+            <label className={labelCls}>Tier</label>
+            <select className={inputCls} value={form.activator_tier}
+              onChange={e => setForm(f => ({ ...f, activator_tier: e.target.value }))}>
+              <option value="FIELD_ACTIVATOR">Field Activator (Tier 1)</option>
+              <option value="SENIOR_FIELD_ACTIVATOR">Senior Field Activator (Tier 2)</option>
+            </select>
+          </div>
           <div className="flex gap-2 pt-1">
             <button type="submit" disabled={saving}
               className="flex items-center gap-1.5 px-5 py-2.5 font-bold text-sm rounded-lg text-white transition disabled:opacity-50"
@@ -197,7 +207,7 @@ function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }
   const [rejectingId, setRejectingId] = useState(null);
   const [rejectReason, setRejectReason] = useState("");
 
-  const typeOptions = ["ALL", "IN_PERSON_SCHEDULED", "IN_PERSON_ATTENDED", "LEAVE_BEHIND_ATTENDED"];
+  const typeOptions = ["ALL", "VERIFIED_DOOR", "IN_PERSON_VERIFIED_SCAN", "IN_PERSON_SCHEDULED", "IN_PERSON_ATTENDED", "LEAVE_BEHIND_ATTENDED"];
   const statusOptions = ["ALL", "PENDING", "APPROVED", "PAID", "REJECTED"];
 
   const filtered = payments.filter(p =>
@@ -368,6 +378,12 @@ export default function FieldActivatorAdmin() {
   const handleRejectPayment = async (payment, reason) => {
     await base44.entities.ActivatorPayment.update(payment.id, { status: "REJECTED", rejection_reason: reason || "Rejected by admin" });
     setPayments(prev => prev.map(p => p.id === payment.id ? { ...p, status: "REJECTED", rejection_reason: reason } : p));
+  };
+
+  const handleToggleTier = async (activator) => {
+    const newTier = activator.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
+    await base44.entities.FieldActivator.update(activator.id, { activator_tier: newTier });
+    setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: newTier } : a));
   };
 
   if (loading) {
@@ -565,16 +581,31 @@ export default function FieldActivatorAdmin() {
             ) : (
               repPerf.map(a => {
                 const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
+                const isSenior = a.activator_tier === "SENIOR_FIELD_ACTIVATOR";
                 return (
                   <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3 sm:p-4 touch-manipulation">
                     <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold text-slate-900 truncate">{a.name}</p>
-                        <p className="text-xs text-slate-500 truncate">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <p className="text-sm font-bold text-slate-900 truncate">{a.name}</p>
+                          <span className={`px-1.5 py-0.5 text-xs font-black rounded-full border flex-shrink-0 ${isSenior ? "bg-amber-100 text-amber-800 border-amber-300" : "bg-blue-50 text-blue-700 border-blue-200"}`}>
+                            {isSenior ? "⭐ Senior FA" : "Tier 1"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">{a.assigned_area || "No area"} · <span className="font-mono">{a.rep_code}</span></p>
                       </div>
-                      <span className={`text-lg font-black flex-shrink-0 ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
-                        {rate}%
-                      </span>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <button
+                          onClick={() => handleToggleTier(a)}
+                          className={`px-2 py-1 text-xs font-bold rounded-lg border transition ${isSenior ? "bg-slate-50 text-slate-600 border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"}`}
+                          title={isSenior ? "Demote to Field Activator" : "Promote to Senior Field Activator"}
+                        >
+                          {isSenior ? "Demote" : "Promote ⭐"}
+                        </button>
+                        <span className={`text-lg font-black ${rate >= 50 ? "text-green-600" : rate >= 25 ? "text-amber-600" : "text-slate-400"}`}>
+                          {rate}%
+                        </span>
+                      </div>
                     </div>
                     <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden mb-2 sm:mb-3">
                       <div

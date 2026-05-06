@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { QRCodeSVG } from "qrcode.react";
-import { AlertCircle, RefreshCw, LogOut, QrCode, MapPin, Printer, Users, DollarSign, CheckCircle2, CalendarCheck, MailOpen } from "lucide-react";
+import { AlertCircle, RefreshCw, LogOut, QrCode, MapPin, Printer, Users, TrendingUp, Star, CheckCircle2 } from "lucide-react";
 import QRFlyerPrint from "@/components/activator/QRFlyerPrint";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
+const GOLD = "#b45309";
 
 const PAYMENT_TYPE_CONFIG = {
-  IN_PERSON_SCHEDULED: { label: "In-Person Scheduled", color: "bg-blue-100 text-blue-800 border-blue-200" },
-  IN_PERSON_ATTENDED:  { label: "In-Person Attended",  color: "bg-green-100 text-green-800 border-green-200" },
-  LEAVE_BEHIND_ATTENDED: { label: "Leave-Behind Attended", color: "bg-purple-100 text-purple-800 border-purple-200" },
+  VERIFIED_DOOR:           { label: "Verified Door",          color: "bg-slate-100 text-slate-700 border-slate-200" },
+  IN_PERSON_VERIFIED_SCAN: { label: "In-Person Verified Scan", color: "bg-blue-100 text-blue-800 border-blue-200" },
+  IN_PERSON_SCHEDULED:     { label: "In-Person Scheduled",     color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
+  IN_PERSON_ATTENDED:      { label: "In-Person Attended",      color: "bg-green-100 text-green-800 border-green-200" },
+  LEAVE_BEHIND_ATTENDED:   { label: "Leave-Behind Attended",   color: "bg-purple-100 text-purple-800 border-purple-200" },
 };
 
 const PAYMENT_STATUS_STYLE = {
@@ -70,6 +73,79 @@ function AccessGate({ onAccess }) {
   );
 }
 
+function PromotionTracker({ leads, payments }) {
+  // Metrics for promotion criteria
+  const verifiedDoors = payments.filter(p => p.type === "VERIFIED_DOOR").length;
+  const inPersonScans = payments.filter(p => p.type === "IN_PERSON_VERIFIED_SCAN").length;
+  const scheduledReviews = leads.filter(l => l.benefit_review_status === "SCHEDULED" || l.benefit_review_status === "ATTENDED").length;
+  const totalLeads = leads.length;
+  const logsWithVisitData = leads.filter(l => l.status !== "SCANNED").length;
+  const loggingAccuracy = totalLeads > 0 ? Math.round((logsWithVisitData / totalLeads) * 100) : 0;
+  const scanRate = totalLeads > 0 ? Math.round((inPersonScans / totalLeads) * 100) : 0;
+
+  const criteria = [
+    { label: "Verified Doors", current: verifiedDoors, target: 100, met: verifiedDoors >= 100 },
+    { label: "Logging Accuracy", current: loggingAccuracy, target: 95, met: loggingAccuracy >= 95, isPercent: true },
+    { label: "In-Person Scan Rate", current: scanRate, target: 15, met: scanRate >= 15, isPercent: true },
+    { label: "Scheduled Benefit Reviews", current: scheduledReviews, target: 3, met: scheduledReviews >= 3 },
+  ];
+
+  const metCount = criteria.filter(c => c.met).length;
+  const overallPct = Math.round((metCount / criteria.length) * 100);
+
+  return (
+    <div className="bg-white border border-amber-200 rounded-2xl overflow-hidden">
+      <div className="px-5 py-3 flex items-center gap-2" style={{ background: "#78350f" }}>
+        <Star className="h-4 w-4 text-amber-300" />
+        <p className="text-xs font-black uppercase tracking-widest text-amber-200">Progress Toward Senior Field Activator</p>
+      </div>
+      <div className="p-5 space-y-4">
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs font-bold text-slate-600">{metCount} of {criteria.length} criteria met</p>
+            <p className="text-sm font-black text-amber-700">{overallPct}%</p>
+          </div>
+          <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-700 bg-amber-500" style={{ width: `${overallPct}%` }} />
+          </div>
+        </div>
+        <div className="space-y-2">
+          {criteria.map(c => (
+            <div key={c.label} className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 ${c.met ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-400"}`}>
+                  {c.met ? "✓" : "○"}
+                </span>
+                <span className="text-xs text-slate-700">{c.label}</span>
+              </div>
+              <span className={`text-xs font-bold ${c.met ? "text-green-700" : "text-slate-500"}`}>
+                {c.isPercent ? `${c.current}% / ${c.target}%` : `${c.current} / ${c.target}`}
+              </span>
+            </div>
+          ))}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 bg-slate-100 text-slate-400">○</span>
+              <span className="text-xs text-slate-700">Zero compliance issues</span>
+            </div>
+            <span className="text-xs font-bold text-slate-400">Admin verified</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="w-4 h-4 rounded-full flex items-center justify-center text-xs flex-shrink-0 bg-slate-100 text-slate-400">○</span>
+              <span className="text-xs text-slate-700">No homeowner complaints</span>
+            </div>
+            <span className="text-xs font-bold text-slate-400">Admin verified</span>
+          </div>
+        </div>
+        <p className="text-xs text-slate-400 bg-amber-50 rounded-lg px-3 py-2">
+          Reach all criteria to be considered for promotion to <strong className="text-amber-700">Senior Field Activator</strong>. Admin must approve the final promotion.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function FieldActivatorDashboard() {
   const [activator, setActivator] = useState(null);
   const [leads, setLeads] = useState([]);
@@ -96,18 +172,18 @@ export default function FieldActivatorDashboard() {
 
   if (!activator) return <AccessGate onAccess={handleAccess} />;
 
-  // QR URLs — in-person (no mode param) vs leave-behind (?mode=lb)
+  const tier = activator.activator_tier || "FIELD_ACTIVATOR";
+  const isSenior = tier === "SENIOR_FIELD_ACTIVATOR";
+
   const baseQrUrl = `${window.location.origin}/vton-scan?rep=${activator.rep_code}`;
   const inPersonQrUrl = baseQrUrl;
   const leaveBehandQrUrl = `${baseQrUrl}&mode=lb`;
 
-  // Activation stats
-  const inPersonLeads = leads.filter(l => l.activation_source === "IN_PERSON_ACTIVATION");
-  const leaveLeads    = leads.filter(l => l.activation_source === "LEAVE_BEHIND_ACTIVATION");
-  const inPersonScheduled = inPersonLeads.filter(l => ["SCHEDULED", "ATTENDED"].includes(l.benefit_review_status));
-  const inPersonAttended  = inPersonLeads.filter(l => l.benefit_review_status === "ATTENDED");
-  const leaveScheduled    = leaveLeads.filter(l => ["SCHEDULED", "ATTENDED"].includes(l.benefit_review_status));
-  const leaveAttended     = leaveLeads.filter(l => l.benefit_review_status === "ATTENDED");
+  // Activity stats
+  const verifiedDoors = payments.filter(p => p.type === "VERIFIED_DOOR").length;
+  const inPersonScans = payments.filter(p => p.type === "IN_PERSON_VERIFIED_SCAN").length;
+  const scheduledReviews = leads.filter(l => ["SCHEDULED", "ATTENDED"].includes(l.benefit_review_status) && l.activation_source === "IN_PERSON_ACTIVATION").length;
+  const attendedReviews = leads.filter(l => l.benefit_review_status === "ATTENDED").length;
 
   // Payment totals
   const pending  = payments.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0);
@@ -124,7 +200,12 @@ export default function FieldActivatorDashboard() {
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-black uppercase tracking-widest text-slate-400">Field Activator Portal</p>
-            <p className="text-sm font-bold text-slate-800 mt-0.5">{activator.name}</p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-sm font-bold text-slate-800">{activator.name}</p>
+              <span className={`px-2 py-0.5 text-xs font-black rounded-full border ${isSenior ? "bg-amber-100 text-amber-800 border-amber-300" : "bg-blue-50 text-blue-700 border-blue-200"}`}>
+                {isSenior ? "⭐ Senior FA" : "Field Activator"}
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button onClick={() => fetchData(activator)}
@@ -165,7 +246,6 @@ export default function FieldActivatorDashboard() {
 
           {showQR && (
             <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-2 gap-4">
-              {/* In-Person QR */}
               <div className="flex flex-col items-center gap-2">
                 <div className="p-3 bg-white border-2 border-blue-300 rounded-xl">
                   <QRCodeSVG value={inPersonQrUrl} size={140} bgColor="#ffffff" fgColor={NAVY} level="M" />
@@ -175,7 +255,6 @@ export default function FieldActivatorDashboard() {
                   <p className="text-xs text-slate-400 mt-0.5">Show at the door</p>
                 </div>
               </div>
-              {/* Leave-Behind QR */}
               <div className="flex flex-col items-center gap-2">
                 <div className="p-3 bg-white border-2 border-purple-300 rounded-xl">
                   <QRCodeSVG value={leaveBehandQrUrl} size={140} bgColor="#ffffff" fgColor="#5b21b6" level="M" />
@@ -185,78 +264,104 @@ export default function FieldActivatorDashboard() {
                   <p className="text-xs text-slate-400 mt-0.5">For packets & door hangers</p>
                 </div>
               </div>
-              <p className="col-span-2 text-xs text-slate-400 text-center">Use the correct QR for each activation type. They track differently for your compensation.</p>
+              <p className="col-span-2 text-xs text-slate-400 text-center">Use the correct QR for each activation type. They track separately for compensation.</p>
             </div>
           )}
         </div>
 
-        {/* Compensation Model Explainer */}
+        {/* How You Earn — tier-aware */}
         <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
           <div className="px-5 py-3 border-b border-slate-100" style={{ background: NAVY }}>
-            <p className="text-xs font-black uppercase tracking-widest text-blue-300">How You Earn</p>
+            <p className="text-xs font-black uppercase tracking-widest text-blue-300">How You Earn — {isSenior ? "Senior Field Activator" : "Field Activator"}</p>
           </div>
           <div className="divide-y divide-slate-100">
-            <div className="px-5 py-4">
-              <div className="flex items-start gap-3">
-                <span className="text-lg">🤝</span>
-                <div>
-                  <p className="text-xs font-black text-blue-800 uppercase tracking-wider mb-1">In-Person Activation</p>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong className="text-slate-800">$150</strong> when you verify and schedule a Benefit Review at the door using your in-person QR code.
-                    <br />
-                    <strong className="text-slate-800">+$150</strong> additional if the homeowner attends their Benefit Review.
-                  </p>
-                  <p className="text-xs text-blue-600 font-semibold mt-1">Total possible: $300</p>
-                </div>
+            <div className="px-5 py-4 flex items-start gap-3">
+              <span className="text-lg">🚪</span>
+              <div>
+                <p className="text-xs font-black text-slate-800 uppercase tracking-wider mb-1">Verified Door Visit</p>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  <strong className="text-slate-800">$15</strong> per verified door visit with photo/timestamp proof and packet delivery.
+                </p>
               </div>
             </div>
-            <div className="px-5 py-4">
-              <div className="flex items-start gap-3">
-                <span className="text-lg">📬</span>
+            {!isSenior && (
+              <div className="px-5 py-4 flex items-start gap-3">
+                <span className="text-lg">📱</span>
                 <div>
-                  <p className="text-xs font-black text-purple-800 uppercase tracking-wider mb-1">Leave-Behind Activation</p>
+                  <p className="text-xs font-black text-blue-800 uppercase tracking-wider mb-1">In-Person Verified Scan</p>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    <strong className="text-slate-800">$150</strong> if a homeowner from your packet later attends a Benefit Review.
+                    <strong className="text-slate-800">$50</strong> when a homeowner scans your in-person QR code and verifies their contact information while you're present at the door.
                   </p>
-                  <p className="text-xs text-purple-600 font-semibold mt-1">Total possible: $150</p>
+                  <p className="text-xs text-slate-400 mt-1">Leave-behind scans do not qualify.</p>
                 </div>
               </div>
-            </div>
+            )}
+            {isSenior && (
+              <>
+                <div className="px-5 py-4 flex items-start gap-3">
+                  <span className="text-lg">🤝</span>
+                  <div>
+                    <p className="text-xs font-black text-indigo-800 uppercase tracking-wider mb-1">In-Person Scheduled Review</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      <strong className="text-slate-800">$150</strong> when you verify and schedule a Benefit Review at the door.
+                    </p>
+                  </div>
+                </div>
+                <div className="px-5 py-4 flex items-start gap-3">
+                  <span className="text-lg">✅</span>
+                  <div>
+                    <p className="text-xs font-black text-green-800 uppercase tracking-wider mb-1">Attended Benefit Review</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      <strong className="text-slate-800">+$150</strong> additional when the homeowner attends their Benefit Review.
+                    </p>
+                    <p className="text-xs text-indigo-600 font-semibold mt-1">Total possible per in-person activation: $315</p>
+                  </div>
+                </div>
+                <div className="px-5 py-4 flex items-start gap-3">
+                  <span className="text-lg">📬</span>
+                  <div>
+                    <p className="text-xs font-black text-purple-800 uppercase tracking-wider mb-1">Leave-Behind Attended Review</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      <strong className="text-slate-800">$150</strong> if a homeowner from your leave-behind packet later attends a Benefit Review (admin approval required).
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+          <div className="px-5 py-3 bg-slate-50 border-t border-slate-100">
+            <p className="text-xs text-slate-500">Field Activators are paid for verified field actions, in-person scans, scheduled Benefit Reviews, and attended Benefit Reviews depending on tier.</p>
           </div>
         </div>
 
-        {/* Activation Breakdown */}
+        {/* Activity Stats */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
-          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Activation Summary</p>
-          <div className="grid grid-cols-2 gap-3 mb-3">
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
-              <p className="text-xs font-black uppercase tracking-wider text-blue-700 mb-2">In-Person</p>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <p className="text-xl font-black text-blue-800">{inPersonScheduled.length}</p>
-                  <p className="text-xs text-blue-500">Scheduled</p>
-                </div>
-                <div>
-                  <p className="text-xl font-black text-green-700">{inPersonAttended.length}</p>
-                  <p className="text-xs text-green-500">Attended</p>
-                </div>
-              </div>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Activity Summary</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-center">
+              <p className="text-2xl font-black text-slate-800">{verifiedDoors}</p>
+              <p className="text-xs text-slate-500 mt-0.5">Verified Doors</p>
             </div>
-            <div className="bg-purple-50 border border-purple-100 rounded-xl p-3 text-center">
-              <p className="text-xs font-black uppercase tracking-wider text-purple-700 mb-2">Leave-Behind</p>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <p className="text-xl font-black text-purple-800">{leaveScheduled.length}</p>
-                  <p className="text-xs text-purple-500">Scheduled</p>
-                </div>
-                <div>
-                  <p className="text-xl font-black text-green-700">{leaveAttended.length}</p>
-                  <p className="text-xs text-green-500">Attended</p>
-                </div>
+            {!isSenior && (
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-center">
+                <p className="text-2xl font-black text-blue-800">{inPersonScans}</p>
+                <p className="text-xs text-blue-500 mt-0.5">In-Person Scans</p>
               </div>
-            </div>
+            )}
+            {isSenior && (
+              <>
+                <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-center">
+                  <p className="text-2xl font-black text-indigo-800">{scheduledReviews}</p>
+                  <p className="text-xs text-indigo-500 mt-0.5">Scheduled Reviews</p>
+                </div>
+                <div className="bg-green-50 border border-green-100 rounded-xl p-3 text-center col-span-2">
+                  <p className="text-2xl font-black text-green-700">{attendedReviews}</p>
+                  <p className="text-xs text-green-500 mt-0.5">Attended Reviews</p>
+                </div>
+              </>
+            )}
           </div>
-          <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-50 rounded-lg px-3 py-2">
+          <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-50 rounded-lg px-3 py-2 mt-3">
             <Users className="h-3.5 w-3.5 flex-shrink-0" />
             <span>{leads.length} total leads attributed to your rep code</span>
           </div>
@@ -267,7 +372,7 @@ export default function FieldActivatorDashboard() {
           <div className="px-5 py-4" style={{ background: NAVY }}>
             <p className="text-xs font-black uppercase tracking-widest text-blue-300 mb-1">Earnings Summary</p>
             <p className="text-3xl font-black text-white">${total.toLocaleString()}</p>
-            <p className="text-xs text-blue-300 mt-0.5">Lifetime earnings across all activation events</p>
+            <p className="text-xs text-blue-300 mt-0.5">Lifetime earnings across all field actions</p>
           </div>
           <div className="grid grid-cols-3 divide-x divide-slate-100">
             <div className="px-4 py-4 text-center">
@@ -287,7 +392,6 @@ export default function FieldActivatorDashboard() {
             </div>
           </div>
 
-          {/* Itemized */}
           {payments.length > 0 && (
             <div className="border-t border-slate-100 px-5 py-4">
               <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Itemized Payouts</p>
@@ -308,6 +412,9 @@ export default function FieldActivatorDashboard() {
             </div>
           )}
         </div>
+
+        {/* Promotion tracker — only for Tier 1 */}
+        {!isSenior && <PromotionTracker leads={leads} payments={payments} />}
 
         {/* Leads list */}
         <div className="bg-white border border-slate-200 rounded-2xl p-5">

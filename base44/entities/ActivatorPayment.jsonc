@@ -14,11 +14,13 @@
     "type": {
       "type": "string",
       "enum": [
+        "VERIFIED_DOOR",
+        "IN_PERSON_VERIFIED_SCAN",
         "IN_PERSON_SCHEDULED",
         "IN_PERSON_ATTENDED",
         "LEAVE_BEHIND_ATTENDED"
       ],
-      "description": "Type of activation payout event"
+      "description": "Payment event type \u2014 varies by activator tier"
     },
     "amount": {
       "type": "number"

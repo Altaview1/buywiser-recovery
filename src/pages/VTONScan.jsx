@@ -83,6 +83,25 @@ export default function VTONScan() {
       });
       setLeadId(lead.id);
 
+      // Tier 1 in-person verified scan payment ($50)
+      if (activatorId && repCode && scanMode === "IN_PERSON_ACTIVATION") {
+        const activatorList = await base44.entities.FieldActivator.filter({ id: activatorId });
+        const tier = activatorList[0]?.activator_tier || "FIELD_ACTIVATOR";
+        if (tier === "FIELD_ACTIVATOR") {
+          const existing = await base44.entities.ActivatorPayment.filter({ lead_id: lead.id, type: "IN_PERSON_VERIFIED_SCAN" });
+          if (existing.length === 0) {
+            await base44.entities.ActivatorPayment.create({
+              activator_id: activatorId,
+              lead_id: lead.id,
+              rep_code: repCode,
+              type: "IN_PERSON_VERIFIED_SCAN",
+              amount: 50,
+              status: "PENDING",
+            });
+          }
+        }
+      }
+
       // Notify admin
       await base44.functions.invoke("notifyOnAnyChange", {
         event: { type: "create", entity_name: "ActivatorLead", entity_id: lead.id },
@@ -147,22 +166,31 @@ export default function VTONScan() {
         benefit_review_status: "SCHEDULED",
       });
 
-      // IN_PERSON_ACTIVATION at door + scheduling = $150 pending payment
-      if (scanMode === "IN_PERSON_ACTIVATION" && lead?.activator_id && lead?.rep_code) {
-        // Guard: only create if no IN_PERSON_SCHEDULED payment already exists for this lead
-        const existing = await base44.entities.ActivatorPayment.filter({ lead_id: leadId, type: "IN_PERSON_SCHEDULED" });
-        if (existing.length === 0) {
-          await base44.entities.ActivatorPayment.create({
-            activator_id: lead.activator_id,
-            lead_id: leadId,
-            rep_code: lead.rep_code,
-            type: "IN_PERSON_SCHEDULED",
-            amount: 150,
-            status: "PENDING",
-          });
+      // Tier-based payment on scheduling
+      if (lead?.activator_id && lead?.rep_code) {
+        // Fetch activator tier
+        const activatorList = await base44.entities.FieldActivator.filter({ id: lead.activator_id });
+        const tier = activatorList[0]?.activator_tier || "FIELD_ACTIVATOR";
+
+        if (scanMode === "IN_PERSON_ACTIVATION") {
+          if (tier === "SENIOR_FIELD_ACTIVATOR") {
+            // Senior: $150 for in-person scheduled
+            const existing = await base44.entities.ActivatorPayment.filter({ lead_id: leadId, type: "IN_PERSON_SCHEDULED" });
+            if (existing.length === 0) {
+              await base44.entities.ActivatorPayment.create({
+                activator_id: lead.activator_id,
+                lead_id: leadId,
+                rep_code: lead.rep_code,
+                type: "IN_PERSON_SCHEDULED",
+                amount: 150,
+                status: "PENDING",
+              });
+            }
+          }
+          // Tier 1: scan payment created at verify step (handleVerify), not here
         }
+        // LEAVE_BEHIND: no scheduling payment for either tier
       }
-      // LEAVE_BEHIND: no upfront payment on scheduling — payment only on attendance
     }
     setStep(7);
   };

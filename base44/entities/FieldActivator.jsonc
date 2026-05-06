@@ -27,6 +27,15 @@
       ],
       "default": "active"
     },
+    "activator_tier": {
+      "type": "string",
+      "enum": [
+        "FIELD_ACTIVATOR",
+        "SENIOR_FIELD_ACTIVATOR"
+      ],
+      "default": "FIELD_ACTIVATOR",
+      "description": "Compensation tier: Field Activator (Tier 1) or Senior Field Activator (Tier 2)"
+    },
     "total_scans": {
       "type": "number",
       "default": 0
