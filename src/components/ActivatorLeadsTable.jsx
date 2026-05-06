@@ -16,8 +16,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
   const [sortDir, setSortDir] = useState("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [updatingId, setUpdatingId] = useState(null);
-  const [localOverrides, setLocalOverrides] = useState({});
+  const [savingId, setSavingId] = useState(null);
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "All" || l.status === filterStatus;
@@ -53,19 +52,14 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
   };
 
   const handleStatusChange = async (leadId, newStatus) => {
-    setUpdatingId(leadId);
-    setLocalOverrides(prev => ({ ...prev, [leadId]: newStatus }));
+    setSavingId(leadId);
     try {
       await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
-      // Keep the override for 500ms to prevent UI flicker
-      setTimeout(() => {
-        setLocalOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
-        setUpdatingId(null);
-      }, 500);
     } catch (err) {
       console.error("Failed to update status:", err);
-      setLocalOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
-      setUpdatingId(null);
+      alert("Failed to update status: " + err.message);
+    } finally {
+      setSavingId(null);
     }
   };
 
@@ -159,40 +153,40 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
                 </tr>
               ) : (
                 sorted.map(lead => {
-                  const currentStatus = localOverrides[lead.id] || lead.status;
-                  const cfg = STATUS_COLORS[currentStatus] || STATUS_COLORS.SCANNED;
-                  const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
-                  
-                  return (
-                    <tr key={lead.id} className="hover:bg-slate-50 transition">
-                      <td className="px-4 py-3">
-                        <div className="text-sm font-semibold text-slate-900">{fullName}</div>
-                        <div className="text-xs text-slate-500 mt-0.5">
-                          {lead.email && <div>{lead.email}</div>}
-                          {lead.phone && <div>{lead.phone}</div>}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-1.5 text-sm text-slate-700">
-                          <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
-                          <span>{lead.property_address}</span>
-                        </div>
-                        {lead.property_type && (
-                          <div className="text-xs text-slate-500 mt-0.5">{lead.property_type}</div>
-                        )}
-                      </td>
-                      <td className="px-4 py-3">
-                        <select
-                          value={currentStatus}
-                          onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                          disabled={updatingId === lead.id}
-                          className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
-                        >
-                          {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
-                            <option key={s} value={s}>{s}</option>
-                          ))}
-                        </select>
-                      </td>
+                   const cfg = STATUS_COLORS[lead.status] || STATUS_COLORS.SCANNED;
+                   const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
+                   const isSaving = savingId === lead.id;
+
+                   return (
+                     <tr key={lead.id} className="hover:bg-slate-50 transition">
+                       <td className="px-4 py-3">
+                         <div className="text-sm font-semibold text-slate-900">{fullName}</div>
+                         <div className="text-xs text-slate-500 mt-0.5">
+                           {lead.email && <div>{lead.email}</div>}
+                           {lead.phone && <div>{lead.phone}</div>}
+                         </div>
+                       </td>
+                       <td className="px-4 py-3">
+                         <div className="flex items-center gap-1.5 text-sm text-slate-700">
+                           <MapPin className="h-3.5 w-3.5 text-slate-400 flex-shrink-0" />
+                           <span>{lead.property_address}</span>
+                         </div>
+                         {lead.property_type && (
+                           <div className="text-xs text-slate-500 mt-0.5">{lead.property_type}</div>
+                         )}
+                       </td>
+                       <td className="px-4 py-3">
+                         <select
+                           value={lead.status}
+                           onChange={(e) => handleStatusChange(lead.id, e.target.value)}
+                           disabled={isSaving}
+                           className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
+                         >
+                           {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
+                             <option key={s} value={s}>{s}</option>
+                           ))}
+                         </select>
+                       </td>
                       {hasDataForField("estimated_price") && (
                         <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
                           {lead.estimated_price ? `$${(lead.estimated_price/1000).toFixed(0)}K` : ''}
