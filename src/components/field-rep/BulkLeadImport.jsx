@@ -33,6 +33,32 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     reader.readAsText(f);
   };
 
+  // Parse quoted CSV line correctly
+  const parseCSVLine = (line) => {
+    const cols = [];
+    let current = "";
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      if (line[i] === '"') { inQuotes = !inQuotes; continue; }
+      if (line[i] === ',' && !inQuotes) { cols.push(current.trim()); current = ""; continue; }
+      current += line[i];
+    }
+    cols.push(current.trim());
+    return cols;
+  };
+
+  // Parse "LASTNAME,FIRSTNAME MIDDLE" owner format
+  const parseOwner = (owner) => {
+    if (!owner) return { first_name: "", last_name: "" };
+    const primary = owner.split("&")[0].trim();
+    const commaIdx = primary.indexOf(",");
+    const tc = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
+    if (commaIdx === -1) return { first_name: tc(primary), last_name: "" };
+    const last = primary.slice(0, commaIdx).trim();
+    const first = primary.slice(commaIdx + 1).trim().split(" ")[0];
+    return { first_name: tc(first), last_name: tc(last) };
+  };
+
   const handleUpload = async () => {
     if (!file) {
       alert("No file selected");
@@ -44,48 +70,70 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
       const reader = new FileReader();
       reader.onload = async (evt) => {
         const csv = evt.target.result;
-        const lines = csv.split("\n");
-        const headers = lines[0].split(",").map((h) => h.trim().toLowerCase());
+        const rawLines = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+        const headerLine = rawLines[0].replace(/^\uFEFF/, "");
+        const headers = parseCSVLine(headerLine).map(h => h.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
+
+        // Detect PropertyRadar format (has 'address' and 'owner' columns)
+        const isPropertyRadar = headers.includes("address") && headers.includes("owner");
 
         const leads = [];
-        for (let i = 1; i < lines.length; i++) {
-          if (!lines[i].trim()) continue;
-          const values = lines[i].split(",").map((v) => v.trim());
+        for (let i = 1; i < rawLines.length; i++) {
+          if (!rawLines[i].trim()) continue;
+          const values = parseCSVLine(rawLines[i]);
           const row = {};
-          headers.forEach((h, idx) => {
-            row[h] = values[idx] || "";
-          });
+          headers.forEach((h, idx) => { row[h] = values[idx] || ""; });
 
-          if (!row.first_name || !row.email || !row.property_address) {
-            console.warn(`Row ${i} missing required fields, skipping`);
-            continue;
+          if (isPropertyRadar) {
+            const address = (row.address || "").trim();
+            const city = (row.city || "").trim();
+            if (!address) continue;
+            // Skip footer/disclaimer lines
+            if (address.toLowerCase().includes("information contained") || address.toLowerCase().includes("propertyradar")) continue;
+
+            const { first_name, last_name } = parseOwner(row.owner);
+            const slug = address.toLowerCase().replace(/\s+/g, "").slice(0, 12);
+            leads.push({
+              first_name: first_name || "Owner",
+              last_name,
+              email: `lead+${slug}@placeholder.local`,
+              phone: "",
+              property_address: city ? `${address}, ${city}, CA` : `${address}, CA`,
+              property_type: row.type || "SFR",
+              estimated_price: parseFloat((row.est_value || "0").replace(/[^0-9.-]/g, "")) || null,
+              estimated_equity: parseFloat((row.est_equity_$ || row.est_equity || "0").replace(/[^0-9.-]/g, "")) || null,
+              distress_score: parseFloat(row.distress_score) || null,
+              listing_dom: parseInt(row.listing_dom) || null,
+              rep_code: repCode,
+              status: "SCANNED",
+            });
+          } else {
+            if (!row.first_name || !row.property_address) continue;
+            leads.push({
+              first_name: row.first_name,
+              last_name: row.last_name || "",
+              email: row.email || `lead+${row.property_address.slice(0,8).replace(/\s/g,"")}@placeholder.local`,
+              phone: row.phone || "",
+              property_address: row.property_address,
+              property_type: row.property_type || "SFR",
+              estimated_price: parseFloat(row.estimated_price) || null,
+              estimated_equity: parseFloat(row.estimated_equity) || null,
+              distress_score: parseFloat(row.distress_score) || null,
+              listing_dom: parseInt(row.listing_dom) || null,
+              rep_code: repCode,
+              status: "SCANNED",
+              lat: parseFloat(row.lat) || null,
+              lng: parseFloat(row.lng) || null,
+            });
           }
-
-          leads.push({
-            first_name: row.first_name,
-            last_name: row.last_name || "",
-            email: row.email,
-            phone: row.phone || "",
-            property_address: row.property_address,
-            property_type: row.property_type || "SFR",
-            estimated_price: parseFloat(row.estimated_price) || 0,
-            estimated_equity: parseFloat(row.estimated_equity) || 0,
-            distress_score: parseFloat(row.distress_score) || 50,
-            listing_dom: parseInt(row.listing_dom) || 0,
-            rep_code: repCode,
-            status: "SCANNED",
-            lat: parseFloat(row.lat) || 34.1515,
-            lng: parseFloat(row.lng) || -118.2548,
-          });
         }
 
         if (leads.length === 0) {
-          alert("No valid leads found in CSV");
+          alert("No valid leads found in CSV. For PropertyRadar exports, ensure the file has Address and Owner columns.");
           setUploading(false);
           return;
         }
 
-        // Bulk create
         await base44.entities.ActivatorLead.bulkCreate(leads);
         setResult({ success: true, count: leads.length });
         onSuccess();
@@ -132,7 +180,7 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
           Bulk Import Leads (CSV)
         </p>
         <p className="text-xs text-slate-600 mb-3">
-          Required columns: first_name, email, property_address. Optional: last_name, phone, property_type, estimated_price, estimated_equity, distress_score, listing_dom, lat, lng
+          Accepts <strong>PropertyRadar exports</strong> (Address, Owner, City, Est Value columns) or standard CSVs (first_name, property_address). Email is not required for PropertyRadar files.
         </p>
       </div>
 
