@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload, ShieldAlert } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
-import ActivatorLeadsTable from "@/components/ActivatorLeadsTable.jsx";
+import ActivatorLeadsTable from "@/components/ActivatorLeadsTable";
 import ActivatorLeadsMap from "@/components/ActivatorLeadsMap";
 
 const NAVY = "#0B1F3B";
