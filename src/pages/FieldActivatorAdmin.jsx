@@ -586,13 +586,14 @@ export default function FieldActivatorAdmin() {
         </div>
 
         {/* LEADS TAB */}
-        {activeTab === "leads" && (
-          <ActivatorLeadsTable 
-            leads={leads} 
-            onSelectLead={setSelectedLead}
-            loading={false}
-          />
-        )}
+         {activeTab === "leads" && (
+           <ActivatorLeadsTable 
+             leads={leads} 
+             onSelectLead={setSelectedLead}
+             onStatusChanged={fetchAll}
+             loading={false}
+           />
+         )}
 
         {/* MAP TAB */}
         {activeTab === "map" && (

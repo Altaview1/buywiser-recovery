@@ -11,7 +11,7 @@ const STATUS_COLORS = {
   CLOSED:    { bg: "bg-emerald-100", text: "text-emerald-800", label: "Closed" },
 };
 
-export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
+export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChanged, loading }) {
   const [sortBy, setSortBy] = useState("created_date");
   const [sortDir, setSortDir] = useState("desc");
   const [searchQuery, setSearchQuery] = useState("");
@@ -55,6 +55,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
     setSavingId(leadId);
     try {
       await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
+      if (onStatusChanged) onStatusChanged();
     } catch (err) {
       console.error("Failed to update status:", err);
       alert("Failed to update status: " + err.message);
