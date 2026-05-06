@@ -5,39 +5,69 @@ import { X, Upload, FileSpreadsheet, CheckCircle, AlertCircle, ChevronDown, Load
 const REQUIRED_COL = "address_or_link";
 const COL_MAP = {
   address_or_link: ["address_or_link", "address", "listing", "property", "url", "link", "property_address"],
+  owner:           ["owner"],
   name:            ["name", "lead_name", "homeowner", "homeowner_name", "full_name", "contact"],
   email:           ["email", "email_address"],
   phone:           ["phone", "phone_number", "mobile", "cell"],
+  city:            ["city"],
+  property_type:   ["type", "property_type", "prop_type"],
+  estimated_price: ["est_value", "estimated_price", "estimated_value", "value"],
+  estimated_equity:["est_equity_", "est_equity", "estimated_equity", "equity"],
+  distress_score:  ["distress_score", "distress"],
+  listing_dom:     ["listing_dom", "dom"],
   assigned_agent:  ["assigned_agent", "agent", "agent_name", "rep"],
   internal_notes:  ["notes", "internal_notes", "note", "comment"],
 };
 
-function guessColumn(headers, fieldAliases) {
+function guessColumn(normalizedHeaders, fieldAliases) {
   for (const alias of fieldAliases) {
-    // Exact match first
-    const exactMatch = headers.find(h => h.toLowerCase().trim() === alias.toLowerCase());
-    if (exactMatch) return exactMatch;
-    // Fuzzy match: check if header contains alias
-    const fuzzyMatch = headers.find(h => 
-      h.toLowerCase().includes(alias.toLowerCase()) || 
-      alias.toLowerCase().includes(h.toLowerCase())
-    );
-    if (fuzzyMatch) return fuzzyMatch;
+    const match = normalizedHeaders.find(h => h === alias);
+    if (match) return match;
   }
   return null;
 }
 
+function parseCSVLine(line) {
+  const cols = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQuotes = !inQuotes; continue; }
+    if (line[i] === ',' && !inQuotes) { cols.push(current.trim()); current = ""; continue; }
+    current += line[i];
+  }
+  cols.push(current.trim());
+  return cols;
+}
+
+function normalizeHeader(h) {
+  return h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+}
+
+// Parse "LASTNAME,FIRSTNAME MIDDLE" → { first_name, last_name }
+function parseOwnerName(owner) {
+  if (!owner) return { first_name: "", last_name: "" };
+  const primary = owner.split("&")[0].trim();
+  const commaIdx = primary.indexOf(",");
+  const tc = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
+  if (commaIdx === -1) return { first_name: tc(primary), last_name: "" };
+  const last = primary.slice(0, commaIdx).trim();
+  const first = primary.slice(commaIdx + 1).trim().split(/\s+/)[0];
+  return { first_name: tc(first) || "Owner", last_name: tc(last) };
+}
+
 function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return { headers: [], rows: [] };
-  const headers = lines[0].split(",").map(h => h.replace(/^"|"$/g, "").trim());
+  const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").trim().split("\n").filter(l => l.trim());
+  if (lines.length < 2) return { headers: [], normalizedHeaders: [], rows: [] };
+  const rawHeaders = parseCSVLine(lines[0].replace(/^\uFEFF/, ""));
+  const normalizedHeaders = rawHeaders.map(normalizeHeader);
   const rows = lines.slice(1).map(line => {
-    const vals = line.split(",").map(v => v.replace(/^"|"$/g, "").trim());
+    const vals = parseCSVLine(line);
     const row = {};
-    headers.forEach((h, i) => { row[h] = vals[i] || ""; });
+    normalizedHeaders.forEach((h, i) => { row[h] = vals[i] || ""; });
     return row;
   });
-  return { headers, rows };
+  return { headers: rawHeaders, normalizedHeaders, rows };
 }
 
 const SAMPLE_CSV = `address_or_link,name,email,phone,assigned_agent,internal_notes
@@ -72,14 +102,22 @@ export default function BulkLeadUpload({ onClose, onImported }) {
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (e) => {
-      const { headers, rows } = parseCSV(e.target.result);
+      const { normalizedHeaders, rows } = parseCSV(e.target.result);
       const map = {};
       Object.entries(COL_MAP).forEach(([field, aliases]) => {
-        const found = guessColumn(headers, aliases);
+        const found = guessColumn(normalizedHeaders, aliases);
         if (found) map[field] = found;
       });
       setColumnMap(map);
-      setParsedRows(rows.filter(r => r[map[REQUIRED_COL]])); // skip blank address rows
+      // Keep rows that have an address OR an owner (PropertyRadar format)
+      const validRows = rows.filter(r => {
+        const hasAddress = map[REQUIRED_COL] && r[map[REQUIRED_COL]]?.trim();
+        const hasOwner = map["owner"] && r[map["owner"]]?.trim();
+        const allVals = Object.values(r).join(" ").toLowerCase();
+        const isFooter = allVals.includes("information contained") || allVals.includes("propertyradar") || allVals.includes("user agreement");
+        return (hasAddress || hasOwner) && !isFooter;
+      });
+      setParsedRows(validRows);
       setStep("preview");
     };
     reader.readAsText(file);
@@ -104,23 +142,57 @@ export default function BulkLeadUpload({ onClose, onImported }) {
       const row = parsedRows[i];
       const agentName = rowAgents[i] || globalAgent || getMapped(row, "assigned_agent");
       const agent = agents.find(a => a.name === agentName);
-      
-      // Extract name and split into first/last
-      const fullName = getMapped(row, "name");
-      const nameParts = fullName ? fullName.trim().split(/\s+/) : [];
-      
+
+      // Name: prefer owner field (PropertyRadar), fall back to name column
+      let first_name = "", last_name = "";
+      const ownerVal = getMapped(row, "owner");
+      if (ownerVal) {
+        const parsed = parseOwnerName(ownerVal);
+        first_name = parsed.first_name;
+        last_name = parsed.last_name;
+      } else {
+        const fullName = getMapped(row, "name");
+        const parts = fullName ? fullName.trim().split(/\s+/) : [];
+        first_name = parts[0] || "Owner";
+        last_name = parts.slice(1).join(" ") || "";
+      }
+
+      // Address: build from address + city
+      let address = getMapped(row, "address_or_link").trim();
+      const city = getMapped(row, "city").trim();
+      if (address && !address.includes(",") && city) {
+        address = `${address}, ${city}, CA`;
+      } else if (address && !address.includes(",")) {
+        address = `${address}, CA`;
+      }
+
+      // Numeric fields
+      const estPrice = parseFloat(getMapped(row, "estimated_price").replace(/[^0-9.-]/g, "")) || null;
+      const estEquity = parseFloat(getMapped(row, "estimated_equity").replace(/[^0-9.-]/g, "")) || null;
+      const distress = parseFloat(getMapped(row, "distress_score")) || null;
+      const dom = parseInt(getMapped(row, "listing_dom")) || null;
+
+      // Email fallback
+      const email = getMapped(row, "email").trim() ||
+        `lead+${address.toLowerCase().replace(/\W+/g, "").slice(0, 12)}@placeholder.local`;
+
       const activatorLead = {
-        first_name:       nameParts[0] || "",
-        last_name:        nameParts.slice(1).join(" ") || "",
-        email:            getMapped(row, "email").trim() || "",
+        first_name,
+        last_name,
+        email,
         phone:            getMapped(row, "phone").trim() || "",
-        property_address: getMapped(row, "address_or_link").trim() || "",
+        property_address: address,
+        property_type:    getMapped(row, "property_type").trim() || "",
+        estimated_price:  estPrice,
+        estimated_equity: estEquity,
+        distress_score:   distress,
+        listing_dom:      dom,
         rep_code:         agent?.rep_code || "",
         activator_id:     agent?.id || "",
         status:           "SCANNED",
         scan_timestamp:   new Date().toISOString(),
       };
-      
+
       try {
         await base44.entities.ActivatorLead.create(activatorLead);
         success++;
@@ -253,8 +325,8 @@ export default function BulkLeadUpload({ onClose, onImported }) {
                     return (
                       <tr key={i} className={`border-b border-slate-100 ${missingAgent ? "bg-amber-50" : "hover:bg-slate-50"}`}>
                         <td className="px-3 py-2 text-slate-400">{i + 1}</td>
-                        <td className="px-3 py-2 text-slate-700 max-w-xs truncate">{getMapped(row, "address_or_link")}</td>
-                        <td className="px-3 py-2 text-slate-600">{getMapped(row, "name") || <span className="text-slate-300">—</span>}</td>
+                        <td className="px-3 py-2 text-slate-700 max-w-xs truncate">{getMapped(row, "address_or_link") || getMapped(row, "owner")}</td>
+                        <td className="px-3 py-2 text-slate-600">{getMapped(row, "name") || getMapped(row, "owner") || <span className="text-slate-300">—</span>}</td>
                         <td className="px-3 py-2 text-slate-600 max-w-xs truncate">{getMapped(row, "email") || <span className="text-slate-300">—</span>}</td>
                         <td className="px-3 py-2 text-slate-600">{getMapped(row, "phone") || <span className="text-slate-300">—</span>}</td>
                         <td className="px-3 py-2">
