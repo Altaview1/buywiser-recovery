@@ -263,7 +263,9 @@ function LeadRow({ lead, onUpdate }) {
         agent_comment: formData.agent_comment,
         internal_notes: formData.internal_notes,
       };
+      console.log("Saving lead", lead.id, updateData);
       await base44.entities.Lead.update(lead.id, updateData);
+      console.log("Update successful");
       onUpdate({ ...lead, ...updateData });
       setEditing(false);
     } catch (err) {
