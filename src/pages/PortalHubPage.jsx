@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { LogOut, LayoutDashboard, Users, MapPin, Shield, ArrowRight } from "lucide-react";
+import VideoTestimonial from "@/components/VideoTestimonial";
+import VeteranTestimonials from "@/components/VeteranTestimonials";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -93,6 +95,20 @@ export default function PortalHubPage() {
             Claim My Veteran Next Home Benefits <ArrowRight className="h-5 w-5" />
           </a>
           <p className="text-xs text-slate-500 mt-4">No obligation. Takes less than 3 minutes.</p>
+        </div>
+
+        {/* Video Testimonial */}
+        <div className="mt-12 max-w-2xl mx-auto w-full">
+          <VideoTestimonial />
+          <p className="text-center text-sm font-bold text-slate-700 mt-3 uppercase tracking-wide">Veterans Cody and Frank</p>
+        </div>
+      </section>
+
+      {/* Veteran Testimonials */}
+      <section className="px-4 py-12 bg-slate-50">
+        <div className="max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-center mb-8" style={{ color: NAVY }}>Real Veterans Saving With BuyWiser</h2>
+          <VeteranTestimonials />
         </div>
       </section>
 
