@@ -15,10 +15,10 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const emailLower = email.toLowerCase().trim();
 
-    // Service role query to bypass RLS
-    const partners = await base44.asServiceRole.entities.PartnerApplication.list();
+    // Service role query to bypass RLS and auth
+    const partners = await base44.asServiceRole.entities.PartnerApplication.filter({ status: 'approved' }, '-created_date', 500);
     const partner = partners.find(p => 
-      p.status === 'approved' && p.email?.toLowerCase() === emailLower
+      p.email?.toLowerCase() === emailLower
     );
 
     if (!partner) {
