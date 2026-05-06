@@ -14,6 +14,7 @@ const roles = [
     path: "/partner",
     color: "bg-blue-50 border-blue-200",
     textColor: "text-blue-700",
+    iconBg: "bg-blue-100",
   },
   {
     id: "field-activator",
@@ -23,6 +24,7 @@ const roles = [
     path: "/field-activator",
     color: "bg-green-50 border-green-200",
     textColor: "text-green-700",
+    iconBg: "bg-green-100",
   },
   {
     id: "admin",
@@ -32,6 +34,7 @@ const roles = [
     path: "/activator-admin",
     color: "bg-slate-50 border-slate-200",
     textColor: "text-slate-700",
+    iconBg: "bg-slate-100",
   },
   {
     id: "home",
@@ -41,6 +44,7 @@ const roles = [
     path: "/",
     color: "bg-amber-50 border-amber-200",
     textColor: "text-amber-600",
+    iconBg: "bg-amber-100",
   },
 ];
 
@@ -112,8 +116,8 @@ export default function PortalHub() {
                 className={`border-2 rounded-2xl p-6 transition hover:shadow-lg hover:scale-105 ${role.color}`}
               >
                 <div className="flex items-start gap-4">
-                  <div className={`p-3 rounded-xl ${role.textColor}`} style={{ background: role.textColor.replace("text-", "bg-") + "/10" }}>
-                    <Icon className="h-6 w-6" />
+                  <div className={`p-3 rounded-xl ${role.iconBg}`}>
+                    <Icon className={`h-6 w-6 ${role.textColor}`} />
                   </div>
                   <div className="flex-1">
                     <h3 className={`text-lg font-bold mb-1 ${role.textColor}`}>{role.label}</h3>
