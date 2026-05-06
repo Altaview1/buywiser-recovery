@@ -4,33 +4,44 @@ import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle
 
 const NAVY = "#0B1F3B";
 
+// Parse a single CSV line respecting quoted fields
+function parseCSVLine(line) {
+  const cols = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    if (line[i] === '"') { inQuotes = !inQuotes; continue; }
+    if (line[i] === "," && !inQuotes) { cols.push(current.trim()); current = ""; continue; }
+    current += line[i];
+  }
+  cols.push(current.trim());
+  return cols;
+}
+
+function normalizeHeader(h) {
+  return h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+}
+
 // Parse CSV text into array of objects
 function parseCSV(text) {
   const normalized = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
   const lines = normalized.trim().split("\n").filter(l => l.trim() !== "");
   if (lines.length < 2) return [];
-  const firstLine = lines[0].replace(/^\uFEFF/, "").replace(/"/g, "");
-  const headers = firstLine.split(",").map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
+  // Use the same quote-aware parser for the header line too
+  const rawHeaders = parseCSVLine(lines[0].replace(/^\uFEFF/, ""));
+  const headers = rawHeaders.map(normalizeHeader);
   console.log("[BulkUpload] Detected CSV headers:", headers);
   return lines.slice(1).map(line => {
-    const cols = [];
-    let current = "";
-    let inQuotes = false;
-    for (let i = 0; i < line.length; i++) {
-      if (line[i] === '"') { inQuotes = !inQuotes; continue; }
-      if (line[i] === "," && !inQuotes) { cols.push(current.trim()); current = ""; continue; }
-      current += line[i];
-    }
-    cols.push(current.trim());
+    const cols = parseCSVLine(line);
     const obj = {};
     headers.forEach((h, i) => { obj[h] = cols[i] || ""; });
     return obj;
   }).filter(row => Object.values(row).some(v => v.trim() !== ""));
 }
 
-// Detect PropertyRadar format
+// Detect PropertyRadar format — requires address + (owner or type column)
 function isPropertyRadarFormat(headers) {
-  return headers.includes("address") && headers.includes("owner");
+  return headers.includes("address") && (headers.includes("owner") || headers.includes("type"));
 }
 
 // Parse owner name "LASTNAME,FIRSTNAME" format
@@ -52,10 +63,11 @@ function mapPropertyRadarRow(row, partnerEmail) {
   const { first_name, last_name } = parseOwnerName(row.owner);
   const address = (row.address || "").trim();
   const city = (row.city || "").trim();
-  const estValue = parseFloat((row.est_value || "0").replace(/[^0-9.-]/g, "")) || null;
-  const estEquity = parseFloat((row.est_equity_$ || "0").replace(/[^0-9.-]/g, "")) || null;
-  const distressScore = parseFloat(row.distress_score || "0") || null;
-  const listingDom = parseFloat(row.listing_dom || "0") || null;
+  // "Est Value" normalizes to "est_value"; "Est Equity $" normalizes to "est_equity_" ($ stripped)
+  const estValue = parseFloat((row.est_value || row.estimated_price || row.value || "0").replace(/[^0-9.-]/g, "")) || null;
+  const estEquity = parseFloat((row.est_equity_ || row.est_equity || row.estimated_equity || row.equity || "0").replace(/[^0-9.-]/g, "")) || null;
+  const distressScore = parseFloat(row.distress_score || row.distress || "0") || null;
+  const listingDom = parseFloat(row.listing_dom || row.dom || "0") || null;
   const propType = (row.type || "").trim() || "SFR";
   const phone = (row.phone || row.phone_number || "").trim();
   const email = (row.email || row.email_address || "").trim();
@@ -272,7 +284,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
       const fmt = isPropertyRadarFormat(headers) ? "propertyradar" : "activator";
       setDetectedFormat(fmt);
 
-      const validRows = rows.filter(r => r.address && r.address.trim() !== "");
+      const validRows = rows.filter(r => (r.address && r.address.trim() !== "") || (r.owner && r.owner.trim() !== ""));
       setPreview(validRows.slice(0, 5));
       setPreviewTotal(validRows.length);
     };
@@ -303,7 +315,7 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
 
     let records, entityName;
     if (detectedFormat === "propertyradar") {
-      const validRows = rows.filter(r => r.address && r.address.trim() !== "");
+      const validRows = rows.filter(r => (r.address && r.address.trim() !== "") || (r.owner && r.owner.trim() !== ""));
       // For PropertyRadar, use the selected field activator's rep_code as the partner identifier
       const selectedActivatorObj = activators.find(a => a.id === selectedActivatorForPropertyRadar);
       const partnerIdentifier = selectedActivatorObj ? selectedActivatorObj.rep_code : "";
