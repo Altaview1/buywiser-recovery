@@ -17,7 +17,6 @@ const SYSTEM_FIELDS = [
   { key: "listing_dom", label: "Days on Market", required: false },
 ];
 
-// Parse a single CSV line respecting quoted fields
 function parseCSVLine(line) {
   const cols = [];
   let current = "";
@@ -31,38 +30,56 @@ function parseCSVLine(line) {
   return cols;
 }
 
-// Normalize a header string to a safe key
 function normalizeHeader(h) {
   return h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
 }
 
-// Auto-guess a system field for a given CSV column
-function guessMapping(colKey) {
-  const guesses = {
-    first_name: ["first_name", "firstname", "fname", "first"],
-    last_name: ["last_name", "lastname", "lname", "last"],
-    email: ["email", "email_address", "e_mail"],
-    phone: ["phone", "phone_number", "mobile", "cell", "telephone"],
-    // "Address" → "address"
-    property_address: ["property_address", "address", "street_address", "situs_address", "prop_address", "street"],
-    // "Type" → "type"
-    property_type: ["property_type", "type", "prop_type", "land_use"],
-    // "Est Value" → "est_value"
-    estimated_price: ["estimated_price", "est_value", "estimated_value", "value", "price", "avm", "estimated_avm"],
-    // "Est Equity $" → "est_equity_" ($ stripped by normalizer)
-    estimated_equity: ["estimated_equity", "est_equity", "est_equity_", "equity"],
-    // "Distress Score" → "distress_score"
-    distress_score: ["distress_score", "distress", "score"],
-    // "Listing DOM" → "listing_dom"
-    listing_dom: ["listing_dom", "dom", "days_on_market", "days_listed"],
+// Build the initial auto-mapping for a normalized header key
+function guessMapping(key) {
+  // Special virtual fields
+  if (key === "owner") return "__owner__";
+  if (key === "city") return "__city__";
+
+  const map = {
+    // address variants
+    address: "property_address",
+    property_address: "property_address",
+    street_address: "property_address",
+    situs_address: "property_address",
+    // type variants
+    type: "property_type",
+    property_type: "property_type",
+    prop_type: "property_type",
+    land_use: "property_type",
+    // value variants — "Est Value" → "est_value"
+    est_value: "estimated_price",
+    estimated_price: "estimated_price",
+    estimated_value: "estimated_price",
+    value: "estimated_price",
+    price: "estimated_price",
+    avm: "estimated_price",
+    // equity variants — "Est Equity $" → "est_equity_"
+    est_equity_: "estimated_equity",
+    est_equity: "estimated_equity",
+    estimated_equity: "estimated_equity",
+    equity: "estimated_equity",
+    // distress — "Distress Score" → "distress_score"
+    distress_score: "distress_score",
+    distress: "distress_score",
+    // DOM — "Listing DOM" → "listing_dom"
+    listing_dom: "listing_dom",
+    dom: "listing_dom",
+    days_on_market: "listing_dom",
+    // name
+    first_name: "first_name", firstname: "first_name", fname: "first_name",
+    last_name: "last_name", lastname: "last_name", lname: "last_name",
+    email: "email", email_address: "email",
+    phone: "phone", phone_number: "phone", mobile: "phone", cell: "phone",
   };
-  for (const [sysField, aliases] of Object.entries(guesses)) {
-    if (aliases.includes(colKey)) return sysField;
-  }
-  return "__skip__";
+  return map[key] || "__skip__";
 }
 
-// Parse "LASTNAME, FIRSTNAME MIDDLE" format
+// "LASTNAME,FIRSTNAME MIDDLE" → { first_name, last_name }
 function parseOwnerName(owner) {
   if (!owner) return { first_name: "", last_name: "" };
   const primary = owner.split("&")[0].trim();
@@ -70,60 +87,56 @@ function parseOwnerName(owner) {
   const tc = s => s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
   if (commaIdx === -1) return { first_name: tc(primary), last_name: "" };
   const last = primary.slice(0, commaIdx).trim();
-  const first = primary.slice(commaIdx + 1).trim().split(" ")[0];
-  return { first_name: tc(first), last_name: tc(last) };
+  const first = primary.slice(commaIdx + 1).trim().split(/\s+/)[0];
+  return { first_name: tc(first) || "Owner", last_name: tc(last) };
+}
+
+function isFooterRow(row) {
+  const allVals = Object.values(row).join(" ").toLowerCase();
+  return (
+    allVals.includes("information contained") ||
+    allVals.includes("propertyradar") ||
+    allVals.includes("user agreement") ||
+    allVals.includes("license restriction")
+  );
 }
 
 export default function BulkLeadImport({ repCode, onSuccess }) {
-  const [step, setStep] = useState("upload"); // upload | map | preview | done
+  const [step, setStep] = useState("upload");
   const [file, setFile] = useState(null);
   const [csvHeaders, setCsvHeaders] = useState([]);
   const [csvRows, setCsvRows] = useState([]);
   const [mapping, setMapping] = useState({});
-  const [hasOwnerCol, setHasOwnerCol] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
   const [rowLog, setRowLog] = useState([]);
+
+  const reset = () => { setFile(null); setStep("upload"); setResult(null); setRowLog([]); };
 
   const handleFileSelect = (e) => {
     const f = e.target.files?.[0];
     if (!f) return;
     setFile(f);
-    setStep("upload");
     setResult(null);
 
     const reader = new FileReader();
     reader.onload = (evt) => {
       const text = evt.target.result;
       const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter(l => l.trim());
-      const headerLine = lines[0].replace(/^\uFEFF/, "");
-      const rawHeaders = parseCSVLine(headerLine);
-      const normalizedHeaders = rawHeaders.map(normalizeHeader);
+      const rawHeaders = parseCSVLine(lines[0].replace(/^\uFEFF/, ""));
+      const headers = rawHeaders.map(normalizeHeader);
 
-      // Parse up to 5 preview rows
       const rows = lines.slice(1, 6).map(line => {
         const vals = parseCSVLine(line);
         const row = {};
-        normalizedHeaders.forEach((h, i) => { row[h] = vals[i] || ""; });
+        headers.forEach((h, i) => { row[h] = vals[i] || ""; });
         return row;
       });
 
-      // Auto-build initial mapping
       const autoMapping = {};
-      const ownerExists = normalizedHeaders.includes("owner");
-      setHasOwnerCol(ownerExists);
+      headers.forEach(h => { autoMapping[h] = guessMapping(h); });
 
-      normalizedHeaders.forEach(h => {
-        if (ownerExists && h === "owner") {
-          autoMapping[h] = "__owner__";
-        } else if (h === "city") {
-          autoMapping[h] = "__city__";
-        } else {
-          autoMapping[h] = guessMapping(h);
-        }
-      });
-
-      setCsvHeaders(normalizedHeaders);
+      setCsvHeaders(headers);
       setCsvRows(rows);
       setMapping(autoMapping);
       setStep("map");
@@ -137,8 +150,7 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     reader.onload = async (evt) => {
       const text = evt.target.result;
       const lines = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n").filter(l => l.trim());
-      const headerLine = lines[0].replace(/^\uFEFF/, "");
-      const normalizedHeaders = parseCSVLine(headerLine).map(normalizeHeader);
+      const headers = parseCSVLine(lines[0].replace(/^\uFEFF/, "")).map(normalizeHeader);
 
       const leads = [];
       const log = [];
@@ -147,59 +159,63 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         const rowNum = i + 1;
         const vals = parseCSVLine(lines[i]);
         const row = {};
-        normalizedHeaders.forEach((h, idx) => { row[h] = vals[idx] || ""; });
+        headers.forEach((h, idx) => { row[h] = vals[idx] || ""; });
 
-        const lead = { rep_code: repCode, status: "SCANNED" };
+        // Skip empty or footer rows
+        if (Object.values(row).every(v => !v.trim())) {
+          log.push({ rowNum, status: "skipped", reason: "Empty row" });
+          continue;
+        }
+        if (isFooterRow(row)) {
+          log.push({ rowNum, status: "skipped", reason: "Footer/disclaimer row" });
+          continue;
+        }
 
-        // Apply user mapping
+        const lead = { rep_code: repCode || "", status: "SCANNED" };
+
+        // Apply mapping
         for (const [csvCol, sysField] of Object.entries(mapping)) {
-          if (sysField === "__skip__" || !sysField) continue;
-          const val = row[csvCol] || "";
+          if (!sysField || sysField === "__skip__") continue;
+          const val = (row[csvCol] || "").trim();
+          if (!val) continue;
+
           if (sysField === "__owner__") {
             const { first_name, last_name } = parseOwnerName(val);
-            if (!lead.first_name) lead.first_name = first_name || "Owner";
-            if (!lead.last_name) lead.last_name = last_name;
+            lead.first_name = lead.first_name || first_name;
+            lead.last_name = lead.last_name || last_name;
+          } else if (sysField === "__city__") {
+            // store city for address building below
+            lead.__city__ = val;
           } else if (["estimated_price", "estimated_equity", "distress_score"].includes(sysField)) {
-            lead[sysField] = parseFloat(val.replace(/[^0-9.-]/g, "")) || null;
+            const n = parseFloat(val.replace(/[^0-9.-]/g, ""));
+            if (!isNaN(n)) lead[sysField] = n;
           } else if (sysField === "listing_dom") {
-            lead[sysField] = parseInt(val) || null;
+            const n = parseInt(val);
+            if (!isNaN(n)) lead[sysField] = n;
           } else {
             lead[sysField] = val;
           }
         }
 
-        // Skip footer/empty rows
-        const rowRaw = lines[i];
-        const allEmpty = Object.values(row).every(v => !v || !v.trim());
-        if (allEmpty) {
-          log.push({ rowNum, status: "skipped", reason: "Completely empty row", preview: "" });
-          continue;
-        }
-        if (!lead.property_address && !lead.first_name) {
-          log.push({ rowNum, status: "skipped", reason: `No address or name found — check your column mapping. Row data: ${rowRaw.slice(0, 80)}`, preview: rowRaw.slice(0, 60) });
-          continue;
-        }
-        if ((lead.property_address || "").toLowerCase().includes("propertyradar")) {
-          log.push({ rowNum, status: "skipped", reason: "Footer/disclaimer row", preview: lead.property_address });
-          continue;
-        }
-        if ((lead.property_address || "").toLowerCase().includes("information contained")) {
-          log.push({ rowNum, status: "skipped", reason: "Footer/disclaimer row", preview: lead.property_address });
-          continue;
-        }
-
-        // Ensure required fields
+        // Fallbacks for required fields
         if (!lead.first_name) lead.first_name = "Owner";
         if (!lead.email) {
-          const slug = (lead.property_address || "lead").toLowerCase().replace(/\s+/g, "").slice(0, 12);
+          const slug = (lead.property_address || "lead").toLowerCase().replace(/\W+/g, "").slice(0, 12);
           lead.email = `lead+${slug}@placeholder.local`;
         }
 
-        // Append city/state if property_address looks short
+        // Build full address with city
         if (lead.property_address && !lead.property_address.includes(",")) {
-          const cityCol = csvHeaders.find(h => mapping[h] === "__city__");
-          if (cityCol && row[cityCol]) lead.property_address += `, ${row[cityCol]}, CA`;
-          else lead.property_address += ", CA";
+          const city = lead.__city__ || "";
+          lead.property_address = city
+            ? `${lead.property_address}, ${city}, CA`
+            : `${lead.property_address}, CA`;
+        }
+        delete lead.__city__;
+
+        if (!lead.property_address) {
+          log.push({ rowNum, status: "skipped", reason: "No property address after mapping" });
+          continue;
         }
 
         log.push({ rowNum, status: "ok", preview: `${lead.first_name} ${lead.last_name || ""} — ${lead.property_address}` });
@@ -209,8 +225,8 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
       setRowLog(log);
 
       if (leads.length === 0) {
-        const skipReasons = [...new Set(log.filter(r => r.status === "skipped").map(r => r.reason))];
-        setResult({ success: false, error: `No valid rows imported. ${log.length} rows were all skipped. Common reason: ${skipReasons[0] || "check your column mapping above."}` });
+        const reasons = [...new Set(log.filter(r => r.status === "skipped").map(r => r.reason))];
+        setResult({ success: false, error: `No valid rows found. Reasons: ${reasons.join("; ")}` });
         setUploading(false);
         return;
       }
@@ -228,13 +244,13 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     reader.readAsText(file);
   };
 
-  // ── STEP: Upload ──────────────────────────────────────────────
+  // ── UPLOAD STEP ───────────────────────────────────────────────
   if (step === "upload" || !file) {
     return (
       <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
         <div>
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Bulk Import Leads</p>
-          <p className="text-xs text-slate-500">Upload any CSV — you'll map your columns to our fields on the next screen.</p>
+          <p className="text-xs text-slate-500">Upload any CSV — columns are mapped automatically.</p>
         </div>
         <label className="flex flex-col items-center gap-3 px-6 py-8 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50 transition">
           <Upload className="h-8 w-8 text-slate-300" />
@@ -246,65 +262,56 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     );
   }
 
-  // ── STEP: Map columns ─────────────────────────────────────────
+  // ── MAP STEP ──────────────────────────────────────────────────
   if (step === "map") {
-    const mappedSystemFields = Object.values(mapping).filter(v => v && v !== "__skip__");
-    // __owner__ satisfies first_name requirement
-    const hasName = mappedSystemFields.includes("first_name") || mappedSystemFields.includes("__owner__");
-    const hasAddress = mappedSystemFields.includes("property_address");
-    const missingRequired = [
-      ...(!hasName ? [{ label: "First Name (or Owner)" }] : []),
-      ...(!hasAddress ? [{ label: "Property Address" }] : []),
+    const vals = Object.values(mapping);
+    const hasName = vals.includes("first_name") || vals.includes("__owner__");
+    const hasAddress = vals.includes("property_address");
+    const missing = [
+      ...(!hasName ? ["First Name or Owner"] : []),
+      ...(!hasAddress ? ["Property Address"] : []),
     ];
 
     return (
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        {/* Header */}
         <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between" style={{ background: NAVY }}>
           <div>
             <p className="text-xs font-black text-white uppercase tracking-wider">Map Your Columns</p>
-            <p className="text-xs text-blue-300 mt-0.5">{file.name} — {csvHeaders.length} columns found</p>
+            <p className="text-xs text-blue-300 mt-0.5">{file.name} — {csvHeaders.length} columns</p>
           </div>
-          <button onClick={() => { setFile(null); setStep("upload"); }}
-            className="text-xs text-blue-300 hover:text-white underline">Change file</button>
+          <button onClick={reset} className="text-xs text-blue-300 hover:text-white underline">Change file</button>
         </div>
 
         <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto">
-          {/* Validation banner */}
-          {missingRequired.length > 0 ? (
+          {missing.length > 0 ? (
             <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs">
               <AlertCircle className="h-3.5 w-3.5 text-amber-500 flex-shrink-0 mt-0.5" />
-              <span className="text-amber-700">
-                Still need: <strong>{missingRequired.map(f => f.label).join(", ")}</strong>. Map these columns or import will fail.
-              </span>
+              <span className="text-amber-700">Still need: <strong>{missing.join(", ")}</strong></span>
             </div>
           ) : (
             <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-xs">
               <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-              <span className="text-green-700 font-semibold">Required fields mapped — ready to import!</span>
+              <span className="text-green-700 font-semibold">All required fields mapped — ready to import!</span>
             </div>
           )}
 
-          {/* Column mapping rows */}
           <div className="space-y-2">
             {csvHeaders.map(col => {
-              const sampleVals = csvRows.map(r => r[col]).filter(Boolean).slice(0, 2);
+              const samples = csvRows.map(r => r[col]).filter(Boolean).slice(0, 2);
               return (
                 <div key={col} className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
-                  {/* CSV column */}
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-700 font-mono truncate">{col}</p>
-                    <p className="text-xs text-slate-400 truncate">{sampleVals.join(" · ") || "—"}</p>
+                    <p className="text-xs text-slate-400 truncate">{samples.join(" · ") || "—"}</p>
                   </div>
                   <ArrowRight className="h-3.5 w-3.5 text-slate-300 flex-shrink-0" />
-                  {/* System field select */}
                   <select
                     value={mapping[col] || "__skip__"}
                     onChange={e => setMapping(m => ({ ...m, [col]: e.target.value }))}
                     className="w-full text-xs border border-slate-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="__skip__">— Skip —</option>
-                    {hasOwnerCol && <option value="__owner__">Owner Name (split first/last)</option>}
+                    <option value="__owner__">Owner Name (split first/last)</option>
                     <option value="__city__">City (append to address)</option>
                     {SYSTEM_FIELDS.map(f => (
                       <option key={f.key} value={f.key}>{f.label}{f.required ? " *" : ""}</option>
@@ -315,53 +322,54 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
             })}
           </div>
 
-          {/* Preview of first row after mapping */}
-          {csvRows.length > 0 && (
-            <div className="border border-slate-200 rounded-lg overflow-hidden">
-              <div className="px-3 py-2 bg-slate-50 border-b border-slate-100">
-                <p className="text-xs font-bold text-slate-600">Preview — First Row Result</p>
-              </div>
-              <div className="p-3 grid grid-cols-2 gap-x-4 gap-y-1">
-                {SYSTEM_FIELDS.filter(f => {
-                  const mappedCol = Object.keys(mapping).find(c => mapping[c] === f.key);
-                  return mappedCol && csvRows[0]?.[mappedCol];
-                }).map(f => {
-                  const mappedCol = Object.keys(mapping).find(c => mapping[c] === f.key);
-                  return (
-                    <div key={f.key} className="text-xs">
-                      <span className="text-slate-400">{f.label}: </span>
-                      <span className="font-semibold text-slate-700 truncate">{csvRows[0]?.[mappedCol]}</span>
+          {/* Live preview of first row */}
+          {csvRows.length > 0 && (() => {
+            const previewLead = {};
+            for (const [col, sysField] of Object.entries(mapping)) {
+              if (!sysField || sysField === "__skip__") continue;
+              const val = csvRows[0]?.[col] || "";
+              if (sysField === "__owner__") {
+                const { first_name, last_name } = parseOwnerName(val);
+                previewLead["First Name"] = first_name;
+                previewLead["Last Name"] = last_name;
+              } else if (sysField === "__city__") {
+                previewLead["City"] = val;
+              } else {
+                const label = SYSTEM_FIELDS.find(f => f.key === sysField)?.label || sysField;
+                previewLead[label] = val;
+              }
+            }
+            const entries = Object.entries(previewLead).filter(([, v]) => v);
+            if (entries.length === 0) return null;
+            return (
+              <div className="border border-slate-200 rounded-lg overflow-hidden">
+                <div className="px-3 py-2 bg-slate-50 border-b border-slate-100">
+                  <p className="text-xs font-bold text-slate-600">Preview — First Row</p>
+                </div>
+                <div className="p-3 grid grid-cols-2 gap-x-4 gap-y-1">
+                  {entries.map(([label, val]) => (
+                    <div key={label} className="text-xs">
+                      <span className="text-slate-400">{label}: </span>
+                      <span className="font-semibold text-slate-700">{val}</span>
                     </div>
-                  );
-                })}
-                {/* Owner field preview */}
-                {Object.keys(mapping).find(c => mapping[c] === "__owner__") && (() => {
-                  const ownerCol = Object.keys(mapping).find(c => mapping[c] === "__owner__");
-                  const { first_name, last_name } = parseOwnerName(csvRows[0]?.[ownerCol] || "");
-                  return (
-                    <>
-                      <div className="text-xs"><span className="text-slate-400">First Name: </span><span className="font-semibold text-slate-700">{first_name}</span></div>
-                      <div className="text-xs"><span className="text-slate-400">Last Name: </span><span className="font-semibold text-slate-700">{last_name}</span></div>
-                    </>
-                  );
-                })()}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
-        {/* Actions */}
         <div className="px-4 py-3 border-t border-slate-100 flex gap-2">
           <button
             onClick={handleImport}
-            disabled={uploading || missingRequired.length > 0}
+            disabled={uploading || missing.length > 0}
             className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm text-white transition disabled:opacity-40"
             style={{ background: NAVY }}
           >
             {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {uploading ? "Importing…" : `Import ${csvRows.length > 0 ? "Leads" : ""}`}
+            {uploading ? "Importing…" : "Import Leads"}
           </button>
-          <button onClick={() => { setFile(null); setStep("upload"); }}
+          <button onClick={reset}
             className="px-4 py-2.5 text-sm font-semibold border border-slate-200 rounded-lg text-slate-600 hover:bg-slate-50 transition">
             Cancel
           </button>
@@ -375,18 +383,16 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
             </div>
             {rowLog.length > 0 && (
               <div className="border border-slate-200 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
-                <p className="px-3 py-2 text-xs font-bold text-slate-500 bg-slate-50 border-b border-slate-100">Row Log ({rowLog.length} rows processed)</p>
+                <p className="px-3 py-2 text-xs font-bold text-slate-500 bg-slate-50 border-b border-slate-100">Row Log</p>
                 <table className="w-full text-xs">
                   <tbody className="divide-y divide-slate-100">
                     {rowLog.map((r, i) => (
                       <tr key={i} className={r.status === "skipped" ? "bg-amber-50" : ""}>
                         <td className="px-3 py-1.5 text-slate-400 font-mono w-12">{r.rowNum}</td>
-                        <td className="px-3 py-1.5 w-20">
-                          {r.status === "ok"
-                            ? <span className="text-green-600 font-bold">✓ OK</span>
-                            : <span className="text-amber-600 font-bold">⚠ Skip</span>}
+                        <td className="px-3 py-1.5 w-16">
+                          {r.status === "ok" ? <span className="text-green-600 font-bold">✓ OK</span> : <span className="text-amber-600 font-bold">⚠ Skip</span>}
                         </td>
-                        <td className="px-3 py-1.5 text-slate-600 truncate max-w-[180px]">
+                        <td className="px-3 py-1.5 text-slate-600 truncate max-w-[200px]">
                           {r.status === "skipped" ? <span className="text-amber-700">{r.reason}</span> : r.preview}
                         </td>
                       </tr>
@@ -401,20 +407,16 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     );
   }
 
-  // ── STEP: Done ────────────────────────────────────────────────
+  // ── DONE STEP ─────────────────────────────────────────────────
   if (step === "done") {
     const skipped = rowLog.filter(r => r.status === "skipped");
-    const imported = rowLog.filter(r => r.status === "ok");
     return (
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="bg-green-50 border-b border-green-200 px-5 py-4 text-center">
           <CheckCircle className="h-8 w-8 text-green-600 mx-auto mb-1" />
-          <p className="text-sm font-bold text-green-800">✓ Imported {result?.count} leads</p>
-          {skipped.length > 0 && (
-            <p className="text-xs text-amber-600 mt-1">{skipped.length} row{skipped.length > 1 ? "s" : ""} skipped</p>
-          )}
+          <p className="text-sm font-bold text-green-800">✓ Imported {result?.count} leads successfully</p>
+          {skipped.length > 0 && <p className="text-xs text-amber-600 mt-1">{skipped.length} rows skipped</p>}
         </div>
-
         {rowLog.length > 0 && (
           <div className="max-h-64 overflow-y-auto">
             <table className="w-full text-xs">
@@ -430,9 +432,7 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
                   <tr key={i} className={r.status === "skipped" ? "bg-amber-50" : ""}>
                     <td className="px-3 py-1.5 text-slate-400 font-mono">{r.rowNum}</td>
                     <td className="px-3 py-1.5">
-                      {r.status === "ok"
-                        ? <span className="text-green-600 font-bold">✓ OK</span>
-                        : <span className="text-amber-600 font-bold">⚠ Skipped</span>}
+                      {r.status === "ok" ? <span className="text-green-600 font-bold">✓ OK</span> : <span className="text-amber-600 font-bold">⚠ Skipped</span>}
                     </td>
                     <td className="px-3 py-1.5 text-slate-600 truncate max-w-[200px]">
                       {r.status === "skipped" ? <span className="text-amber-700">{r.reason}</span> : r.preview}
@@ -443,10 +443,8 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
             </table>
           </div>
         )}
-
         <div className="px-5 py-3 border-t border-slate-100">
-          <button onClick={() => { setFile(null); setStep("upload"); setResult(null); setRowLog([]); }}
-            className="text-xs text-slate-500 hover:text-slate-700 underline flex items-center gap-1">
+          <button onClick={reset} className="text-xs text-slate-500 hover:text-slate-700 underline flex items-center gap-1">
             <RefreshCw className="h-3 w-3" /> Import another file
           </button>
         </div>
