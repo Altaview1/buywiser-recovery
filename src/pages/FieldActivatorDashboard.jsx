@@ -78,10 +78,9 @@ function PromotionTracker({ leads, payments }) {
   const verifiedDoors = payments.filter(p => p.type === "VERIFIED_DOOR").length;
   const inPersonScans = payments.filter(p => p.type === "IN_PERSON_VERIFIED_SCAN").length;
   const scheduledReviews = leads.filter(l => l.benefit_review_status === "SCHEDULED" || l.benefit_review_status === "ATTENDED").length;
-  const totalLeads = leads.length;
-  const logsWithVisitData = leads.filter(l => l.status !== "SCANNED").length;
-  const loggingAccuracy = totalLeads > 0 ? Math.round((logsWithVisitData / totalLeads) * 100) : 0;
-  const scanRate = totalLeads > 0 ? Math.round((inPersonScans / totalLeads) * 100) : 0;
+  const attemptedLeads = leads.filter(l => l.knock_attempt_confirmed);
+  const loggingAccuracy = attemptedLeads.length > 0 ? Math.round((attemptedLeads.filter(l => l.attempt_outcome).length / attemptedLeads.length) * 100) : 0;
+  const scanRate = attemptedLeads.length > 0 ? Math.round((inPersonScans / attemptedLeads.length) * 100) : 0;
 
   const criteria = [
     { label: "Verified Doors", current: verifiedDoors, target: 100, met: verifiedDoors >= 100 },

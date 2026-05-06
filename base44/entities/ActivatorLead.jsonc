@@ -80,6 +80,32 @@
       "default": "NOT_SCHEDULED",
       "description": "Status of the Veteran's Next Home Benefit Review appointment"
     },
+    "knock_attempt_confirmed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Field Activator confirmed they knocked or rang the doorbell"
+    },
+    "attempt_outcome": {
+      "type": "string",
+      "enum": [
+        "NO_ANSWER",
+        "HOMEOWNER_ANSWERED",
+        "OCCUPANT_ANSWERED",
+        "REFUSED",
+        "INACCESSIBLE",
+        "OTHER"
+      ],
+      "description": "Outcome of the door attempt"
+    },
+    "visit_duration_seconds": {
+      "type": "number",
+      "description": "How long the FA was at the property in seconds"
+    },
+    "audit_flag": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flagged for admin audit \u2014 short visit, suspicious pattern, etc."
+    },
     "planning_to_buy": {
       "type": "string",
       "enum": [
@@ -120,7 +146,7 @@
         "FULL_STACK",
         "UNDECIDED"
       ],
-      "description": "Classified lead routing type based on qualifier answers"
+      "description": "Classified lead routing type"
     },
     "crm_tag": {
       "type": "string",
@@ -128,8 +154,7 @@
         "MORTGAGE_LEAD",
         "FULL_STACK_LEAD",
         "UNDECIDED_LEAD"
-      ],
-      "description": "CRM tag attached at classification"
+      ]
     },
     "charity_selected": {
       "type": "string"

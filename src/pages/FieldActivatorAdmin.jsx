@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload } from "lucide-react";
+import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload, ShieldAlert } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 import ActivatorLeadsTable from "@/components/ActivatorLeadsTable";
 import ActivatorLeadsMap from "@/components/ActivatorLeadsMap";
@@ -402,16 +402,36 @@ export default function FieldActivatorAdmin() {
   const pendingApproval = payments.filter(p => p.status === "PENDING").length;
   const contactRate = totalLeads > 0 ? Math.round((totalContacted / totalLeads) * 100) : 0;
 
-  // Rep performance
+  // Rep performance with anti-gaming analytics
   const repPerf = activators.map(a => {
     const aLeads = leads.filter(l => l.rep_code === a.rep_code);
     const aPay = payments.filter(p => p.activator_id === a.id && p.status === "PAID");
+    const attemptedLeads = aLeads.filter(l => l.knock_attempt_confirmed);
+    const noAnswerLeads = aLeads.filter(l => l.attempt_outcome === "NO_ANSWER");
+    const inPersonScans = payments.filter(p => p.activator_id === a.id && p.type === "IN_PERSON_VERIFIED_SCAN").length;
+    const verifiedDoors = payments.filter(p => p.activator_id === a.id && p.type === "VERIFIED_DOOR").length;
+    const durations = aLeads.filter(l => l.visit_duration_seconds > 0).map(l => l.visit_duration_seconds);
+    const avgDuration = durations.length > 0 ? Math.round(durations.reduce((s, d) => s + d, 0) / durations.length) : 0;
+    const flaggedLeads = aLeads.filter(l => l.audit_flag).length;
+    const scanRate = attemptedLeads.length > 0 ? Math.round((inPersonScans / attemptedLeads.length) * 100) : 0;
+    const noAnswerRate = attemptedLeads.length > 0 ? Math.round((noAnswerLeads.length / attemptedLeads.length) * 100) : 0;
+    const answerRate = 100 - noAnswerRate;
+    // Flag suspicious patterns
+    const isSuspicious = (attemptedLeads.length >= 50 && scanRate < 5) || (avgDuration > 0 && avgDuration < 20) || (noAnswerRate > 90 && attemptedLeads.length >= 10);
     return {
       ...a,
       leadCount: aLeads.length,
       verifiedCount: aLeads.filter(l => l.status !== "SCANNED").length,
       scheduledCount: aLeads.filter(l => ["SCHEDULED", "COMPLETED", "CLOSED"].includes(l.status)).length,
       paidAmount: aPay.reduce((s, p) => s + p.amount, 0),
+      verifiedDoors,
+      inPersonScans,
+      avgDuration,
+      scanRate,
+      noAnswerRate,
+      answerRate,
+      flaggedLeads,
+      isSuspicious,
     };
   }).sort((a, b) => b.verifiedCount - a.verifiedCount);
 
@@ -616,24 +636,44 @@ export default function FieldActivatorAdmin() {
                         }}
                       />
                     </div>
-                    <div className="grid grid-cols-4 gap-1 sm:gap-2 text-center text-xs">
+                    <div className="grid grid-cols-4 gap-1 sm:gap-2 text-center text-xs mb-2">
                       <div className="bg-slate-50 rounded px-1 py-2">
-                        <p className="font-black text-slate-800">{a.leadCount}</p>
-                        <p className="text-slate-500 text-xs">Leads</p>
+                        <p className="font-black text-slate-800">{a.verifiedDoors}</p>
+                        <p className="text-slate-500 text-xs">Doors</p>
                       </div>
                       <div className="bg-blue-50 rounded px-1 py-2">
-                        <p className="font-black text-blue-700">{a.verifiedCount}</p>
-                        <p className="text-blue-500 text-xs">Hit</p>
+                        <p className="font-black text-blue-700">{a.scanRate}%</p>
+                        <p className="text-blue-500 text-xs">Scan Rate</p>
                       </div>
-                      <div className="bg-purple-50 rounded px-1 py-2">
-                        <p className="font-black text-purple-700">{a.scheduledCount}</p>
-                        <p className="text-purple-500 text-xs">Sched</p>
+                      <div className="bg-amber-50 rounded px-1 py-2">
+                        <p className={`font-black text-xs ${a.avgDuration > 0 && a.avgDuration < 30 ? "text-red-600" : "text-amber-700"}`}>{a.avgDuration > 0 ? `${a.avgDuration}s` : "—"}</p>
+                        <p className="text-amber-500 text-xs">Avg Dur</p>
                       </div>
                       <div className="bg-green-50 rounded px-1 py-2">
                         <p className="font-black text-green-700 text-sm">${a.paidAmount}</p>
                         <p className="text-green-500 text-xs">Paid</p>
                       </div>
                     </div>
+                    <div className="grid grid-cols-3 gap-1 text-center text-xs">
+                      <div className={`rounded px-1 py-1.5 ${a.noAnswerRate > 90 && a.verifiedDoors >= 10 ? "bg-red-50" : "bg-slate-50"}`}>
+                        <p className={`font-black text-xs ${a.noAnswerRate > 90 && a.verifiedDoors >= 10 ? "text-red-600" : "text-slate-600"}`}>{a.noAnswerRate}%</p>
+                        <p className="text-slate-400 text-xs">No Answer</p>
+                      </div>
+                      <div className={`rounded px-1 py-1.5 ${a.flaggedLeads > 0 ? "bg-amber-50" : "bg-slate-50"}`}>
+                        <p className={`font-black text-xs ${a.flaggedLeads > 0 ? "text-amber-700" : "text-slate-400"}`}>{a.flaggedLeads}</p>
+                        <p className="text-slate-400 text-xs">Flagged</p>
+                      </div>
+                      <div className="bg-purple-50 rounded px-1 py-1.5">
+                        <p className="font-black text-purple-700 text-xs">{a.inPersonScans}</p>
+                        <p className="text-slate-400 text-xs">IP Scans</p>
+                      </div>
+                    </div>
+                    {a.isSuspicious && (
+                      <div className="mt-2 flex items-center gap-1.5 bg-red-50 border border-red-200 rounded-lg px-2 py-1.5">
+                        <ShieldAlert className="h-3.5 w-3.5 text-red-500 flex-shrink-0" />
+                        <p className="text-xs font-bold text-red-700">Suspicious pattern — review recommended</p>
+                      </div>
+                    )}
                   </div>
                 );
               })
