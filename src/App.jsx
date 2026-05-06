@@ -44,6 +44,7 @@ import ResourceHub from './pages/ResourceHub';
 import FieldRepDashboard from './pages/FieldRepDashboard';
 import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
 import QRScanDashboard from './pages/QRScanDashboard';
+import PortalHub from './pages/PortalHub';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -71,6 +72,7 @@ const AuthenticatedApp = () => {
 
   return (
     <Routes>
+      <Route path="/portals" element={<PortalHub />} />
       <Route path="/" element={<BuywiserHome />} />
       <Route path="/Apply" element={<LayoutWrapper currentPageName="Apply"><MortgageReview /></LayoutWrapper>} />
       <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><Contact /></LayoutWrapper>} />
