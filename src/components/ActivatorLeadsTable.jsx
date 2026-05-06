@@ -17,6 +17,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [updatingId, setUpdatingId] = useState(null);
+  const [localOverrides, setLocalOverrides] = useState({});
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "All" || l.status === filterStatus;
@@ -53,10 +54,12 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
 
   const handleStatusChange = async (leadId, newStatus) => {
     setUpdatingId(leadId);
+    setLocalOverrides(prev => ({ ...prev, [leadId]: newStatus }));
     try {
       await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
     } catch (err) {
       console.error("Failed to update status:", err);
+      setLocalOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
     }
     setUpdatingId(null);
   };
@@ -151,7 +154,8 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
                 </tr>
               ) : (
                 sorted.map(lead => {
-                  const cfg = STATUS_COLORS[lead.status] || STATUS_COLORS.SCANNED;
+                  const currentStatus = localOverrides[lead.id] || lead.status;
+                  const cfg = STATUS_COLORS[currentStatus] || STATUS_COLORS.SCANNED;
                   const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
                   
                   return (
@@ -174,14 +178,12 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
                       </td>
                       <td className="px-4 py-3">
                         <select
-                          value={lead.status}
+                          value={currentStatus}
                           onChange={(e) => handleStatusChange(lead.id, e.target.value)}
                           disabled={updatingId === lead.id}
                           className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
                         >
-                          {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].filter(s => 
-                            s !== "SCANNED" || lead.code_scanned
-                          ).map(s => (
+                          {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
                             <option key={s} value={s}>{s}</option>
                           ))}
                         </select>
