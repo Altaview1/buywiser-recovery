@@ -568,8 +568,8 @@ export default function PartnerDashboard() {
             <p className="text-xs text-slate-500 mt-0.5">Closed Won</p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
-            <p className="text-2xl font-black" style={{ color: "#10b981" }}>${depositEarned.toLocaleString()}</p>
-            <p className="text-xs text-slate-500 mt-0.5">Deposit Earn-Back</p>
+            <p className="text-2xl font-black" style={{ color: "#10b981" }}>{partner?.verified_conversations || 0}</p>
+            <p className="text-xs text-slate-500 mt-0.5">Verified Actions</p>
           </div>
         </div>
 

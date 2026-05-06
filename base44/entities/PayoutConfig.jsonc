@@ -2,24 +2,40 @@
   "name": "PayoutConfig",
   "type": "object",
   "properties": {
-    "scan_bonus_amount": {
+    "verified_door_attempt_amount": {
       "type": "number",
-      "description": "Payout amount for a verified scan",
-      "default": 25
+      "description": "Field Activator payment for verified door attempt ($15)",
+      "default": 15
     },
-    "consult_bonus_amount": {
+    "min_visit_duration_seconds": {
       "type": "number",
-      "description": "Payout amount for a completed consultation",
-      "default": 50
+      "description": "Minimum visit duration to avoid audit flag (seconds)",
+      "default": 45
     },
-    "close_bonus_amount": {
+    "min_scan_rate_threshold": {
       "type": "number",
-      "description": "Payout amount for a closed deal",
-      "default": 500
+      "description": "Minimum in-person scan rate for promotion eligibility (%)",
+      "default": 15
+    },
+    "promotion_requirements": {
+      "type": "object",
+      "description": "Requirements for SENIOR_FIELD_ACTIVATOR promotion",
+      "properties": {
+        "min_in_person_scan_rate": {
+          "type": "number",
+          "default": 15,
+          "description": "Minimum 15% in-person scan rate"
+        },
+        "required_total_doors": {
+          "type": "number",
+          "default": 50,
+          "description": "Minimum doors required before metrics review"
+        }
+      }
     },
     "notes": {
       "type": "string",
-      "description": "Admin notes about current pay rate policy"
+      "description": "Admin notes about current pay rate policy and anti-gaming rules"
     }
   },
   "required": []

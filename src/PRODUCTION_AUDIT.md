@@ -83,16 +83,19 @@ Lead benefit_review_status = ATTENDED → triggerAttendancePayment → Payment c
 
 ---
 
-## 5. PAYMENT SYSTEM AUDIT ✅
+## 5. PAYMENT SYSTEM AUDIT ✅ (VERIFIED DOOR ATTEMPT MODEL)
 
-### Payment Triggers
-| Event | Payment Type | Amount | Tier Requirements | Status |
+### Payment Triggers (Field Activators Only)
+| Event | Payment Type | Amount | Requirements | Status |
 |---|---|---|---|---|
-| Door verified | VERIFIED_DOOR | $25 | All | ✅ WORKING |
-| In-person scan | IN_PERSON_VERIFIED_SCAN | $50 | All | ✅ WORKING |
-| In-person appointment | IN_PERSON_SCHEDULED | $50 | Tier 2+ | ✅ WORKING |
-| Appointment attended | IN_PERSON_ATTENDED | $150 | Tier 2 only | ✅ WORKING |
-| Leave-behind attended | LEAVE_BEHIND_ATTENDED | $150 | Tier 2 only | ✅ WORKING |
+| Verified Door Attempt | VERIFIED_DOOR_ATTEMPT | $15 | Knock confirmed + outcome + 45s visit + photo if NO_ANSWER | ✅ WORKING |
+
+**Definition of VERIFIED_DOOR_ATTEMPT:**
+- Knock or doorbell confirmed (knock_attempt_confirmed = true)
+- Attempt outcome selected (NO_ANSWER, HOMEOWNER_ANSWERED, REFUSED, etc.)
+- Minimum visit duration 45 seconds
+- Proof photo uploaded if outcome = NO_ANSWER
+- GPS/timestamp captured during visit
 
 **Payment Status Workflow:**
 ```

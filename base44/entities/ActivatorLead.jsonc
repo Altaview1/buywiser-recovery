@@ -101,10 +101,14 @@
       "type": "number",
       "description": "How long the FA was at the property in seconds"
     },
+    "proof_photo_url": {
+      "type": "string",
+      "description": "Photo proof of door attempt and packet placement (required if attempt_outcome = NO_ANSWER)"
+    },
     "audit_flag": {
       "type": "boolean",
       "default": false,
-      "description": "Flagged for admin audit \u2014 short visit, suspicious pattern, etc."
+      "description": "Flagged for admin audit \u2014 short visit, suspicious pattern, or compliance concern"
     },
     "planning_to_buy": {
       "type": "string",

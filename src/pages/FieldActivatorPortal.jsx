@@ -137,20 +137,23 @@ function DoorAttemptLogger({ lead, activator, onSaved, onClose }) {
         knock_attempt_confirmed: true,
         attempt_outcome: outcome,
         visit_duration_seconds: duration,
+        proof_photo_url: proofPhotoUrl || null,
         audit_flag: shouldFlag,
       });
 
-      // Create VERIFIED_DOOR payment for Tier 1 only — only if not flagged
+      // Create VERIFIED_DOOR_ATTEMPT payment for Tier 1 only
       if (activator.activator_tier === "FIELD_ACTIVATOR" || !activator.activator_tier) {
-        const existing = await base44.entities.ActivatorPayment.filter({ lead_id: lead.id, type: "VERIFIED_DOOR" });
+        const existing = await base44.entities.ActivatorPayment.filter({ lead_id: lead.id, type: "VERIFIED_DOOR_ATTEMPT" });
         if (existing.length === 0) {
           await base44.entities.ActivatorPayment.create({
             activator_id: activator.id,
             lead_id: lead.id,
             rep_code: activator.rep_code,
-            type: "VERIFIED_DOOR",
+            type: "VERIFIED_DOOR_ATTEMPT",
             amount: 15,
-            status: shouldFlag ? "PENDING" : "PENDING",
+            status: shouldFlag ? "PENDING_AUDIT" : "PENDING",
+            visit_duration_seconds: duration,
+            attempt_outcome: outcome,
             notes: shouldFlag ? `Auto-flagged: visit duration ${duration}s < ${MIN_VISIT_SECONDS}s minimum` : null,
           });
         }

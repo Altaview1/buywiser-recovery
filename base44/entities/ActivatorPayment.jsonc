@@ -14,13 +14,12 @@
     "type": {
       "type": "string",
       "enum": [
-        "VERIFIED_DOOR",
-        "IN_PERSON_VERIFIED_SCAN",
-        "IN_PERSON_SCHEDULED",
-        "IN_PERSON_ATTENDED",
-        "LEAVE_BEHIND_ATTENDED"
+        "VERIFIED_DOOR_ATTEMPT",
+        "IN_PERSON_SCAN",
+        "CONSULTATION",
+        "CLOSED"
       ],
-      "description": "Payment event type \u2014 varies by activator tier"
+      "description": "Payment event type \u2014 Field Activators earn $15 per verified door attempt"
     },
     "amount": {
       "type": "number"
@@ -29,15 +28,29 @@
       "type": "string",
       "enum": [
         "PENDING",
+        "PENDING_AUDIT",
         "APPROVED",
         "PAID",
         "REJECTED"
       ],
-      "default": "PENDING"
+      "default": "PENDING",
+      "description": "PENDING_AUDIT indicates short visit or suspicious pattern"
     },
     "rejection_reason": {
       "type": "string",
       "description": "Reason provided by admin when rejecting a payment"
+    },
+    "audit_notes": {
+      "type": "string",
+      "description": "Admin notes from compliance audit"
+    },
+    "visit_duration_seconds": {
+      "type": "number",
+      "description": "Duration of door attempt from lead record"
+    },
+    "attempt_outcome": {
+      "type": "string",
+      "description": "Outcome of verified door attempt (NO_ANSWER, HOMEOWNER_ANSWERED, etc.)"
     },
     "notes": {
       "type": "string"

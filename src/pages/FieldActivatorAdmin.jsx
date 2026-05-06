@@ -19,18 +19,23 @@ const STATUS_COLORS = {
 };
 
 const PAYMENT_STATUS_COLORS = {
-  PENDING:  "bg-amber-50 text-amber-700 border-amber-200",
-  APPROVED: "bg-blue-50 text-blue-700 border-blue-200",
-  PAID:     "bg-green-50 text-green-700 border-green-200",
-  REJECTED: "bg-red-50 text-red-600 border-red-200",
+  PENDING:       "bg-amber-50 text-amber-700 border-amber-200",
+  PENDING_AUDIT: "bg-orange-100 text-orange-700 border-orange-300",
+  APPROVED:      "bg-blue-50 text-blue-700 border-blue-200",
+  PAID:          "bg-green-50 text-green-700 border-green-200",
+  REJECTED:      "bg-red-50 text-red-600 border-red-200",
 };
 
 const PAYMENT_TYPE_CONFIG = {
-  VERIFIED_DOOR:           { label: "Verified Door",           color: "bg-slate-100 text-slate-700 border-slate-200" },
-  IN_PERSON_VERIFIED_SCAN: { label: "In-Person Verified Scan", color: "bg-blue-100 text-blue-800 border-blue-200" },
-  IN_PERSON_SCHEDULED:     { label: "In-Person Scheduled",     color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
-  IN_PERSON_ATTENDED:      { label: "In-Person Attended",      color: "bg-green-100 text-green-800 border-green-200" },
-  LEAVE_BEHIND_ATTENDED:   { label: "Leave-Behind Attended",   color: "bg-purple-100 text-purple-800 border-purple-200" },
+  VERIFIED_DOOR_ATTEMPT:   { label: "Verified Door Attempt ($15)", color: "bg-slate-100 text-slate-700 border-slate-200" },
+  IN_PERSON_SCAN:          { label: "In-Person Scan",              color: "bg-blue-100 text-blue-800 border-blue-200" },
+  CONSULTATION:            { label: "Consultation",                color: "bg-indigo-100 text-indigo-800 border-indigo-200" },
+  CLOSED:                  { label: "Closed Deal",                 color: "bg-green-100 text-green-800 border-green-200" },
+  // Legacy support
+  VERIFIED_DOOR:           { label: "Verified Door (Legacy)",      color: "bg-slate-100 text-slate-500 border-slate-200" },
+  IN_PERSON_VERIFIED_SCAN: { label: "In-Person Scan (Legacy)",     color: "bg-blue-50 text-blue-600 border-blue-200" },
+  IN_PERSON_ATTENDED:      { label: "Attended (Legacy)",           color: "bg-green-50 text-green-600 border-green-200" },
+  LEAVE_BEHIND_ATTENDED:   { label: "Leave-Behind (Legacy)",       color: "bg-purple-50 text-purple-600 border-purple-200" },
 };
 
 function LeadDetailModal({ lead, onClose }) {
@@ -207,8 +212,8 @@ function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }
   const [rejectingId, setRejectingId] = useState(null);
   const [rejectReason, setRejectReason] = useState("");
 
-  const typeOptions = ["ALL", "VERIFIED_DOOR", "IN_PERSON_VERIFIED_SCAN", "IN_PERSON_SCHEDULED", "IN_PERSON_ATTENDED", "LEAVE_BEHIND_ATTENDED"];
-  const statusOptions = ["ALL", "PENDING", "APPROVED", "PAID", "REJECTED"];
+  const typeOptions = ["ALL", "VERIFIED_DOOR_ATTEMPT", "IN_PERSON_SCAN", "CONSULTATION", "CLOSED"];
+  const statusOptions = ["ALL", "PENDING", "PENDING_AUDIT", "APPROVED", "PAID", "REJECTED"];
 
   const filtered = payments.filter(p =>
     (filterType === "ALL" || p.type === filterType) &&
@@ -256,6 +261,7 @@ function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }
             <tr>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Activator</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Type</th>
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Visit Details</th>
               <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">Amount</th>
               <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Status</th>
               <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600">Actions</th>
@@ -273,18 +279,27 @@ function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${typeCfg.color}`}>{typeCfg.label}</span>
                   </td>
+                  <td className="px-4 py-3 text-xs text-slate-600">
+                    {p.visit_duration_seconds && (
+                      <span className={`font-semibold ${p.visit_duration_seconds < 45 ? "text-red-600" : "text-green-600"}`}>
+                        {p.visit_duration_seconds}s visit
+                      </span>
+                    )}
+                    {p.attempt_outcome && <div className="text-slate-400 mt-0.5">{p.attempt_outcome.replace(/_/g, " ")}</div>}
+                  </td>
                   <td className="px-4 py-3 text-right font-black text-slate-800">${p.amount}</td>
                   <td className="px-4 py-3">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${PAYMENT_STATUS_COLORS[p.status]}`}>{p.status}</span>
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${PAYMENT_STATUS_COLORS[p.status] || PAYMENT_STATUS_COLORS.PENDING}`}>{p.status}</span>
                     {p.rejection_reason && <p className="text-xs text-red-500 mt-0.5">{p.rejection_reason}</p>}
+                    {p.status === "PENDING_AUDIT" && <p className="text-xs text-orange-600 font-bold mt-0.5">⚠ Short visit</p>}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-1">
-                      {p.status === "PENDING" && (
+                      {(p.status === "PENDING" || p.status === "PENDING_AUDIT") && (
                         <>
                           <button onClick={() => onApprove(p)}
-                            className="px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                            Approve
+                            className={`px-2 py-1 text-xs font-bold text-white rounded-lg transition ${p.status === "PENDING_AUDIT" ? "bg-orange-600 hover:bg-orange-700" : "bg-blue-600 hover:bg-blue-700"}`}>
+                            {p.status === "PENDING_AUDIT" ? "Override & Approve" : "Approve"}
                           </button>
                           <button onClick={() => { setRejectingId(p.id); setRejectReason(""); }}
                             className="px-2 py-1 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">
