@@ -139,7 +139,7 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         }
 
         if (leads.length === 0) {
-          alert("No valid leads found in CSV. For PropertyRadar exports, ensure the file has Address and Owner columns.");
+          alert(`No valid leads found in CSV.\n\nHeaders found: ${headers.join(", ")}\n\nFormat detected: ${isPropertyRadar ? "PropertyRadar" : "Standard"}\n\nFor PropertyRadar exports, ensure the file has Address and Owner columns.`);
           setUploading(false);
           return;
         }
