@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronUp, ChevronDown, MapPin, TrendingUp, Eye } from "lucide-react";
+import { ChevronUp, ChevronDown, MapPin, TrendingUp, Eye, Edit2 } from "lucide-react";
+import StatusEditor from "./StatusEditor";
 
 const STATUS_COLORS = {
   SCANNED:   { bg: "bg-slate-100", text: "text-slate-600", label: "New Lead" },
@@ -16,8 +17,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
   const [sortDir, setSortDir] = useState("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
-  const [savingId, setSavingId] = useState(null);
-  const [statusOverrides, setStatusOverrides] = useState({});
+  const [editingLead, setEditingLead] = useState(null);
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "All" || l.status === filterStatus;
@@ -52,20 +52,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
     }
   };
 
-  const handleStatusChange = async (leadId, newStatus) => {
-    setSavingId(leadId);
-    setStatusOverrides(prev => ({ ...prev, [leadId]: newStatus }));
-    try {
-      await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
-      if (onStatusChanged) onStatusChanged();
-    } catch (err) {
-      console.error("Failed to update status:", err);
-      alert("Failed to update status: " + err.message);
-      setStatusOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
-    } finally {
-      setSavingId(null);
-    }
-  };
+
 
   // Check if any lead has non-empty values for a field
   const hasDataForField = (fieldKey) => leads.some(l => l[fieldKey] && l[fieldKey] > 0);
@@ -85,6 +72,16 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
   );
 
   return (
+    <>
+      <StatusEditor
+        lead={editingLead}
+        isOpen={!!editingLead}
+        onClose={() => setEditingLead(null)}
+        onSaved={() => {
+          setEditingLead(null);
+          if (onStatusChanged) onStatusChanged();
+        }}
+      />
     <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
@@ -157,10 +154,8 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                 </tr>
               ) : (
                 sorted.map(lead => {
-                   const currentStatus = statusOverrides[lead.id] !== undefined ? statusOverrides[lead.id] : lead.status;
-                   const cfg = STATUS_COLORS[currentStatus] || STATUS_COLORS.SCANNED;
+                   const cfg = STATUS_COLORS[lead.status] || STATUS_COLORS.SCANNED;
                    const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
-                   const isSaving = savingId === lead.id;
 
                    return (
                      <tr key={lead.id} className="hover:bg-slate-50 transition">
@@ -181,16 +176,17 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                          )}
                        </td>
                        <td className="px-4 py-3">
-                         <select
-                           value={currentStatus}
-                           onChange={(e) => handleStatusChange(lead.id, e.target.value)}
-                           disabled={isSaving}
-                           className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
-                         >
-                           {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
-                             <option key={s} value={s}>{s}</option>
-                           ))}
-                         </select>
+                         <div className="flex items-center gap-2">
+                           <span className={`px-3 py-1 rounded-full text-xs font-bold border ${cfg}`}>
+                             {lead.status}
+                           </span>
+                           <button
+                             onClick={() => setEditingLead(lead)}
+                             className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
+                           >
+                             <Edit2 className="h-3.5 w-3.5" />
+                           </button>
+                         </div>
                        </td>
                       {hasDataForField("estimated_price") && (
                         <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
@@ -249,5 +245,6 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
         <p>{leads.length} total lead{leads.length !== 1 ? "s" : ""}</p>
       </div>
     </div>
+    </>
   );
 }
