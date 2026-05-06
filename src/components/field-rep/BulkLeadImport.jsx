@@ -7,6 +7,7 @@ const NAVY = "#0B1F3B";
 export default function BulkLeadImport({ repCode, onSuccess }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
+  const [detectedFormat, setDetectedFormat] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState(null);
 
@@ -16,19 +17,27 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
     setFile(f);
     setPreview([]);
     setResult(null);
+    setDetectedFormat(null);
 
     const reader = new FileReader();
     reader.onload = (evt) => {
       const csv = evt.target.result;
-      const lines = csv.split("\n").slice(0, 6); // Preview first 5 rows
-      const headers = lines[0].split(",").map((h) => h.trim());
-      const rows = lines.slice(1).map((line) =>
-        line.split(",").reduce((acc, val, i) => {
-          acc[headers[i] || `col${i}`] = val.trim();
-          return acc;
-        }, {})
-      );
-      setPreview(rows.filter((r) => Object.values(r).some((v) => v)));
+      const rawLines = csv.replace(/\r\n/g, "\n").replace(/\r/g, "\n").split("\n");
+      const headerLine = rawLines[0].replace(/^\uFEFF/, "");
+      const headers = parseCSVLine(headerLine).map(h => h.trim().toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
+      const isPropertyRadar = headers.includes("address") && headers.includes("owner");
+      console.log("[BulkLeadImport] Headers detected:", headers);
+      console.log("[BulkLeadImport] Format:", isPropertyRadar ? "PropertyRadar" : "Standard");
+
+      const rows = rawLines.slice(1, 6).map(line => {
+        const values = parseCSVLine(line);
+        const row = {};
+        headers.forEach((h, i) => { row[h] = values[i] || ""; });
+        return row;
+      }).filter(r => Object.values(r).some(v => v && v.trim()));
+
+      setPreview(rows);
+      setDetectedFormat(isPropertyRadar ? "propertyradar" : "standard");
     };
     reader.readAsText(f);
   };
@@ -75,7 +84,8 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         const headers = parseCSVLine(headerLine).map(h => h.toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, ""));
 
         // Detect PropertyRadar format (has 'address' and 'owner' columns)
-        const isPropertyRadar = headers.includes("address") && headers.includes("owner");
+        const isPropertyRadar = detectedFormat === "propertyradar" || (headers.includes("address") && headers.includes("owner"));
+        console.log("[BulkLeadImport] Upload - headers:", headers, "isPropertyRadar:", isPropertyRadar);
 
         const leads = [];
         for (let i = 1; i < rawLines.length; i++) {
@@ -192,17 +202,32 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         <input type="file" accept=".csv" className="hidden" onChange={handleFileSelect} />
       </label>
 
+      {detectedFormat && (
+        <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border ${
+          detectedFormat === "propertyradar"
+            ? "bg-blue-50 border-blue-200 text-blue-700"
+            : "bg-green-50 border-green-200 text-green-700"
+        }`}>
+          <CheckCircle className="h-3.5 w-3.5 flex-shrink-0" />
+          {detectedFormat === "propertyradar"
+            ? "PropertyRadar format detected — Owner & Address columns found"
+            : "Standard CSV format detected"}
+        </div>
+      )}
+
       {preview.length > 0 && (
         <div className="bg-slate-50 rounded-lg p-3 max-h-48 overflow-y-auto">
-          <p className="text-xs font-bold text-slate-600 mb-2">Preview ({preview.length} rows)</p>
+          <p className="text-xs font-bold text-slate-600 mb-2">Preview ({preview.length} rows shown)</p>
           <table className="w-full text-xs">
             <tbody>
               {preview.map((row, i) => (
                 <tr key={i} className="border-b border-slate-200 last:border-0">
-                  <td className="py-1 px-1 text-slate-700 font-semibold">
-                    {row.first_name} {row.last_name}
+                  <td className="py-1 px-1 text-slate-700 font-semibold truncate max-w-[120px]">
+                    {detectedFormat === "propertyradar" ? (row.owner || "—") : `${row.first_name || ""} ${row.last_name || ""}`.trim() || "—"}
                   </td>
-                  <td className="py-1 px-1 text-slate-600 truncate">{row.property_address}</td>
+                  <td className="py-1 px-1 text-slate-600 truncate max-w-[160px]">
+                    {detectedFormat === "propertyradar" ? row.address : row.property_address || "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>
