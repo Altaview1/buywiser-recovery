@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { LogOut, Lock, LayoutDashboard, Users, MapPin, Shield } from "lucide-react";
+import { LogOut, LayoutDashboard, Users, MapPin, Shield } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -111,10 +111,15 @@ export default function PortalHub() {
             const Icon = role.icon;
             return (
               <a
-                key={role.id}
-                href={role.path}
-                className={`border-2 rounded-2xl p-6 transition hover:shadow-lg hover:scale-105 ${role.color}`}
-              >
+                 key={role.id}
+                 href={role.path}
+                 className={`border-2 rounded-2xl p-6 transition hover:shadow-lg hover:scale-105 ${role.color} cursor-pointer`}
+                 style={{
+                   backgroundColor: role.color.includes('blue') ? '#eff6ff' : 
+                                   role.color.includes('green') ? '#f0fdf4' : 
+                                   role.color.includes('slate') ? '#f8fafc' : '#fffbeb'
+                 }}
+               >
                 <div className="flex items-start gap-4">
                   <div className={`p-3 rounded-xl ${role.iconBg}`}>
                     <Icon className={`h-6 w-6 ${role.textColor}`} />
