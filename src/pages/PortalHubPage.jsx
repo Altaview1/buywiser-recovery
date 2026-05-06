@@ -48,7 +48,7 @@ const roles = [
   },
 ];
 
-export default function PortalHub() {
+export default function PortalHubPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 

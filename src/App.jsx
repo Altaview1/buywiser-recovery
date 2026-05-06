@@ -44,7 +44,7 @@ import ResourceHub from './pages/ResourceHub';
 import FieldRepDashboard from './pages/FieldRepDashboard';
 import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
 import QRScanDashboard from './pages/QRScanDashboard';
-import PortalHub from './pages/PortalHub';
+import PortalHubPage from './pages/PortalHubPage';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -123,19 +123,17 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <FlagWatermark />
-        <AuthProvider>
-          <Routes>
-            {/* Public partner portals — exact matches BEFORE wildcard */}
-            <Route path="/portals" element={<PortalHub />} />
-            <Route path="/prospects" element={<ProspectsDashboard />} />
-            <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
-            <Route path="/activator-admin" element={<AdminDashboard />} />
-            <Route path="/admin-settings" element={<AdminSettings />} />
-            
-            {/* Catch all other routes — auth-protected */}
-            <Route path="*" element={<AuthenticatedApp />} />
-          </Routes>
-        </AuthProvider>
+        <Routes>
+          {/* Public portals — NO auth required */}
+          <Route path="/portals" element={<div className="min-h-screen bg-blue-600 text-white flex items-center justify-center"><h1>PORTALS TEST</h1></div>} />
+          <Route path="/prospects" element={<ProspectsDashboard />} />
+          <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
+          <Route path="/activator-admin" element={<AdminDashboard />} />
+          <Route path="/admin-settings" element={<AdminSettings />} />
+          
+          {/* All other routes — auth-protected */}
+          <Route element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
+        </Routes>
         <Toaster />
       </Router>
     </QueryClientProvider>
