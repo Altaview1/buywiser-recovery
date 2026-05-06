@@ -190,9 +190,9 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                        <td className="px-4 py-3">
                           <button
                             onClick={() => setEditingLead(lead)}
-                            className="px-3 py-2 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 hover:bg-blue-600 hover:text-white transition"
+                            className="px-4 py-2.5 rounded-lg text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm active:scale-95"
                           >
-                            Change Status
+                            ✎ Change Status
                           </button>
                        </td>
                       {hasDataForField("estimated_price") && (
