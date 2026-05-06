@@ -17,6 +17,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
   const [savingId, setSavingId] = useState(null);
+  const [statusOverrides, setStatusOverrides] = useState({});
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "All" || l.status === filterStatus;
@@ -53,12 +54,14 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
 
   const handleStatusChange = async (leadId, newStatus) => {
     setSavingId(leadId);
+    setStatusOverrides(prev => ({ ...prev, [leadId]: newStatus }));
     try {
       await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
       if (onStatusChanged) onStatusChanged();
     } catch (err) {
       console.error("Failed to update status:", err);
       alert("Failed to update status: " + err.message);
+      setStatusOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
     } finally {
       setSavingId(null);
     }
@@ -154,7 +157,8 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                 </tr>
               ) : (
                 sorted.map(lead => {
-                   const cfg = STATUS_COLORS[lead.status] || STATUS_COLORS.SCANNED;
+                   const currentStatus = statusOverrides[lead.id] !== undefined ? statusOverrides[lead.id] : lead.status;
+                   const cfg = STATUS_COLORS[currentStatus] || STATUS_COLORS.SCANNED;
                    const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
                    const isSaving = savingId === lead.id;
 
@@ -178,7 +182,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                        </td>
                        <td className="px-4 py-3">
                          <select
-                           value={lead.status}
+                           value={currentStatus}
                            onChange={(e) => handleStatusChange(lead.id, e.target.value)}
                            disabled={isSaving}
                            className={`appearance-none px-3 py-2 text-xs font-semibold rounded-lg border cursor-pointer disabled:opacity-50 transition ${cfg.bg} ${cfg.text} border-current`}
