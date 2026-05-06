@@ -196,8 +196,8 @@ export default function VTONScan() {
   };
 
   const inputCls = (field) =>
-    `w-full px-4 py-3.5 text-sm border-2 rounded-xl focus:outline-none transition ${
-      errors[field] ? "border-red-400 bg-red-50" : "border-slate-200 focus:border-blue-500 bg-white"
+    `w-full px-4 py-3.5 text-base sm:text-sm border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 transition ${
+      errors[field] ? "border-red-400 bg-red-50 focus:ring-red-300" : "border-slate-200 focus:border-blue-500 focus:ring-blue-200 bg-white"
     }`;
 
   // SCREEN 1 — LANDING
@@ -253,8 +253,8 @@ export default function VTONScan() {
 
   // SCREEN 2 — CONTACT VERIFY
   if (step === 2) return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="px-5 py-8 max-w-md mx-auto">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <div className="flex-1 px-4 sm:px-5 py-8 max-w-md mx-auto w-full">
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: NAVY }}>
             <Shield className="h-6 w-6 text-white" />
@@ -305,13 +305,13 @@ export default function VTONScan() {
         <button
           onClick={handleVerify}
           disabled={saving}
-          className="w-full py-4 rounded-2xl font-black text-base text-white transition disabled:opacity-50"
+          className="w-full py-4 rounded-2xl font-black text-base text-white transition disabled:opacity-50 active:scale-95 touch-manipulation"
           style={{ background: saving ? "#888" : RED }}
         >
           {saving ? "Verifying…" : "Verify & Continue"}
         </button>
 
-        <button onClick={() => setStep(1)} className="w-full mt-3 py-2 text-sm text-slate-400 hover:text-slate-600 transition">
+        <button onClick={() => setStep(1)} className="w-full mt-2 py-2 text-sm text-slate-400 hover:text-slate-600 transition touch-manipulation">
           ← Back
         </button>
       </div>

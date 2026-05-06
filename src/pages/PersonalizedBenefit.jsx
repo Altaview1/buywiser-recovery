@@ -237,15 +237,36 @@ export default function PersonalizedBenefit() {
   const handleCTASubmit = async (e) => {
     e.preventDefault();
     setCtaLoading(true);
-    await base44.entities.ContactSubmission.create({
-      first_name: opp?.homeowner_name || "Veteran",
-      email: ctaEmail,
-      phone: ctaPhone,
-      form_type: "contact",
-      status: "new",
-      how_heard: "vton_qr",
-      comments: `Scanned QR from opportunity ${opp?.id}. Property: ${opp?.property_address}. Agent: ${agent?.name || opp?.partner_email}`,
-    });
+    try {
+      // Create contact submission for CRM tracking
+      await base44.entities.ContactSubmission.create({
+        first_name: opp?.homeowner_name || "Veteran",
+        email: ctaEmail,
+        phone: ctaPhone,
+        form_type: "contact",
+        status: "new",
+        how_heard: "vton_qr",
+        comments: `Scanned QR from opportunity ${opp?.id}. Property: ${opp?.property_address}. Agent: ${agent?.name || opp?.partner_email}`,
+      });
+
+      // If the homeowner is ready to schedule, trigger consultation booking
+      if (opp?.id) {
+        // Find the corresponding lead if one exists
+        const leads = await base44.entities.ActivatorLead.filter({ 
+          email: ctaEmail,
+          property_address: opp.property_address 
+        }, "-created_date", 1);
+
+        if (leads.length > 0) {
+          // Schedule consultation for the lead
+          await base44.functions.invoke("scheduleHomeownerConsultation", { 
+            lead_id: leads[0].id 
+          });
+        }
+      }
+    } catch (err) {
+      console.error("CTA submission error:", err);
+    }
     setCtaLoading(false);
     setCtaSubmitted(true);
   };
@@ -382,7 +403,7 @@ export default function PersonalizedBenefit() {
       </section>
 
       {/* Book Appointment CTA — appears right after check */}
-      {agent?.calendar_url && (
+      {(agent?.calendar_url || agent?.phone) && (
         <section className="px-4 py-8 bg-white">
           <div className="max-w-lg mx-auto">
             <div className="rounded-2xl overflow-hidden border-2 shadow-sm" style={{ borderColor: NAVY }}>
@@ -390,22 +411,35 @@ export default function PersonalizedBenefit() {
                 <Calendar className="h-5 w-5 text-white/70 flex-shrink-0" />
                 <div>
                   <p className="text-white font-black text-sm uppercase tracking-widest">Ready to Claim Your Benefit?</p>
-                  <p className="text-blue-300 text-xs mt-0.5">Book a free 15-min call with {agent.name}</p>
+                  <p className="text-blue-300 text-xs mt-0.5">Schedule your free 15-minute consultation</p>
                 </div>
               </div>
-              <div className="px-5 py-5 bg-white flex flex-col sm:flex-row items-center gap-4">
-                <div className="flex-1 text-sm text-slate-600 leading-relaxed">
-                  See your personalized benefit estimate above? Lock in your spot — {agent.name} will walk you through exactly how much you qualify for and how it works.
+              <div className="px-5 py-5 bg-white space-y-3">
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  See your personalized benefit estimate above? {agent?.name || 'Your BuyWiser specialist'} will walk you through your exact benefit and next steps.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {agent?.calendar_url && (
+                    <a
+                      href={agent.calendar_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm text-white transition hover:opacity-90"
+                      style={{ background: RED }}
+                    >
+                      <Calendar className="h-4 w-4" /> Book Now
+                    </a>
+                  )}
+                  {agent?.phone && (
+                    <a
+                      href={`tel:${agent.phone}`}
+                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-sm border-2 transition"
+                      style={{ borderColor: RED, color: RED }}
+                    >
+                      ☎️ Call {agent.phone}
+                    </a>
+                  )}
                 </div>
-                <a
-                  href={agent.calendar_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm text-white transition hover:opacity-90"
-                  style={{ background: RED }}
-                >
-                  <Calendar className="h-4 w-4" /> Book My Appointment
-                </a>
               </div>
             </div>
           </div>
