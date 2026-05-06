@@ -33,6 +33,19 @@ export default function VTONScan() {
   });
   const [leadType, setLeadType] = useState("");
   const [charity, setCharity] = useState("");
+
+  // Guard: if we have a leadId but no leadType (e.g. page refresh), fetch from DB
+  useEffect(() => {
+    if (leadId && !leadType && step >= 4) {
+      base44.entities.ActivatorLead.filter({ id: leadId }).then(results => {
+        if (results.length > 0 && results[0].lead_type) {
+          setLeadType(results[0].lead_type);
+        } else {
+          console.warn("lead_type missing for lead", leadId, "— defaulting to UNDECIDED");
+        }
+      }).catch(err => console.warn("Could not fetch lead_type:", err));
+    }
+  }, [leadId, leadType, step]);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -357,7 +370,7 @@ export default function VTONScan() {
   const benefitContent = {
     MORTGAGE: {
       headline: "Optimize Your Next Home Purchase (Without Changing Your Agent)",
-      body: "You can keep your current agent. This Benefit Review focuses on your financing and purchase structure to ensure you're getting the best possible outcome.",
+      body: "You can keep your current agent. This Veteran's Next Home™ Benefit Review focuses on your financing and purchase structure to ensure you're getting the best possible outcome.",
       cta: "Review My Purchase Structure",
     },
     FULL_STACK: {
@@ -367,11 +380,12 @@ export default function VTONScan() {
     },
     UNDECIDED: {
       headline: "Understand Your Next Home Options",
-      body: "This Benefit Review helps you understand your options before anything gets locked in.",
+      body: "This Veteran's Next Home™ Benefit Review helps you understand your options before anything gets locked in.",
       cta: "Start My Benefit Review",
     },
   };
-  const bc = benefitContent[leadType] || benefitContent.UNDECIDED;
+  const effectiveLeadType = leadType || "UNDECIDED";
+  const bc = benefitContent[effectiveLeadType];
 
   if (step === 4) return (
     <div className="min-h-screen" style={{ background: NAVY }}>
@@ -446,9 +460,9 @@ export default function VTONScan() {
   );
 
   const schedulePreface = {
-    MORTGAGE: "This short Benefit Review focuses on optimizing your financing and purchase structure. Your current agent remains in place.",
-    FULL_STACK: "This Benefit Review will map out your full next-home strategy, including representation and financing.",
-    UNDECIDED: "This Benefit Review will help clarify your next steps and options.",
+    MORTGAGE: "This short Veteran's Next Home™ Benefit Review focuses on optimizing your financing and purchase structure. Your current agent remains in place.",
+    FULL_STACK: "This Veteran's Next Home™ Benefit Review will map out your full next-home strategy, including representation and financing.",
+    UNDECIDED: "This Veteran's Next Home™ Benefit Review will help clarify your next steps and options.",
   };
 
   // SCREEN 6 — SCHEDULE
@@ -461,7 +475,7 @@ export default function VTONScan() {
         <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Schedule Your Benefit Review</h2>
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 text-left">
           <p className="text-blue-700 text-sm leading-relaxed">
-            {schedulePreface[leadType] || schedulePreface.UNDECIDED}
+            {schedulePreface[effectiveLeadType]}
           </p>
         </div>
         <p className="text-slate-500 text-sm leading-relaxed mb-6">
