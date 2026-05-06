@@ -12,19 +12,21 @@ const STATUS_COLORS = {
   CLOSED:    { bg: "bg-emerald-100", text: "text-emerald-800", label: "Closed" },
 };
 
-export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChanged, loading }) {
+export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChanged, loading, activators }) {
   const [sortBy, setSortBy] = useState("created_date");
   const [sortDir, setSortDir] = useState("desc");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [filterRep, setFilterRep] = useState("All");
   const [editingLead, setEditingLead] = useState(null);
 
   const filtered = leads.filter(l => {
     const matchStatus = filterStatus === "All" || l.status === filterStatus;
+    const matchRep = filterRep === "All" || l.rep_code === filterRep;
     const q = searchQuery.toLowerCase();
     const matchSearch = !q || 
       `${l.first_name} ${l.last_name} ${l.email} ${l.property_address}`.toLowerCase().includes(q);
-    return matchStatus && matchSearch;
+    return matchStatus && matchRep && matchSearch;
   });
 
   const sorted = [...filtered].sort((a, b) => {
@@ -100,6 +102,16 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
           <option>All</option>
           {["SCANNED", "VERIFIED", "QUALIFIED", "SCHEDULED", "COMPLETED", "CLOSED"].map(s => (
             <option key={s}>{s}</option>
+          ))}
+        </select>
+        <select
+          value={filterRep}
+          onChange={(e) => setFilterRep(e.target.value)}
+          className="px-3 py-2.5 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none font-medium text-slate-700"
+        >
+          <option>All Reps</option>
+          {[...new Set(leads.map(l => l.rep_code).filter(Boolean))].map(rep => (
+            <option key={rep}>{rep}</option>
           ))}
         </select>
       </div>
