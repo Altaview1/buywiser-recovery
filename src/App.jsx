@@ -125,7 +125,7 @@ function App() {
         <FlagWatermark />
         <Routes>
           {/* Public portals — NO auth required */}
-          <Route path="/portals" element={<div className="min-h-screen bg-blue-600 text-white flex items-center justify-center"><h1>PORTALS HUB</h1></div>} />
+          <Route path="/portals" element={<PortalHubPage />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<AdminDashboard />} />
