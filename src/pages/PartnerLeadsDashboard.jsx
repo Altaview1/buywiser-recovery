@@ -4,6 +4,7 @@ import { LogOut, RefreshCw, Eye, Phone, Mail, MapPin, CheckCircle, Clock, AlertC
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import BulkLeadImportModal from "@/components/partners/BulkLeadImportModal";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -112,6 +113,16 @@ export default function PartnerLeadsDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      {showUploadModal && (
+        <BulkLeadImportModal
+          partner={partner}
+          onClose={() => setShowUploadModal(false)}
+          onSuccess={() => {
+            setShowUploadModal(false);
+            location.reload();
+          }}
+        />
+      )}
       {/* Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
