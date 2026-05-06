@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { LogOut, RefreshCw, Users, MapPin, DollarSign, TrendingUp, AlertCircle, Upload, X } from "lucide-react";
+import { LogOut, RefreshCw, Users, MapPin, DollarSign, TrendingUp, AlertCircle, Upload, X, Bell, Target, Zap } from "lucide-react";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -59,11 +59,14 @@ export default function AdminDashboard() {
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
   const [partners, setPartners] = useState([]);
+  const [opportunities, setOpportunities] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedActivator, setSelectedActivator] = useState(null);
   const [editingLead, setEditingLead] = useState(null);
   const [assignModal, setAssignModal] = useState(null);
+  const [reassignModal, setReassignModal] = useState(null);
 
   useEffect(() => {
     checkAuthAndFetch();
@@ -88,16 +91,29 @@ export default function AdminDashboard() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [a, l, p, pts] = await Promise.all([
+      const [a, l, p, pts, opps] = await Promise.all([
         base44.entities.FieldActivator.filter({ status: "active" }, "-created_date", 100),
         base44.entities.ActivatorLead.list("-created_date", 500),
         base44.entities.ActivatorPayment.list("-created_date", 500),
         base44.entities.PartnerApplication.filter({ status: "approved" }, "-created_date", 100),
+        base44.entities.VTONOpportunity.list("-created_date", 500),
       ]);
       setActivators(a);
       setLeads(l);
       setPayments(p);
       setPartners(pts);
+      setOpportunities(opps);
+      
+      // Simulate notifications from recent activity
+      const recentPayments = p.filter(x => new Date(x.created_date) > new Date(Date.now() - 24*60*60*1000)).length;
+      const pendingAudit = p.filter(x => x.status === "PENDING_AUDIT").length;
+      const newOpps = opps.filter(x => x.opportunity_status === "assigned" && new Date(x.created_date) > new Date(Date.now() - 24*60*60*1000)).length;
+      
+      const notifs = [];
+      if (pendingAudit > 0) notifs.push({ id: 1, type: "warning", message: `${pendingAudit} payments flagged for audit (short visits)`, icon: "⚠️" });
+      if (newOpps > 0) notifs.push({ id: 2, type: "info", message: `${newOpps} new VTON opportunities assigned today`, icon: "🎯" });
+      if (recentPayments > 0) notifs.push({ id: 3, type: "success", message: `${recentPayments} new payment records this week`, icon: "✅" });
+      setNotifications(notifs);
     } catch (err) {
       console.error("Error fetching data:", err);
     }
@@ -199,10 +215,32 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Notifications Banner */}
+        {notifications.length > 0 && (
+          <div className="space-y-2">
+            {notifications.map(notif => (
+              <div key={notif.id} className={`rounded-lg p-4 flex items-start gap-3 ${
+                notif.type === "warning" ? "bg-amber-50 border border-amber-200" :
+                notif.type === "success" ? "bg-green-50 border border-green-200" :
+                "bg-blue-50 border border-blue-200"
+              }`}>
+                <span className="text-lg">{notif.icon}</span>
+                <p className={`text-sm font-medium ${
+                  notif.type === "warning" ? "text-amber-800" :
+                  notif.type === "success" ? "text-green-800" :
+                  "text-blue-800"
+                }`}>{notif.message}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Tab Navigation */}
-        <div className="flex gap-2 border-b border-slate-200">
+        <div className="flex gap-2 border-b border-slate-200 overflow-x-auto">
           {[
             { id: "overview", label: "Overview", icon: "📊" },
+            { id: "scans", label: "QR Scans", icon: "📲" },
+            { id: "opportunities", label: "VTON Opportunities", icon: "🎯" },
             { id: "activators", label: "Activators", icon: "👥" },
             { id: "leads", label: "Leads", icon: "📍" },
             { id: "partners", label: "Partners", icon: "🤝" },
@@ -404,44 +442,150 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {activeTab === "payments" && (
+        {activeTab === "scans" && (
           <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead className="bg-slate-50 border-b border-slate-200">
                   <tr>
-                    <th className="px-4 py-3 text-left font-bold text-slate-600">Activator</th>
-                    <th className="px-4 py-3 text-left font-bold text-slate-600">Type</th>
-                    <th className="px-4 py-3 text-right font-bold text-slate-600">Amount</th>
+                    <th className="px-4 py-3 text-left font-bold text-slate-600">Timestamp</th>
+                    <th className="px-4 py-3 text-left font-bold text-slate-600">Homeowner</th>
+                    <th className="px-4 py-3 text-left font-bold text-slate-600">Property</th>
+                    <th className="px-4 py-3 text-left font-bold text-slate-600">Rep Code</th>
                     <th className="px-4 py-3 text-left font-bold text-slate-600">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {payments.slice(0, 20).map(p => {
-                    const activator = activators.find(a => a.id === p.activator_id);
-                    return (
-                      <tr key={p.id} className="hover:bg-slate-50">
-                        <td className="px-4 py-3 font-semibold text-slate-900">{activator?.name || p.rep_code}</td>
-                        <td className="px-4 py-3 text-xs text-slate-600">{p.type}</td>
-                        <td className="px-4 py-3 text-right font-bold text-slate-800">${p.amount}</td>
-                        <td className="px-4 py-3">
-                          <span className={`text-xs font-bold px-2 py-1 rounded ${
-                            p.status === "PAID" ? "bg-green-100 text-green-700" :
-                            p.status === "APPROVED" ? "bg-blue-100 text-blue-700" :
-                            p.status === "PENDING" ? "bg-amber-100 text-amber-700" :
-                            "bg-red-100 text-red-700"
-                          }`}>
-                            {p.status}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  {leads.slice(0, 30).map(l => (
+                    <tr key={l.id} className="hover:bg-slate-50">
+                      <td className="px-4 py-3 text-xs font-mono text-slate-500">{new Date(l.created_date).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</td>
+                      <td className="px-4 py-3 font-semibold text-slate-800">{l.first_name} {l.last_name}</td>
+                      <td className="px-4 py-3 text-xs text-slate-600 truncate">{l.property_address}</td>
+                      <td className="px-4 py-3 text-xs font-mono bg-slate-50">{l.rep_code}</td>
+                      <td className="px-4 py-3"><span className={`text-xs font-bold px-2 py-1 rounded ${l.status === "QUALIFIED" ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"}`}>{l.status}</span></td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
         )}
+
+        {activeTab === "opportunities" && (
+          <>
+            {reassignModal && (
+              <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4 mb-6">
+                <div className="bg-white rounded-lg max-w-sm w-full shadow-xl">
+                  <div className="px-6 py-4 flex items-center justify-between border-b border-slate-200">
+                    <h2 className="font-bold text-slate-900">Reassign Opportunity</h2>
+                    <button onClick={() => setReassignModal(null)} className="text-slate-400 hover:text-slate-600"><X className="h-5 w-5" /></button>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800">{reassignModal?.homeowner_name}</p>
+                      <p className="text-xs text-slate-500">{reassignModal?.property_address}</p>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-600 uppercase mb-2">New Partner</label>
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            base44.entities.VTONOpportunity.update(reassignModal.id, { partner_email: e.target.value });
+                            setOpportunities(prev => prev.map(o => o.id === reassignModal.id ? { ...o, partner_email: e.target.value } : o));
+                            setReassignModal(null);
+                          }
+                        }}
+                        className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
+                      >
+                        <option value="">Select partner...</option>
+                        {partners.map(p => <option key={p.id} value={p.email}>{p.name} - {p.territory || "Unassigned"}</option>)}
+                      </select>
+                    </div>
+                    <button onClick={() => setReassignModal(null)} className="w-full py-2 border border-slate-200 text-slate-600 font-semibold rounded-lg hover:bg-slate-50">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+            <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 border-b border-slate-200">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-bold text-slate-600">Homeowner</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-600">Property</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-600">Assigned Partner</th>
+                      <th className="px-4 py-3 text-left font-bold text-slate-600">Status</th>
+                      <th className="px-4 py-3 text-center font-bold text-slate-600">Benefit</th>
+                      <th className="px-4 py-3 text-center font-bold text-slate-600">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {opportunities.slice(0, 25).map(o => {
+                      const partner = partners.find(p => p.email === o.partner_email);
+                      const benefit = o.estimated_price ? `$${Math.round(o.estimated_price * 0.015).toLocaleString()}` : "—";
+                      return (
+                        <tr key={o.id} className="hover:bg-slate-50">
+                          <td className="px-4 py-3 font-semibold text-slate-900">{o.homeowner_name}</td>
+                          <td className="px-4 py-3 text-xs text-slate-600 truncate">{o.property_address}{o.city ? `, ${o.city}` : ""}</td>
+                          <td className="px-4 py-3 text-sm text-slate-700">{partner?.name || "Unassigned"}</td>
+                          <td className="px-4 py-3"><span className={`text-xs font-bold px-2 py-1 rounded ${o.opportunity_status === "completed" ? "bg-green-100 text-green-700" : o.opportunity_status === "accepted" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}`}>{o.opportunity_status}</span></td>
+                          <td className="px-4 py-3 text-right font-bold text-slate-800">{benefit}</td>
+                          <td className="px-4 py-3 text-center">
+                            <button onClick={() => setReassignModal(o)} className="text-xs font-bold text-blue-600 hover:underline">
+                              Reassign
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === "payments" && (
+           <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+             <div className="overflow-x-auto">
+               <table className="w-full text-sm">
+                 <thead className="bg-slate-50 border-b border-slate-200">
+                   <tr>
+                     <th className="px-4 py-3 text-left font-bold text-slate-600">Activator</th>
+                     <th className="px-4 py-3 text-left font-bold text-slate-600">Type</th>
+                     <th className="px-4 py-3 text-right font-bold text-slate-600">Amount</th>
+                     <th className="px-4 py-3 text-left font-bold text-slate-600">Status</th>
+                   </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100">
+                   {payments.slice(0, 20).map(p => {
+                     const activator = activators.find(a => a.id === p.activator_id);
+                     return (
+                       <tr key={p.id} className="hover:bg-slate-50">
+                         <td className="px-4 py-3 font-semibold text-slate-900">{activator?.name || p.rep_code}</td>
+                         <td className="px-4 py-3 text-xs text-slate-600">{p.type}</td>
+                         <td className="px-4 py-3 text-right font-bold text-slate-800">${p.amount}</td>
+                         <td className="px-4 py-3">
+                           <span className={`text-xs font-bold px-2 py-1 rounded ${
+                             p.status === "PAID" ? "bg-green-100 text-green-700" :
+                             p.status === "APPROVED" ? "bg-blue-100 text-blue-700" :
+                             p.status === "PENDING_AUDIT" ? "bg-orange-100 text-orange-700" :
+                             p.status === "PENDING" ? "bg-amber-100 text-amber-700" :
+                             "bg-red-100 text-red-700"
+                           }`}>
+                             {p.status}
+                           </span>
+                         </td>
+                       </tr>
+                     );
+                   })}
+                 </tbody>
+               </table>
+             </div>
+           </div>
+         )}
       </div>
     </div>
   );
