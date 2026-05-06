@@ -31,6 +31,7 @@ export default function VTONScan() {
     next_home_type: "",
     agent_commitment: "",
   });
+  const [leadType, setLeadType] = useState("");
   const [charity, setCharity] = useState("");
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
@@ -104,10 +105,17 @@ export default function VTONScan() {
 
   const handleQualifierNext = async () => {
     const lead_type = computeLeadType(qualifier);
+    setLeadType(lead_type);
+    const tagMap = {
+      MORTGAGE: "MORTGAGE_LEAD",
+      FULL_STACK: "FULL_STACK_LEAD",
+      UNDECIDED: "UNDECIDED_LEAD",
+    };
     if (leadId) {
       await base44.entities.ActivatorLead.update(leadId, {
         ...qualifier,
         lead_type,
+        crm_tag: tagMap[lead_type] || "",
         status: "QUALIFIED",
       });
     }
@@ -345,17 +353,36 @@ export default function VTONScan() {
     </div>
   );
 
-  // SCREEN 4 — BENEFIT PAGE
+  // SCREEN 4 — BENEFIT PAGE (dynamic by lead_type)
+  const benefitContent = {
+    MORTGAGE: {
+      headline: "Optimize Your Next Home Purchase (Without Changing Your Agent)",
+      body: "You can keep your current agent. This Benefit Review focuses on your financing and purchase structure to ensure you're getting the best possible outcome.",
+      cta: "Review My Purchase Structure",
+    },
+    FULL_STACK: {
+      headline: "Maximize Your Veteran's Next Home™ Benefits",
+      body: "Your next home can be structured as a complete solution—representation and financing—to capture the full Veteran's Next Home™ benefits.",
+      cta: "Plan My Next Home Strategy",
+    },
+    UNDECIDED: {
+      headline: "Understand Your Next Home Options",
+      body: "This Benefit Review helps you understand your options before anything gets locked in.",
+      cta: "Start My Benefit Review",
+    },
+  };
+  const bc = benefitContent[leadType] || benefitContent.UNDECIDED;
+
   if (step === 4) return (
     <div className="min-h-screen" style={{ background: NAVY }}>
       <div className="px-5 py-10 max-w-md mx-auto text-center">
         <div className="text-4xl mb-4">🇺🇸</div>
         <p className="text-xs font-black uppercase tracking-widest text-blue-300 mb-3">Your Benefit</p>
         <h2 className="text-2xl font-extrabold text-white mb-4 leading-tight">
-          Your Veteran's Next Home™ Benefits
+          {bc.headline}
         </h2>
         <p className="text-blue-200 text-sm leading-relaxed mb-6">
-          Your next purchase may be structured to include the Red White & Blue Purchase Benefit — potentially <strong className="text-white">up to 1.5% of your purchase price.</strong>
+          {bc.body}
         </p>
 
         <div className="bg-white/10 rounded-2xl p-5 mb-6 text-left space-y-3">
@@ -376,7 +403,7 @@ export default function VTONScan() {
         <button onClick={() => setStep(5)}
           className="w-full py-4 rounded-2xl font-black text-base text-white transition hover:opacity-90"
           style={{ background: RED }}>
-          Continue <ArrowRight className="h-4 w-4 inline ml-1" />
+          {bc.cta} <ArrowRight className="h-4 w-4 inline ml-1" />
         </button>
       </div>
     </div>
@@ -418,6 +445,12 @@ export default function VTONScan() {
     </div>
   );
 
+  const schedulePreface = {
+    MORTGAGE: "This short Benefit Review focuses on optimizing your financing and purchase structure. Your current agent remains in place.",
+    FULL_STACK: "This Benefit Review will map out your full next-home strategy, including representation and financing.",
+    UNDECIDED: "This Benefit Review will help clarify your next steps and options.",
+  };
+
   // SCREEN 6 — SCHEDULE
   if (step === 6) return (
     <div className="min-h-screen bg-slate-50">
@@ -426,8 +459,13 @@ export default function VTONScan() {
           <Calendar className="h-6 w-6 text-green-700" />
         </div>
         <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Schedule Your Benefit Review</h2>
+        <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 text-left">
+          <p className="text-blue-700 text-sm leading-relaxed">
+            {schedulePreface[leadType] || schedulePreface.UNDECIDED}
+          </p>
+        </div>
         <p className="text-slate-500 text-sm leading-relaxed mb-6">
-          This is a short Veteran's Next Home™ Benefit Review focused on your next purchase. No pressure, no obligation.
+          No pressure, no obligation.
         </p>
 
         <div className="bg-white border border-slate-200 rounded-2xl p-5 mb-6 text-left space-y-3">

@@ -89,6 +89,19 @@ export default function ManagementDashboard() {
   const avgVisitsPerRep = repStats.length > 0 ? Math.round(totalVisits / repStats.length) : 0;
   const conversionRate = totalVisits > 0 ? Math.round(((visitOutcomes.spoke_homeowner + visitOutcomes.code_scanned) / totalVisits) * 100) : 0;
 
+  // Lead type analytics
+  const leadTypeStats = ["MORTGAGE", "FULL_STACK", "UNDECIDED"].map(type => {
+    const typeLeads = leads.filter(l => l.lead_type === type);
+    const booked = typeLeads.filter(l => l.appointment_scheduled).length;
+    const closed = typeLeads.filter(l => l.status === "COMPLETED" || l.status === "CLOSED").length;
+    return {
+      type,
+      count: typeLeads.length,
+      booking_rate: typeLeads.length > 0 ? Math.round((booked / typeLeads.length) * 100) : 0,
+      close_rate: typeLeads.length > 0 ? Math.round((closed / typeLeads.length) * 100) : 0,
+    };
+  });
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -122,6 +135,42 @@ export default function ManagementDashboard() {
           <div className="bg-white border border-slate-200 rounded-xl p-4 text-center">
             <p className="text-2xl font-black text-purple-700">{avgVisitsPerRep}</p>
             <p className="text-xs text-slate-500 mt-0.5">Avg Visits/Rep</p>
+          </div>
+        </div>
+
+        {/* Lead Type Analytics */}
+        <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+          <div className="px-5 py-4 border-b border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900">Lead Type Performance</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Booking & close rates by classification</p>
+          </div>
+          <div className="divide-y divide-slate-100">
+            {leadTypeStats.map(({ type, count, booking_rate, close_rate }) => {
+              const colors = {
+                MORTGAGE: { bg: "bg-blue-50", text: "text-blue-700", tag: "bg-blue-100 text-blue-700" },
+                FULL_STACK: { bg: "bg-green-50", text: "text-green-700", tag: "bg-green-100 text-green-700" },
+                UNDECIDED: { bg: "bg-amber-50", text: "text-amber-700", tag: "bg-amber-100 text-amber-700" },
+              }[type];
+              return (
+                <div key={type} className="px-5 py-4 flex items-center gap-4">
+                  <span className={`px-2.5 py-1 rounded-full text-xs font-black ${colors.tag} w-28 text-center flex-shrink-0`}>{type}</span>
+                  <div className="flex-1 grid grid-cols-3 gap-3">
+                    <div className="text-center">
+                      <p className="text-lg font-black text-slate-800">{count}</p>
+                      <p className="text-xs text-slate-400">Total</p>
+                    </div>
+                    <div className="text-center">
+                      <p className={`text-lg font-black ${colors.text}`}>{booking_rate}%</p>
+                      <p className="text-xs text-slate-400">Booking Rate</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-lg font-black text-purple-700">{close_rate}%</p>
+                      <p className="text-xs text-slate-400">Close Rate</p>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 

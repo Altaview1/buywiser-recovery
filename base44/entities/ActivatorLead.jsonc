@@ -100,6 +100,15 @@
       ],
       "description": "Classified lead routing type based on qualifier answers"
     },
+    "crm_tag": {
+      "type": "string",
+      "enum": [
+        "MORTGAGE_LEAD",
+        "FULL_STACK_LEAD",
+        "UNDECIDED_LEAD"
+      ],
+      "description": "CRM tag attached at classification"
+    },
     "charity_selected": {
       "type": "string"
     },
