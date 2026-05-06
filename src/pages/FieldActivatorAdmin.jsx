@@ -339,7 +339,6 @@ export default function FieldActivatorAdmin() {
   const [showAddActivator, setShowAddActivator] = useState(false);
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
-  const [tierOverrides, setTierOverrides] = useState({});
 
   useEffect(() => {
     const init = async () => {
@@ -381,19 +380,16 @@ export default function FieldActivatorAdmin() {
     setPayments(prev => prev.map(p => p.id === payment.id ? { ...p, status: "REJECTED", rejection_reason: reason } : p));
   };
 
-  const handleToggleTier = async (activator) => {
-    const newTier = activator.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
-    // Lock in the override to prevent UI flicker
-    setTierOverrides(prev => ({ ...prev, [activator.id]: newTier }));
-    setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: newTier } : a));
+  const handleToggleTier = async (activatorId) => {
+    const current = activators.find(a => a.id === activatorId);
+    if (!current) return;
+    const newTier = current.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
+    setActivators(prev => prev.map(a => a.id === activatorId ? { ...a, activator_tier: newTier } : a));
     try {
-      await base44.entities.FieldActivator.update(activator.id, { activator_tier: newTier });
-      // Clear override after 1 second to sync with DB
-      setTimeout(() => setTierOverrides(prev => { const n = { ...prev }; delete n[activator.id]; return n; }), 1000);
+      await base44.entities.FieldActivator.update(activatorId, { activator_tier: newTier });
     } catch (err) {
       console.error("Failed to update tier:", err);
-      setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: activator.activator_tier } : a));
-      setTierOverrides(prev => { const n = { ...prev }; delete n[activator.id]; return n; });
+      setActivators(prev => prev.map(a => a.id === activatorId ? { ...a, activator_tier: current.activator_tier } : a));
     }
   };
 
@@ -612,8 +608,7 @@ export default function FieldActivatorAdmin() {
             ) : (
               repPerf.map(a => {
                  const rate = a.leadCount > 0 ? Math.round((a.verifiedCount / a.leadCount) * 100) : 0;
-                 const effectiveTier = tierOverrides[a.id] || a.activator_tier;
-                 const isSenior = effectiveTier === "SENIOR_FIELD_ACTIVATOR";
+                 const isSenior = a.activator_tier === "SENIOR_FIELD_ACTIVATOR";
                 return (
                   <div key={a.id} className="bg-white border border-slate-200 rounded-lg p-3 sm:p-4 touch-manipulation">
                     <div className="flex items-start justify-between gap-2 mb-2 sm:mb-3">
@@ -628,7 +623,7 @@ export default function FieldActivatorAdmin() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         <button
-                          onClick={() => handleToggleTier(a)}
+                          onClick={() => handleToggleTier(a.id)}
                           className={`px-2 py-1 text-xs font-bold rounded-lg border transition ${isSenior ? "bg-slate-50 text-slate-600 border-slate-200 hover:bg-red-50 hover:text-red-600 hover:border-red-200" : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"}`}
                           title={isSenior ? "Demote to Field Activator" : "Promote to Senior Field Activator"}
                         >
