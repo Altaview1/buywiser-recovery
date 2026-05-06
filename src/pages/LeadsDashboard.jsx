@@ -10,6 +10,7 @@ import BulkLeadUpload from "@/components/BulkLeadUpload";
 import OutcomeSummary from "@/components/OutcomeSummary";
 import LeadsTable from "@/components/LeadsTable";
 import LeadsMapView from "@/components/LeadsMapView";
+import ContactDetailView from "@/components/ContactDetailView";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -528,6 +529,7 @@ export default function LeadsDashboard() {
   const [showSummary, setShowSummary] = useState(false);
   const [filterReason, setFilterReason] = useState("All");
   const [viewMode, setViewMode] = useState("cards"); // "cards", "table", or "map"
+  const [selectedContact, setSelectedContact] = useState(null);
 
 
   const fetchLeads = async () => {
@@ -583,6 +585,7 @@ export default function LeadsDashboard() {
     <div className="min-h-screen bg-slate-50">
       {showUpload && <UploadLeadModal onClose={() => setShowUpload(false)} onCreated={handleCreated} />}
       {showBulk && <BulkLeadUpload onClose={() => setShowBulk(false)} onImported={(count) => { fetchLeads(); }} />}
+      {selectedContact && <ContactDetailView contact={selectedContact} onClose={() => setSelectedContact(null)} />}
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
@@ -727,7 +730,9 @@ export default function LeadsDashboard() {
           <div className="space-y-3">
             <p className="text-xs text-slate-400 font-medium">{filtered.length} lead{filtered.length !== 1 ? "s" : ""}</p>
             {filtered.map((lead) => (
-              <LeadRow key={lead.id} lead={lead} onUpdate={handleUpdate} />
+              <div key={lead.id} onClick={() => setSelectedContact(lead)} style={{ cursor: 'pointer' }}>
+                <LeadRow lead={lead} onUpdate={handleUpdate} />
+              </div>
             ))}
           </div>
         )}
