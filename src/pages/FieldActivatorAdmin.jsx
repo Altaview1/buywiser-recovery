@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
-import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload, ShieldAlert } from "lucide-react";
+import { Users, DollarSign, TrendingUp, CheckCircle, RefreshCw, Plus, X, Save, FileSpreadsheet, BarChart2, Phone, Upload, ShieldAlert, AlertCircle } from "lucide-react";
 import BulkProspectUpload from "@/components/activator/BulkProspectUpload";
 import ActivatorLeadsTable from "@/components/ActivatorLeadsTable";
 import ActivatorLeadsMap from "@/components/ActivatorLeadsMap";
@@ -331,6 +331,7 @@ function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }
 
 export default function FieldActivatorAdmin() {
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
   const [activators, setActivators] = useState([]);
   const [leads, setLeads] = useState([]);
   const [payments, setPayments] = useState([]);
@@ -343,9 +344,21 @@ export default function FieldActivatorAdmin() {
   useEffect(() => {
     const init = async () => {
       try {
+        const user = await base44.auth.me();
+        if (!user) {
+          setAuthError("Not authenticated");
+          setLoading(false);
+          return;
+        }
+        if (user.role !== "admin") {
+          setAuthError("Admin access required");
+          setLoading(false);
+          return;
+        }
         await fetchAll();
       } catch (err) {
         console.error("Error loading data:", err);
+        setAuthError(err.message || "Auth error");
       }
       setLoading(false);
     };
@@ -402,6 +415,19 @@ export default function FieldActivatorAdmin() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="bg-white border-2 border-red-300 rounded-2xl p-8 max-w-sm w-full text-center">
+          <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-3" />
+          <p className="text-lg font-bold text-red-700 mb-2">Access Denied</p>
+          <p className="text-sm text-red-600 mb-4">{authError}</p>
+          <a href="/" className="text-sm font-semibold text-blue-600 hover:text-blue-800">← Return Home</a>
+        </div>
       </div>
     );
   }
