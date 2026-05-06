@@ -43,6 +43,7 @@ import ManagementDashboard from './pages/ManagementDashboard';
 import ResourceHub from './pages/ResourceHub';
 import FieldRepDashboard from './pages/FieldRepDashboard';
 import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
+import QRScanDashboard from './pages/QRScanDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -105,6 +106,7 @@ const AuthenticatedApp = () => {
       {/* Field Rep Portal */}
       <Route path="/field-rep-dashboard" element={<FieldRepDashboard />} />
       <Route path="/fa-onboarding" element={<FieldActivatorOnboarding />} />
+      <Route path="/qr-scans" element={<QRScanDashboard />} />
 
       {/* Redirects for old/alternate URLs */}
       <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
