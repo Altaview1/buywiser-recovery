@@ -254,15 +254,22 @@ function LeadRow({ lead, onUpdate }) {
 
   const handleSave = async () => {
     setSaving(true);
-    await base44.entities.Lead.update(lead.id, {
-      status,
-      close_reason: status === "Closed" ? closeReason : "",
-      agent_comment: agentComment,
-      internal_notes: notes,
-    });
-    setSaving(false);
-    setEditing(false);
-    onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", agent_comment: agentComment, internal_notes: notes });
+    try {
+      const updated = await base44.entities.Lead.update(lead.id, {
+        status,
+        close_reason: status === "Closed" ? closeReason : "",
+        agent_comment: agentComment,
+        internal_notes: notes,
+      });
+      // Update parent with confirmed DB data
+      onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", agent_comment: agentComment, internal_notes: notes });
+      setEditing(false);
+    } catch (err) {
+      console.error("Save failed:", err);
+      alert("Failed to save: " + err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
