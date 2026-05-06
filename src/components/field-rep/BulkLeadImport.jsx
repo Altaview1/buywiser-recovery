@@ -162,8 +162,14 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
         }
 
         // Skip footer/empty rows
+        const rowRaw = lines[i];
+        const allEmpty = Object.values(row).every(v => !v || !v.trim());
+        if (allEmpty) {
+          log.push({ rowNum, status: "skipped", reason: "Completely empty row", preview: "" });
+          continue;
+        }
         if (!lead.property_address && !lead.first_name) {
-          log.push({ rowNum, status: "skipped", reason: "Empty row — no address or name", preview: lines[i].slice(0, 60) });
+          log.push({ rowNum, status: "skipped", reason: `No address or name found — check your column mapping. Row data: ${rowRaw.slice(0, 80)}`, preview: rowRaw.slice(0, 60) });
           continue;
         }
         if ((lead.property_address || "").toLowerCase().includes("propertyradar")) {
@@ -196,7 +202,8 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
       setRowLog(log);
 
       if (leads.length === 0) {
-        setResult({ success: false, error: "No valid rows found after applying your mapping." });
+        const skipReasons = [...new Set(log.filter(r => r.status === "skipped").map(r => r.reason))];
+        setResult({ success: false, error: `No valid rows imported. ${log.length} rows were all skipped. Common reason: ${skipReasons[0] || "check your column mapping above."}` });
         setUploading(false);
         return;
       }
@@ -235,8 +242,13 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
   // ── STEP: Map columns ─────────────────────────────────────────
   if (step === "map") {
     const mappedSystemFields = Object.values(mapping).filter(v => v && v !== "__skip__");
-    const hasAddress = mappedSystemFields.includes("property_address") || mappedSystemFields.includes("__owner__");
-    const missingRequired = SYSTEM_FIELDS.filter(f => f.required && !mappedSystemFields.includes(f.key));
+    // __owner__ satisfies first_name requirement
+    const hasName = mappedSystemFields.includes("first_name") || mappedSystemFields.includes("__owner__");
+    const hasAddress = mappedSystemFields.includes("property_address");
+    const missingRequired = [
+      ...(!hasName ? [{ label: "First Name (or Owner)" }] : []),
+      ...(!hasAddress ? [{ label: "Property Address" }] : []),
+    ];
 
     return (
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
