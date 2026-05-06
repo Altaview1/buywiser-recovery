@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { ChevronUp, ChevronDown, MapPin, TrendingUp, Eye } from "lucide-react";
 
@@ -57,11 +57,16 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, loading }) {
     setLocalOverrides(prev => ({ ...prev, [leadId]: newStatus }));
     try {
       await base44.entities.ActivatorLead.update(leadId, { status: newStatus });
+      // Keep the override for 500ms to prevent UI flicker
+      setTimeout(() => {
+        setLocalOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
+        setUpdatingId(null);
+      }, 500);
     } catch (err) {
       console.error("Failed to update status:", err);
       setLocalOverrides(prev => { const n = { ...prev }; delete n[leadId]; return n; });
+      setUpdatingId(null);
     }
-    setUpdatingId(null);
   };
 
   // Check if any lead has non-empty values for a field
