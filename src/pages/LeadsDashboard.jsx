@@ -218,10 +218,12 @@ function LeadRow({ lead, onUpdate }) {
   const [agents, setAgents] = useState([]);
   const [reassignAgent, setReassignAgent] = useState("");
   const [reassigning, setReassigning] = useState(false);
-  const [status, setStatus] = useState(lead.status || "New");
-  const [closeReason, setCloseReason] = useState(lead.close_reason || "");
-  const [agentComment, setAgentComment] = useState(lead.agent_comment || "");
-  const [notes, setNotes] = useState(lead.internal_notes || "");
+  const [formData, setFormData] = useState({
+    status: lead.status || "New",
+    close_reason: lead.close_reason || "",
+    agent_comment: lead.agent_comment || "",
+    internal_notes: lead.internal_notes || "",
+  });
   const [saving, setSaving] = useState(false);
   const [savingNotes, setSavingNotes] = useState(false);
   const [notesEditId, setNotesEditId] = useState(null);
@@ -255,14 +257,14 @@ function LeadRow({ lead, onUpdate }) {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const updated = await base44.entities.Lead.update(lead.id, {
-        status,
-        close_reason: status === "Closed" ? closeReason : "",
-        agent_comment: agentComment,
-        internal_notes: notes,
-      });
-      // Update parent with confirmed DB data
-      onUpdate({ ...lead, status, close_reason: status === "Closed" ? closeReason : "", agent_comment: agentComment, internal_notes: notes });
+      const updateData = {
+        status: formData.status,
+        close_reason: formData.status === "Closed" ? formData.close_reason : "",
+        agent_comment: formData.agent_comment,
+        internal_notes: formData.internal_notes,
+      };
+      await base44.entities.Lead.update(lead.id, updateData);
+      onUpdate({ ...lead, ...updateData });
       setEditing(false);
     } catch (err) {
       console.error("Save failed:", err);
@@ -273,10 +275,12 @@ function LeadRow({ lead, onUpdate }) {
   };
 
   const handleCancel = () => {
-    setStatus(lead.status || "New");
-    setCloseReason(lead.close_reason || "");
-    setAgentComment(lead.agent_comment || "");
-    setNotes(lead.internal_notes || "");
+    setFormData({
+      status: lead.status || "New",
+      close_reason: lead.close_reason || "",
+      agent_comment: lead.agent_comment || "",
+      internal_notes: lead.internal_notes || "",
+    });
     setEditing(false);
   };
 
@@ -418,9 +422,9 @@ function LeadRow({ lead, onUpdate }) {
               {Object.keys(STATUS_CONFIG).map((s) => (
                 <button
                   key={s}
-                  onClick={() => setStatus(s)}
+                  onClick={() => setFormData(prev => ({ ...prev, status: s }))}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
-                    status === s ? STATUS_CONFIG[s].color + " ring-2 ring-offset-1 ring-blue-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
+                    formData.status === s ? STATUS_CONFIG[s].color + " ring-2 ring-offset-1 ring-blue-400" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   {s}
@@ -428,7 +432,7 @@ function LeadRow({ lead, onUpdate }) {
               ))}
             </div>
           </div>
-          {status === "Closed" && (
+          {formData.status === "Closed" && (
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Close Reason *</label>
               <div className="flex flex-wrap gap-2">
@@ -436,9 +440,9 @@ function LeadRow({ lead, onUpdate }) {
                   <button
                     key={r}
                     type="button"
-                    onClick={() => setCloseReason(r)}
+                    onClick={() => setFormData(prev => ({ ...prev, close_reason: r }))}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition ${
-                      closeReason === r
+                      formData.close_reason === r
                         ? "bg-slate-800 text-white border-slate-800 ring-2 ring-offset-1 ring-blue-400"
                         : "bg-white border-slate-200 text-slate-600 hover:bg-slate-100"
                     }`}
@@ -453,8 +457,8 @@ function LeadRow({ lead, onUpdate }) {
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Agent Comment <span className="font-normal normal-case text-slate-400">(brief context for this update)</span></label>
             <input
               type="text"
-              value={agentComment}
-              onChange={(e) => setAgentComment(e.target.value)}
+              value={formData.agent_comment}
+              onChange={(e) => setFormData(prev => ({ ...prev, agent_comment: e.target.value }))}
               placeholder="e.g. Left voicemail, called back tomorrow, very interested…"
               className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white"
             />
@@ -463,8 +467,8 @@ function LeadRow({ lead, onUpdate }) {
             <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Internal Notes</label>
             <textarea
               rows={3}
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
+              value={formData.internal_notes}
+              onChange={(e) => setFormData(prev => ({ ...prev, internal_notes: e.target.value }))}
               placeholder="Add notes about this lead's transition progress…"
               className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:border-blue-500 bg-white resize-none"
             />
