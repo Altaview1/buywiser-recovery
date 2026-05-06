@@ -36,7 +36,7 @@ import PartnerLeadsDashboard from './pages/PartnerLeadsDashboard';
 import AdminSettings from './pages/AdminSettings';
 import VTONScan from './pages/VTONScan';
 import FieldActivatorDashboard from './pages/FieldActivatorDashboard';
-import FieldActivatorAdmin from './pages/FieldActivatorAdmin';
+import AdminDashboard from './pages/AdminDashboard';
 import FieldActivatorPortal from './pages/FieldActivatorPortal';
 import SalesCoachChat from './pages/SalesCoachChat';
 import ManagementDashboard from './pages/ManagementDashboard';
@@ -125,7 +125,7 @@ function App() {
           {/* Public partner portals — no auth required */}
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
-          <Route path="/activator-admin" element={<FieldActivatorAdmin />} />
+          <Route path="/activator-admin" element={<AdminDashboard />} />
           <Route path="/admin-settings" element={<AdminSettings />} />
           
           {/* All other routes wrapped in auth */}
