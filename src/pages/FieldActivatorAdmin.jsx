@@ -382,8 +382,15 @@ export default function FieldActivatorAdmin() {
 
   const handleToggleTier = async (activator) => {
     const newTier = activator.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
-    await base44.entities.FieldActivator.update(activator.id, { activator_tier: newTier });
+    // Update local state immediately for instant UI feedback
     setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: newTier } : a));
+    try {
+      await base44.entities.FieldActivator.update(activator.id, { activator_tier: newTier });
+    } catch (err) {
+      console.error("Failed to update tier:", err);
+      // Revert on error
+      setActivators(prev => prev.map(a => a.id === activator.id ? { ...a, activator_tier: activator.activator_tier } : a));
+    }
   };
 
   if (loading) {
