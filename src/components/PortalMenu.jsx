@@ -28,7 +28,8 @@ export default function PortalMenu() {
     base44.auth.logout('/');
   };
 
-  if (!user || !userType) return null;
+  // PortalMenu is now integrated into Layout and BuywiserHome hamburger menus
+  return null;
 
   const adminMenuItems = [
     { label: 'Admin Dashboard', icon: LayoutDashboard, path: '/activator-admin' },

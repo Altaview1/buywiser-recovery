@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Search, FileText, DollarSign, Users, Briefcase } from "lucide-react";
+import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Search, FileText, DollarSign, Users, Briefcase, Menu, X, Phone } from "lucide-react";
 import LeadCaptureForm from "../components/LeadCaptureForm";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
@@ -256,13 +256,17 @@ function LandingView() {
   const [code, setCode] = useState("");
   const [oppAddress, setOppAddress] = useState(null);
   const [vaLoanConfirmed, setVaLoanConfirmed] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [authUser, setAuthUser] = useState(null);
   const ctaRef = useRef(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setAuthUser).catch(() => setAuthUser(null));
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("code")) setCode(params.get("code").toUpperCase());
-
-    // If an opp ID is in the URL, fetch the property address for the personalized subheader
     const oppId = params.get("opp");
     if (oppId) {
       base44.entities.VTONOpportunity.filter({ id: oppId }).then(results => {
@@ -292,15 +296,79 @@ function LandingView() {
     <div className="min-h-screen flex flex-col bg-white">
 
       {/* ── Nav ── */}
-      <header className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
-        <img
-          src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
-          alt="BuyWiser"
-          className="h-8 w-auto opacity-80"
-        />
-        <a href="tel:+18183002642" className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition hidden sm:block">
-          (818) 300-2642
-        </a>
+      <header className="px-4 sm:px-6 py-4 border-b border-slate-100 bg-white sticky top-0 z-50">
+        <div className="flex items-center justify-between">
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
+          <div className="flex items-center gap-3">
+            <a href="tel:+18183002642" className="flex items-center gap-1 text-sm font-semibold text-blue-700">
+              <Phone className="h-4 w-4" /><span className="hidden sm:inline">(818) 300-2642</span><span className="sm:hidden">Call</span>
+            </a>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-700 rounded-md border border-slate-200">
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+        {menuOpen && (
+          <div className="mt-3 border-t border-slate-100 pt-3 space-y-0.5 max-h-[75vh] overflow-y-auto">
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 pb-1">Main</p>
+            {[
+              { label: 'Home', path: '/' },
+              { label: 'About', path: '/About' },
+              { label: 'Calculators', path: '/Calculators' },
+              { label: 'Reviews', path: '/Reviews' },
+              { label: 'Contact / Refinance Review', path: '/Contact' },
+              { label: 'FAQ', path: '/FAQ' },
+              { label: 'Mortgage FAQ', path: '/MortgageFAQ' },
+            ].map(l => (
+              <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
+            ))}
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 pt-3 pb-1">Mortgage Programs</p>
+            {[
+              { label: 'Cash-Out Refinance', path: '/CashOut' },
+              { label: 'FHA Streamline', path: '/FHAStreamline' },
+              { label: 'VA Streamline', path: '/VAStreamline' },
+              { label: 'Home Purchase', path: '/Purchase' },
+              { label: 'Apply Now', path: '/Apply' },
+            ].map(l => (
+              <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
+            ))}
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 pt-3 pb-1">VTON & Portals</p>
+            {[
+              { label: '🎖️ Veteran Benefit Scan', path: '/vton-scan' },
+              { label: '🤝 VTON Partner Apply', path: '/vton' },
+              { label: '🤝 Partner Sign In', path: '/partner' },
+              { label: '📍 Field Activator Portal', path: '/field-activator' },
+              { label: '🎯 Veteran Benefit Page', path: '/b' },
+            ].map(l => (
+              <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
+            ))}
+            {authUser?.role === 'admin' && (
+              <>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 pt-3 pb-1">Admin</p>
+                {[
+                  { label: '⚙️ Admin Dashboard', path: '/activator-admin' },
+                  { label: '📲 QR Scan Dashboard', path: '/qr-scans' },
+                  { label: '🗂 Management', path: '/management-dashboard' },
+                  { label: '👥 Field Rep Dashboard', path: '/field-rep-dashboard' },
+                  { label: '⚙️ Admin Settings', path: '/admin-settings' },
+                ].map(l => (
+                  <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
+                ))}
+              </>
+            )}
+            {authUser && (
+              <button onClick={() => { base44.auth.logout('/'); setMenuOpen(false); }}
+                className="w-full text-left px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg mt-1">
+                Sign Out
+              </button>
+            )}
+            <div className="pt-2">
+              <a href="/Contact" className="block px-3 py-3 text-sm font-semibold text-white bg-blue-800 hover:bg-blue-900 rounded-lg text-center" onClick={() => setMenuOpen(false)}>
+                Request My Review
+              </a>
+            </div>
+          </div>
+        )}
       </header>
 
       <RWBStripe />

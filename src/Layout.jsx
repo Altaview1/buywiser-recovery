@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import StickyBanner from './components/StickyBanner';
 import { createPageUrl } from './utils';
-import { Phone, Menu, X, Home, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { Phone, Menu, X, ArrowRight, LayoutDashboard, Users, MapPin, QrCode, DollarSign, UserCheck, ClipboardList } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import ChatWidget from './components/ChatWidget';
-import PortalMenu from './components/PortalMenu';
+import { base44 } from '@/api/base44Client';
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -28,10 +28,29 @@ const footerLinks = [
 
 export default function Layout({ children, currentPageName }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const adminLinks = [
+    { label: 'Admin Dashboard', icon: LayoutDashboard, path: '/activator-admin' },
+    { label: 'Admin Settings', icon: ClipboardList, path: '/admin-settings' },
+    { label: 'Field Operations', icon: MapPin, path: '/field-rep-dashboard' },
+    { label: 'QR Scan Dashboard', icon: QrCode, path: '/qr-scans' },
+    { label: 'Management', icon: Users, path: '/management-dashboard' },
+  ];
+
+  const partnerLinks = [
+    { label: 'My Opportunities', icon: LayoutDashboard, path: '/partner' },
+    { label: 'My Leads', icon: Users, path: '/prospects' },
+  ];
+
+  const portalLinks = user?.role === 'admin' ? adminLinks : user ? partnerLinks : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-white pb-16 lg:pb-0">
-      <PortalMenu />
       <StickyBanner />
 
       {/* Header */}
@@ -76,13 +95,53 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         {mobileOpen && (
-          <div className="xl:hidden border-t border-gray-100 bg-white">
+          <div className="xl:hidden border-t border-gray-100 bg-white max-h-[80vh] overflow-y-auto">
             <div className="px-4 py-3 space-y-0.5">
+              {/* Main nav links */}
               {navLinks.map((link) => (
                 <Link key={link.label} to={link.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>
                   {link.label}
                 </Link>
               ))}
+
+              {/* Portal links for logged-in users */}
+              {portalLinks.length > 0 && (
+                <>
+                  <div className="pt-2 pb-1 px-3">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">{user?.role === 'admin' ? 'Admin Portals' : 'Partner Portal'}</p>
+                  </div>
+                  {portalLinks.map((link) => {
+                    const Icon = link.icon;
+                    return (
+                      <a key={link.path} href={link.path} className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-lg" onClick={() => setMobileOpen(false)}>
+                        <Icon className="h-4 w-4" /> {link.label}
+                      </a>
+                    );
+                  })}
+                </>
+              )}
+
+              {/* Public portals always visible */}
+              <div className="pt-2 pb-1 px-3">
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Portals</p>
+              </div>
+              <a href="/vton-scan" className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>
+                🎖️ Veteran Benefit Scan
+              </a>
+              <a href="/partner" className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>
+                🤝 Partner Sign In
+              </a>
+              <a href="/field-activator" className="flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-gray-50 rounded-lg" onClick={() => setMobileOpen(false)}>
+                📍 Field Activator Portal
+              </a>
+
+              {user && (
+                <button onClick={() => { base44.auth.logout('/'); setMobileOpen(false); }}
+                  className="w-full text-left px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg mt-1">
+                  Sign Out
+                </button>
+              )}
+
               <div className="pt-2">
                 <Link to={createPageUrl('Contact')} className="block px-3 py-3 text-sm font-semibold text-white bg-blue-800 hover:bg-blue-900 rounded-lg text-center" onClick={() => setMobileOpen(false)}>
                   Request My Review
