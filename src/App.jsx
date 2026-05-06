@@ -124,17 +124,19 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <FlagWatermark />
-        <Routes>
-          {/* Public partner portals — no auth required */}
-          <Route path="/portals" element={<PortalHub />} />
-          <Route path="/prospects" element={<ProspectsDashboard />} />
-          <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
-          <Route path="/activator-admin" element={<AdminDashboard />} />
-          <Route path="/admin-settings" element={<AdminSettings />} />
-          
-          {/* All other routes wrapped in auth — must be last */}
-          <Route element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public partner portals — no auth required */}
+            <Route path="/portals" element={<PortalHub />} />
+            <Route path="/prospects" element={<ProspectsDashboard />} />
+            <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
+            <Route path="/activator-admin" element={<AdminDashboard />} />
+            <Route path="/admin-settings" element={<AdminSettings />} />
+            
+            {/* All other routes */}
+            <Route path="*" element={<AuthenticatedApp />} />
+          </Routes>
+        </AuthProvider>
         <Toaster />
       </Router>
     </QueryClientProvider>
