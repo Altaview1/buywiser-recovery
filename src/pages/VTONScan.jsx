@@ -29,6 +29,7 @@ export default function VTONScan() {
     planning_to_buy: "",
     timeline: "",
     next_home_type: "",
+    agent_commitment: "",
   });
   const [charity, setCharity] = useState("");
   const [saving, setSaving] = useState(false);
@@ -89,9 +90,26 @@ export default function VTONScan() {
     setSaving(false);
   };
 
+  const computeLeadType = (q) => {
+    if (q.planning_to_buy === "not_sure") return "UNDECIDED";
+    if (q.planning_to_buy === "yes") {
+      if (
+        (q.timeline === "0-3months" || q.timeline === "3-6months") &&
+        q.agent_commitment === "yes"
+      ) return "MORTGAGE";
+      if (q.agent_commitment === "no" || q.agent_commitment === "not_yet") return "FULL_STACK";
+    }
+    return "UNDECIDED";
+  };
+
   const handleQualifierNext = async () => {
+    const lead_type = computeLeadType(qualifier);
     if (leadId) {
-      await base44.entities.ActivatorLead.update(leadId, { ...qualifier, status: "QUALIFIED" });
+      await base44.entities.ActivatorLead.update(leadId, {
+        ...qualifier,
+        lead_type,
+        status: "QUALIFIED",
+      });
     }
     setStep(4);
   };
@@ -289,6 +307,22 @@ export default function VTONScan() {
                 <button key={v} onClick={() => setQualifier(q => ({ ...q, next_home_type: v }))}
                   className={`w-full py-3 px-4 rounded-xl text-sm font-semibold border-2 text-left transition ${
                     qualifier.next_home_type === v
+                      ? "border-blue-600 bg-blue-50 text-blue-800"
+                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}>
+                  {l}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm font-bold text-slate-700 mb-3">Do you already have a real estate agent you're committed to?</p>
+            <div className="space-y-2">
+              {[["yes","Yes, I have an agent"], ["no","No, I don't have one"], ["not_yet","Not yet decided"]].map(([v,l]) => (
+                <button key={v} onClick={() => setQualifier(q => ({ ...q, agent_commitment: v }))}
+                  className={`w-full py-3 px-4 rounded-xl text-sm font-semibold border-2 text-left transition ${
+                    qualifier.agent_commitment === v
                       ? "border-blue-600 bg-blue-50 text-blue-800"
                       : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                   }`}>

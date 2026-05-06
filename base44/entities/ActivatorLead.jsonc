@@ -82,6 +82,24 @@
         "not_sure"
       ]
     },
+    "agent_commitment": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "not_yet"
+      ],
+      "description": "Whether homeowner already has an agent commitment"
+    },
+    "lead_type": {
+      "type": "string",
+      "enum": [
+        "MORTGAGE",
+        "FULL_STACK",
+        "UNDECIDED"
+      ],
+      "description": "Classified lead routing type based on qualifier answers"
+    },
     "charity_selected": {
       "type": "string"
     },
