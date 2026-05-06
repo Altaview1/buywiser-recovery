@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { ChevronUp, ChevronDown, MapPin, TrendingUp, Eye, Edit2 } from "lucide-react";
+import { ChevronUp, ChevronDown, MapPin, Eye } from "lucide-react";
 import StatusEditor from "./StatusEditor";
 
 const STATUS_COLORS = {
@@ -54,9 +54,6 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
     }
   };
 
-
-
-  // Check if any lead has non-empty values for a field
   const hasDataForField = (fieldKey) => leads.some(l => l[fieldKey] && l[fieldKey] > 0);
 
   const SortHeader = ({ col, label }) => (
@@ -195,50 +192,50 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                             ✎ Change Status
                           </button>
                        </td>
-                      {hasDataForField("estimated_price") && (
-                        <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
-                          {lead.estimated_price ? `$${(lead.estimated_price/1000).toFixed(0)}K` : ''}
-                        </td>
-                      )}
-                      {hasDataForField("estimated_equity") && (
-                        <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
-                          {lead.estimated_equity ? `$${(lead.estimated_equity/1000).toFixed(0)}K` : ''}
-                        </td>
-                      )}
-                      {hasDataForField("distress_score") && (
-                        <td className="px-4 py-3 text-center">
-                          {lead.distress_score != null && lead.distress_score > 0 ? (
-                            <span className={`inline-flex px-2 py-1 rounded text-xs font-bold ${lead.distress_score > 50 ? "bg-red-100 text-red-700" : lead.distress_score > 30 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
-                              {lead.distress_score}
-                            </span>
-                          ) : ''}
-                        </td>
-                      )}
-                      {hasDataForField("listing_dom") && (
-                        <td className="px-4 py-3 text-center">
-                          {lead.listing_dom != null && lead.listing_dom > 0 ? (
-                            <span className="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
-                              {lead.listing_dom}
-                            </span>
-                          ) : ''}
-                        </td>
-                      )}
-                      <td className="px-4 py-3 text-sm text-slate-700">
-                        {lead.rep_code ? (
-                          <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-xs">{lead.rep_code}</span>
-                        ) : ''}
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <button
-                          onClick={() => onSelectLead(lead)}
-                          className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
-                          title="View details"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
+                       {hasDataForField("estimated_price") && (
+                         <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                           {lead.estimated_price ? `$${(lead.estimated_price/1000).toFixed(0)}K` : ''}
+                         </td>
+                       )}
+                       {hasDataForField("estimated_equity") && (
+                         <td className="px-4 py-3 text-right text-sm font-semibold text-slate-900">
+                           {lead.estimated_equity ? `$${(lead.estimated_equity/1000).toFixed(0)}K` : ''}
+                         </td>
+                       )}
+                       {hasDataForField("distress_score") && (
+                         <td className="px-4 py-3 text-center">
+                           {lead.distress_score != null && lead.distress_score > 0 ? (
+                             <span className={`inline-flex px-2 py-1 rounded text-xs font-bold ${lead.distress_score > 50 ? "bg-red-100 text-red-700" : lead.distress_score > 30 ? "bg-orange-100 text-orange-700" : "bg-slate-100 text-slate-600"}`}>
+                               {lead.distress_score}
+                             </span>
+                           ) : ''}
+                         </td>
+                       )}
+                       {hasDataForField("listing_dom") && (
+                         <td className="px-4 py-3 text-center">
+                           {lead.listing_dom != null && lead.listing_dom > 0 ? (
+                             <span className="inline-flex px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
+                               {lead.listing_dom}
+                             </span>
+                           ) : ''}
+                         </td>
+                       )}
+                       <td className="px-4 py-3 text-sm text-slate-700">
+                         {lead.rep_code ? (
+                           <span className="font-mono bg-slate-100 px-2 py-0.5 rounded text-xs">{lead.rep_code}</span>
+                         ) : ''}
+                       </td>
+                       <td className="px-4 py-3 text-center">
+                         <button
+                           onClick={() => onSelectLead(lead)}
+                           className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition"
+                           title="View details"
+                         >
+                           <Eye className="h-4 w-4" />
+                         </button>
+                       </td>
+                     </tr>
+                   );
                 })
               )}
             </tbody>
