@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle, Loader2 } from "lucide-react";
+import { Upload, X, CheckCircle, AlertCircle, FileSpreadsheet, Download, XCircle, Loader2, BookmarkCheck, Bookmark } from "lucide-react";
+
+const TEMPLATE_KEY = "bulkUpload_savedTemplate";
 
 const NAVY = "#0B1F3B";
 
@@ -249,6 +251,37 @@ function ImportStatusReport({ rowResults, onClose }) {
   );
 }
 
+function TemplateSaveBar({ savedTemplate, detectedFormat, templateJustSaved, onSave, onClear }) {
+  const hasMatchingTemplate = savedTemplate?.format === detectedFormat;
+
+  if (templateJustSaved) {
+    return (
+      <div className="flex items-center gap-1.5 text-xs text-green-700 font-semibold">
+        <BookmarkCheck className="h-3.5 w-3.5" /> Template saved — will auto-apply next upload
+      </div>
+    );
+  }
+
+  if (hasMatchingTemplate) {
+    return (
+      <div className="flex items-center gap-2 text-xs text-blue-700">
+        <BookmarkCheck className="h-3.5 w-3.5" />
+        <span className="font-semibold">Template auto-applied</span>
+        <button onClick={onClear} className="ml-auto text-slate-400 hover:text-red-500 underline transition">
+          Clear template
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button onClick={onSave}
+      className="flex items-center gap-1.5 text-xs text-slate-500 hover:text-blue-700 transition font-semibold">
+      <Bookmark className="h-3.5 w-3.5" /> Save as template for next time
+    </button>
+  );
+}
+
 export default function BulkProspectUpload({ activators, onImported, onClose }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState([]);
@@ -260,7 +293,45 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
   const [importProgress, setImportProgress] = useState(0);
   const [rowResults, setRowResults] = useState(null);
   const [detectedFormat, setDetectedFormat] = useState(null);
+  const [savedTemplate, setSavedTemplate] = useState(null);
+  const [templateJustSaved, setTemplateJustSaved] = useState(false);
   const fileRef = useRef();
+
+  // Load saved template on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(TEMPLATE_KEY);
+      if (raw) setSavedTemplate(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  // Auto-apply template when format is detected
+  useEffect(() => {
+    if (!detectedFormat || !savedTemplate) return;
+    if (savedTemplate.format === detectedFormat) {
+      if (savedTemplate.format === "propertyradar" && savedTemplate.activatorId) {
+        setSelectedActivatorForPropertyRadar(savedTemplate.activatorId);
+      } else if (savedTemplate.format === "activator" && savedTemplate.activatorId) {
+        setSelectedActivator(savedTemplate.activatorId);
+      }
+    }
+  }, [detectedFormat, savedTemplate]);
+
+  const saveTemplate = () => {
+    const template = {
+      format: detectedFormat,
+      activatorId: detectedFormat === "propertyradar" ? selectedActivatorForPropertyRadar : selectedActivator,
+    };
+    localStorage.setItem(TEMPLATE_KEY, JSON.stringify(template));
+    setSavedTemplate(template);
+    setTemplateJustSaved(true);
+    setTimeout(() => setTemplateJustSaved(false), 2500);
+  };
+
+  const clearTemplate = () => {
+    localStorage.removeItem(TEMPLATE_KEY);
+    setSavedTemplate(null);
+  };
 
   const handleFile = (e) => {
     const f = e.target.files?.[0];
@@ -446,8 +517,8 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
 
               {/* Field Activator assignment for PropertyRadar */}
               {detectedFormat === "propertyradar" && (
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
                     Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
                   </label>
                   <select
@@ -460,13 +531,20 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                       <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
                     ))}
                   </select>
+                  <TemplateSaveBar
+                    savedTemplate={savedTemplate}
+                    detectedFormat={detectedFormat}
+                    templateJustSaved={templateJustSaved}
+                    onSave={saveTemplate}
+                    onClear={clearTemplate}
+                  />
                 </div>
               )}
 
               {/* Activator assignment */}
               {detectedFormat === "activator" && (
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">
                     Assign to Field Activator <span className="text-slate-400 font-normal normal-case">(optional)</span>
                   </label>
                   <select
@@ -479,6 +557,13 @@ export default function BulkProspectUpload({ activators, onImported, onClose }) 
                       <option key={a.id} value={a.id}>{a.name} — {a.rep_code}</option>
                     ))}
                   </select>
+                  <TemplateSaveBar
+                    savedTemplate={savedTemplate}
+                    detectedFormat={detectedFormat}
+                    templateJustSaved={templateJustSaved}
+                    onSave={saveTemplate}
+                    onClear={clearTemplate}
+                  />
                 </div>
               )}
 
