@@ -82,7 +82,7 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
           if (onStatusChanged) onStatusChanged();
         }}
       />
-    <div className="space-y-4">
+      <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3">
         <input
