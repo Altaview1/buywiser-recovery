@@ -1,131 +1,131 @@
 # Entity Branching Logic - Buywiser VTON System
 
-## Entity 1: ActivatorLead
-**Origin:** QR scan by field rep at property  
-**Key Decision Points:** Status progression through door-knock protocol
-
-```
-SCANNED (initial)
-  ├─ VERIFIED
-  │   ├─ QUALIFIED
-  │   │   ├─ SCHEDULED
-  │   │   │   ├─ COMPLETED
-  │   │   │   │   └─ CLOSED (outcome: converted/not_interested/no_answer)
-  │   │   │   └─ NO_SHOW
-  │   │   │       └─ CLOSED (outcome: callback_scheduled)
-  │   │   └─ CLOSED (outcome: not_interested)
-  │   └─ CLOSED (outcome: no_answer after visits)
-  └─ CLOSED (never verified)
-```
-
-**Associated Trigger:** Creates `ActivatorPayment` VERIFIED_DOOR_ATTEMPT record ($15)
+Three parallel user workflows: **Field Activator** (door-knocks), **Homeowner/Admin** (VTON partner opportunity), and **Admin** (payment oversight).
 
 ---
 
-## Entity 2: VTONOpportunity
-**Origin:** Office creates from VA-financed homeowner data  
-**Key Decision Points:** 48-hour decision window + protocol execution
+## USER FLOW 1: FIELD ACTIVATOR (ActivatorLead)
+
+**User:** Field rep knocks on doors  
+**Entity:** ActivatorLead  
+**Origin:** QR scan at property address
 
 ```
-ASSIGNED
-  ├─ [48-hour window]
-  │   ├─ ACCEPTED
-  │   │   ├─ CONTACTED
-  │   │   │   ├─ IN_PROGRESS
-  │   │   │   │   ├─ CONVERSATION_VERIFIED
-  │   │   │   │   │   ├─ CONSULTATION_SCHEDULED
-  │   │   │   │   │   │   ├─ CLOSED_WON
-  │   │   │   │   │   │   └─ CLOSED_LOST
-  │   │   │   │   │   └─ CLOSED_LOST
-  │   │   │   │   └─ CLOSED_LOST
-  │   │   │   └─ CLOSED_LOST
-  │   │   └─ CLOSED_LOST (no contact)
-  │   │
-  │   └─ FORFEITED
-  │       └─ NEEDS_REASSIGNMENT = true
-  │           └─ [Office reassigns to new partner]
+SCANNED (initial QR capture)
+  └─ knock_attempt_confirmed = true
+     └─ visit_duration_seconds logged
+        └─ Creates: ActivatorPayment (VERIFIED_DOOR_ATTEMPT, $15)
+           ├─ Payment Status → PENDING (if visit ≥ 45s)
+           │                → PENDING_AUDIT (if visit < 45s)
+           │
+           └─ Lead Status Flow:
+              ├─ VERIFIED (conversation occurred)
+              │  ├─ QUALIFIED (prospect interested)
+              │  │  ├─ SCHEDULED (appointment set)
+              │  │  │  ├─ COMPLETED
+              │  │  │  │  └─ CLOSED (outcome: converted/not_interested/callback_scheduled)
+              │  │  │  └─ NO_SHOW
+              │  │  │     └─ CLOSED
+              │  │  └─ CLOSED (not interested)
+              │  └─ CLOSED (no follow-up)
+              │
+              └─ CLOSED (no answer, no verification)
+```
+
+**FA Reward:** Payment approval (admin) → $15 disbursed
+
+---
+
+## USER FLOW 2: VTON PARTNER (VTONOpportunity)
+
+**User:** Real estate partner/agent  
+**Entity:** VTONOpportunity  
+**Origin:** Admin assigns from VA-financed seller list
+
+```
+ASSIGNED (in 48-hour decision window)
   │
-  └─ [After 48 hours, no action]
-      └─ AUTO-FORFEITED
-          └─ NEEDS_REASSIGNMENT = true
-```
-
-**Associated Triggers:**
-- QR scan from packet → ActivatorPayment $200 earn-back credit
-- Conversation verified → ActivatorPayment $200 earn-back credit
-- Closed Won → Partner deposit refund ($2,000 max across all)
-
----
-
-## Entity 3: ActivatorPayment
-**Origin:** Triggered by ActivatorLead or ActivatorPayment events  
-**Key Decision Points:** Payment approval & audit flags
-
-```
-PENDING
-  ├─ [Visit Duration Check: < 45 seconds?]
-  │   ├─ YES → PENDING_AUDIT
-  │   │   ├─ [Admin reviews visit pattern]
-  │   │   │   ├─ APPROVED (after manual override)
-  │   │   │   │   └─ [Can mark PAID]
-  │   │   │   └─ REJECTED (suspicious pattern detected)
-  │   │   │       └─ [Payment blocked, add rejection_reason]
-  │   │   └─ [Time expires] → EXPIRED
-  │   │
-  │   └─ NO → APPROVED
-  │       └─ [Admin action: Mark as PAID]
-  │           └─ PAID
-  │               └─ [Funds disbursed]
+  ├─ FORFEITED (partner declines within 48h)
+  │  ├─ needs_reassignment = true
+  │  ├─ forfeited_from_partner = email logged
+  │  └─ [Office reassigns to different partner → fresh 48h window]
   │
-  └─ REJECTED
-      └─ [rejection_reason logged]
-          └─ [Reapply or appeal]
+  └─ [After 48h, no action] → AUTO-FORFEITED
+     ├─ needs_reassignment = true
+     └─ [Office reassignment triggered]
 ```
 
-**Audit Rules:**
-- Visit < 45 seconds = PENDING_AUDIT
-- No-answer rate > 90% + 10+ visits = Suspicious
-- Scan rate < 5% on 50+ visits = Suspicious
+**OR**
+
+```
+ACCEPTED (within 48-hour window)
+  └─ CONTACTED (partner reaches out)
+     └─ IN_PROGRESS (active pursuit)
+        ├─ CONVERSATION_VERIFIED
+        │  ├─ Increments: PartnerApplication.verified_conversations ++
+        │  └─ CONSULTATION_SCHEDULED
+        │     ├─ CLOSED_WON (deal completed)
+        │     └─ CLOSED_LOST (deal fell through)
+        │
+        └─ CLOSED_LOST (no verification)
+```
+
+**Partner Accountability:** verified_conversations counter (tracked for leaderboard, performance ranking)
 
 ---
 
-## Cross-Entity Relationships
+## USER FLOW 3: ADMIN (ActivatorPayment Oversight)
 
-### Flow 1: Field Activator Door-Knock → Payment
+**User:** Admin dashboard  
+**Entity:** ActivatorPayment  
+**Origin:** Automatically created from ActivatorLead door-knock events
+
 ```
-ActivatorLead (SCANNED)
-  → knock_attempt_confirmed = true
-  → visit_duration_seconds = 47
-  → Creates: ActivatorPayment (VERIFIED_DOOR_ATTEMPT, $15)
-  → Status: PENDING (passes audit, 47 > 45)
+PENDING (standard door-knock)
+  │ [visit_duration_seconds ≥ 45?]
+  │
+  ├─ YES → APPROVED (auto-approve)
+  │  └─ Admin Action: Mark PAID
+  │     └─ PAID (funds disbursed to field rep)
+  │
+  └─ NO → PENDING_AUDIT (flagged for review)
+     │ [Admin reviews visit pattern]
+     │ - Visit < 45 seconds
+     │ - No-answer rate > 90% (on 10+ visits)
+     │ - Scan rate < 5% (on 50+ visits)
+     │
+     ├─ APPROVED (override, pattern acceptable)
+     │  └─ Admin marks PAID
+     │
+     └─ REJECTED (suspicious pattern confirmed)
+        ├─ rejection_reason = "[description]"
+        └─ [Payment blocked, rep may reapply]
 ```
 
-### Flow 2: VTON Opportunity → Partner Verified Conversation Tracking
-```
-VTONOpportunity (ASSIGNED)
-  → Partner accepts (within 48hr window)
-  → QR scanned from packet OR conversation verified
-  → Increments: PartnerApplication.verified_conversations (counter)
-  → Tracks accountability through protocol execution
-```
-
-### Flow 3: Forfeited Opportunity → Reassignment
-```
-VTONOpportunity (ASSIGNED)
-  → No action within 48 hours
-  → Status: FORFEITED
-  → needs_reassignment = true
-  → forfeited_from_partner = email
-  → Office reassigns to new partner
-  → New partner gets fresh 48-hour window
-```
+**Admin Controls:** 
+- Auto-approve visits ≥ 45s
+- Manual audit override for short visits
+- Reject on gaming/suspicious patterns
+- Review no-answer rate, scan rate, duration metrics
 
 ---
 
-## Summary: Three Critical Paths
+## Cross-Entity Triggers
 
-| Entity | Failure Path | Success Path | Tracking Metric |
-|--------|--------------|--------------|-----------------|
-| **ActivatorLead** | CLOSED (no_answer) | COMPLETED → CLOSED_WON | Door-knock verification (audit flag on <45s) |
-| **VTONOpportunity** | FORFEITED (48hr timeout) | CLOSED_WON (verified conversation) | verified_conversations counter on PartnerApplication |
-| **ActivatorPayment** | REJECTED (audit flag) | PAID (admin approval) | Payment approval workflow ($15 door-knocks) |
+| Trigger | From | To | Action |
+|---------|------|-----|--------|
+| Door-knock completed | ActivatorLead (knock_attempt_confirmed=true) | ActivatorPayment | Create $15 payment record |
+| Conversation verified | VTONOpportunity (conversation verified) | PartnerApplication | Increment verified_conversations counter |
+| 48h timeout (no action) | VTONOpportunity (ASSIGNED) | VTONOpportunity (FORFEITED) | Set needs_reassignment=true |
+| Partner declines | VTONOpportunity (ASSIGNED) | VTONOpportunity (FORFEITED) | Set needs_reassignment=true |
+| Short visit flag | ActivatorPayment (visit < 45s) | ActivatorPayment | Status → PENDING_AUDIT |
+
+---
+
+## Summary by Role
+
+| Role | Entity | Success Metric | Failure Consequence |
+|------|--------|-----------------|-------------------|
+| **Field Activator** | ActivatorLead → ActivatorPayment | Door-knock verified ($15 earned) | No payment (suspicious pattern) |
+| **VTON Partner** | VTONOpportunity | Verified conversation (counter++) | Forfeited opportunity (48h timeout) |
+| **Admin** | ActivatorPayment | Approved & paid out | Rejected on audit flag |
