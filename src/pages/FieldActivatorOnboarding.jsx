@@ -196,8 +196,8 @@ const STEPS = [
           {[
             "Log into your Field Activator Dashboard (/activator)",
             "Tap the QR code icon in the top-right",
-            "Show the BLUE "In-Person Scan" QR to homeowners at the door",
-            "Use the PURPLE "Leave-Behind" QR only for packets",
+            'Show the BLUE "In-Person Scan" QR to homeowners at the door',
+            'Use the PURPLE "Leave-Behind" QR only for packets',
           ].map((s, i) => (
             <div key={i} className="flex items-start gap-2 text-xs text-slate-700">
               <span className="font-black text-slate-400 flex-shrink-0 w-4">{i + 1}.</span>
