@@ -100,13 +100,13 @@ ActivatorLead (SCANNED)
   → Status: PENDING (passes audit, 47 > 45)
 ```
 
-### Flow 2: VTON Opportunity → Partner Earn-Back Credit
+### Flow 2: VTON Opportunity → Partner Verified Conversation Tracking
 ```
 VTONOpportunity (ASSIGNED)
   → Partner accepts (within 48hr window)
   → QR scanned from packet OR conversation verified
-  → Creates: ActivatorPayment ($200 deposit credit)
-  → Accumulates toward $2,000 max refund
+  → Increments: PartnerApplication.verified_conversations (counter)
+  → Tracks accountability through protocol execution
 ```
 
 ### Flow 3: Forfeited Opportunity → Reassignment
@@ -124,8 +124,8 @@ VTONOpportunity (ASSIGNED)
 
 ## Summary: Three Critical Paths
 
-| Entity | Failure Path | Success Path | Payment Trigger |
+| Entity | Failure Path | Success Path | Tracking Metric |
 |--------|--------------|--------------|-----------------|
-| **ActivatorLead** | CLOSED (no_answer) | COMPLETED → CLOSED_WON | $15 door-knock fee |
-| **VTONOpportunity** | FORFEITED (48hr timeout) | CLOSED_WON (verified conversation) | $200 deposit credit |
-| **ActivatorPayment** | REJECTED (audit flag) | PAID (admin approval) | Funds disbursed |
+| **ActivatorLead** | CLOSED (no_answer) | COMPLETED → CLOSED_WON | Door-knock verification (audit flag on <45s) |
+| **VTONOpportunity** | FORFEITED (48hr timeout) | CLOSED_WON (verified conversation) | verified_conversations counter on PartnerApplication |
+| **ActivatorPayment** | REJECTED (audit flag) | PAID (admin approval) | Payment approval workflow ($15 door-knocks) |
