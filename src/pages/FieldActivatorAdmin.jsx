@@ -384,11 +384,16 @@ export default function FieldActivatorAdmin() {
     const current = activators.find(a => a.id === activatorId);
     if (!current) return;
     const newTier = current.activator_tier === "SENIOR_FIELD_ACTIVATOR" ? "FIELD_ACTIVATOR" : "SENIOR_FIELD_ACTIVATOR";
+    
+    // Update UI first
     setActivators(prev => prev.map(a => a.id === activatorId ? { ...a, activator_tier: newTier } : a));
+    
+    // Update DB
     try {
       await base44.entities.FieldActivator.update(activatorId, { activator_tier: newTier });
     } catch (err) {
       console.error("Failed to update tier:", err);
+      // Revert on error
       setActivators(prev => prev.map(a => a.id === activatorId ? { ...a, activator_tier: current.activator_tier } : a));
     }
   };
