@@ -163,7 +163,6 @@ export default function ActivatorLeadsTable({ leads, onSelectLead, onStatusChang
                 </tr>
               ) : (
                 sorted.map(lead => {
-                   const cfg = STATUS_COLORS[lead.status] || STATUS_COLORS.SCANNED;
                    const fullName = `${lead.first_name || ''} ${lead.last_name || ''}`.trim();
 
                    return (
