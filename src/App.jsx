@@ -114,7 +114,6 @@ const AuthenticatedApp = () => {
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
       <Route path="/MortgageCalculators" element={<Navigate to="/Calculators" replace />} />
       <Route path="/MortgageReview" element={<Navigate to="/Apply" replace />} />
-      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };
@@ -126,14 +125,14 @@ function App() {
         <FlagWatermark />
         <AuthProvider>
           <Routes>
-            {/* Public partner portals — no auth required */}
+            {/* Public partner portals — exact matches BEFORE wildcard */}
             <Route path="/portals" element={<PortalHub />} />
             <Route path="/prospects" element={<ProspectsDashboard />} />
             <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
             <Route path="/activator-admin" element={<AdminDashboard />} />
             <Route path="/admin-settings" element={<AdminSettings />} />
             
-            {/* All other routes */}
+            {/* Catch all other routes — auth-protected */}
             <Route path="*" element={<AuthenticatedApp />} />
           </Routes>
         </AuthProvider>
