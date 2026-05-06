@@ -43,11 +43,17 @@ function guessMapping(colKey) {
     last_name: ["last_name", "lastname", "lname", "last"],
     email: ["email", "email_address", "e_mail"],
     phone: ["phone", "phone_number", "mobile", "cell", "telephone"],
+    // "Address" → "address"
     property_address: ["property_address", "address", "street_address", "situs_address", "prop_address", "street"],
+    // "Type" → "type"
     property_type: ["property_type", "type", "prop_type", "land_use"],
+    // "Est Value" → "est_value"
     estimated_price: ["estimated_price", "est_value", "estimated_value", "value", "price", "avm", "estimated_avm"],
-    estimated_equity: ["estimated_equity", "est_equity", "est_equity_$", "equity"],
+    // "Est Equity $" → "est_equity_" ($ stripped by normalizer)
+    estimated_equity: ["estimated_equity", "est_equity", "est_equity_", "equity"],
+    // "Distress Score" → "distress_score"
     distress_score: ["distress_score", "distress", "score"],
+    // "Listing DOM" → "listing_dom"
     listing_dom: ["listing_dom", "dom", "days_on_market", "days_listed"],
   };
   for (const [sysField, aliases] of Object.entries(guesses)) {
@@ -109,8 +115,9 @@ export default function BulkLeadImport({ repCode, onSuccess }) {
 
       normalizedHeaders.forEach(h => {
         if (ownerExists && h === "owner") {
-          // Will be split into first/last during import
           autoMapping[h] = "__owner__";
+        } else if (h === "city") {
+          autoMapping[h] = "__city__";
         } else {
           autoMapping[h] = guessMapping(h);
         }
