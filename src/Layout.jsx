@@ -4,6 +4,7 @@ import { createPageUrl } from './utils';
 import { Phone, Menu, X, Home, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import ChatWidget from './components/ChatWidget';
+import PortalMenu from './components/PortalMenu';
 
 const navLinks = [
   { label: 'Home', path: '/' },
@@ -30,6 +31,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-white pb-16 lg:pb-0">
+      <PortalMenu />
       <StickyBanner />
 
       {/* Header */}
