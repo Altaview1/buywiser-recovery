@@ -5,6 +5,7 @@ import LeadCaptureForm from "../components/LeadCaptureForm";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
 import QualificationCriteria from "../components/QualificationCriteria";
+import VeteransNextHomeFAQ from "@/components/VeteransNextHomeFAQ";
 
 // ── Colors ─────────────────────────────────────────────────────────────────────
 const NAVY = "#0B1F3B";
@@ -638,6 +639,9 @@ function LandingView() {
           </div>
         </div>
       </section>
+
+      {/* ── Veterans Next Home FAQ ── */}
+      <VeteransNextHomeFAQ />
 
       {/* ── Footer CTA Banner ── */}
       <section className="px-4 py-12" style={{ background: NAVY }}>
