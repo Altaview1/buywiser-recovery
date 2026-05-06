@@ -11,6 +11,7 @@ import OutcomeSummary from "@/components/OutcomeSummary";
 import LeadsTable from "@/components/LeadsTable";
 import LeadsMapView from "@/components/LeadsMapView";
 import ContactDetailView from "@/components/ContactDetailView";
+import LeadsSummaryCard from "@/components/LeadsSummaryCard";
 
 const STATUS_CONFIG = {
   New:       { color: "bg-blue-500 text-white border-blue-500",       accent: "#3B82F6", icon: Clock },
@@ -646,6 +647,9 @@ export default function LeadsDashboard() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 space-y-5">
+
+        {/* Key Metrics Summary */}
+        <LeadsSummaryCard leads={leads} />
 
         {/* Outcome Summary Panel */}
         {showSummary && (
