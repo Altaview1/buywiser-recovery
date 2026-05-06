@@ -58,6 +58,28 @@
       ],
       "default": "SCANNED"
     },
+    "activation_source": {
+      "type": "string",
+      "enum": [
+        "IN_PERSON_ACTIVATION",
+        "LEAVE_BEHIND_ACTIVATION",
+        "UNKNOWN"
+      ],
+      "default": "UNKNOWN",
+      "description": "Whether homeowner was activated in-person or via leave-behind packet"
+    },
+    "benefit_review_status": {
+      "type": "string",
+      "enum": [
+        "NOT_SCHEDULED",
+        "SCHEDULED",
+        "ATTENDED",
+        "NO_SHOW",
+        "CANCELLED"
+      ],
+      "default": "NOT_SCHEDULED",
+      "description": "Status of the Veteran's Next Home Benefit Review appointment"
+    },
     "planning_to_buy": {
       "type": "string",
       "enum": [
@@ -121,6 +143,10 @@
       "format": "date-time"
     },
     "scan_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "assigned_date": {
       "type": "string",
       "format": "date-time"
     },

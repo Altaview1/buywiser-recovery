@@ -22,6 +22,13 @@ const PAYMENT_STATUS_COLORS = {
   PENDING:  "bg-amber-50 text-amber-700 border-amber-200",
   APPROVED: "bg-blue-50 text-blue-700 border-blue-200",
   PAID:     "bg-green-50 text-green-700 border-green-200",
+  REJECTED: "bg-red-50 text-red-600 border-red-200",
+};
+
+const PAYMENT_TYPE_CONFIG = {
+  IN_PERSON_SCHEDULED:   { label: "In-Person Scheduled",   color: "bg-blue-100 text-blue-800 border-blue-200" },
+  IN_PERSON_ATTENDED:    { label: "In-Person Attended",     color: "bg-green-100 text-green-800 border-green-200" },
+  LEAVE_BEHIND_ATTENDED: { label: "Leave-Behind Attended",  color: "bg-purple-100 text-purple-800 border-purple-200" },
 };
 
 function LeadDetailModal({ lead, onClose }) {
@@ -184,6 +191,134 @@ function AddActivatorModal({ onClose, onCreated }) {
   );
 }
 
+function PaymentsPanel({ payments, activators, onApprove, onMarkPaid, onReject }) {
+  const [filterType, setFilterType] = useState("ALL");
+  const [filterStatus, setFilterStatus] = useState("ALL");
+  const [rejectingId, setRejectingId] = useState(null);
+  const [rejectReason, setRejectReason] = useState("");
+
+  const typeOptions = ["ALL", "IN_PERSON_SCHEDULED", "IN_PERSON_ATTENDED", "LEAVE_BEHIND_ATTENDED"];
+  const statusOptions = ["ALL", "PENDING", "APPROVED", "PAID", "REJECTED"];
+
+  const filtered = payments.filter(p =>
+    (filterType === "ALL" || p.type === filterType) &&
+    (filterStatus === "ALL" || p.status === filterStatus)
+  );
+
+  const pendingTotal  = payments.filter(p => p.status === "PENDING").reduce((s, p) => s + p.amount, 0);
+  const approvedTotal = payments.filter(p => p.status === "APPROVED").reduce((s, p) => s + p.amount, 0);
+  const paidTotal     = payments.filter(p => p.status === "PAID").reduce((s, p) => s + p.amount, 0);
+
+  return (
+    <div className="space-y-4">
+      {/* Summary strip */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-center">
+          <p className="text-lg font-black text-amber-700">${pendingTotal.toLocaleString()}</p>
+          <p className="text-xs text-amber-600">{payments.filter(p => p.status === "PENDING").length} Pending</p>
+        </div>
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+          <p className="text-lg font-black text-blue-700">${approvedTotal.toLocaleString()}</p>
+          <p className="text-xs text-blue-600">{payments.filter(p => p.status === "APPROVED").length} Approved</p>
+        </div>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-center">
+          <p className="text-lg font-black text-green-700">${paidTotal.toLocaleString()}</p>
+          <p className="text-xs text-green-600">{payments.filter(p => p.status === "PAID").length} Paid</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-2 flex-wrap">
+        <select value={filterType} onChange={e => setFilterType(e.target.value)}
+          className="px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 font-semibold text-slate-700">
+          {typeOptions.map(t => <option key={t} value={t}>{t === "ALL" ? "All Types" : PAYMENT_TYPE_CONFIG[t]?.label || t}</option>)}
+        </select>
+        <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
+          className="px-3 py-2 text-xs border border-slate-200 rounded-lg bg-white focus:outline-none focus:border-blue-500 font-semibold text-slate-700">
+          {statusOptions.map(s => <option key={s} value={s}>{s === "ALL" ? "All Statuses" : s}</option>)}
+        </select>
+      </div>
+
+      {/* Table */}
+      <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Activator</th>
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Type</th>
+              <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">Amount</th>
+              <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Status</th>
+              <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {filtered.length === 0 ? (
+              <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400 text-sm">No payments match this filter</td></tr>
+            ) : filtered.map(p => {
+              const activator = activators.find(a => a.id === p.activator_id);
+              const typeCfg = PAYMENT_TYPE_CONFIG[p.type] || { label: p.type, color: "bg-slate-100 text-slate-700 border-slate-200" };
+              return (
+                <tr key={p.id} className="hover:bg-slate-50 transition">
+                  <td className="px-4 py-3 font-semibold text-slate-800">{activator?.name || p.rep_code || "—"}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${typeCfg.color}`}>{typeCfg.label}</span>
+                  </td>
+                  <td className="px-4 py-3 text-right font-black text-slate-800">${p.amount}</td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${PAYMENT_STATUS_COLORS[p.status]}`}>{p.status}</span>
+                    {p.rejection_reason && <p className="text-xs text-red-500 mt-0.5">{p.rejection_reason}</p>}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-center gap-1">
+                      {p.status === "PENDING" && (
+                        <>
+                          <button onClick={() => onApprove(p)}
+                            className="px-2 py-1 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            Approve
+                          </button>
+                          <button onClick={() => { setRejectingId(p.id); setRejectReason(""); }}
+                            className="px-2 py-1 text-xs font-bold bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition">
+                            Reject
+                          </button>
+                        </>
+                      )}
+                      {p.status === "APPROVED" && (
+                        <button onClick={() => onMarkPaid(p)}
+                          className="px-2 py-1 text-xs font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+                          Mark Paid
+                        </button>
+                      )}
+                      {p.status === "PAID" && <CheckCircle className="h-4 w-4 text-green-600 mx-auto" />}
+                    </div>
+                    {/* Inline reject form */}
+                    {rejectingId === p.id && (
+                      <div className="mt-2 space-y-1">
+                        <input value={rejectReason} onChange={e => setRejectReason(e.target.value)}
+                          placeholder="Reason (optional)"
+                          className="w-full text-xs px-2 py-1.5 border border-slate-200 rounded focus:outline-none focus:border-red-400" />
+                        <div className="flex gap-1">
+                          <button onClick={() => { onReject(p, rejectReason); setRejectingId(null); }}
+                            className="flex-1 py-1 text-xs font-bold bg-red-600 text-white rounded hover:bg-red-700 transition">
+                            Confirm
+                          </button>
+                          <button onClick={() => setRejectingId(null)}
+                            className="flex-1 py-1 text-xs font-bold border border-slate-200 text-slate-600 rounded hover:bg-slate-50 transition">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
 export default function FieldActivatorAdmin() {
   const [loading, setLoading] = useState(true);
   const [activators, setActivators] = useState([]);
@@ -228,6 +363,11 @@ export default function FieldActivatorAdmin() {
   const handleMarkPaid = async (payment) => {
     await base44.entities.ActivatorPayment.update(payment.id, { status: "PAID" });
     setPayments(prev => prev.map(p => p.id === payment.id ? { ...p, status: "PAID" } : p));
+  };
+
+  const handleRejectPayment = async (payment, reason) => {
+    await base44.entities.ActivatorPayment.update(payment.id, { status: "REJECTED", rejection_reason: reason || "Rejected by admin" });
+    setPayments(prev => prev.map(p => p.id === payment.id ? { ...p, status: "REJECTED", rejection_reason: reason } : p));
   };
 
   if (loading) {
@@ -472,57 +612,13 @@ export default function FieldActivatorAdmin() {
 
         {/* PAYMENTS TAB */}
         {activeTab === "payments" && (
-          <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 border-b border-slate-200">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Activator</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Type</th>
-                  <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wider text-slate-600">Amount</th>
-                  <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-600">Status</th>
-                  <th className="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider text-slate-600">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {payments.length === 0 ? (
-                  <tr><td colSpan={5} className="px-4 py-8 text-center text-slate-400 text-sm">No payments</td></tr>
-                ) : payments.map(p => {
-                  const activator = activators.find(a => a.id === p.activator_id);
-                  return (
-                    <tr key={p.id} className="hover:bg-slate-50 transition">
-                      <td className="px-4 py-3 font-semibold text-slate-800">{activator?.name || p.rep_code || "—"}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                          p.type === "CLOSE" ? "bg-emerald-100 text-emerald-800" :
-                          p.type === "CONSULT" ? "bg-purple-100 text-purple-700" :
-                          "bg-blue-100 text-blue-700"
-                        }`}>{p.type}</span>
-                      </td>
-                      <td className="px-4 py-3 text-right font-black text-slate-800">${p.amount}</td>
-                      <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-bold border ${PAYMENT_STATUS_COLORS[p.status]}`}>{p.status}</span>
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        {p.status === "PENDING" && (
-                          <button onClick={() => handleApprovePayment(p)}
-                            className="px-3 py-1 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                            Approve
-                          </button>
-                        )}
-                        {p.status === "APPROVED" && (
-                          <button onClick={() => handleMarkPaid(p)}
-                            className="px-3 py-1 text-xs font-bold bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
-                            Paid
-                          </button>
-                        )}
-                        {p.status === "PAID" && <CheckCircle className="h-4 w-4 text-green-600 mx-auto" />}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <PaymentsPanel
+            payments={payments}
+            activators={activators}
+            onApprove={handleApprovePayment}
+            onMarkPaid={handleMarkPaid}
+            onReject={handleRejectPayment}
+          />
         )}
       </div>
     </div>

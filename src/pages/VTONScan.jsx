@@ -16,6 +16,8 @@ export default function VTONScan() {
   const urlParams = new URLSearchParams(window.location.search);
   const repCode = urlParams.get("rep") || urlParams.get("rep_code") || "";
   const propertyAddress = urlParams.get("address") || "";
+  // "mode=lb" on QR URL means leave-behind packet; absence = in-person scan
+  const scanMode = urlParams.get("mode") === "lb" ? "LEAVE_BEHIND_ACTIVATION" : "IN_PERSON_ACTIVATION";
 
   const [step, setStep] = useState(1);
   const [leadId, setLeadId] = useState(null);
@@ -75,26 +77,16 @@ export default function VTONScan() {
         rep_code: repCode,
         activator_id: activatorId,
         status: "QUALIFIED",
+        activation_source: scanMode,
+        benefit_review_status: "NOT_SCHEDULED",
         scan_timestamp: new Date().toISOString(),
       });
       setLeadId(lead.id);
 
-      // Create SCAN payment if rep code matched
-      if (activatorId) {
-        await base44.entities.ActivatorPayment.create({
-          activator_id: activatorId,
-          lead_id: lead.id,
-          rep_code: repCode,
-          type: "SCAN",
-          amount: 25,
-          status: "PENDING",
-        });
-      }
-
       // Notify admin
       await base44.functions.invoke("notifyOnAnyChange", {
         event: { type: "create", entity_name: "ActivatorLead", entity_id: lead.id },
-        data: { ...form, rep_code: repCode, property_address: propertyAddress, status: "VERIFIED" },
+        data: { ...form, rep_code: repCode, property_address: propertyAddress, status: "VERIFIED", activation_source: scanMode },
       });
 
       setStep(3);
@@ -144,11 +136,33 @@ export default function VTONScan() {
 
   const handleScheduled = async () => {
     if (leadId) {
+      // Fetch full lead to get activator_id and rep_code
+      const leads = await base44.entities.ActivatorLead.filter({ id: leadId });
+      const lead = leads[0];
+
       await base44.entities.ActivatorLead.update(leadId, {
         status: "SCHEDULED",
         appointment_scheduled: true,
         appointment_date: new Date().toISOString(),
+        benefit_review_status: "SCHEDULED",
       });
+
+      // IN_PERSON_ACTIVATION at door + scheduling = $150 pending payment
+      if (scanMode === "IN_PERSON_ACTIVATION" && lead?.activator_id && lead?.rep_code) {
+        // Guard: only create if no IN_PERSON_SCHEDULED payment already exists for this lead
+        const existing = await base44.entities.ActivatorPayment.filter({ lead_id: leadId, type: "IN_PERSON_SCHEDULED" });
+        if (existing.length === 0) {
+          await base44.entities.ActivatorPayment.create({
+            activator_id: lead.activator_id,
+            lead_id: leadId,
+            rep_code: lead.rep_code,
+            type: "IN_PERSON_SCHEDULED",
+            amount: 150,
+            status: "PENDING",
+          });
+        }
+      }
+      // LEAVE_BEHIND: no upfront payment on scheduling — payment only on attendance
     }
     setStep(7);
   };

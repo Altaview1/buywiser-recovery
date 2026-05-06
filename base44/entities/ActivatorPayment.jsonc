@@ -14,11 +14,11 @@
     "type": {
       "type": "string",
       "enum": [
-        "SCAN",
-        "CONSULT",
-        "CLOSE"
+        "IN_PERSON_SCHEDULED",
+        "IN_PERSON_ATTENDED",
+        "LEAVE_BEHIND_ATTENDED"
       ],
-      "description": "Type of payout trigger"
+      "description": "Type of activation payout event"
     },
     "amount": {
       "type": "number"
@@ -28,9 +28,14 @@
       "enum": [
         "PENDING",
         "APPROVED",
-        "PAID"
+        "PAID",
+        "REJECTED"
       ],
       "default": "PENDING"
+    },
+    "rejection_reason": {
+      "type": "string",
+      "description": "Reason provided by admin when rejecting a payment"
     },
     "notes": {
       "type": "string"
