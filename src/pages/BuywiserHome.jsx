@@ -426,7 +426,7 @@ function LandingView() {
             <div>
               <p className="text-white font-black text-sm leading-snug">
                 Navy Veterans Cody &amp; Frank received{" "}
-                <span style={{ color: "#fbbf24" }}>$9,500 back</span> on their next home.
+                <span style={{ color: "#fbbf24" }}>$9,500 in GAP Benefits</span> on their next home purchase.
               </p>
               <p className="text-blue-300 text-xs mt-1">Watch their story below ↓</p>
             </div>
