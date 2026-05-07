@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     `;
 
     // Get admin phone from app settings (using Bennett's number for now)
-    const adminPhone = process.env.BENNETT_PHONE;
+    const adminPhone = Deno.env.get('BENNETT_PHONE');
 
     // Send SMS to admin if phone available
     if (adminPhone) {
