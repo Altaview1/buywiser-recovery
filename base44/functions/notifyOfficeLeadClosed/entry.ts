@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
                   <td style="padding:5px 0;font-weight:600;color:#0f172a;">${price}</td>
                 </tr>` : ''}
                 ${benefit ? `<tr>
-                  <td style="padding:5px 12px 5px 0;color:#64748b;">RWB Benefit</td>
+                  <td style="padding:5px 12px 5px 0;color:#64748b;">GAP Benefit</td>
                   <td style="padding:5px 0;font-weight:700;color:#C62828;">up to ${benefit}</td>
                 </tr>` : ''}
                 <tr>

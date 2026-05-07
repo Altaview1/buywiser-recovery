@@ -122,7 +122,7 @@ Deno.serve(async (req) => {
 
             <!-- Footer -->
             <p style="text-align:center;font-size:11px;color:#94a3b8;margin-top:12px;line-height:1.6;">
-              VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs<br />
+              VTON, Veteran's Next Home™, and the Buywiser 1.5 GAP Benefit™ are private programs<br />
               not affiliated with the U.S. Department of Veterans Affairs.<br />
               BuyWiser Technology, Inc. · NMLS #1887767
             </p>
