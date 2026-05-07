@@ -338,12 +338,12 @@ export default function PersonalizedBenefit() {
           {homeownerName ? (
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
               {homeownerName},<br />
-              <span style={{ color: "#ef9a9a" }}>Your Red White &amp; Blue Purchase Benefit is Ready.</span>
+              <span style={{ color: "#ef9a9a" }}>Your Buywiser 1.5 GAP Benefit™ is Ready.</span>
             </h1>
           ) : (
             <h1 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 leading-tight">
-              Your Red White &amp; Blue Purchase Benefit —{" "}
-              <span style={{ color: "#ef9a9a" }}>Up to 1.5% Cash Back.</span>
+              Your Buywiser 1.5 GAP Benefit™ —{" "}
+              <span style={{ color: "#ef9a9a" }}>Up to 1.5% at Closing.</span>
             </h1>
           )}
           {address && (
@@ -388,13 +388,8 @@ export default function PersonalizedBenefit() {
             <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
               Estimate Your
             </h2>
-            <div className="flex items-center justify-center gap-2 my-1">
-              <span className="text-lg font-black" style={{ color: RED }}>Red</span>
-              <span className="text-lg font-black text-white bg-slate-400 px-1 rounded">White</span>
-              <span className="text-lg font-black" style={{ color: NAVY }}>&amp; Blue</span>
-            </div>
-            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
-              Purchase Benefit
+            <h2 className="text-2xl font-black tracking-wide leading-tight" style={{ color: NAVY }}>
+              Buywiser 1.5 GAP Benefit™
             </h2>
             <div className="mt-2 h-1 w-32 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${RED}, #ffffff, ${NAVY})` }} />
           </div>
@@ -516,7 +511,7 @@ export default function PersonalizedBenefit() {
       <footer className="py-8 px-4 text-center border-t border-slate-100 bg-white">
         <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mx-auto mb-3 opacity-40" />
         <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
-          Veteran's Next Home™ and the Red White &amp; Blue Purchase Benefit are private programs offered through Buywiser. Not affiliated with or endorsed by the U.S. Department of Veterans Affairs.{" "}
+          Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private programs offered through Buywiser. Not affiliated with or endorsed by the U.S. Department of Veterans Affairs.{" "}
           <a href="/Disclosures" className="underline hover:text-slate-600">Licensing &amp; Disclosures</a>
         </p>
         <p className="text-xs text-slate-300 mt-2">BuyWiser Technology, Inc. NMLS #1887767 · CA DRE #01107013</p>

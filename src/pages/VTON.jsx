@@ -71,9 +71,9 @@ function FAQ() {
     { q: "Does VTON guarantee transactions?", a: "No. VTON provides structured opportunity assignments, a historical operating framework, and an accountability system. Transaction outcomes are never guaranteed." },
     { q: "What is the 1-in-10 benchmark?", a: "Historical operating assumptions suggest that for approximately every 10 qualified veteran homeowners meaningfully engaged and clearly educated about the Veteran's Next Move Benefits, one may ultimately become a closed opportunity. This is not a guarantee or income claim — it is a historical benchmark and operating philosophy." },
     { q: "Is this a pay-per-lead program?", a: "No. VTON is a structured accountability and opportunity network. You are not purchasing contact information. Your deposit is a professional commitment that is earned back through disciplined execution." },
-    { q: "Does participating in Veteran's Next Home™ cost me anything upfront as an agent?", a: "No. You pay nothing to participate in the field program. Your deposit is fully earnable back through protocol completion. At closing, you contribute 1% of your commission back to the buyer as their Red White & Blue Purchase Benefit. The buyer receives a real, meaningful benefit at closing — funded from your commission, not from their pocket or yours upfront." },
+    { q: "Does participating in Veteran's Next Home™ cost me anything upfront as an agent?", a: "No. You pay nothing to participate in the field program. Your deposit is fully earnable back through protocol completion. At closing, you contribute 1% of your commission back to the buyer as their Buywiser 1.5 GAP Benefit™. The buyer receives a real, meaningful benefit at closing — funded from your commission, not from their pocket or yours upfront." },
     { q: "Where does the other 0.5% of the buyer's benefit come from?", a: "If the buyer chooses Buywiser for their financing, Buywiser contributes an additional 0.5% — bringing the total benefit to the buyer up to 1.5% of the purchase price. The agent's contribution is always 1%. The extra 0.5% is Buywiser's share, applicable only when the buyer uses Buywiser for their mortgage." },
-    { q: "Is VTON connected to the VA or a government program?", a: "No. VTON, Veteran's Next Home™, and the Red White & Blue Purchase Benefit are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency." },
+    { q: "Is VTON connected to the VA or a government program?", a: "No. VTON, Veteran's Next Home™, and the Buywiser 1.5 GAP Benefit™ are private Buywiser-related programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency." },
   ];
 
   return (
@@ -652,7 +652,7 @@ export default function VTON() {
       <footer className="px-4 py-8 bg-slate-900 text-center">
         <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mx-auto mb-4 opacity-40" />
         <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed mb-2">
-          VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Deposit earn-back is contingent on verified protocol completion. Territory access and transaction outcomes are not guaranteed. The 1-in-10 benchmark is a historical operating assumption, not a guarantee of income or results.
+          VTON, Veteran's Next Home™, and the Buywiser 1.5 GAP Benefit™ are private programs and are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Deposit earn-back is contingent on verified protocol completion. Territory access and transaction outcomes are not guaranteed. The 1-in-10 benchmark is a historical operating assumption, not a guarantee of income or results.
         </p>
         <p className="text-xs text-slate-500">BuyWiser Technology, Inc. NMLS #1887767 · CA DRE #01107013</p>
       </footer>

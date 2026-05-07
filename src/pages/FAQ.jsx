@@ -80,8 +80,8 @@ const FAQS = [
     category: "The Benefit",
     items: [
       {
-        q: "What is the Red White & Blue Purchase Benefit?",
-        a: "It's a private Buywiser program that provides up to 1.5% cash back to qualifying veteran homeowners when their next home purchase is coordinated through Buywiser. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.",
+        q: "What is the Buywiser 1.5 GAP Benefit™?",
+        a: "It's a private Buywiser program that provides up to 1.5% back to qualifying veteran homeowners when their next home purchase is coordinated through Buywiser. It is not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.",
       },
       {
         q: "How much can I receive?",
@@ -89,7 +89,7 @@ const FAQS = [
       },
       {
         q: "Is this a government VA program?",
-        a: "No. The Red White & Blue Purchase Benefit and Veteran's Next Home™ are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.",
+        a: "No. The Buywiser 1.5 GAP Benefit™ and Veteran's Next Home™ are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.",
       },
       {
         q: "When do I receive the benefit?",
@@ -190,7 +190,7 @@ export default function FAQ() {
           Frequently Asked Questions
         </h1>
         <p className="text-blue-200 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-          Everything you need to know about the Veteran's Next Home™ program, the Red White &amp; Blue Purchase Benefit, and VTON partner execution requirements.
+          Everything you need to know about the Veteran's Next Home™ program, the Buywiser 1.5 GAP Benefit™, and VTON partner execution requirements.
         </p>
       </section>
 
@@ -238,7 +238,7 @@ export default function FAQ() {
           </div>
         </div>
         <p className="text-xs text-slate-400 text-center mt-6 leading-relaxed">
-          Veteran's Next Home™ and the Red White &amp; Blue Purchase Benefit are private programs offered through Buywiser. Not affiliated with or endorsed by the U.S. Department of Veterans Affairs.{" "}
+          Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private programs offered through Buywiser. Not affiliated with or endorsed by the U.S. Department of Veterans Affairs.{" "}
           <Link to="/Disclosures" className="underline hover:text-slate-600">Licensing &amp; Disclosures</Link>
         </p>
       </section>

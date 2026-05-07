@@ -840,7 +840,7 @@ export default function PartnerDashboard() {
           <p className="text-xs text-slate-400">VTON respects your judgment before acceptance. VTON rewards your discipline after acceptance.</p>
         </div>
         <p className="text-xs text-slate-400 text-center pb-4">
-          VTON, Veteran's Next Home™, and the Red White &amp; Blue Purchase Benefit are private programs not affiliated with the U.S. Department of Veterans Affairs.
+          VTON, Veteran's Next Home™, and the Buywiser 1.5 GAP Benefit™ are private programs not affiliated with the U.S. Department of Veterans Affairs.
         </p>
       </div>
     </div>
