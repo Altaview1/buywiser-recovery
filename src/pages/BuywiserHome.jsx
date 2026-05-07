@@ -398,7 +398,7 @@ function LandingView() {
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
             Veteran's Next Home™ Program —{" "}
-            <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Buywiser 1.5 GAP Benefit™</span>
+            <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">GAP Benefits</span>
           </h1>
 
           {/* Subheadline */}
@@ -412,7 +412,7 @@ function LandingView() {
           ) : (
             <div className="mb-8 max-w-lg mx-auto space-y-2">
               <p className="text-white text-xl sm:text-2xl font-black leading-tight">
-                Up to 1.5% back on your next home purchase.
+                Veterans may receive over $10,000 toward their next home purchase.
               </p>
               <p className="text-blue-300 text-sm leading-relaxed">
                 For qualifying veterans selling a VA-financed home and buying their next one.
@@ -459,7 +459,7 @@ function LandingView() {
               Program Update
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: NAVY }}>
-              What Is the Buywiser 1.5 GAP Benefit™?
+              What Are GAP Benefits?
             </h2>
             <p className="text-slate-500 text-sm leading-relaxed max-w-xl mx-auto">
               The GAP Benefit is the new name for what was previously called the "1% Veteran Rebate" or "Buywiser Veteran Savings Program." Same benefit — clearer name — more powerful structure.
@@ -490,7 +490,7 @@ function LandingView() {
 
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-center">
             <p className="text-sm text-blue-800 leading-relaxed">
-              <strong>Same benefit you may have heard about before — now up to 1.5%</strong> when your next purchase is fully coordinated through Buywiser (real estate + financing).
+              <strong>Same benefit you may have heard about before — veterans may receive over $10,000</strong> when their next purchase is fully coordinated through Buywiser (real estate + financing).
             </p>
           </div>
         </div>
@@ -516,7 +516,7 @@ function LandingView() {
               Estimate Your
             </h2>
             <h2 className="text-2xl font-black tracking-wide leading-tight" style={{ color: NAVY }}>
-              Buywiser 1.5 GAP Benefit™
+              GAP Benefits
             </h2>
             <div className="mt-2 h-1 w-32 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${RED}, #ffffff, ${NAVY})` }} />
           </div>
@@ -568,19 +568,19 @@ function LandingView() {
       <section className="px-4 py-14" style={{ background: "#F5F7FA" }}>
         <div className="max-w-xl mx-auto">
           <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-2">The Benefit</p>
-          <h2 className="text-2xl font-extrabold text-center mb-4" style={{ color: NAVY }}>Buywiser 1.5 GAP Benefit™</h2>
+          <h2 className="text-2xl font-extrabold text-center mb-4" style={{ color: NAVY }}>GAP Benefits</h2>
           <p className="text-sm text-slate-600 leading-relaxed text-center mb-8 max-w-md mx-auto">
-            The Buywiser 1.5 GAP Benefit™ is part of the Veteran's Next Home™ Program and is designed to help qualifying veteran homeowners bridge common next-home transition expenses. Not a government program.
+            GAP Benefits are part of the Veteran's Next Home™ Program and are designed to help qualifying veteran homeowners bridge common next-home transition expenses. Not a government program.
           </p>
 
           <div className="bg-white border-2 rounded-2xl px-6 py-5 flex items-center justify-between" style={{ borderColor: RED }}>
             <div>
-              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum GAP Benefit</p>
+              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Veterans May Receive</p>
               <p className="text-sm text-slate-700 font-medium">When the purchase is properly structured through Buywiser</p>
             </div>
-            <p className="text-3xl font-black ml-4" style={{ color: RED }}>1.5%*</p>
+            <p className="text-2xl font-black ml-4 text-right" style={{ color: RED }}>Over<br/>$10,000*</p>
           </div>
-          <p className="text-xs text-slate-400 text-center mt-4">* 1.5% of the new purchase price. Final benefit depends on transaction details and how the purchase is structured.</p>
+          <p className="text-xs text-slate-400 text-center mt-4">* Final benefit depends on transaction details and how the purchase is structured.</p>
         </div>
       </section>
 
