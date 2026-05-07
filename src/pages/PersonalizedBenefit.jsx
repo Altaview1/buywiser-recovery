@@ -448,7 +448,7 @@ export default function PersonalizedBenefit() {
           <div className="space-y-2.5">
             {[
               "You have an active VA loan on the home you're selling",
-              "You served in the U.S. military (any branch)",
+              "You or a spouse/significant other served in the U.S. military (any branch)",
               "You plan to purchase another home",
               "Your next purchase will be in a qualifying market",
             ].map((item) => (
