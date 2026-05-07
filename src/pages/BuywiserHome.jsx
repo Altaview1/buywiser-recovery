@@ -351,6 +351,7 @@ function LandingView() {
               { label: '🤝 Partner Sign In', path: '/partner' },
               { label: '📍 Field Activator Portal', path: '/field-activator' },
               { label: '🎯 Veteran Benefit Page', path: '/b' },
+              { label: '⚙️ Admin Sign In', path: '/activator-admin' },
             ].map(l => (
               <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
             ))}
