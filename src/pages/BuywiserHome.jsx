@@ -351,10 +351,15 @@ function LandingView() {
               { label: '🤝 Partner Sign In', path: '/partner' },
               { label: '📍 Field Activator Portal', path: '/field-activator' },
               { label: '🎯 Veteran Benefit Page', path: '/b' },
-              { label: '⚙️ Admin Sign In', path: '/activator-admin' },
             ].map(l => (
               <a key={l.path} href={l.path} className="block px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-lg" onClick={() => setMenuOpen(false)}>{l.label}</a>
             ))}
+            <div className="pt-1">
+              <a href="/activator-admin" onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 px-3 py-2.5 text-sm font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition">
+                ⚙️ Admin Sign In
+              </a>
+            </div>
             {authUser?.role === 'admin' && (
               <>
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 px-3 pt-3 pb-1">Admin</p>
