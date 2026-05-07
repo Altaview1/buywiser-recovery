@@ -149,8 +149,15 @@ export default function AdminDashboard() {
       <div className="min-h-screen flex items-center justify-center px-4" style={{ background: NAVY }}>
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center">
           <AlertCircle className="h-12 w-12 text-red-600 mx-auto mb-4" />
-          <p className="text-lg font-bold text-slate-900 mb-2">Admin Access Required</p>
-          <p className="text-sm text-slate-600">You do not have permission to access this dashboard.</p>
+          <p className="text-lg font-bold text-slate-900 mb-2">Admin Sign In Required</p>
+          <p className="text-sm text-slate-600 mb-6">Please sign in with your admin account to access this dashboard.</p>
+          <button
+            onClick={() => base44.auth.redirectToLogin(window.location.href)}
+            className="w-full py-3 rounded-xl font-bold text-white text-sm transition hover:opacity-90"
+            style={{ background: NAVY }}
+          >
+            Sign In to Admin Dashboard
+          </button>
         </div>
       </div>
     );
