@@ -38,7 +38,7 @@ export default function LeadCaptureForm({ prefillCode }) {
     if (!validate()) return;
     
     setLoading(true);
-    await base44.entities.ContactSubmission.create({
+    const submission = await base44.entities.ContactSubmission.create({
       first_name: form.email.split("@")[0],
       email: form.email,
       phone: form.phone,
@@ -46,6 +46,15 @@ export default function LeadCaptureForm({ prefillCode }) {
       status: "new",
       how_heard: "buywiser_landing",
     });
+    
+    // Send confirmation email to veteran
+    await base44.integrations.Core.SendEmail({
+      to: form.email,
+      from_name: "BuyWiser — Veteran's Next Home™",
+      subject: "Your Veteran's Next Home™ Benefit Review is Confirmed",
+      body: `Thank you for starting your Veteran's Next Home™ Benefit Review.\n\nWe've received your information and a BuyWiser specialist will be in touch within one business day to walk you through your Buywiser 1.5 GAP Benefit™.\n\nWhat happens next:\n• A BuyWiser specialist will contact you within 1 business day\n• We'll review your personalized benefit estimate\n• No cost, no obligation — just straight answers\n\nQuestions in the meantime? Call us at (818) 300-2642 or reply to this email.\n\nThank you for your service,\nThe BuyWiser Team\n\n---\nBuyWiser Technology, Inc. NMLS #1887767\nNot affiliated with the U.S. Department of Veterans Affairs.`,
+    });
+    
     setLoading(false);
     setSubmitted(true);
   };
