@@ -311,9 +311,12 @@ function LandingView() {
       <header className="px-4 sm:px-6 py-4 border-b border-slate-100 bg-white sticky top-0 z-50">
         <div className="flex items-center justify-between">
           <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <a href="tel:+18183002642" className="flex items-center gap-1 text-sm font-semibold text-blue-700">
               <Phone className="h-4 w-4" /><span className="hidden sm:inline">(818) 300-2642</span><span className="sm:hidden">Call</span>
+            </a>
+            <a href="/activator-admin" className="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition border border-slate-700">
+              ⚙️ Admin
             </a>
             <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-700 rounded-md border border-slate-200">
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
