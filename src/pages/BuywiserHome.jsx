@@ -388,29 +388,29 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Hero ── */}
-      <section style={{ background: NAVY }} className="px-4 py-14 sm:py-20">
+      <section style={{ background: NAVY }} className="px-4 py-16 sm:py-24">
         <div className="max-w-2xl mx-auto text-center">
           {/* Top label */}
-          <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full border border-white/20 bg-white/10">
+          <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-white/20 bg-white/10">
             <span className="text-xs font-black uppercase tracking-widest text-white/80">Veteran's Next Home™ by Buywiser</span>
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight">
             Veteran's Next Home™ Program —{" "}
             <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">GAP Benefits</span>
           </h1>
 
           {/* Subheadline */}
           {oppAddress ? (
-            <div className="mb-8 max-w-lg mx-auto">
+            <div className="mb-7 max-w-lg mx-auto">
               <p className="text-white font-black text-lg sm:text-xl leading-snug mb-1">
                 Congratulations on listing <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
               </p>
               <p className="text-blue-300 text-sm">You appear to qualify for the Buywiser 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.</p>
             </div>
           ) : (
-            <div className="mb-8 max-w-lg mx-auto space-y-2">
+            <div className="mb-7 max-w-lg mx-auto space-y-2">
               <p className="text-white text-xl sm:text-2xl font-black leading-tight">
                 Veterans may receive over $10,000 toward their next home purchase.
               </p>
@@ -421,13 +421,13 @@ function LandingView() {
           )}
 
           {/* Video Testimonial */}
-          <div className="mb-6 max-w-2xl mx-auto w-full">
+          <div className="mb-6 max-w-xl mx-auto w-full">
             <VideoTestimonial />
           </div>
 
           {/* Cody & Frank callout */}
-          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-4 mb-8 mx-auto max-w-lg text-left">
-            <span className="text-3xl flex-shrink-0">🎖️</span>
+          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 mb-8 mx-auto max-w-lg text-left">
+            <span className="text-2xl flex-shrink-0">🎖️</span>
             <div>
               <p className="text-white font-black text-sm leading-snug">
                 Navy Veterans Cody &amp; Frank received{" "}
@@ -440,7 +440,7 @@ function LandingView() {
           <div className="flex justify-center">
             <button
               onClick={scrollToCTA}
-              className="flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-bold text-base transition"
+              className="flex items-center justify-center gap-2 px-10 py-4 rounded-xl font-bold text-base transition shadow-lg hover:shadow-xl"
               style={{ background: RED, color: "#fff" }}
             >
               Secure My Next Home™ Benefits <ArrowRight className="h-4 w-4" />
