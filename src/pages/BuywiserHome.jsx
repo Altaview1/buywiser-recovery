@@ -455,14 +455,11 @@ function LandingView() {
       <section className="px-4 py-14 bg-white">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-block bg-amber-100 border border-amber-300 text-amber-800 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
-              Program Update
-            </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: NAVY }}>
               What Are GAP Benefits?
             </h2>
             <p className="text-slate-500 text-sm leading-relaxed max-w-xl mx-auto">
-              The GAP Benefit is the new name for what was previously called the "1% Veteran Rebate" or "Buywiser Veteran Savings Program." Same benefit — clearer name — more powerful structure.
+              GAP Benefits help qualifying veteran homeowners bridge common next-home transition expenses when the purchase is properly structured through Buywiser.
             </p>
           </div>
 
@@ -490,7 +487,7 @@ function LandingView() {
 
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-center">
             <p className="text-sm text-blue-800 leading-relaxed">
-              <strong>Same benefit you may have heard about before — veterans may receive over $10,000</strong> when their next purchase is fully coordinated through Buywiser (real estate + financing).
+              <strong>Veterans may receive over $10,000</strong> when their next purchase is fully coordinated through Buywiser (real estate + financing).
             </p>
           </div>
         </div>
