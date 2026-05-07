@@ -98,6 +98,9 @@ function CheckEstimator() {
   const [price, setPrice] = useState(700000);
   const [name, setName] = useState("");
   const benefit = price * 0.015;
+  const nameParts = name.trim().split(" ");
+  const firstName = nameParts.slice(0, -1).join(" ");
+  const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : "";
   const payeeName = name.trim() || "The Veteran Homebuyer";
 
   return (
@@ -166,9 +169,17 @@ function CheckEstimator() {
             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 whitespace-nowrap pb-1">Pay to the<br/>Order of</span>
             <div className="flex-1 relative">
               <div className="border-b-2 border-slate-500 pb-1 min-h-[28px] flex items-end">
-                <span className={`text-lg leading-tight ${name.trim() ? "font-bold text-slate-900" : "italic text-slate-400"}`} style={{ fontFamily: "Georgia, serif" }}>
-                  {payeeName}
-                </span>
+                {name.trim() ? (
+                  <span className="text-lg leading-tight font-bold text-slate-900" style={{ fontFamily: "Georgia, serif" }}>
+                    {firstName}{lastName && (
+                      <span className="text-slate-300 blur-[2px] select-none"> {lastName}</span>
+                    )}
+                  </span>
+                ) : (
+                  <span className="text-lg leading-tight italic text-slate-400" style={{ fontFamily: "Georgia, serif" }}>
+                    {payeeName}
+                  </span>
+                )}
               </div>
               <div className="absolute -bottom-[1px] left-0 right-0 border-b border-slate-300" />
             </div>
