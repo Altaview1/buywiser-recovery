@@ -607,9 +607,9 @@ function LandingView() {
               <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum GAP Benefit</p>
               <p className="text-sm text-slate-700 font-medium">When the purchase is properly structured through Buywiser</p>
             </div>
-            <p className="text-3xl font-black ml-4" style={{ color: RED }}>1.5%</p>
+            <p className="text-3xl font-black ml-4" style={{ color: RED }}>1.5%*</p>
           </div>
-          <p className="text-xs text-slate-400 text-center mt-4">Final benefit depends on transaction details and how the purchase is structured.</p>
+          <p className="text-xs text-slate-400 text-center mt-4">* 1.5% of the new purchase price. Final benefit depends on transaction details and how the purchase is structured.</p>
         </div>
       </section>
 
