@@ -773,7 +773,7 @@ export default function PartnerDashboard() {
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-amber-800 mb-1">VTON Insight</p>
               <p className="text-sm text-amber-900 leading-relaxed">
-                Historical operating assumptions suggest that approximately <strong>1 in 10 meaningful Veteran's Next Move Benefit conversations</strong> may become a closed opportunity.
+                Historical operating assumptions suggest that approximately <strong>1 in 10 meaningful Veteran's Next Home™ Benefit conversations</strong> may become a closed opportunity.
               </p>
               <p className="text-xs text-amber-600 mt-1.5 italic">Not a guarantee. A framework for disciplined execution.</p>
             </div>
