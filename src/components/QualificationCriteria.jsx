@@ -4,7 +4,7 @@ const NAVY = "#0B1F3B";
 const RED = "#C62828";
 
 const CRITERIA = [
-  { label: "You have an active VA loan on the home you're selling" },
+  { label: "You have (or had within the last 7 years) a VA loan on the home you're selling" },
   { label: "You or a spouse/significant other served in the U.S. military (any branch)" },
   { label: "You plan to purchase another home" },
   { label: "Your next purchase will be in a qualifying market" },

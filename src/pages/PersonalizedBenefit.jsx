@@ -447,7 +447,7 @@ export default function PersonalizedBenefit() {
           <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Why You Were Selected</p>
           <div className="space-y-2.5">
             {[
-              "You have an active VA loan on the home you're selling",
+              "You have (or had within the last 7 years) a VA loan on the home you're selling",
               "You or a spouse/significant other served in the U.S. military (any branch)",
               "You plan to purchase another home",
               "Your next purchase will be in a qualifying market",
