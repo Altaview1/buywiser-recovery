@@ -42,6 +42,8 @@ export default function VideoTestimonial() {
         alt="Cody & Frank Testimonial"
         className="w-full h-auto block"
       />
+      {/* Blur patch over last name "Cohen" in thumbnail */}
+      <div className="absolute rounded" style={{ bottom: "8%", left: "2%", width: "30%", height: "18%", backdropFilter: "blur(8px)", background: "rgba(0,0,0,0.45)" }} />
       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
         <div className="w-16 h-16 rounded-full bg-white/90 group-hover:bg-white transition-colors flex items-center justify-center">
           <svg className="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
