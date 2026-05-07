@@ -72,6 +72,9 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="hidden xl:flex items-center gap-4">
+              <a href="/activator-admin" className="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition border border-slate-700">
+                ⚙️ Admin Sign In
+              </a>
               <a href="/partner" className="text-sm text-slate-600 hover:text-slate-900 transition font-medium">
                 Agent Sign In
               </a>
