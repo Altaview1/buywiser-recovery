@@ -570,12 +570,14 @@ function LandingView() {
             GAP Benefits are part of the Veteran's Next Home™ Program and are designed to help qualifying veteran homeowners bridge common next-home transition expenses. Not a government program.
           </p>
 
-          <div className="bg-white border-2 rounded-2xl px-6 py-5 flex items-center justify-between" style={{ borderColor: RED }}>
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Veterans May Receive</p>
-              <p className="text-sm text-slate-700 font-medium">When the purchase is properly structured through Buywiser</p>
+          <div className="bg-white border-2 rounded-2xl px-6 py-6 flex items-center justify-between gap-6" style={{ borderColor: RED }}>
+            <div className="flex-1">
+              <p className="text-xs font-black uppercase tracking-widest mb-1.5" style={{ color: RED }}>Veterans May Receive</p>
+              <p className="text-sm text-slate-700 font-medium leading-snug">When the purchase is properly structured through Buywiser</p>
             </div>
-            <p className="text-2xl font-black ml-4 text-right" style={{ color: RED }}>Over<br/>$10,000*</p>
+            <div className="flex-shrink-0 text-right">
+              <p className="text-3xl font-black leading-tight" style={{ color: RED }}>Over<br/>$10,000*</p>
+            </div>
           </div>
           <p className="text-xs text-slate-400 text-center mt-4">* Final benefit depends on transaction details and how the purchase is structured.</p>
         </div>
