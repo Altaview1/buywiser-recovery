@@ -415,7 +415,7 @@ function LandingView() {
                 Up to 1.5% back on your next home purchase.
               </p>
               <p className="text-blue-300 text-sm leading-relaxed">
-                For qualifying veterans selling a VA-financed home — delivered as a credit at closing.
+                For qualifying veterans selling a VA-financed home and buying their next one.
               </p>
             </div>
           )}
