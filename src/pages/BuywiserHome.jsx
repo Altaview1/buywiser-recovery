@@ -26,7 +26,7 @@ function RWBStripe() {
 const FAQS = [
   {
     q: "Is this a government VA program?",
-    a: "No. Veteran's Next Home™ and the Red White & Blue Purchase Benefit are private Buywiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+    a: "No. Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private Buywiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
   {
     q: "How do I receive the full 1.5% benefit?",
@@ -413,7 +413,7 @@ function LandingView() {
               <span className="text-white font-black">See how Navy Veterans Cody &amp; Frank</span>
               <span className="text-blue-200"> put </span>
               <span className="font-black" style={{ color: "#fbbf24" }}>$9,500 back in their pocket</span>
-              <span className="text-blue-200"> on their next home purchase using the Red White &amp; Blue Benefit.</span>
+              <span className="text-blue-200"> on their next home purchase using the Buywiser 1.5 GAP Benefit™.</span>
               <span className="block text-xs text-blue-400 mt-1 italic">Watch their story below ↓</span>
             </p>
           </div>
