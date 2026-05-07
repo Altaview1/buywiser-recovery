@@ -437,7 +437,7 @@ function LandingView() {
           {/* Video Testimonial */}
           <div className="mt-12 max-w-2xl mx-auto w-full">
             <VideoTestimonial />
-            <p className="text-center text-sm font-bold text-slate-700 mt-3 uppercase tracking-wide">Veterans Cody and Frank</p>
+            <p className="text-center text-sm font-bold text-slate-700 mt-3 uppercase tracking-wide">Veterans Cody and Frank Receive Their GAP Benefits</p>
           </div>
         </div>
       </section>
