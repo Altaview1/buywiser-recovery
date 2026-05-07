@@ -6,6 +6,7 @@ import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
 import QualificationCriteria from "../components/QualificationCriteria";
 import VeteransNextHomeFAQ from "@/components/VeteransNextHomeFAQ";
+import GAPBenefitTestimonials from "../components/GAPBenefitTestimonials";
 
 // ── Colors ─────────────────────────────────────────────────────────────────────
 const NAVY = "#0B1F3B";
@@ -630,7 +631,10 @@ function LandingView() {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
+      {/* ── GAP Benefit Testimonials ── */}
+      <GAPBenefitTestimonials onScrollToCTA={scrollToCTA} />
+
+      {/* ── Existing Testimonials Carousel ── */}
       <section className="px-4 py-12 bg-white">
         <div className="max-w-xl mx-auto">
           <p className="text-center text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Veterans &amp; California Buyers Who Saved With Buywiser</p>
