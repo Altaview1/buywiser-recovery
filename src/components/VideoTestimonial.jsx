@@ -42,9 +42,7 @@ export default function VideoTestimonial() {
         alt="Cody & Frank Testimonial"
         className="w-full h-auto block"
       />
-      {/* Cover last name "Cohen" in lower-third of thumbnail */}
-      <div className="absolute" style={{ bottom: 0, left: 0, right: 0, height: "28%", background: "linear-gradient(to top, rgba(0,0,0,0.85) 60%, transparent 100%)" }} />
-      <div className="absolute" style={{ bottom: "4%", left: "3%", width: "35%", height: "16%", backdropFilter: "blur(12px)", background: "rgba(0,0,0,0.7)", borderRadius: 4 }} />
+
       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
         <div className="w-16 h-16 rounded-full bg-white/90 group-hover:bg-white transition-colors flex items-center justify-center">
           <svg className="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
