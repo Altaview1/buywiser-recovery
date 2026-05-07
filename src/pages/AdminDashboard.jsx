@@ -152,12 +152,13 @@ export default function AdminDashboard() {
           <p className="text-lg font-bold text-slate-900 mb-2">Admin Sign In Required</p>
           <p className="text-sm text-slate-600 mb-6">Please sign in with your admin account to access this dashboard.</p>
           <button
-            onClick={() => base44.auth.redirectToLogin(window.location.href)}
+            onClick={() => base44.auth.redirectToLogin(window.location.pathname)}
             className="w-full py-3 rounded-xl font-bold text-white text-sm transition hover:opacity-90"
             style={{ background: NAVY }}
           >
             Sign In to Admin Dashboard
           </button>
+          <p className="text-xs text-slate-400 mt-3">Sign in as bennett@buywiser.com</p>
         </div>
       </div>
     );

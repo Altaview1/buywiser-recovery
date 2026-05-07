@@ -128,7 +128,7 @@ function App() {
           <Route path="/vton-scan" element={<VTONScan />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
-          <Route path="/activator-admin" element={<AdminDashboard />} />
+          <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />
           <Route path="/admin-settings" element={<AdminSettings />} />
           
           {/* All other routes — auth-protected */}
