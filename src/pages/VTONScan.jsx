@@ -544,7 +544,7 @@ export default function VTONScan() {
         </div>
 
         <a
-          href="https://calendly.com/buywiser"
+          href="https://calendly.com/bennett-13/pre-consultation-call-with-bennett-liss-ceo-of-buywiser"
           target="_blank"
           rel="noopener noreferrer"
           onClick={handleScheduled}

@@ -4,7 +4,7 @@ import { Resend } from 'npm:resend@3.2.0';
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 const ADMIN_EMAIL = 'bennett@buywiser.com';
 const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
-const CALENDLY_URL = 'https://calendly.com/buywiser';
+const CALENDLY_URL = 'https://calendly.com/bennett-13/pre-consultation-call-with-bennett-liss-ceo-of-buywiser';
 
 function formatPhone(phone) {
   if (!phone) return null;

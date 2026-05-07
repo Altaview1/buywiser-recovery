@@ -55,11 +55,16 @@ Deno.serve(async (req) => {
           <p style="margin: 8px 0 0; font-size: 11px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.5);">Consultation Booked</p>
         </div>
         <div style="border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; padding: 24px;">
-          <h2 style="font-size: 20px; font-weight: 800; margin: 0 0 6px; color: #0B1F3B;">Consultation Confirmed! 🎖️</h2>
+          <h2 style="font-size: 20px; font-weight: 800; margin: 0 0 6px; color: #0B1F3B;">🎖️ Book Your Free Benefit Review</h2>
           <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 16px;">
             Hi ${firstName},<br/><br/>
-            Your 15-minute Veteran's Next Home™ Benefit Review consultation is confirmed.
+            Your profile has been confirmed. Click below to book your free 15-minute <strong>Veteran's Next Home™ Benefit Review</strong> with Bennett Liss, CEO of BuyWiser.
           </p>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <a href="https://calendly.com/bennett-13/pre-consultation-call-with-bennett-liss-ceo-of-buywiser" style="display: inline-block; padding: 14px 28px; background: #C62828; color: #fff; font-weight: 800; font-size: 14px; border-radius: 10px; text-decoration: none;">
+              📅 Book My Free Benefit Review →
+            </a>
+          </div>
 
           <div style="background: #f1f5f9; border-left: 4px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
             <p style="margin: 0 0 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #10b981;">What to Expect</p>
