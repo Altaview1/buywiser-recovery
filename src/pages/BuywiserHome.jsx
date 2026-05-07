@@ -25,32 +25,28 @@ function RWBStripe() {
 // ── FAQ ────────────────────────────────────────────────────────────────────────
 const FAQS = [
   {
-    q: "Is this a government VA program?",
-    a: "No. Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private Buywiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+    q: "Do I need a Personal Benefit Code to get started?",
+    a: "No. The code helps personalize your review if you received a mailer, but you can start your Veteran's Next Home™ Benefit Review without one."
   },
   {
-    q: "How do I receive the full 1.5% benefit?",
-    a: "The full benefit is typically available when Buywiser coordinates both the purchase-side real estate process and financing for your next home."
+    q: "How do I receive the full 1.5% GAP Benefit?",
+    a: "The full 1.5% is available when Buywiser coordinates both the real estate side and the financing on your next purchase. If you only use Buywiser for financing, you may receive up to 0.5%. Real estate side only is up to 1.0%."
   },
   {
     q: "Can I still find homes myself?",
-    a: "Yes. Many buyers find homes online. Buywiser can help you tour, evaluate, structure offers, finance, and close — while still giving you the benefit."
+    a: "Yes. Many buyers find homes online. Buywiser coordinates the professional pieces — touring access, offer strategy, negotiation, financing, and closing benefit structure — while you stay in control of the search."
   },
   {
-    q: "How does Buywiser handle showings?",
-    a: "Buywiser coordinates touring access as part of the next-home process. The buyer does not need to manage the process alone."
+    q: "Is this a government VA program?",
+    a: "No. The Veteran's Next Home™ Program and the Buywiser 1.5 GAP Benefit™ are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
   },
   {
     q: "What if I only use Buywiser for financing?",
-    a: "A partial benefit may be available. The financing-only benefit is generally up to 0.5%, depending on transaction details."
+    a: "You can still receive a partial GAP Benefit — up to 0.5% of your next home's purchase price — when Buywiser handles the financing side only."
   },
   {
-    q: "What if I only use Buywiser for the real estate side?",
-    a: "A partial benefit may be available. The real-estate-only benefit is generally up to 1.0%, depending on transaction details."
-  },
-  {
-    q: "Do I need a Personal Benefit Code?",
-    a: "No. The code helps personalize your review if you received a mailer, but you can start your Veteran's Next Home™ Review without one."
+    q: "Do my spouse or significant other also qualify?",
+    a: "Yes. The Veteran's Next Home™ Program extends to the veteran's spouse or significant other. Both may qualify for the Buywiser 1.5 GAP Benefit™."
   },
 ];
 
@@ -474,25 +470,6 @@ function LandingView() {
             <p className="text-slate-500 text-sm leading-relaxed max-w-xl mx-auto">
               The GAP Benefit is the new name for what was previously called the "1% Veteran Rebate" or "Buywiser Veteran Savings Program." Same benefit — clearer name — more powerful structure.
             </p>
-          </div>
-
-          {/* Old vs New */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Previously Known As</p>
-              <ul className="space-y-2">
-                {["Veteran Rebate Program", "1% Veteran Savings", "Buywiser Veteran Benefit"].map(item => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-slate-500">
-                    <span className="text-slate-300 font-bold text-base line-through">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="border-2 rounded-2xl p-5" style={{ borderColor: RED, background: "#fff5f5" }}>
-              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: RED }}>Now Called</p>
-              <p className="text-lg font-black mb-1" style={{ color: NAVY }}>Buywiser 1.5 GAP Benefit™</p>
-              <p className="text-xs text-slate-500 leading-relaxed">Part of the <strong>Veteran's Next Home™ Program</strong> — up to 1.5% back at closing on your next home purchase.</p>
-            </div>
           </div>
 
           {/* What GAP stands for */}

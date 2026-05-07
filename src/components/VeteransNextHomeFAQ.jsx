@@ -3,36 +3,44 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const FAQS = [
   {
-    q: "What is the Buywiser 1.5 GAP Benefit™?",
-    a: "The Buywiser 1.5 GAP Benefit™ is part of the Veteran's Next Home™ Program and is designed to help qualifying veteran homeowners bridge common next-home transition expenses. It provides up to 1.5% back when your next purchase is coordinated through BuyWiser. It is a private program not affiliated with the VA."
+    q: "What exactly is the Buywiser 1.5 GAP Benefit™?",
+    a: "It's a private financial benefit — up to 1.5% of your next home's purchase price — delivered as a credit at closing. It's part of the Veteran's Next Home™ Program, designed specifically to help qualifying veteran homeowners bridge the transition costs between selling their current home and buying their next one. It is not a government program and is not affiliated with the VA."
   },
   {
-    q: "Who qualifies for the Buywiser 1.5 GAP Benefit™?",
-    a: "You must be selling a home financed with a VA loan and planning to purchase another home. The benefit applies to veterans and active-duty service members. You don't need to stay with your current real estate agent."
+    q: "Do I qualify?",
+    a: "You likely qualify if: (1) your current or recently sold home was financed with a VA loan within the last 7 years, (2) you or your spouse/significant other served in any branch of the U.S. military, and (3) you're planning to purchase another home. Both the veteran and their spouse or significant other may qualify."
   },
   {
-    q: "How much can I receive through the 1.5 GAP Benefit™?",
-    a: "The benefit is based on your next home purchase price: up to 1.5% when Buywiser coordinates both real estate and financing. Partial benefits (up to 1.0% for real estate only, up to 0.5% for financing only) may apply depending on how the purchase is structured. For example, a $700,000 home could qualify for up to $10,500."
+    q: "How much money is the benefit? Give me a real example.",
+    a: "The benefit is up to 1.5% of your next home's purchase price. On a $700,000 home, that's up to $10,500. On a $900,000 home, up to $13,500. The exact amount depends on how your purchase is structured through Buywiser."
   },
   {
-    q: "Do I have to use BuyWiser for everything?",
-    a: "No. You can keep your current real estate agent and just use BuyWiser for financing (up to 0.5% 1.5 GAP Benefit™). Or you can use BuyWiser for real estate only (up to 1.0%). For the full 1.5%, BuyWiser coordinates both pieces."
+    q: "What does '1.5%' depend on — when do I get the full amount?",
+    a: "The full 1.5% is available when Buywiser coordinates both the real estate side and the financing on your next home purchase. If you only use Buywiser for financing, the benefit is up to 0.5%. If you only use Buywiser for the real estate side, it's up to 1.0%. For the full benefit, Buywiser handles both."
   },
   {
-    q: "Is this affiliated with the VA?",
-    a: "No. Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private BuyWiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs."
+    q: "Can I keep my current real estate agent?",
+    a: "Yes. If you're committed to your current agent, you can still use Buywiser for financing and receive up to 0.5% back. However, the full 1.5% requires Buywiser to coordinate the real estate process as well."
   },
   {
-    q: "When can I start my Benefit Review?",
-    a: "You can start right now — it takes less than 3 minutes. You'll answer a few questions about your next-home plans, and a BuyWiser specialist will follow up with your personalized benefit estimate and options."
+    q: "Where does the money go — is it cash in my pocket?",
+    a: "The benefit is delivered as a credit at closing on your next home purchase. This reduces your out-of-pocket closing costs or can be applied toward your purchase depending on the loan program structure. Buywiser will explain exactly how it's applied based on your situation."
   },
   {
-    q: "What if I'm underwater on my current home?",
-    a: "You can still qualify. The Veteran's Next Home™ benefit is about your *next* purchase, not your current sale. If you're selling at a loss, that doesn't disqualify you from next-home benefits."
+    q: "What does Buywiser actually do as part of this program?",
+    a: "Buywiser coordinates your entire next-home process: strategy review, touring access, offer preparation, negotiation support, financing, transaction coordination, and benefit structure at closing. You can still find homes yourself — Buywiser handles the professional pieces around it."
   },
   {
-    q: "How is the benefit paid?",
-    a: "The benefit is typically delivered as a credit at closing on your next home purchase — reducing your out-of-pocket costs at closing or available as a cash credit depending on the loan program."
+    q: "My home was financed with a VA loan but I'm selling at a loss. Do I still qualify?",
+    a: "Yes. The GAP Benefit is about your next purchase, not your current sale. Selling at a loss or being underwater on your current home does not disqualify you from the Veteran's Next Home™ Benefit Review."
+  },
+  {
+    q: "Is this a government benefit or VA program?",
+    a: "No. The Veteran's Next Home™ Program and the Buywiser 1.5 GAP Benefit™ are private programs offered exclusively through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency."
+  },
+  {
+    q: "How do I get started?",
+    a: "Start your Veteran's Next Home™ Benefit Review on this page — it takes less than 3 minutes. Enter your contact info and a Buywiser specialist will follow up within one business day with your personalized benefit estimate and next steps. No cost, no obligation."
   },
 ];
 
