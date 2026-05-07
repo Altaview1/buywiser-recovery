@@ -166,6 +166,16 @@ export default function VTONScan() {
         benefit_review_status: "SCHEDULED",
       });
 
+      // Send confirmation email to homeowner
+      if (form.email) {
+        base44.integrations.Core.SendEmail({
+          to: form.email,
+          from_name: "BuyWiser — Veteran's Next Home™",
+          subject: "Your Veteran's Next Home™ Benefit Review is Confirmed",
+          body: `Hi ${form.first_name || "there"},\n\nThank you for completing your Veteran's Next Home™ Benefit Review scan. We've received your information and a BuyWiser specialist will be in touch shortly to walk you through your Buywiser 1.5 GAP Benefit™.\n\nWhat happens next:\n• A BuyWiser specialist will contact you within 1 business day\n• We'll review your personalized benefit estimate\n• No cost, no obligation — just straight answers\n\nQuestions in the meantime? Call us at (818) 300-2642 or reply to this email.\n\nThank you for your service,\nThe BuyWiser Team\n\n---\nBuyWiser Technology, Inc. NMLS #1887767\nNot affiliated with the U.S. Department of Veterans Affairs.`,
+        }).catch(() => {}); // fire-and-forget, don't block UI
+      }
+
       // Tier-based payment on scheduling
       if (lead?.activator_id && lead?.rep_code) {
         // Fetch activator tier
