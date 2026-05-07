@@ -401,40 +401,36 @@ function LandingView() {
             <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Buywiser 1.5 GAP Benefit™</span>
           </h1>
 
-          {/* Subheadline — personalized based on opp QR data */}
+          {/* Subheadline */}
           {oppAddress ? (
-            <div className="mb-6 max-w-xl mx-auto">
-              <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
-                Congratulations on listing{" "}
-                <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.{" "}
-                Verification has proceeded and you are entitled to the Buywiser 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.
+            <div className="mb-8 max-w-lg mx-auto">
+              <p className="text-white font-black text-lg sm:text-xl leading-snug mb-1">
+                Congratulations on listing <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.
               </p>
-              <p className="text-blue-300 text-xs italic">
-                Only available through Buywiser's Veteran's Next Home™ Program.
-              </p>
+              <p className="text-blue-300 text-sm">You appear to qualify for the Buywiser 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.</p>
             </div>
           ) : (
-            <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-              <span className="text-white font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Buywiser's 1.5 GAP Benefit™ helps qualifying veteran homeowners bridge the gap costs associated with purchasing their next home.
-            </p>
+            <div className="mb-8 max-w-lg mx-auto space-y-2">
+              <p className="text-white text-xl sm:text-2xl font-black leading-tight">
+                Up to 1.5% back on your next home purchase.
+              </p>
+              <p className="text-blue-300 text-sm leading-relaxed">
+                For qualifying veterans selling a VA-financed home — delivered as a credit at closing.
+              </p>
+            </div>
           )}
 
           {/* Cody & Frank callout */}
-          <div className="inline-flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 mb-6 mx-auto max-w-xl">
-            <span className="text-2xl">🎖️</span>
-            <p className="text-sm text-left leading-snug">
-              <span className="text-white font-black">See how Navy Veterans Cody &amp; Frank</span>
-              <span className="text-blue-200"> put </span>
-              <span className="font-black" style={{ color: "#fbbf24" }}>$9,500 back in their pocket</span>
-              <span className="text-blue-200"> on their next home purchase using the Buywiser 1.5 GAP Benefit™.</span>
-              <span className="block text-xs text-blue-400 mt-1 italic">Watch their story below ↓</span>
-            </p>
+          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-4 mb-8 mx-auto max-w-lg text-left">
+            <span className="text-3xl flex-shrink-0">🎖️</span>
+            <div>
+              <p className="text-white font-black text-sm leading-snug">
+                Navy Veterans Cody &amp; Frank received{" "}
+                <span style={{ color: "#fbbf24" }}>$9,500 back</span> on their next home.
+              </p>
+              <p className="text-blue-300 text-xs mt-1">Watch their story below ↓</p>
+            </div>
           </div>
-
-          {/* Support line */}
-          <p className="text-blue-300 text-sm italic mb-8">
-            Secure your Veteran's Next Home™ Benefits before your next purchase is finalized.
-          </p>
 
           {/* CTAs */}
           <div className="flex justify-center">
