@@ -413,7 +413,7 @@ function LandingView() {
           ) : (
             <div className="mb-7 max-w-lg mx-auto space-y-2">
               <p className="text-white text-xl sm:text-2xl font-black leading-tight">
-                Veterans may receive over $10,000 toward their next home purchase.
+                Veterans using GAP Benefits receive up to $15,000 toward their next home purchase.
               </p>
               <p className="text-blue-300 text-sm leading-relaxed">
                 For qualifying veterans selling a VA-financed home and buying their next one.
