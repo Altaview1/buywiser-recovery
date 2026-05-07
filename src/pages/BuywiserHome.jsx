@@ -569,10 +569,11 @@ function LandingView() {
       <section className="px-4 py-14" style={{ background: "#F5F7FA" }}>
         <div className="max-w-xl mx-auto">
           <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Who This Is For</p>
-          <h2 className="text-2xl font-extrabold text-center mb-6" style={{ color: NAVY }}>Built for Veterans Making Their Next Move</h2>
+          <h2 className="text-2xl font-extrabold text-center mb-2" style={{ color: NAVY }}>Built for Veterans — and Their Spouses — Making Their Next Move</h2>
+          <p className="text-sm text-slate-500 text-center leading-relaxed mb-6 max-w-md mx-auto">Both the veteran and their spouse or significant other may qualify for this benefit.</p>
           <div className="space-y-2.5">
             {[
-              "Selling a home financed with a VA loan",
+              "Selling a home that had a VA loan (within the last 7 years)",
               "Planning to buy another home",
               "Comparing VA and conventional financing options",
               "Interested in receiving the Buywiser 1.5 GAP Benefit™",
