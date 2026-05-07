@@ -461,6 +461,72 @@ function LandingView() {
 
       <RWBStripe />
 
+      {/* ── GAP Benefit Explainer ── */}
+      <section className="px-4 py-14 bg-white">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <div className="inline-block bg-amber-100 border border-amber-300 text-amber-800 text-xs font-black uppercase tracking-widest px-4 py-1.5 rounded-full mb-4">
+              Program Update
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-3" style={{ color: NAVY }}>
+              What Is the Buywiser 1.5 GAP Benefit™?
+            </h2>
+            <p className="text-slate-500 text-sm leading-relaxed max-w-xl mx-auto">
+              The GAP Benefit is the new name for what was previously called the "1% Veteran Rebate" or "Buywiser Veteran Savings Program." Same benefit — clearer name — more powerful structure.
+            </p>
+          </div>
+
+          {/* Old vs New */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Previously Known As</p>
+              <ul className="space-y-2">
+                {["Veteran Rebate Program", "1% Veteran Savings", "Buywiser Veteran Benefit"].map(item => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-slate-500">
+                    <span className="text-slate-300 font-bold text-base line-through">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="border-2 rounded-2xl p-5" style={{ borderColor: RED, background: "#fff5f5" }}>
+              <p className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: RED }}>Now Called</p>
+              <p className="text-lg font-black mb-1" style={{ color: NAVY }}>Buywiser 1.5 GAP Benefit™</p>
+              <p className="text-xs text-slate-500 leading-relaxed">Part of the <strong>Veteran's Next Home™ Program</strong> — up to 1.5% back at closing on your next home purchase.</p>
+            </div>
+          </div>
+
+          {/* What GAP stands for */}
+          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+            <div className="px-5 py-3" style={{ background: NAVY }}>
+              <p className="text-white text-xs font-black uppercase tracking-widest">What "GAP" Means</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
+              {[
+                { letter: "G", word: "Gap", desc: "Bridges the financial gap between selling your current home and closing on your next one." },
+                { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing — not a loan, not a rebate." },
+                { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses." },
+              ].map(({ letter, word, desc }) => (
+                <div key={letter} className="px-5 py-4 bg-white">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm flex-shrink-0" style={{ background: RED }}>{letter}</span>
+                    <span className="font-black text-slate-800">{word}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-relaxed">{desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-center">
+            <p className="text-sm text-blue-800 leading-relaxed">
+              <strong>Same benefit you may have heard about before — now up to 1.5%</strong> when your next purchase is fully coordinated through Buywiser (real estate + financing).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <RWBStripe />
+
       {/* ── Qualification Criteria ── */}
       <QualificationCriteria onScrollToCTA={scrollToCTA} />
 
