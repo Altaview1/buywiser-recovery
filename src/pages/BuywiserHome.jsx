@@ -312,9 +312,6 @@ function LandingView() {
         <div className="flex items-center justify-between">
           <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
           <div className="flex items-center gap-2">
-            <a href="tel:+18183002642" className="flex items-center gap-1 text-sm font-semibold text-blue-700">
-              <Phone className="h-4 w-4" /><span className="hidden sm:inline">(818) 300-2642</span><span className="sm:hidden">Call</span>
-            </a>
             <a href="/activator-admin" className="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition border border-slate-700">
               ⚙️ Admin
             </a>
