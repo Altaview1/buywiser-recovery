@@ -60,9 +60,9 @@ export default function LeadCaptureForm({ prefillCode }) {
         <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
           <CheckCircle className="h-6 w-6 text-green-600" />
         </div>
-        <h3 className="text-lg font-bold text-slate-900 mb-1">You've Been Assigned a BuyWiser Concierge</h3>
+        <h3 className="text-lg font-bold text-slate-900 mb-1">Your Benefit Review is Confirmed</h3>
         <p className="text-sm text-slate-500">
-          A BuyWiser Concierge has been assigned to go over your Red White &amp; Blue Purchase Benefit and will be in touch within one business day.
+          A BuyWiser specialist will be in touch within one business day to walk you through your Buywiser 1.5 GAP Benefit™.
         </p>
         <p className="text-xs text-slate-400 mt-3">Questions? Call (818) 300-2642</p>
       </div>
@@ -159,7 +159,7 @@ export default function LeadCaptureForm({ prefillCode }) {
       ) : (
         <div className="p-6 space-y-4">
           <p className="text-sm text-slate-600 leading-relaxed">
-            Schedule a consultation with a BuyWiser Concierge to discuss your next home transition and Red White &amp; Blue Purchase Benefit in detail.
+            Schedule a consultation with a BuyWiser specialist to discuss your next home transition and Buywiser 1.5 GAP Benefit™ in detail.
           </p>
           <a
             href="tel:+18183002642"
