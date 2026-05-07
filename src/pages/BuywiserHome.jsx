@@ -420,6 +420,11 @@ function LandingView() {
             </div>
           )}
 
+          {/* Video Testimonial */}
+          <div className="mb-6 max-w-2xl mx-auto w-full">
+            <VideoTestimonial />
+          </div>
+
           {/* Cody & Frank callout */}
           <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-2xl px-5 py-4 mb-8 mx-auto max-w-lg text-left">
             <span className="text-3xl flex-shrink-0">🎖️</span>
@@ -428,7 +433,6 @@ function LandingView() {
                 Navy Veterans Cody &amp; Frank received{" "}
                 <span style={{ color: "#fbbf24" }}>$9,500 in GAP Benefits</span> on their next home purchase.
               </p>
-              <p className="text-blue-300 text-xs mt-1">Watch their story below ↓</p>
             </div>
           </div>
 
@@ -441,12 +445,6 @@ function LandingView() {
             >
               Secure My Next Home™ Benefits <ArrowRight className="h-4 w-4" />
             </button>
-          </div>
-
-          {/* Video Testimonial */}
-          <div className="mt-12 max-w-2xl mx-auto w-full">
-            <VideoTestimonial />
-            <p className="text-center text-sm font-bold text-slate-700 mt-3 uppercase tracking-wide">Veterans Cody and Frank Receive Their GAP Benefits</p>
           </div>
         </div>
       </section>
