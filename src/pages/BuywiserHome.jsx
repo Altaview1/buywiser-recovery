@@ -312,8 +312,8 @@ function LandingView() {
         <div className="flex items-center justify-between">
           <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto opacity-80" />
           <div className="flex items-center gap-2">
-            <a href="/activator-admin" className="px-3 py-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition border border-slate-700">
-              ⚙️ Admin
+            <a href="/activator-admin" className="px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg transition border border-slate-700 flex items-center gap-1">
+              ⚙️ Admin Sign In
             </a>
             <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-700 rounded-md border border-slate-200">
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
