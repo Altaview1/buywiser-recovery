@@ -212,11 +212,11 @@ export default function VTONScan() {
         </div>
 
         <div className="bg-white/10 rounded-2xl px-4 py-2 mb-6">
-          <p className="text-xs font-black uppercase tracking-widest text-blue-300">Official Benefit Notice</p>
+          <p className="text-xs font-black uppercase tracking-widest text-blue-300">Veteran Home Sale Benefit Notice</p>
         </div>
 
         <h1 className="text-3xl font-extrabold text-white leading-tight mb-4 max-w-sm">
-          Your Veteran's Next Home™ Benefit Notice
+          Your Veteran Home Sale Benefit Notice
         </h1>
 
         <p className="text-blue-200 text-base leading-relaxed mb-3 max-w-sm">
@@ -224,14 +224,14 @@ export default function VTONScan() {
         </p>
 
         <p className="text-blue-300 text-sm leading-relaxed mb-8 max-w-sm">
-          Because your home is listed and connected to VA financing, you may qualify for Veteran's Next Home™ purchase benefits.
+          Because your home is listed and connected to VA financing, you may qualify for Buywiser's 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.
         </p>
 
         <div className="bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 py-3 mb-8 max-w-sm w-full text-left">
           <div className="flex items-start gap-2">
             <Heart className="h-4 w-4 text-amber-300 flex-shrink-0 mt-0.5" />
             <p className="text-amber-200 text-xs leading-relaxed">
-              Start your Benefit Review and <strong className="text-amber-100">direct a $50 donation to a veteran charity</strong> of your choice.
+              Start your Veteran's Next Home™ Benefit Review and <strong className="text-amber-100">direct a $50 donation to a veteran charity</strong> of your choice.
             </p>
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function VTONScan() {
             <Shield className="h-6 w-6 text-white" />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Confirm Where to Send Your Benefit Review</h2>
-          <p className="text-slate-500 text-sm leading-relaxed">This ensures your Veteran's Next Home™ Benefit Review reaches you.</p>
+          <p className="text-slate-500 text-sm leading-relaxed">This ensures your Veteran's Next Home™ Benefit Review details reach you.</p>
         </div>
 
         <div className="space-y-4 mb-6">
@@ -412,17 +412,17 @@ export default function VTONScan() {
   const benefitContent = {
     MORTGAGE: {
       headline: "Optimize Your Next Home Purchase (Without Changing Your Agent)",
-      body: "You can keep your current agent. This Veteran's Next Home™ Benefit Review focuses on your financing and purchase structure to ensure you're getting the best possible outcome.",
+      body: "You can keep your current agent. Your Veteran's Next Home™ Benefit Review helps determine how the Buywiser 1.5 GAP Benefit™ may apply to your next purchase — focusing on financing and purchase structure.",
       cta: "Review My Purchase Structure",
     },
     FULL_STACK: {
-      headline: "Maximize Your Veteran's Next Home™ Benefits",
-      body: "Your next home can be structured as a complete solution—representation and financing—to capture the full Veteran's Next Home™ benefits.",
+      headline: "Maximize Your Buywiser 1.5 GAP Benefit™",
+      body: "Your next home can be structured as a complete solution — representation and financing — to capture the full Buywiser 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.",
       cta: "Plan My Next Home Strategy",
     },
     UNDECIDED: {
       headline: "Understand Your Next Home Options",
-      body: "This Veteran's Next Home™ Benefit Review helps you understand your options before anything gets locked in.",
+      body: "Your Veteran's Next Home™ Benefit Review helps determine how the Buywiser 1.5 GAP Benefit™ may apply to your next purchase before anything gets locked in.",
       cta: "Start My Benefit Review",
     },
   };
@@ -452,7 +452,7 @@ export default function VTONScan() {
 
         <div className="bg-amber-400/20 border border-amber-400/40 rounded-xl px-4 py-3 mb-8 text-left">
           <p className="text-amber-200 text-xs leading-relaxed">
-            <strong className="text-amber-100">VA Confirmed:</strong> Your current VA financing is a key qualifier for this benefit structure.
+            <strong className="text-amber-100">VA Confirmed:</strong> Your current VA financing is a key qualifier for the Buywiser 1.5 GAP Benefit™.
           </p>
         </div>
 
@@ -502,9 +502,9 @@ export default function VTONScan() {
   );
 
   const schedulePreface = {
-    MORTGAGE: "This short Veteran's Next Home™ Benefit Review focuses on optimizing your financing and purchase structure. Your current agent remains in place.",
-    FULL_STACK: "This Veteran's Next Home™ Benefit Review will map out your full next-home strategy, including representation and financing.",
-    UNDECIDED: "This Veteran's Next Home™ Benefit Review will help clarify your next steps and options.",
+    MORTGAGE: "This Veteran's Next Home™ Benefit Review focuses on how the Buywiser 1.5 GAP Benefit™ may apply to your financing and purchase structure. Your current agent remains in place.",
+    FULL_STACK: "This Veteran's Next Home™ Benefit Review will map out your full next-home strategy — including how the Buywiser 1.5 GAP Benefit™ applies to representation and financing.",
+    UNDECIDED: "This Veteran's Next Home™ Benefit Review will help clarify your next steps and how the Buywiser 1.5 GAP Benefit™ may apply to your situation.",
   };
 
   // SCREEN 6 — SCHEDULE
@@ -514,7 +514,7 @@ export default function VTONScan() {
         <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 bg-green-100">
           <Calendar className="h-6 w-6 text-green-700" />
         </div>
-        <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Schedule Your Benefit Review</h2>
+        <h2 className="text-2xl font-extrabold text-slate-900 mb-2">Schedule Your Veteran's Next Home™ Benefit Review</h2>
         <div className="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 mb-4 text-left">
           <p className="text-blue-700 text-sm leading-relaxed">
             {schedulePreface[effectiveLeadType]}
@@ -531,7 +531,7 @@ export default function VTONScan() {
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
-            <span>Learn your exact benefit estimate</span>
+            <span>Learn your Buywiser 1.5 GAP Benefit™ estimate</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-slate-600">
             <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -551,7 +551,7 @@ export default function VTONScan() {
           className="block w-full py-4 rounded-2xl font-black text-base text-white transition hover:opacity-90 mb-3"
           style={{ background: RED }}
         >
-          Book Your Benefit Review <Calendar className="h-4 w-4 inline ml-1" />
+          Book Your Veteran's Next Home™ Benefit Review <Calendar className="h-4 w-4 inline ml-1" />
         </a>
 
         <button onClick={handleScheduled}
@@ -569,7 +569,7 @@ export default function VTONScan() {
         <div className="text-5xl mb-4">🎖️</div>
         <h2 className="text-2xl font-extrabold text-white mb-3">You're All Set</h2>
         <p className="text-blue-200 text-sm leading-relaxed mb-6">
-          Your Veteran's Next Home™ Benefit Review is confirmed. A BuyWiser specialist will be in touch shortly.
+          Your Veteran's Next Home™ Benefit Review is confirmed. A Buywiser specialist will be in touch shortly to walk you through the Buywiser 1.5 GAP Benefit™ and how it applies to your next purchase.
         </p>
         {charity && (
           <div className="bg-white/10 rounded-xl px-4 py-3 mb-6">

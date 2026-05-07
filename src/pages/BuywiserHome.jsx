@@ -242,7 +242,7 @@ function PageFooter() {
         className="h-9 w-auto mx-auto mb-4 opacity-50"
       />
       <p className="text-xs text-slate-400 max-w-2xl mx-auto leading-relaxed mb-2">
-        Veteran's Next Home™ and the Red White &amp; Blue Purchase Benefit are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Benefit amounts depend on transaction structure and qualifying details.{" "}
+        Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency. Benefit amounts depend on transaction structure and qualifying details.{" "}
         <a href="/Disclosures" className="underline hover:text-slate-600 transition">Licensing &amp; Disclosures</a>
       </p>
       <p className="text-xs text-slate-300">
@@ -384,8 +384,8 @@ function LandingView() {
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
-            Buywiser Veteran's Next Home™ Benefit —{" "}
-            <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Up to 1.5% Cash Back.</span>
+            Veteran's Next Home™ Program —{" "}
+            <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">Buywiser 1.5 GAP Benefit™</span>
           </h1>
 
           {/* Subheadline — personalized based on opp QR data */}
@@ -394,7 +394,7 @@ function LandingView() {
               <p className="text-white font-black text-base sm:text-lg leading-snug mb-2">
                 Congratulations on listing{" "}
                 <span style={{ color: "#fbbf24" }}>{oppAddress}</span>.{" "}
-                Verification has proceeded and you are entitled to the Veteran's Next Home™ Benefit.
+                Verification has proceeded and you are entitled to the Buywiser 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.
               </p>
               <p className="text-blue-300 text-xs italic">
                 Only available through Buywiser's Veteran's Next Home™ Program.
@@ -402,7 +402,7 @@ function LandingView() {
             </div>
           ) : (
             <p className="text-blue-200 text-base sm:text-lg leading-relaxed mb-6 max-w-xl mx-auto">
-              <span className="text-white font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through Buywiser.
+              <span className="text-white font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Buywiser's 1.5 GAP Benefit™ helps qualifying veteran homeowners bridge the gap costs associated with purchasing their next home.
             </p>
           )}
 
@@ -461,13 +461,8 @@ function LandingView() {
             <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
               Estimate Your
             </h2>
-            <div className="flex items-center justify-center gap-2 my-1">
-              <span className="text-lg font-black" style={{ color: RED }}>Red</span>
-              <span className="text-lg font-black text-white bg-slate-400 px-1 rounded">White</span>
-              <span className="text-lg font-black" style={{ color: NAVY }}>&amp; Blue</span>
-            </div>
-            <h2 className="text-2xl font-black uppercase tracking-wide leading-tight" style={{ color: NAVY }}>
-              Purchase Benefit
+            <h2 className="text-2xl font-black tracking-wide leading-tight" style={{ color: NAVY }}>
+              Buywiser 1.5 GAP Benefit™
             </h2>
             <div className="mt-2 h-1 w-32 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${RED}, #ffffff, ${NAVY})` }} />
           </div>
@@ -494,8 +489,8 @@ function LandingView() {
               },
               {
                 n: "3",
-                title: "Maximize your Red White & Blue Purchase Benefit",
-                desc: "When properly structured through Buywiser, the benefit can provide up to 1.5% back toward your Next Home™."
+                title: "Maximize your Buywiser 1.5 GAP Benefit™",
+                desc: "When properly structured through Buywiser, the Buywiser 1.5 GAP Benefit™ can provide up to 1.5% back toward your Next Home™."
               },
             ].map(({ n, title, desc }) => (
               <div key={n} className="flex gap-4 bg-slate-50 border border-slate-200 rounded-2xl px-5 py-4">
@@ -519,14 +514,14 @@ function LandingView() {
       <section className="px-4 py-14" style={{ background: "#F5F7FA" }}>
         <div className="max-w-xl mx-auto">
           <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-2">The Benefit</p>
-          <h2 className="text-2xl font-extrabold text-center mb-4" style={{ color: NAVY }}>The Red White &amp; Blue Purchase Benefit</h2>
+          <h2 className="text-2xl font-extrabold text-center mb-4" style={{ color: NAVY }}>Buywiser 1.5 GAP Benefit™</h2>
           <p className="text-sm text-slate-600 leading-relaxed text-center mb-8 max-w-md mx-auto">
-            A private Buywiser benefit for qualifying veteran homeowners selling a VA-financed home and purchasing another. Not a government program.
+            The Buywiser 1.5 GAP Benefit™ is part of the Veteran's Next Home™ Program and is designed to help qualifying veteran homeowners bridge common next-home transition expenses. Not a government program.
           </p>
 
           <div className="bg-white border-2 rounded-2xl px-6 py-5 flex items-center justify-between" style={{ borderColor: RED }}>
             <div>
-              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum Benefit</p>
+              <p className="text-xs font-black uppercase tracking-widest mb-0.5" style={{ color: RED }}>Maximum GAP Benefit</p>
               <p className="text-sm text-slate-700 font-medium">When the purchase is properly structured through Buywiser</p>
             </div>
             <p className="text-3xl font-black ml-4" style={{ color: RED }}>1.5%</p>
@@ -569,7 +564,7 @@ function LandingView() {
               "Selling a home financed with a VA loan",
               "Planning to buy another home",
               "Comparing VA and conventional financing options",
-              "Interested in receiving a meaningful purchase benefit",
+              "Interested in receiving the Buywiser 1.5 GAP Benefit™",
               "Open to a modern, efficient Next Home™ process",
             ].map((item) => (
               <div key={item} className="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3.5">
@@ -647,7 +642,7 @@ function LandingView() {
       <section className="px-4 py-12" style={{ background: NAVY }}>
         <div className="max-w-xl mx-auto text-center">
           <p className="text-white text-sm leading-relaxed mb-5 max-w-md mx-auto">
-            Before major Next Home™ decisions are finalized, review how Buywiser can structure your Red White &amp; Blue Purchase Benefit.
+            Before major Next Home™ decisions are finalized, review how Buywiser can structure your 1.5 GAP Benefit™ through the Veteran's Next Home™ Program.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
@@ -680,7 +675,7 @@ function LandingView() {
         <div className="max-w-xl mx-auto">
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
             <p className="text-xs text-slate-500 leading-relaxed text-center">
-              Veteran's Next Home™ and the Red White &amp; Blue Purchase Benefit are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.
+              Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private programs offered through Buywiser. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs or any government agency.
             </p>
           </div>
         </div>

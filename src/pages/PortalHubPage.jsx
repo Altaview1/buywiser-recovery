@@ -85,14 +85,14 @@ export default function PortalHubPage() {
             Veteran's Next Home™ Program
           </h1>
           <p className="text-xl text-slate-600 mb-8 leading-relaxed">
-            <span className="text-slate-900 font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Up to 1.5% cash back when your next purchase is coordinated through BuyWiser.
+            <span className="text-slate-900 font-bold">You are selling a VA-financed home — you qualify for the Veteran's Next Home™ Program.</span> Buywiser's 1.5 GAP Benefit™ helps qualifying veteran homeowners bridge the gap costs associated with purchasing their next home.
           </p>
           <a
             href="/vton-scan"
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-black text-lg text-white transition hover:shadow-lg active:scale-95"
             style={{ background: RED }}
           >
-            Claim My Veteran Next Home Benefits <ArrowRight className="h-5 w-5" />
+            Claim My Buywiser 1.5 GAP Benefit™ <ArrowRight className="h-5 w-5" />
           </a>
           <p className="text-xs text-slate-500 mt-4">No obligation. Takes less than 3 minutes.</p>
         </div>
@@ -118,9 +118,9 @@ export default function PortalHubPage() {
           <h2 className="text-3xl font-bold text-center mb-10" style={{ color: NAVY }}>How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
-              { icon: "📋", title: "Review Benefits", desc: "Understand your eligibility and potential benefit amount" },
+              { icon: "📋", title: "Review Your Benefit", desc: "Understand your eligibility for the Buywiser 1.5 GAP Benefit™" },
               { icon: "🏠", title: "Plan Your Next Home", desc: "Work with BuyWiser to structure your purchase" },
-              { icon: "💰", title: "Claim Your Benefit", desc: "Receive up to 1.5% cash back at closing" },
+              { icon: "💰", title: "Receive Your GAP Benefit", desc: "Buywiser 1.5 GAP Benefit™ — up to 1.5% at closing" },
             ].map((step, i) => (
               <div key={i} className="text-center">
                 <div className="text-4xl mb-3">{step.icon}</div>
@@ -164,7 +164,7 @@ export default function PortalHubPage() {
       {/* Footer */}
       <div className="px-4 py-8 text-center border-t border-slate-200 bg-white">
         <p className="text-xs text-slate-500">
-          Veteran's Next Home™ is a private BuyWiser program, not affiliated with the VA.
+          Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private BuyWiser programs, not affiliated with the VA.
         </p>
       </div>
     </div>

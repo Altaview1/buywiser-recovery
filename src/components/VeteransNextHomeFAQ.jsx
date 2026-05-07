@@ -3,24 +3,24 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 
 const FAQS = [
   {
-    q: "What is the Veteran's Next Home™ benefit?",
-    a: "It's a private BuyWiser program (not affiliated with the VA) that provides up to 1.5% cash back when you purchase your next home after selling a VA-financed property. The benefit is only available through BuyWiser."
+    q: "What is the Buywiser 1.5 GAP Benefit™?",
+    a: "The Buywiser 1.5 GAP Benefit™ is part of the Veteran's Next Home™ Program and is designed to help qualifying veteran homeowners bridge common next-home transition expenses. It provides up to 1.5% back when your next purchase is coordinated through BuyWiser. It is a private program not affiliated with the VA."
   },
   {
-    q: "Who qualifies for the Veteran's Next Home™ benefit?",
+    q: "Who qualifies for the Buywiser 1.5 GAP Benefit™?",
     a: "You must be selling a home financed with a VA loan and planning to purchase another home. The benefit applies to veterans and active-duty service members. You don't need to stay with your current real estate agent."
   },
   {
-    q: "How much can I get back?",
+    q: "How much can I receive through the 1.5 GAP Benefit™?",
     a: "The benefit is based on your next home purchase price: up to 1.5% when Buywiser coordinates both real estate and financing. Partial benefits (up to 1.0% for real estate only, up to 0.5% for financing only) may apply depending on how the purchase is structured. For example, a $700,000 home could qualify for up to $10,500."
   },
   {
     q: "Do I have to use BuyWiser for everything?",
-    a: "No. You can keep your current real estate agent and just use BuyWiser for financing (up to 0.5% benefit). Or you can use BuyWiser for real estate only (up to 1.0% benefit). For the full 1.5%, BuyWiser coordinates both pieces."
+    a: "No. You can keep your current real estate agent and just use BuyWiser for financing (up to 0.5% 1.5 GAP Benefit™). Or you can use BuyWiser for real estate only (up to 1.0%). For the full 1.5%, BuyWiser coordinates both pieces."
   },
   {
     q: "Is this affiliated with the VA?",
-    a: "No. Veteran's Next Home™ and the Red White & Blue Purchase Benefit are private BuyWiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs."
+    a: "No. Veteran's Next Home™ and the Buywiser 1.5 GAP Benefit™ are private BuyWiser programs. They are not affiliated with or endorsed by the U.S. Department of Veterans Affairs."
   },
   {
     q: "When can I start my Benefit Review?",
