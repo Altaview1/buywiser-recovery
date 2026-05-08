@@ -49,6 +49,10 @@ const FAQS = [
     q: "Do my spouse or significant other also qualify?",
     a: "Yes. The Veteran's Next Home™ Program extends to the veteran's spouse or significant other. Both may qualify for the Buywiser 1.5 GAP Benefit™."
   },
+  {
+    q: "What if I already have an agent I'm working with?",
+    a: "You can still receive a portion of the GAP Benefit. If you're using your own agent, your exact benefit amount will be clearly disclosed upfront — no guessing. We'll walk you through exactly what you qualify for based on how the transaction is structured."
+  },
 ];
 
 function FAQ() {
