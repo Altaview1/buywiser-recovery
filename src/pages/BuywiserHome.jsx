@@ -477,7 +477,7 @@ function LandingView() {
               {[
                 { letter: "G", word: "Gap", desc: "Bridges the financial gap that veteran homeowners face when buying their next home — covering costs at closing on the new purchase." },
                 { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing on your next home purchase — not a loan, not a rebate." },
-                { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses — applied to the next home purchase, not the sale." },
+                { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses — applied to the next home purchase." },
               ].map(({ letter, word, desc }) => (
                 <div key={letter} className="px-5 py-4 bg-white">
                   <div className="flex items-center gap-2 mb-2">
