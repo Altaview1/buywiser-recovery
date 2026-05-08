@@ -28,7 +28,7 @@ export default function QualificationCriteria({ onScrollToCTA }) {
           This Benefit Isn't for Everyone.
         </h2>
         <p className="text-sm text-slate-500 text-center leading-relaxed mb-2 max-w-md mx-auto">
-          The Buywiser 1.5 GAP Benefit™ is part of a private, structured program — not a public offer. It's reserved for qualifying veteran homeowners <strong className="text-slate-700">and their spouses or significant others</strong> in the Veteran's Next Home™ Program. Both the veteran and their partner may qualify.
+          Reserved for qualifying veteran homeowners — and their spouses or significant others — through the Veteran's Next Home™ Program.
         </p>
 
         {/* "You qualify" callout */}
