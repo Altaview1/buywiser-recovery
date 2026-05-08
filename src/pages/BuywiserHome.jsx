@@ -471,9 +471,9 @@ function LandingView() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
               {[
-                { letter: "G", word: "Gap", desc: "Bridges the financial gap between selling your current home and closing on your next one." },
-                { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing — not a loan, not a rebate." },
-                { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses." },
+                { letter: "G", word: "Gap", desc: "Bridges the financial gap that veteran homeowners face when buying their next home — covering costs at closing on the new purchase." },
+                { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing on your next home purchase — not a loan, not a rebate." },
+                { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses — applied to the next home purchase, not the sale." },
               ].map(({ letter, word, desc }) => (
                 <div key={letter} className="px-5 py-4 bg-white">
                   <div className="flex items-center gap-2 mb-2">
@@ -488,7 +488,7 @@ function LandingView() {
 
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-center">
             <p className="text-sm text-blue-800 leading-relaxed">
-              <strong>Veterans may receive over $10,000</strong> when their next purchase is fully coordinated through Buywiser (real estate + financing).
+            <strong>Veterans may receive over $10,000 at closing on their next home purchase</strong> when both the real estate and financing are coordinated through Buywiser.
             </p>
           </div>
         </div>
@@ -531,8 +531,8 @@ function LandingView() {
             {[
               {
                 n: "1",
-                title: "Review your transition timing",
-                desc: "We look at where you are in the sale process and when you expect to buy again."
+                title: "Review your next home purchase plan",
+                desc: "We look at your timeline and situation to understand when and where you plan to buy your next home."
               },
               {
                 n: "2",
@@ -574,7 +574,7 @@ function LandingView() {
           <div className="bg-white border-2 rounded-2xl px-6 py-6 flex items-center justify-between gap-6" style={{ borderColor: RED }}>
             <div className="flex-1">
               <p className="text-xs font-black uppercase tracking-widest mb-1.5" style={{ color: RED }}>Veterans May Receive</p>
-              <p className="text-sm text-slate-700 font-medium leading-snug">When the purchase is properly structured through Buywiser</p>
+              <p className="text-sm text-slate-700 font-medium leading-snug">Applied as a credit at closing on your next home purchase — when structured through Buywiser</p>
             </div>
             <div className="flex-shrink-0 text-right">
               <p className="text-3xl font-black leading-tight" style={{ color: RED }}>Over<br/>$10,000*</p>
