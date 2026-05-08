@@ -492,7 +492,7 @@ function LandingView() {
 
           <div className="mt-6 bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 text-center">
             <p className="text-sm text-blue-800 leading-relaxed">
-            <strong>Veterans may receive over $10,000 at closing on their next home purchase</strong> when both the real estate and financing are coordinated through Buywiser.
+            <strong>Veterans may receive over $10,000 at closing on their next home purchase.</strong>
             </p>
           </div>
         </div>
