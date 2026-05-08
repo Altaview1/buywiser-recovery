@@ -11,15 +11,29 @@ Deno.serve(async (req) => {
     const phone = data.phone || "N/A";
     const email = data.email || "N/A";
     const loanType = data.loan_type || "N/A";
-    const comments = data.comments ? `\nNote: ${data.comments}` : "";
+    const comments = data.comments ? `\n\nNote: ${data.comments}` : "";
+    const formType = data.form_type || "contact";
+    const howHeard = data.how_heard || "N/A";
 
-    const message =
+    const smsMessage =
       `🔔 New BuyWiser Lead!\n` +
       `Name: ${name}\n` +
       `Phone: ${phone}\n` +
       `Email: ${email}\n` +
       `Goal: ${loanType}${comments}`;
 
+    const emailBody =
+      `🔔 New Veteran Inquiry — Action Required\n\n` +
+      `Name: ${name}\n` +
+      `Phone: ${phone}\n` +
+      `Email: ${email}\n` +
+      `Goal / Loan Type: ${loanType}\n` +
+      `Form Type: ${formType}\n` +
+      `Source: ${howHeard}` +
+      comments +
+      `\n\n---\nReply promptly — veterans respond best within the first hour.`;
+
+    // Send SMS via Twilio
     const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
     const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
     const fromNumber = Deno.env.get("TWILIO_FROM_NUMBER");
@@ -38,19 +52,25 @@ Deno.serve(async (req) => {
         body: new URLSearchParams({
           From: fromNumber,
           To: toNumber,
-          Body: message,
+          Body: smsMessage,
         }),
       }
     );
 
-    const result = await smsRes.json();
-
+    const smsResult = await smsRes.json();
     if (!smsRes.ok) {
-      console.error("Twilio error:", result);
-      return Response.json({ error: result.message }, { status: 500 });
+      console.error("Twilio error:", smsResult);
     }
 
-    return Response.json({ success: true, sid: result.sid });
+    // Send email alert via Base44
+    await base44.asServiceRole.integrations.Core.SendEmail({
+      to: "bennett@buywiser.com",
+      from_name: "BuyWiser Alerts",
+      subject: `🔔 New Veteran Inquiry: ${name} — ${phone}`,
+      body: emailBody,
+    });
+
+    return Response.json({ success: true });
   } catch (error) {
     console.error("Error:", error.message);
     return Response.json({ error: error.message }, { status: 500 });
