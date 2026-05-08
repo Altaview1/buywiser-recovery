@@ -476,7 +476,7 @@ function LandingView() {
             <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-slate-200">
               {[
                 { letter: "G", word: "Gap", desc: "Bridges the financial gap that veteran homeowners face when buying their next home — covering costs at closing on the new purchase." },
-                { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing on your next home purchase — not a loan, not a rebate." },
+                { letter: "A", word: "Assistance", desc: "Structured financial assistance delivered as a credit at closing on your next home purchase." },
                 { letter: "P", word: "Program", desc: "A private Buywiser program exclusively for qualifying veteran homeowners and their spouses — applied to the next home purchase." },
               ].map(({ letter, word, desc }) => (
                 <div key={letter} className="px-5 py-4 bg-white">
