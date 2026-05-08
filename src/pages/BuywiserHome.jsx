@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Search, FileText, DollarSign, Users, Briefcase, Menu, X, Phone } from "lucide-react";
 import LeadCaptureForm from "../components/LeadCaptureForm";
+import ApplicationProgressSteps from "../components/ApplicationProgressSteps";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
 import QualificationCriteria from "../components/QualificationCriteria";
@@ -440,6 +441,11 @@ function LandingView() {
               </p>
             </div>
           )}
+
+          {/* Progress Steps */}
+          <div className="mb-6">
+            <ApplicationProgressSteps />
+          </div>
 
           {/* CTA */}
           <div className="flex justify-center">
