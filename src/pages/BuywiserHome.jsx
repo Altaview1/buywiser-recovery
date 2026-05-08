@@ -393,7 +393,7 @@ function LandingView() {
       <RWBStripe />
 
       {/* ── Hero ── */}
-      <section style={{ background: NAVY }} className="px-4 py-16 sm:py-24">
+      <section style={{ background: NAVY }} className="px-4 py-10 sm:py-16">
         <div className="max-w-2xl mx-auto text-center">
           {/* Top label */}
           <div className="inline-flex items-center gap-2 mb-5 px-4 py-1.5 rounded-full border border-white/20 bg-white/10">
@@ -401,10 +401,26 @@ function LandingView() {
           </div>
 
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-5 leading-tight tracking-tight">
             Veteran's Next Home™ Program —{" "}
             <span style={{ color: "#ef9a9a" }} className="whitespace-nowrap">GAP Benefits</span>
           </h1>
+
+          {/* Video Testimonial — top position */}
+          <div className="mb-5 max-w-xl mx-auto w-full">
+            <VideoTestimonial />
+          </div>
+
+          {/* Cody & Frank caption */}
+          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 mb-6 mx-auto max-w-lg text-left">
+            <span className="text-2xl flex-shrink-0">🎖️</span>
+            <div>
+              <p className="text-white font-black text-sm leading-snug">
+                Navy Veterans Cody &amp; Frank received{" "}
+                <span style={{ color: "#fbbf24" }}>$9,500 in GAP Benefits</span> on their next home purchase.
+              </p>
+            </div>
+          </div>
 
           {/* Subheadline */}
           {oppAddress ? (
@@ -425,23 +441,7 @@ function LandingView() {
             </div>
           )}
 
-          {/* Video Testimonial */}
-          <div className="mb-6 max-w-xl mx-auto w-full">
-            <VideoTestimonial />
-          </div>
-
-          {/* Cody & Frank callout */}
-          <div className="flex items-center gap-3 bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 mb-8 mx-auto max-w-lg text-left">
-            <span className="text-2xl flex-shrink-0">🎖️</span>
-            <div>
-              <p className="text-white font-black text-sm leading-snug">
-                Navy Veterans Cody &amp; Frank received{" "}
-                <span style={{ color: "#fbbf24" }}>$9,500 in GAP Benefits</span> on their next home purchase.
-              </p>
-            </div>
-          </div>
-
-          {/* CTAs */}
+          {/* CTA */}
           <div className="flex justify-center">
             <button
               onClick={scrollToCTA}
