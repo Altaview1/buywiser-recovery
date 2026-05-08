@@ -464,7 +464,7 @@ function LandingView() {
               What Are GAP Benefits?
             </h2>
             <p className="text-slate-500 text-sm leading-relaxed max-w-xl mx-auto">
-              GAP Benefits help qualifying veteran homeowners bridge common next-home transition expenses when the purchase is properly structured through Buywiser.
+              GAP Benefits help qualifying veteran homeowners bridge common next-home transition expenses.
             </p>
           </div>
 
