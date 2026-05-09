@@ -1,0 +1,88 @@
+{
+  "name": "BuyerRebateLead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Buyer full name"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "property_link": {
+      "type": "string",
+      "description": "Zillow, Redfin, Realtor.com or other listing URL"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Property address if no link"
+    },
+    "desired_area": {
+      "type": "string",
+      "description": "City or area buyer wants to purchase in"
+    },
+    "approximate_purchase_price": {
+      "type": "number",
+      "description": "Approximate purchase price"
+    },
+    "purchase_timeline": {
+      "type": "string",
+      "enum": [
+        "0-3 months",
+        "3-6 months",
+        "6-12 months",
+        "Just exploring"
+      ],
+      "description": "When buyer plans to purchase"
+    },
+    "working_with_agent": {
+      "type": "string",
+      "enum": [
+        "Yes",
+        "No",
+        "Not yet"
+      ],
+      "description": "Whether buyer is working with an agent"
+    },
+    "source_campaign": {
+      "type": "string",
+      "description": "UTM campaign"
+    },
+    "source_platform": {
+      "type": "string",
+      "description": "UTM source/medium (zillow, facebook, google, etc.)"
+    },
+    "source_geography": {
+      "type": "string",
+      "description": "Geographic targeting from ad"
+    },
+    "referring_ad_source": {
+      "type": "string",
+      "description": "Raw referrer or ad source string"
+    },
+    "lead_category": {
+      "type": "string",
+      "default": "GENERAL_BUYER_REBATE",
+      "description": "Always GENERAL_BUYER_REBATE \u2014 do not mix with VTON"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "closed"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "phone"
+  ]
+}
