@@ -111,7 +111,7 @@ export default function BuyerCashBack() {
               onClick={scrollToForm}
               className="px-5 py-2 bg-slate-900 text-white text-sm font-bold rounded-xl hover:bg-slate-800 transition"
             >
-              Check My Property
+              Check A Property
             </button>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function BuyerCashBack() {
                 onClick={scrollToForm}
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-amber-400 hover:bg-amber-300 text-slate-900 font-bold rounded-xl text-base transition shadow-lg"
               >
-                Check My Property <ArrowRight className="h-4 w-4" />
+                Check A Property <ArrowRight className="h-4 w-4" />
               </button>
               <a
                 href="tel:+18183002642"
@@ -204,7 +204,7 @@ export default function BuyerCashBack() {
             onClick={scrollToForm}
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-base transition"
           >
-            Check My Property <ArrowRight className="h-4 w-4" />
+            Check A Property <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </section>
@@ -284,7 +284,7 @@ export default function BuyerCashBack() {
             onClick={scrollToForm}
             className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-base transition shadow-md"
           >
-            Check My Property <ArrowRight className="h-4 w-4" />
+            Check A Property <ArrowRight className="h-4 w-4" />
           </button>
         </div>
       </section>
