@@ -183,9 +183,9 @@ export default function BuyerCashBack() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Real California Buyers</p>
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-            See how Buywiser buyers reduced the cost of buying a home.
+            Real California buyers. Real savings at closing.
           </h2>
-          <p className="text-slate-500 text-sm mb-8">Real buyers. Real savings. Real closing results.</p>
+          <p className="text-slate-500 text-sm mb-8">See what Buywiser buyers have experienced.</p>
 
           {/* Video placeholder */}
           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100 aspect-video flex items-center justify-center mb-8 relative">
