@@ -301,17 +301,56 @@ export default function BuyerCashBack() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="py-10 px-4 text-center border-t border-slate-100 bg-white">
-        <img
-          src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
-          alt="BuyWiser"
-          className="h-8 w-auto mx-auto mb-4 opacity-40"
-        />
-        <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed mb-2">
-          This is a private Buywiser program. Not a government benefit. Buyer savings are subject to transaction structure, eligibility, and applicable rules. "Up to" amounts are estimates only. No obligation to proceed.{" "}
-          <a href="/Disclosures" className="underline hover:text-slate-600">Licensing &amp; Disclosures</a>
-        </p>
-        <p className="text-xs text-slate-300">BuyWiser Technology, Inc. NMLS #1887767 · CA DRE #01107013 · © {new Date().getFullYear()}</p>
+      <footer className="py-12 px-4 border-t border-slate-100 bg-white">
+        <div className="max-w-3xl mx-auto">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <img
+              src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png"
+              alt="BuyWiser"
+              className="h-8 w-auto opacity-40"
+            />
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-6">
+            {/* Equal Housing */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <svg className="h-4 w-4 text-slate-400 flex-shrink-0" viewBox="0 0 40 40" fill="currentColor"><path d="M20 4L2 16h4v20h28V16h4L20 4zm0 3.5L34 17v1h-2V34H8V18H6L20 7.5zM16 20h8v2h-8v-2zm0 4h8v2h-8v-2z"/></svg>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">Equal Housing Lender</span>
+            </div>
+            {/* NMLS */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <div className="w-4 h-4 rounded bg-blue-700 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[7px] font-black">NMLS</span>
+              </div>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">NMLS #1887767</span>
+            </div>
+            {/* CA DRE */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <div className="w-4 h-4 rounded bg-amber-600 flex items-center justify-center flex-shrink-0">
+                <svg className="h-2.5 w-2.5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+              </div>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">CA DRE #01107013</span>
+            </div>
+            {/* DFPI */}
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg">
+              <div className="w-4 h-4 rounded bg-slate-600 flex items-center justify-center flex-shrink-0">
+                <svg className="h-2.5 w-2.5 text-white" viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+              </div>
+              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide">CA DFPI Licensed</span>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <p className="text-xs text-slate-400 text-center max-w-xl mx-auto leading-relaxed mb-3">
+            This is a private Buywiser program. Not a government benefit. Buyer savings are subject to transaction structure, eligibility, and applicable rules. "Up to" amounts are estimates only. No obligation to proceed.{" "}
+            <a href="/Disclosures" className="underline hover:text-slate-600 transition">Licensing &amp; Disclosures</a>
+          </p>
+          <p className="text-[10px] text-slate-300 text-center">
+            BuyWiser Technology, Inc. DBA BuyWiser Home Loans · NMLS #1887767 · CA DRE #01107013 · © {new Date().getFullYear()}
+          </p>
+        </div>
       </footer>
     </div>
   );
