@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: "What if I already have an agent?",
-    a: "It is common to switch representation when substantial money is saved. You will make the final decision on that. We will help you look at your options.",
+    a: "It is common to switch representation when substantial money is saved. You will make the final decision on that. We will help you look at your options. Note: switching representation can only be done if you are not currently under a buyer's contract and have not yet toured the home you are interested in.",
   },
   {
     q: "Is this a government program?",
