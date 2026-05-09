@@ -275,7 +275,7 @@ export default function BuyerCashBack() {
       <section className="py-16 bg-amber-50 border-y border-amber-100">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 leading-tight">
-            Before You Contact The Listing Agent, Check If The Property Qualifies.
+            Before You Tour A Property, Check If The Property Qualifies.
           </h2>
           <p className="text-slate-500 text-sm mb-7 max-w-md mx-auto">
             Some buyer benefits may depend on when and how you engage representation.
