@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: "What if I already have an agent?",
-    a: "You may still request a review, but available options may be limited if you have already committed to representation or toured the property with another agent.",
+    a: "It is common to switch representation when substantial money is saved. You will make the final decision on that. We will help you look at your options.",
   },
   {
     q: "Is this a government program?",
