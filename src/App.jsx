@@ -45,7 +45,7 @@ import FieldRepDashboard from './pages/FieldRepDashboard';
 import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
 import QRScanDashboard from './pages/QRScanDashboard';
 import PortalHubPage from './pages/PortalHubPage';
-import BuyerRebate from './pages/BuyerRebate';
+import BuyerCashBack from './pages/BuyerCashBack';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -131,7 +131,7 @@ function App() {
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />
           <Route path="/admin-settings" element={<AdminSettings />} />
-          <Route path="/cashback" element={<BuyerRebate />} />
+          <Route path="/cashback" element={<BuyerCashBack />} />
           
           {/* All other routes — auth-protected */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
