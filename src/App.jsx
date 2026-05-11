@@ -47,6 +47,7 @@ import QRScanDashboard from './pages/QRScanDashboard';
 import PortalHubPage from './pages/PortalHubPage';
 import BuyerCashBack from './pages/BuyerCashBack';
 import SmartBuy from './pages/SmartBuy';
+import SmartBuyOrchestrator from './components/smartbuy/SmartBuyOrchestrator';
 import TokenRewindPage from './pages/TokenRewindPage';
 import Marketplace from './pages/Marketplace';
 import OurExperts from './pages/OurExperts';
@@ -140,6 +141,7 @@ function App() {
           <Route path="/admin-settings" element={<AdminSettings />} />
           <Route path="/cashback" element={<BuyerCashBack />} />
           <Route path="/smartbuy" element={<SmartBuy />} />
+          <Route path="/smartbuy-workflow" element={<SmartBuyOrchestrator />} />
           <Route path="/token-rewind" element={<TokenRewindPage />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/our-experts" element={<OurExperts />} />
