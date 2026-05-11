@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw, Users } from "lucide-react";
+import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw, Users, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
@@ -79,8 +80,26 @@ export default function SmartBuy() {
   const [price, setPrice] = useState(DEFAULT_PRICE);
   const [unlockOpen, setUnlockOpen] = useState(false);
   const [tokensSpent, setTokensSpent] = useState(0);
+  const [loading, setLoading] = useState(false);
   const formRef = useRef(null);
   const savingsPool = Math.round(price * 0.025);
+
+  const handleAddressChange = async (e) => {
+    const value = e.target.value;
+    // Check if it's a URL
+    if (value.includes("zillow.com") || value.includes("redfin.com") || value.includes("realtor.com")) {
+      setLoading(true);
+      try {
+        const response = await base44.functions.invoke("fetchPropertyFromUrl", { url: value });
+        if (response.data?.price) {
+          setPrice(response.data.price);
+        }
+      } catch (err) {
+        console.error("Failed to fetch property:", err);
+      }
+      setLoading(false);
+    }
+  };
 
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -188,14 +207,19 @@ export default function SmartBuy() {
                   {/* Address Input */}
                   <div className="mb-6">
                     <label className="block text-xs font-black text-slate-700 mb-3 uppercase tracking-wider">Property Address or Link</label>
-                    <input
-                      type="text"
-                      placeholder="e.g., 123 Main St, Los Angeles, CA or Zillow link..."
-                      defaultValue=""
-                      className="w-full px-5 py-3.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition bg-slate-50 hover:bg-white"
-                    />
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="e.g., 123 Main St, Los Angeles, CA or Zillow link..."
+                        onChange={handleAddressChange}
+                        className="w-full px-5 py-3.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition bg-slate-50 hover:bg-white"
+                      />
+                      {loading && (
+                        <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 animate-spin" />
+                      )}
+                    </div>
                     <p className="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
-                      <span>⚡</span> Updates automatically as you type
+                      <span>⚡</span> Updates automatically as you type or paste a Zillow link
                     </p>
                   </div>
 
