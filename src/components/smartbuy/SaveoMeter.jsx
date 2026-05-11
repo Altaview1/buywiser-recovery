@@ -22,8 +22,9 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
     }
   });
 
-  const remaining = savingsPool - cashSpent - earnedSavings;
+  const remaining = Math.max(0, savingsPool - cashSpent - earnedSavings);
   const percentComplete = (completedStages.filter(s => s <= 6).length / 6) * 100;
+  const balanceChange = cashSpent > 0 ? `−${formatCurrency(cashSpent)}` : "—";
   
   // Calculate remaining balance at each stage
   // Balance = Full Pool - (Earned % from stages up to this point) - (Total cash spent)
@@ -58,11 +59,32 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
 
       {/* Main Content */}
       <div className="px-5 py-4">
+        {/* Real-Time Balance */}
+        <div className="mb-5 p-3 bg-white rounded-lg border-2 border-emerald-500 shadow-sm">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-1">YOUR CUSTOM SAVINGS POOL</p>
+          <div className="flex items-baseline justify-between mb-2">
+            <span className="text-4xl font-black text-emerald-700">{formatCurrency(remaining)}</span>
+            <span className="text-xs text-slate-500 text-right">
+              <p className="font-bold">Pool: {formatCurrency(savingsPool)}</p>
+              <p>Spent: {balanceChange}</p>
+            </span>
+          </div>
+          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-300"
+              style={{ width: `${((savingsPool - remaining) / savingsPool) * 100}%` }}
+            />
+          </div>
+          <p className="text-[10px] text-slate-600 mt-1.5">
+            {cashSpent > 0 ? `${((cashSpent / savingsPool) * 100).toFixed(1)}% of your pool allocated to services` : "No services selected yet"}
+          </p>
+        </div>
+
         {/* Earned Savings */}
         <div className="mb-4">
           <p className="text-xs font-semibold text-emerald-700 uppercase tracking-widest mb-1">You've Earned</p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-black text-emerald-700">{formatCurrency(earnedSavings)}</span>
+            <span className="text-2xl font-black text-emerald-700">{formatCurrency(earnedSavings)}</span>
             <span className="text-xs text-emerald-600">of {formatCurrency(savingsPool)}</span>
           </div>
         </div>
@@ -95,14 +117,18 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
           })}
         </div>
 
-        {/* Footer Info */}
-        <div className="pt-3 border-t border-emerald-200 text-[10px] text-emerald-700 font-semibold space-y-1">
+        {/* Footer Summary */}
+        <div className="pt-3 border-t border-emerald-200 text-[10px] text-slate-600 font-semibold space-y-1">
           <div className="flex justify-between">
-            <span>Cash Spent:</span>
-            <span>− {formatCurrency(cashSpent)}</span>
+            <span>Original Pool:</span>
+            <span className="text-slate-900 font-black">{formatCurrency(savingsPool)}</span>
+          </div>
+          <div className="flex justify-between bg-blue-50 rounded px-2 py-1">
+            <span>Services Allocated:</span>
+            <span className="text-blue-900 font-black">− {formatCurrency(cashSpent)}</span>
           </div>
           <div className="flex justify-between bg-emerald-100 rounded px-2 py-1">
-            <span>Final Pool at Closing:</span>
+            <span>Your Balance Now:</span>
             <span className="text-emerald-900 font-black">{formatCurrency(remaining)}</span>
           </div>
         </div>
