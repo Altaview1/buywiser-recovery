@@ -169,6 +169,68 @@ export default function ConsultationStage({ onContinue }) {
           </div>
         </div>
 
+        {/* Loan Submission Section */}
+        <div className="bg-white rounded-2xl border-2 border-blue-200 p-8 mb-8">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0 text-lg">
+              📋
+            </div>
+            <div>
+              <h3 className="text-2xl font-black text-slate-900 mb-2">Ready to Apply?</h3>
+              <p className="text-slate-600 leading-relaxed">
+                Start your formal loan application with Blink Mortgage. It takes 10-15 minutes, and AI will answer any questions along the way.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Self-guided option */}
+            <a
+              href="https://www.blink.mortgage/app/signup/p/Buywiser/bennettliss?campaign=BennettLiss"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col gap-3 p-5 border-2 border-emerald-300 bg-emerald-50 rounded-xl hover:bg-emerald-100 transition"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🤖</span>
+                <p className="font-black text-emerald-900">AI-Guided (Free)</p>
+              </div>
+              <p className="text-sm text-emerald-800">
+                Complete the application yourself. AI chatbot answers any questions instantly.
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-emerald-700 font-bold mt-auto">
+                <span>→ Start Application</span>
+              </div>
+            </a>
+
+            {/* Hand-held option */}
+            <button
+              onClick={() => alert('Hand-held guidance: A licensed loan officer will walk you through the application process step-by-step. Cost: $25 (deducted from your token pool).\n\nThis option is available by calling (818) 300-2642 or through your SmartBuy dashboard.')}
+              className="flex flex-col gap-3 p-5 border-2 border-amber-300 bg-amber-50 rounded-xl hover:bg-amber-100 transition text-left"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">👤</span>
+                  <div>
+                    <p className="font-black text-amber-900">Hand-Held Guidance</p>
+                    <p className="text-xs text-amber-700 font-bold">-$25 from savings pool</p>
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-amber-800">
+                Licensed loan officer walks you through every step. One-on-one support for complex situations.
+              </p>
+              <div className="flex items-center gap-1.5 text-xs text-amber-700 font-bold mt-auto">
+                <span>→ Request Assistance</span>
+              </div>
+            </button>
+          </div>
+
+          <p className="text-xs text-slate-500 text-center mt-6 leading-relaxed">
+            Both options are secure and encrypted. Your data is protected by Blink Mortgage's security standards and our compliance team. Questions? Call <span className="font-bold text-slate-700">(818) 300-2642</span>
+          </p>
+        </div>
+
         <div className="text-center">
           <button
             onClick={onContinue}
