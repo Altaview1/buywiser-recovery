@@ -95,8 +95,8 @@ export default function SmartBuyIntakeForm({ onSuccess, onPriceChange }) {
       {step === 1 && (
         <form onSubmit={handleNext} className="space-y-4">
           <div>
-            <label className={labelCls}>Property Link <span className="font-normal normal-case text-slate-500">(Zillow, Redfin, etc.)</span></label>
-            <input className={inputCls} placeholder="https://www.zillow.com/homedetails/..." value={form.property_link} onChange={e => set("property_link", e.target.value)} />
+            <label className={labelCls}>Copy & Paste a Property You're Interested In</label>
+            <input className={inputCls} placeholder="https://www.zillow.com/homedetails/... (or any listing link)" value={form.property_link} onChange={e => set("property_link", e.target.value)} />
           </div>
           <div className="flex items-center gap-3">
             <div className="flex-1 h-px bg-slate-700" />
