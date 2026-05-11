@@ -15,6 +15,7 @@ import ReferralSection from "../components/smartbuy/ReferralSection";
 import TokenTutorial from "../components/smartbuy/TokenTutorial";
 import MyReports from "../components/smartbuy/MyReports";
 import TestimonialRotator from "../components/smartbuy/TestimonialRotator";
+import SmartBuyTestimonials from "../components/smartbuy/SmartBuyTestimonials";
 import SavingsMeterHero from "../components/smartbuy/SavingsMeterHero";
 import StageCompletionPopup from "../components/smartbuy/StageCompletionPopup";
 
@@ -286,6 +287,9 @@ export default function SmartBuy() {
           </div>
         </div>
       </section>
+
+      {/* Customer Testimonials */}
+      <SmartBuyTestimonials />
 
       {/* ── Meet Your Expert ── */}
       <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-slate-50">
