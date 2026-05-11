@@ -2,11 +2,11 @@ import { useState } from "react";
 import { RotateCcw, ShieldCheck, ChevronDown, ChevronUp, CheckCircle, AlertTriangle } from "lucide-react";
 
 const REWINDABLE = [
-  { icon: "🔍", label: "Property Intelligence Report", desc: "Not satisfied with the analysis? We replace the provider or refund your tokens." },
-  { icon: "📋", label: "Mortgage Pre-Qualification Guidance", desc: "Guidance that doesn't meet the mark? Full token refund or a qualified 2nd advisor steps in." },
+  { icon: "🔍", label: "Property Intelligence Report", desc: "Not satisfied with the analysis? We replace the provider or refund your SmartBuy Cash™." },
+  { icon: "📋", label: "Mortgage Pre-Qualification Guidance", desc: "Guidance that doesn't meet the mark? Full cash refund or a qualified 2nd advisor steps in." },
   { icon: "✍️", label: "Offer Strategy Review", desc: "If the strategy advice falls short before submission, we make it right." },
-  { icon: "📁", label: "Transaction & Document Management", desc: "Coordination errors or missed deadlines? Provider replaced or tokens refunded." },
-  { icon: "⚖️", label: "Real Estate Legal Review", desc: "Unsatisfied with the legal guidance? A second attorney reviews — at no extra token cost." },
+  { icon: "📁", label: "Transaction & Document Management", desc: "Coordination errors or missed deadlines? Provider replaced or cash refunded." },
+  { icon: "⚖️", label: "Real Estate Legal Review", desc: "Unsatisfied with the legal guidance? A second attorney reviews — at no extra SmartBuy Cash™ cost." },
 ];
 
 const NON_REWINDABLE = [
@@ -30,10 +30,10 @@ export default function TokenRewind({ onGetStarted }) {
             <span className="text-xs font-black text-violet-400 uppercase tracking-widest">SmartBuy™ Guarantee</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-white mb-4 leading-tight">
-            Token Rewind™ Guarantee
+            SmartBuy Savings Guarantee™
           </h2>
           <p className="text-slate-300 text-base max-w-2xl mx-auto leading-relaxed">
-            Every provider in the SmartBuy™ network has agreed — in writing — that <strong className="text-white">you have the final word.</strong> If a service falls short, we replace the provider at no additional token cost, or we refund your tokens in full.
+            Every provider in the SmartBuy™ network has agreed — in writing — that <strong className="text-white">you have the final word.</strong> If a service falls short, we replace the provider at no additional SmartBuy Cash™ cost, or we refund your cash in full.
           </p>
         </div>
 
@@ -67,28 +67,28 @@ export default function TokenRewind({ onGetStarted }) {
               </div>
 
               {/* How it works */}
-              <div className="lg:col-span-2 space-y-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">How Token Rewind™ Works</p>
-                {[
-                  {
-                    step: "1",
-                    color: "bg-violet-500/20 border-violet-500/40 text-violet-300",
-                    title: "You Unlock a Professional Service",
-                    desc: "A token cost is drawn from your Savings Pool. The provider is engaged and delivers their service.",
-                  },
-                  {
-                    step: "2",
-                    color: "bg-amber-500/20 border-amber-500/40 text-amber-300",
-                    title: "If You're Not Satisfied — You Say So",
-                    desc: "Rate the service. If the provider has not met the standard, you flag it. No forms, no runaround.",
-                  },
-                  {
-                    step: "3",
-                    color: "bg-emerald-500/20 border-emerald-500/40 text-emerald-300",
-                    title: "We Replace or Refund — Your Choice",
-                    desc: "Buywiser either assigns a qualified 2nd-choice provider at zero additional token cost, or refunds your tokens in full to your Savings Pool.",
-                  },
-                ].map(({ step, color, title, desc }) => (
+               <div className="lg:col-span-2 space-y-4">
+                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-3">How SmartBuy Savings Guarantee™ Works</p>
+                 {[
+                   {
+                     step: "1",
+                     color: "bg-violet-500/20 border-violet-500/40 text-violet-300",
+                     title: "You Allocate SmartBuy Cash™ for a Service",
+                     desc: "Cash is allocated from your Savings Pool. The provider is engaged and delivers their service.",
+                   },
+                   {
+                     step: "2",
+                     color: "bg-amber-500/20 border-amber-500/40 text-amber-300",
+                     title: "If You're Not Satisfied — You Say So",
+                     desc: "Rate the service. If the provider has not met the standard, you flag it. No forms, no runaround.",
+                   },
+                   {
+                     step: "3",
+                     color: "bg-emerald-500/20 border-emerald-500/40 text-emerald-300",
+                     title: "We Replace or Refund — Your Choice",
+                     desc: "Buywiser either assigns a qualified 2nd-choice provider at zero additional SmartBuy Cash™ cost, or refunds your cash in full to your Savings Pool.",
+                   },
+                 ].map(({ step, color, title, desc }) => (
                   <div key={step} className="flex items-start gap-4 bg-white/5 rounded-2xl px-5 py-4 border border-white/10">
                     <div className={`w-8 h-8 rounded-xl border flex items-center justify-center flex-shrink-0 font-black text-sm ${color}`}>{step}</div>
                     <div>
@@ -111,7 +111,7 @@ export default function TokenRewind({ onGetStarted }) {
             <div>
               <p className="text-sm font-black text-white mb-1">Why Every Provider Brings Their Best</p>
               <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">
-                Every professional in the SmartBuy™ network has signed the <span className="text-white font-semibold">SmartBuy™ Vendor Terms & Conditions</span> — which explicitly bind them to the Token Rewind™ guarantee. They know before they start that you hold the right to an acceptable outcome. That accountability dynamic means you always get a professional operating at their highest standard.
+                Every professional in the SmartBuy™ network has signed the <span className="text-white font-semibold">SmartBuy™ Vendor Terms & Conditions</span> — which explicitly bind them to the SmartBuy Savings Guarantee™. They know before they start that you hold the right to an acceptable outcome. That accountability dynamic means you always get a professional operating at their highest standard.
               </p>
             </div>
           </div>
@@ -120,7 +120,7 @@ export default function TokenRewind({ onGetStarted }) {
         {/* Rewindable services grid */}
         <div className="mb-8">
           <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400 mb-4 flex items-center gap-2">
-            <RotateCcw className="h-3 w-3" /> Services Covered by Token Rewind™
+            <RotateCcw className="h-3 w-3" /> Services Covered by SmartBuy Savings Guarantee™
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {REWINDABLE.map((s, i) => (

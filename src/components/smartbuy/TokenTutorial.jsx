@@ -11,12 +11,12 @@ const TUTORIALS = [
     steps: [
       { num: 1, text: "Find a property on Zillow or your local MLS" },
       { num: 2, text: "Open SmartBuy and go to 'Property Intelligence Marketplace'" },
-      { num: 3, text: "Choose 'HouseCanary Property Valuation' (30 tokens)" },
+      { num: 3, text: "Choose 'HouseCanary Property Valuation' ($30 SmartBuy Cash™)" },
       { num: 4, text: "Enter the property address or listing URL" },
       { num: 5, text: "Receive AI valuation + comparable sales data within 2 hours" },
       { num: 6, text: "Use the data to decide if the asking price is fair" }
     ],
-    tokenCost: 30,
+    cashCost: "$30",
     timeline: "2-4 hours"
   },
   {
@@ -30,11 +30,11 @@ const TUTORIALS = [
       { num: 2, text: "Open SmartBuy and go to 'Professional Services'" },
       { num: 3, text: "Select 'Buyer Agent Support' or 'Offer Strategy Review'" },
       { num: 4, text: "Fill in your name, phone, and property details" },
-      { num: 5, text: "Confirm the token cost (typically 1,000-1,200 tokens)" },
+      { num: 5, text: "Confirm the SmartBuy Cash™ cost (typically $1,000–$1,200)" },
       { num: 6, text: "Licensed agent contacts you within 4 hours" },
       { num: 7, text: "Get personalized advice on offer price, terms, and negotiation" }
     ],
-    tokenCost: "1,000+",
+    cashCost: "$1,000+",
     timeline: "4 hours"
   },
   {
@@ -46,13 +46,13 @@ const TUTORIALS = [
     steps: [
       { num: 1, text: "Know your credit score and approximate down payment" },
       { num: 2, text: "Go to SmartBuy 'Mortgage Guidance' in Professional Services" },
-      { num: 3, text: "Select 'Mortgage Consultation with Bennett Liss' (800 tokens)" },
+      { num: 3, text: "Select 'Mortgage Consultation with Bennett Liss' ($800 SmartBuy Cash™)" },
       { num: 4, text: "Enter your contact info and current mortgage situation" },
       { num: 5, text: "Submit—Bennett's team will call within 2 hours" },
       { num: 6, text: "Discuss pre-approval, rates, loan programs, and timeline" },
       { num: 7, text: "Get a personalized loan offer with no upfront cost" }
     ],
-    tokenCost: 800,
+    cashCost: "$800",
     timeline: "2 hours"
   }
 ];
@@ -109,16 +109,16 @@ export default function TokenTutorial() {
     <section className="px-4 sm:px-6 py-16 border-t border-slate-100 bg-slate-50">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200 border border-slate-300 mb-4">
-            <Zap className="h-3.5 w-3.5 text-slate-700" />
-            <span className="text-xs font-black text-slate-700 uppercase tracking-widest">Get Started</span>
-          </div>
-          <h2 className="text-3xl font-black text-slate-900 mb-2">How to Use Your Token Pool</h2>
-          <p className="text-slate-600 text-base max-w-2xl mx-auto">
-            Follow these simple steps to unlock expert advice and property intelligence with your tokens.
-          </p>
-        </div>
+         <div className="text-center mb-10">
+           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-200 border border-slate-300 mb-4">
+             <Zap className="h-3.5 w-3.5 text-slate-700" />
+             <span className="text-xs font-black text-slate-700 uppercase tracking-widest">Get Started</span>
+           </div>
+           <h2 className="text-3xl font-black text-slate-900 mb-2">How to Use Your SmartBuy Cash™</h2>
+           <p className="text-slate-600 text-base max-w-2xl mx-auto">
+             Follow these simple steps to allocate your cash and unlock expert advice and property intelligence.
+           </p>
+         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Sidebar: Tutorial Selection */}
@@ -152,21 +152,21 @@ export default function TokenTutorial() {
                   </div>
                 </div>
 
-                {/* Token & Timeline Info */}
+                {/* Cash & Timeline Info */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   <div className={`rounded-lg px-3 py-2 ${
                     tutorial.color === "emerald" ? "bg-emerald-50 border border-emerald-200" :
                     tutorial.color === "blue" ? "bg-blue-50 border border-blue-200" :
                     "bg-amber-50 border border-amber-200"
                   }`}>
-                    <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-0.5">Token Cost</p>
+                    <p className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mb-0.5">SmartBuy Cash™ Cost</p>
                     <div className="flex items-baseline gap-1">
                       <Zap className={`h-4 w-4 ${
                         tutorial.color === "emerald" ? "text-emerald-600" :
                         tutorial.color === "blue" ? "text-blue-600" :
                         "text-amber-600"
                       }`} />
-                      <p className="font-black text-lg">{tutorial.tokenCost}</p>
+                      <p className="font-black text-lg">{tutorial.cashCost}</p>
                     </div>
                   </div>
                   <div className="rounded-lg px-3 py-2 bg-slate-50 border border-slate-200">
@@ -197,8 +197,8 @@ export default function TokenTutorial() {
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
           {[
             { icon: "⏱️", title: "Quick Timeline", text: "Most expert consultations happen within 2-4 hours" },
-            { icon: "💰", title: "Keep Your Savings", text: "Unused tokens = cash rebate at closing" },
-            { icon: "🔄", title: "Token Rewind™", text: "Unhappy with a service? Request a replacement or refund" }
+            { icon: "💰", title: "Keep Your Savings", text: "Unspent SmartBuy Cash™ = cash rebate at closing" },
+            { icon: "🔄", title: "SmartBuy Savings Guarantee™", text: "Unhappy with a service? Request a replacement or refund" }
           ].map((tip, i) => (
             <div key={i} className="p-4 rounded-xl border border-slate-200 bg-white text-center">
               <p className="text-2xl mb-2">{tip.icon}</p>

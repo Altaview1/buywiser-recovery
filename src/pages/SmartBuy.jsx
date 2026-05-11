@@ -83,7 +83,7 @@ export default function SmartBuy() {
   const [submittedLead, setSubmittedLead] = useState(null);
   const [price, setPrice] = useState(DEFAULT_PRICE);
   const [unlockOpen, setUnlockOpen] = useState(false);
-  const [tokensSpent, setTokensSpent] = useState(0);
+  const [cashSpent, setCashSpent] = useState(0);
   const [loading, setLoading] = useState(false);
   const [completionPopup, setCompletionPopup] = useState({ isOpen: false, stage: null });
   const formRef = useRef(null);
@@ -120,8 +120,8 @@ export default function SmartBuy() {
         isOpen={unlockOpen}
         onClose={() => setUnlockOpen(false)}
         savingsPool={savingsPool}
-        cashSpent={tokensSpent}
-        onUnlock={(cost) => setTokensSpent(t => t + cost)}
+        cashSpent={cashSpent}
+        onUnlock={(cost) => setCashSpent(c => c + cost)}
       />
 
       <StageCompletionPopup
@@ -139,7 +139,7 @@ export default function SmartBuy() {
           <div className="flex items-center gap-6">
             <a href="/marketplace" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Marketplace</a>
             <a href="/our-experts" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Experts</a>
-            <a href="/token-rewind" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Token Rewind™</a>
+            <a href="/token-rewind" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Savings Guarantee™</a>
             <a href="tel:+18183002642" className="hidden md:block text-xs font-semibold text-slate-600">(818) 300-2642</a>
             <button onClick={scrollToForm} className="px-5 py-2 bg-emerald-500 text-white text-xs font-black rounded-lg hover:bg-emerald-600 transition">
               Get Started
@@ -521,7 +521,7 @@ export default function SmartBuy() {
       {/* ── Property Services Marketplace™ ── */}
       <PropertyServicesMarketplace savingsPool={savingsPool} />
 
-      {/* ── Token Rewind™ Guarantee ── */}
+      {/* ── SmartBuy Cash™ Savings Guarantee ── */}
       <TokenRewind onGetStarted={scrollToForm} />
 
       {/* ── Common Questions ── */}
@@ -536,7 +536,7 @@ export default function SmartBuy() {
         </section>
       )}
 
-      {/* ── Token Tutorial ── */}
+      {/* ── SmartBuy Cash™ Allocation Guide ── */}
       <TokenTutorial />
 
       {/* ── Referral Section ── */}
