@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { CheckCircle, ArrowRight, ChevronDown, ChevronUp, Tag, Shield, Home, Search, FileText, DollarSign, Users, Briefcase, Menu, X, Phone } from "lucide-react";
 import LeadCaptureForm from "../components/LeadCaptureForm";
+import GetStartedForm from "../components/GetStartedForm";
 import ApplicationProgressSteps from "../components/ApplicationProgressSteps";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
@@ -673,31 +674,16 @@ function LandingView() {
         </div>
       </section>
 
-      {/* ── Start My Review (CTA Form) ── */}
-      <section ref={ctaRef} style={{ background: "#F5F7FA" }} className="sticky top-0 z-40 px-4 py-14">
+      {/* ── Get Started Form (CTA) ── */}
+      <section ref={ctaRef} style={{ background: "#F5F7FA" }} className="px-4 py-14">
         <div className="max-w-xl mx-auto">
           <div className="rounded-2xl overflow-hidden border-2 border-slate-200 shadow-sm">
             <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
-              <p className="text-white font-black text-base uppercase tracking-widest">Start Your Veteran's Next Home™ Benefit Review</p>
+              <p className="text-white font-black text-base uppercase tracking-widest">Get Started Today</p>
               <p className="text-blue-300 text-xs mt-1">No cost · No obligation · Response within 1 business day</p>
             </div>
-            <div className="p-6 bg-white space-y-4">
-              {/* Optional code field */}
-              <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
-                  <Tag className="h-3.5 w-3.5 text-slate-400" />
-                  Have a Personal Benefit Code? <span className="font-normal text-slate-400 normal-case ml-1">(optional)</span>
-                </label>
-                <input
-                  type="text"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value.toUpperCase())}
-                  placeholder="Enter the code from your mailer"
-                  className="w-full px-4 py-3 text-sm border-2 border-slate-200 rounded-xl focus:outline-none focus:border-blue-600 transition bg-white uppercase tracking-widest"
-                />
-                <p className="mt-1.5 text-xs text-slate-400">No code? No problem. You can still start your Veteran's Next Home™ Benefit Review.</p>
-              </div>
-              <LeadCaptureForm prefillCode={code} />
+            <div className="p-6 bg-white">
+              <GetStartedForm />
             </div>
           </div>
         </div>
