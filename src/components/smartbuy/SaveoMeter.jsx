@@ -13,7 +13,7 @@ function formatCurrency(n) {
   return Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-export default function SaveoMeter({ savingsPool = 18750, completedStages = [], currentStage = 1, tokensSpent = 0 }) {
+export default function SaveoMeter({ savingsPool = 18750, completedStages = [], currentStage = 1, cashSpent = 0 }) {
   // Calculate earned savings from completed stages
   let earnedSavings = 0;
   STAGE_SAVINGS.forEach(s => {
@@ -22,11 +22,11 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
     }
   });
 
-  const remaining = savingsPool - tokensSpent - earnedSavings;
+  const remaining = savingsPool - cashSpent - earnedSavings;
   const percentComplete = (completedStages.filter(s => s <= 6).length / 6) * 100;
   
   // Calculate remaining balance at each stage
-  // Balance = Full Pool - (Earned % from stages up to this point) - (Total tokens spent)
+  // Balance = Full Pool - (Earned % from stages up to this point) - (Total cash spent)
   const getBalanceAtStage = (stage) => {
     let earnedUpToStage = 0;
     STAGE_SAVINGS.forEach(s => {
@@ -34,7 +34,7 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
         earnedUpToStage += savingsPool * s.pct;
       }
     });
-    return Math.max(0, savingsPool - earnedUpToStage - tokensSpent);
+    return Math.max(0, savingsPool - earnedUpToStage - cashSpent);
   };
 
   return (
@@ -98,8 +98,8 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
         {/* Footer Info */}
         <div className="pt-3 border-t border-emerald-200 text-[10px] text-emerald-700 font-semibold space-y-1">
           <div className="flex justify-between">
-            <span>Tokens Spent:</span>
-            <span>− {formatCurrency(tokensSpent)}</span>
+            <span>Cash Spent:</span>
+            <span>− {formatCurrency(cashSpent)}</span>
           </div>
           <div className="flex justify-between bg-emerald-100 rounded px-2 py-1">
             <span>Final Pool at Closing:</span>
