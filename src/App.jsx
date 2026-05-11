@@ -9,7 +9,7 @@ import Layout from './Layout.jsx';
 
 // Page imports
 import Home from './pages/Home';
-import MortgageReview from './pages/MortgageReview';
+import MortgageApplication from './pages/MortgageApplication';
 import Contact from './pages/Contact';
 import Calculators from './pages/Calculators';
 import Refinance from './pages/Refinance';
@@ -82,7 +82,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<BuywiserHome />} />
-      <Route path="/Apply" element={<LayoutWrapper currentPageName="Apply"><MortgageReview /></LayoutWrapper>} />
+      <Route path="/Apply" element={<MortgageApplication />} />
       <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><Contact /></LayoutWrapper>} />
       <Route path="/Calculators" element={<LayoutWrapper currentPageName="Calculators"><Calculators /></LayoutWrapper>} />
       <Route path="/Refinance" element={<LayoutWrapper currentPageName="Refinance"><Refinance /></LayoutWrapper>} />
