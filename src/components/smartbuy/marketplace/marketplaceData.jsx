@@ -6,9 +6,9 @@
 // ── Transaction Timeline Stages ──
 export const TRANSACTION_PHASES = [
   { id: "pre_offer", step: 1, icon: "🔍", label: "Property Intelligence", color: "emerald", when: "Before you make an offer", description: "Market analysis, property details, comparable sales, and neighborhood insights inform your offer price and strategy.", isClosing: false },
-  { id: "inspection", step: 2, icon: "🔬", label: "Inspection & Due Diligence", color: "blue", when: "After offer acceptance, during contingency period", description: "Professional inspections (home, roof, foundation, pool) and appraisal coordination to uncover any issues before closing.", isClosing: false },
-  { id: "appraisal", step: 3, icon: "📊", label: "Appraisal Coordination", color: "purple", when: "After inspection contingency clears", description: "Appraisal management, value disputes, and reconsideration requests to ensure fair property valuation.", isClosing: false },
-  { id: "mortgage", step: 4, icon: "🏦", label: "Mortgage Guidance", color: "amber", when: "Throughout the transaction", description: "Loan program guidance, rate optimization, document preparation, and closing cost review.", isClosing: false },
+  { id: "inspection", step: 2, icon: "🔬", label: "Inspection & Due Diligence", color: "blue", when: "After offer acceptance, during contingency period", description: "Professional inspections (home, roof, foundation, pool) and initial property evaluation to uncover any issues.", isClosing: false },
+  { id: "mortgage", step: 3, icon: "🏦", label: "Mortgage Submission", color: "amber", when: "After inspection contingency clears", description: "Loan program selection, pre-approval, rate lock, and formal loan submission to lender.", isClosing: false },
+  { id: "appraisal", step: 4, icon: "📊", label: "Appraisal Coordination", color: "purple", when: "After loan submission", description: "Appraisal management, value disputes, and reconsideration requests to ensure fair property valuation.", isClosing: false },
   { id: "closing", step: 5, icon: "🔑", label: "Closing Preparation", color: "rose", when: "10 days before closing", description: "Final walkthrough coordination, title issues, document signing, and settlement logistics.", isClosing: true },
   { id: "post_close", step: 6, icon: "📦", label: "Post-Close Distribution", color: "slate", when: "At closing and after", description: "Token credit application, final savings distribution, and moving/cleanup service coordination.", isClosing: false },
 ];
@@ -51,12 +51,12 @@ export const CLOSING_COST_ITEMS = [
 // ── AI-Powered Service Suggestions by Phase ──
 export const PHASE_SMART_SUGGESTIONS = {
   all: [],
-  pre_offer: ["comps_sale", "market_analysis", "property_details"],
-  inspection: ["general_inspection", "foundation_inspection", "appraisal_standard"],
-  appraisal: ["appraisal_standard", "appraisal_rov", "comps_appraisal"],
+  pre_offer: ["comps_sale", "market_analysis", "property_details", "hc_property_value", "hc_market_report"],
+  inspection: ["general_inspection", "foundation_inspection", "roof_inspection", "hc_risk_assessment"],
   mortgage: ["mortgage_guidance", "rate_shop", "loan_comparison"],
+  appraisal: ["appraisal_standard", "appraisal_rov", "appraisal_rush"],
   closing: ["title_insurance", "final_walkthrough", "closing_coordination"],
-  post_close: ["moving_standard", "cleaning_move_in", "final_distribution"],
+  post_close: ["moving_standard", "cleaning_move_in"],
 };
 
 // ── All Services ──
