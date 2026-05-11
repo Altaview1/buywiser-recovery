@@ -114,8 +114,8 @@ export default function JourneyProgressBar() {
 
 const STAGE_DETAILS = [
   {
-    desc: "Determine your buying power by entering your income, down payment, and target price. Calculate your estimated monthly payment and SmartBuy Savings Pool™.",
-    pct: "5%",
+    desc: "Our AI underwriter analyzes your financial profile (income, assets, debts) to determine DTI and confirm your buying power. Completely free — no charge.",
+    pct: "FREE",
   },
   {
     desc: "Browse listings and select properties that fit your budget. Use AI-powered property intelligence to evaluate each listing before scheduling tours.",
@@ -127,14 +127,14 @@ const STAGE_DETAILS = [
   },
   {
     desc: "Write and submit your offer with AI guidance on pricing, contingencies, and terms. Unlock expert negotiation only if you need it.",
-    pct: "20%",
+    pct: "21%",
   },
   {
     desc: "After offer acceptance, coordinate inspections, appraisals, and transaction documents. The Machine™ keeps everything on track.",
-    pct: "30%",
+    pct: "31%",
   },
   {
     desc: "Final walkthrough, title review, closing coordination, and document signing. Your SmartBuy Savings Pool™ is distributed at closing.",
-    pct: "25%",
+    pct: "28%",
   },
 ];
