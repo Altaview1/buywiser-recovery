@@ -428,13 +428,63 @@ export default function SmartBuy() {
       </section>
 
       {/* Footer */}
-      <footer className="px-4 py-10 border-t border-slate-800/60 text-center">
-        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto mx-auto mb-4 brightness-0 invert opacity-30" />
-        <p className="text-xs text-slate-600 max-w-xl mx-auto leading-relaxed mb-2">
-          Buywiser SmartBuy™ is a private program offered by BuyWiser Technology, Inc. Not a government program. Savings estimates are based on typical buyer-side commission structures and are not guaranteed. Final savings depend on transaction structure, eligibility, and applicable rules.{" "}
-          <a href="/Disclosures" className="underline hover:text-slate-400 transition">Licensing &amp; Disclosures</a>
-        </p>
-        <p className="text-[10px] text-slate-700">BuyWiser Technology, Inc. DBA BuyWiser Home Loans · NMLS #1887767 · CA DRE #01107013 · © {new Date().getFullYear()}</p>
+      <footer className="border-t border-slate-800/60">
+
+        {/* License Bar */}
+        <div className="px-4 sm:px-6 py-6 border-b border-slate-800/40 bg-slate-900/40">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10">
+
+              {/* Equal Housing */}
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <svg className="h-8 w-8 text-slate-500 flex-shrink-0" viewBox="0 0 40 40" fill="currentColor">
+                  <path d="M20 4L2 16h4v20h28V16h4L20 4zm0 3.5L34 17v1h-2V34H8V18H6L20 7.5zM16 20h8v2h-8v-2zm0 4h8v2h-8v-2z"/>
+                </svg>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-tight">Equal Housing</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 leading-tight">Lender</p>
+                </div>
+              </div>
+
+              <div className="w-px h-8 bg-slate-700 hidden sm:block" />
+
+              {/* License grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-2 flex-1">
+                {[
+                  { label: "Company NMLS", value: "#1887767" },
+                  { label: "Personal NMLS", value: "#1524446" },
+                  { label: "CA DRE License", value: "#01107013" },
+                  { label: "CA DFPI", value: "CRMLA Licensed" },
+                ].map(({ label, value }) => (
+                  <div key={label}>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">{label}</p>
+                    <p className="text-xs font-semibold text-slate-400 mt-0.5">{value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="w-px h-8 bg-slate-700 hidden sm:block" />
+
+              {/* NMLS verify link */}
+              <a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener noreferrer"
+                className="flex-shrink-0 text-[10px] text-slate-600 hover:text-slate-400 transition underline underline-offset-2 whitespace-nowrap">
+                Verify at NMLS Consumer Access →
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Main footer */}
+        <div className="px-4 sm:px-6 py-8 text-center">
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto mx-auto mb-4 brightness-0 invert opacity-25" />
+          <p className="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed mb-3">
+            Buywiser SmartBuy™ is a DBA of BuyWiser Technology, Inc. DBA BuyWiser Home Loans. This is a private program — not a government benefit. Savings estimates are based on typical buyer-side commission structures and are not guaranteed. Final savings depend on transaction structure, eligibility, and applicable rules. All loan programs subject to borrower qualification. Rates and terms subject to change without notice.{" "}
+            <a href="/Disclosures" className="underline hover:text-slate-400 transition">Licensing &amp; Disclosures</a>
+            {" · "}
+            <a href="/PrivacyPolicy" className="underline hover:text-slate-400 transition">Privacy Policy</a>
+          </p>
+          <p className="text-[10px] text-slate-700">© {new Date().getFullYear()} BuyWiser Technology, Inc. · All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
