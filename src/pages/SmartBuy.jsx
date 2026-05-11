@@ -126,110 +126,151 @@ export default function SmartBuy() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden bg-white">
-        <div className="px-4 sm:px-6 py-14 sm:py-20">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left: copy */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 mb-6">
-                <Brain className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Expert-Led Homebuying & Finance</span>
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900">
+        {/* Background accent elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="relative px-4 sm:px-6 py-16 sm:py-20 lg:py-24">
+          <div className="max-w-5xl mx-auto">
+            {/* Hero content - centered for better impact */}
+            <div className="text-center mb-12 lg:mb-16">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/50 mb-6">
+                <Brain className="h-3.5 w-3.5 text-emerald-400" />
+                <span className="text-xs font-black text-emerald-200 uppercase tracking-widest">Expert-Led Homebuying & Finance</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-5 text-slate-900">
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
                 Buy Smarter.<br />
-                <span className="text-emerald-600">Keep the Savings.</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-emerald-400">Keep the Savings.</span>
               </h1>
 
-              <p className="text-lg text-slate-600 leading-relaxed mb-4 max-w-lg">
-                Buywiser SmartBuy™ pairs you with licensed mortgage and real estate professionals, backed by AI — so every step of your home purchase is guided by genuine expertise, not guesswork.
+              <p className="text-lg sm:text-xl text-emerald-100 leading-relaxed mb-6 max-w-3xl mx-auto">
+                Buywiser SmartBuy™ pairs you with licensed professionals and AI-powered insights — so every step of your home purchase is guided by real expertise, not guesswork.
               </p>
 
-              <p className="text-sm text-slate-500 mb-8 max-w-md">
-                Real professionals handle what matters most. AI handles the rest. And the savings that would have gone to commissions come back to you.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-3 mb-8">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
                 <button onClick={scrollToForm}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-400 text-slate-900 font-black rounded-xl text-base hover:bg-emerald-300 transition shadow-lg shadow-emerald-400/20">
-                  Calculate My Savings Pool <ArrowRight className="h-4 w-4" />
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-400 text-slate-900 font-black rounded-xl text-base hover:bg-emerald-300 transition shadow-lg shadow-emerald-400/30">
+                  Calculate My Savings <ArrowRight className="h-4 w-4" />
                 </button>
                 <a href="tel:+18183002642"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-slate-300 text-slate-700 font-bold rounded-xl text-base hover:bg-slate-50 transition">
-                  Talk to Buywiser
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-emerald-300/50 text-emerald-100 font-bold rounded-xl text-base hover:bg-emerald-500/10 transition">
+                  <Phone className="h-4 w-4" /> (818) 300-2642
                 </a>
               </div>
 
               {/* Trust signals */}
-              <div className="flex flex-wrap gap-3 mb-5">
-                {["NMLS #1887767", "CA DRE #01107013", "Licensed in California", "No Obligation"].map(t => (
-                  <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <Shield className="h-3 w-3 text-slate-400" /> {t}
-                  </div>
-                ))}
-                <div className="flex items-center gap-1.5 text-xs text-violet-600 font-bold bg-violet-50 border border-violet-200 rounded-full px-2.5 py-0.5">
-                  <RotateCcw className="h-3 w-3" /> Token Rewind™ Guarantee
-                </div>
-              </div>
-              {/* Partner brand badges */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mr-1">Backed by:</span>
-                {["Compass", "Rocket Pro", "Keller Williams", "RE Law"].map(b => (
-                  <div key={b} className="px-3 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600">
-                    {b}
+              <div className="flex flex-wrap gap-2 justify-center mb-8">
+                {["NMLS #1887767", "CA DRE #01107013", "Licensed in California"].map(t => (
+                  <div key={t} className="flex items-center gap-1.5 text-xs text-emerald-200">
+                    <Shield className="h-3 w-3 text-emerald-400" /> {t}
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right: Live Address Input + Savings Meter */}
-            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl border-2 border-yellow-300 p-6 lg:p-8 sticky top-32">
-              <h2 className="text-lg font-black text-amber-900 mb-4 flex items-center gap-2">
-                🔍 Find Your Home
-              </h2>
-              <p className="text-sm text-slate-600 mb-6">Enter an address or paste a listing link to see your savings in real-time.</p>
+            {/* Interactive Card - Full width below hero text */}
+            <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 lg:p-10 shadow-2xl">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left: Input Section */}
+                <div>
+                  <div className="flex items-center gap-2 mb-6">
+                    <span className="text-3xl">🔍</span>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Find Your Home</h2>
+                  </div>
+                  <p className="text-slate-600 mb-8 leading-relaxed">
+                    Paste any property link or enter an address. Your savings potential updates in real-time as you explore.
+                  </p>
 
-              {/* Live Address Input */}
-              <div className="mb-6">
-                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Property Address or Link</label>
-                <input
-                  type="text"
-                  placeholder="123 Main St, Los Angeles, CA or Zillow link..."
-                  defaultValue=""
-                  className="w-full px-4 py-3 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
-                />
-                <p className="text-[10px] text-slate-500 mt-1">Updates automatically as you type</p>
-              </div>
+                  {/* Address Input */}
+                  <div className="mb-6">
+                    <label className="block text-xs font-black text-slate-700 mb-3 uppercase tracking-wider">Property Address or Link</label>
+                    <input
+                      type="text"
+                      placeholder="e.g., 123 Main St, Los Angeles, CA or Zillow link..."
+                      defaultValue=""
+                      className="w-full px-5 py-3.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition bg-slate-50 hover:bg-white"
+                    />
+                    <p className="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
+                      <span>⚡</span> Updates automatically as you type
+                    </p>
+                  </div>
 
-              {/* Or enter price manually */}
-              <div className="mb-6">
-                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Or Enter Price</label>
-                <div className="flex gap-2">
-                  <div className="h-10 w-10 text-slate-400 flex items-center justify-center flex-shrink-0 bg-slate-100 rounded-lg font-black text-lg">$</div>
-                  <input
-                    type="number"
-                    placeholder="750000"
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value) || 750000)}
-                    className="flex-1 px-4 py-3 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
-                  />
+                  {/* Price Input */}
+                  <div>
+                    <label className="block text-xs font-black text-slate-700 mb-3 uppercase tracking-wider">Or Enter Price Directly</label>
+                    <div className="relative">
+                      <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-lg">$</span>
+                      <input
+                        type="number"
+                        placeholder="750000"
+                        value={price}
+                        onChange={(e) => setPrice(Number(e.target.value) || 750000)}
+                        className="w-full pl-10 pr-5 py-3.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition bg-slate-50 hover:bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Savings Display */}
+                <div className="flex flex-col justify-between">
+                  <div>
+                    <p className="text-xs font-black text-emerald-600 uppercase tracking-wider mb-4">Your SmartBuy™ Savings</p>
+                    <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl border-2 border-emerald-200 p-6 mb-6">
+                      <p className="text-emerald-700 text-sm mb-2">Estimated Savings Pool</p>
+                      <p className="text-4xl sm:text-5xl font-black text-emerald-600 mb-3">
+                        {formatCurrency(Math.round(price * 0.025))}
+                      </p>
+                      <p className="text-sm text-emerald-600">2.5% buyer rebate · Complete each stage to keep it all</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                        <p className="text-[10px] text-slate-600 uppercase font-bold mb-2">Commission Savings</p>
+                        <p className="text-xl font-black text-slate-900">{formatCurrency(price * 0.025)}</p>
+                      </div>
+                      <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                        <p className="text-[10px] text-slate-600 uppercase font-bold mb-2">Service Budget</p>
+                        <p className="text-xl font-black text-slate-900">{formatCurrency(price * 0.015)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
+                    <p className="text-xs font-black text-blue-900 mb-2">💡 How It Works</p>
+                    <p className="text-xs text-blue-800 leading-relaxed">
+                      Your rebate becomes a token pool. Use AI for free. Only activate professionals when you need them—keeping your savings intact.
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* Savings Meter inside the box */}
-              <SavingsMeter price={price} animated={true} />
-
-              {/* Tips */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-xs text-blue-900 font-semibold mb-2">💡 Updates in Real-Time</p>
-                <p className="text-[10px] text-blue-800 leading-relaxed">
-                  As you adjust the price, your savings pool updates instantly. See exactly how much you can keep.
-                </p>
+              {/* Price Slider - Full width */}
+              <div className="mt-8 pt-8 border-t border-slate-200">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-xs font-black text-slate-700 uppercase tracking-wider">Adjust Purchase Price</label>
+                  <span className="text-2xl font-black text-slate-900">{formatCurrency(price)}</span>
+                </div>
+                <input
+                  type="range"
+                  min={300000}
+                  max={3000000}
+                  step={25000}
+                  value={price}
+                  onChange={(e) => setPrice(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                />
+                <div className="flex justify-between text-xs text-slate-500 mt-2 font-semibold">
+                  <span>$300K</span>
+                  <span>$1.5M</span>
+                  <span>$3M</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
         </div>
       </section>
 
