@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CheckCircle, Circle } from "lucide-react";
+import { CheckCircle, Circle, Check } from "lucide-react";
 
 const STAGES = [
   { icon: "🔍", label: "Property Intel", short: "Search" },
@@ -10,8 +10,42 @@ const STAGES = [
   { icon: "💰", label: "You Get Paid", short: "Paid!" },
 ];
 
+const STAGE_TASKS = [
+  [
+    { id: 1, label: "Enter property address or link" },
+    { id: 2, label: "Review AI property analysis" },
+    { id: 3, label: "Check comparable sales" },
+  ],
+  [
+    { id: 1, label: "Submit financial documents" },
+    { id: 2, label: "Get mortgage pre-approval" },
+    { id: 3, label: "Confirm purchase power" },
+  ],
+  [
+    { id: 1, label: "Review offer draft" },
+    { id: 2, label: "Adjust price & contingencies" },
+    { id: 3, label: "Submit offer" },
+  ],
+  [
+    { id: 1, label: "Review inspection reports" },
+    { id: 2, label: "Track escrow timeline" },
+    { id: 3, label: "Approve final walkthrough" },
+  ],
+  [
+    { id: 1, label: "Review closing disclosure" },
+    { id: 2, label: "Verify loan terms" },
+    { id: 3, label: "Sign closing documents" },
+  ],
+  [
+    { id: 1, label: "Receive keys" },
+    { id: 2, label: "Get funds distribution" },
+    { id: 3, label: "Celebrate! 🎉" },
+  ],
+];
+
 export default function JourneyProgressBar() {
   const [activeStage, setActiveStage] = useState(0);
+  const [completedTasks, setCompletedTasks] = useState({});
 
   return (
     <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60 bg-slate-900/60">
@@ -62,7 +96,7 @@ export default function JourneyProgressBar() {
 
         {/* Active stage detail card */}
         <div className="bg-slate-900 border border-slate-800 rounded-2xl px-5 py-5 transition-all">
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 mb-6">
             <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl flex-shrink-0">
               {STAGES[activeStage].icon}
             </div>
@@ -80,8 +114,35 @@ export default function JourneyProgressBar() {
             </div>
           </div>
 
+          {/* Tasks for current stage */}
+          <div className="mb-6 pb-6 border-b border-slate-800">
+            <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Tasks for this stage</p>
+            <div className="space-y-2">
+              {STAGE_TASKS[activeStage].map((task) => {
+                const taskKey = `${activeStage}-${task.id}`;
+                const isCompleted = completedTasks[taskKey];
+                return (
+                  <label key={taskKey} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer transition">
+                    <input
+                      type="checkbox"
+                      checked={isCompleted || false}
+                      onChange={() => setCompletedTasks(prev => ({
+                        ...prev,
+                        [taskKey]: !prev[taskKey]
+                      }))}
+                      className="w-4 h-4 rounded border border-slate-600 accent-emerald-500 cursor-pointer"
+                    />
+                    <span className={`text-xs transition ${isCompleted ? "text-slate-500 line-through" : "text-slate-300"}`}>
+                      {task.label}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Navigation */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-800">
+          <div className="flex items-center justify-between">
             <button
               onClick={() => setActiveStage(s => Math.max(0, s - 1))}
               disabled={activeStage === 0}

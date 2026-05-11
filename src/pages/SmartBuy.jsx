@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw, Users, Loader2 } from "lucide-react";
+import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw, Users, Loader } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
@@ -87,12 +87,12 @@ export default function SmartBuy() {
   const handleAddressChange = async (e) => {
     const value = e.target.value;
     // Check if it's a URL
-    if (value.includes("zillow.com") || value.includes("redfin.com") || value.includes("realtor.com")) {
+    if (value.includes("zillow.com") || value.includes("redfin.com") || value.includes("realtor.com") || value.includes("trulia.com")) {
       setLoading(true);
       try {
         const response = await base44.functions.invoke("fetchPropertyFromUrl", { url: value });
-        if (response.data?.price) {
-          setPrice(response.data.price);
+        if (response.data?.property?.price) {
+          setPrice(response.data.property.price);
         }
       } catch (err) {
         console.error("Failed to fetch property:", err);
@@ -215,7 +215,7 @@ export default function SmartBuy() {
                         className="w-full px-5 py-3.5 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition bg-slate-50 hover:bg-white"
                       />
                       {loading && (
-                        <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 animate-spin" />
+                        <Loader className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-emerald-500 animate-spin" />
                       )}
                     </div>
                     <p className="text-[11px] text-slate-500 mt-2 flex items-center gap-1">
