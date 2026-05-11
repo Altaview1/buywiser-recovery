@@ -5,12 +5,12 @@ import ServiceCard from "@/components/smartbuy/marketplace/ServiceCard";
 import ClosingCostVisualizer from "@/components/smartbuy/marketplace/ClosingCostVisualizer";
 
 const STAGE_COLOR_MAP = {
-  emerald: { ring: "ring-emerald-500/40", bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-300", dot: "bg-emerald-400", badge: "bg-emerald-500/20 border-emerald-500/30 text-emerald-300" },
-  blue:    { ring: "ring-blue-500/40",    bg: "bg-blue-500/10",    border: "border-blue-500/30",    text: "text-blue-300",    dot: "bg-blue-400",    badge: "bg-blue-500/20 border-blue-500/30 text-blue-300" },
-  purple:  { ring: "ring-purple-500/40",  bg: "bg-purple-500/10",  border: "border-purple-500/30",  text: "text-purple-300",  dot: "bg-purple-400",  badge: "bg-purple-500/20 border-purple-500/30 text-purple-300" },
-  amber:   { ring: "ring-amber-500/40",   bg: "bg-amber-500/10",   border: "border-amber-500/30",   text: "text-amber-300",   dot: "bg-amber-400",   badge: "bg-amber-500/20 border-amber-500/30 text-amber-300" },
-  rose:    { ring: "ring-rose-500/40",    bg: "bg-rose-500/10",    border: "border-rose-500/30",    text: "text-rose-300",    dot: "bg-rose-400",    badge: "bg-rose-500/20 border-rose-500/30 text-rose-300" },
-  slate:   { ring: "ring-slate-500/40",   bg: "bg-slate-500/10",   border: "border-slate-700",      text: "text-slate-400",   dot: "bg-slate-500",   badge: "bg-slate-700/40 border-slate-600 text-slate-400" },
+  emerald: { ring: "ring-teal-500/40", bg: "bg-teal-500/10", border: "border-teal-500/30", text: "text-teal-700", dot: "bg-teal-500", badge: "bg-teal-500/20 border-teal-500/30 text-teal-700" },
+  blue:    { ring: "ring-purple-500/40",    bg: "bg-purple-500/10",    border: "border-purple-500/30",    text: "text-purple-700",    dot: "bg-purple-500",    badge: "bg-purple-500/20 border-purple-500/30 text-purple-700" },
+  purple:  { ring: "ring-indigo-500/40",  bg: "bg-indigo-500/10",  border: "border-indigo-500/30",  text: "text-indigo-700",  dot: "bg-indigo-500",  badge: "bg-indigo-500/20 border-indigo-500/30 text-indigo-700" },
+  amber:   { ring: "ring-orange-500/40",   bg: "bg-orange-500/10",   border: "border-orange-500/30",   text: "text-orange-700",   dot: "bg-orange-500",   badge: "bg-orange-500/20 border-orange-500/30 text-orange-700" },
+  rose:    { ring: "ring-pink-500/40",    bg: "bg-pink-500/10",    border: "border-pink-500/30",    text: "text-pink-700",    dot: "bg-pink-500",    badge: "bg-pink-500/20 border-pink-500/30 text-pink-700" },
+  slate:   { ring: "ring-stone-500/40",   bg: "bg-stone-500/10",   border: "border-stone-400",      text: "text-stone-700",   dot: "bg-stone-500",   badge: "bg-stone-400/40 border-stone-500 text-stone-700" },
 };
 
 function SmartBadge({ phase }) {
