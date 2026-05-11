@@ -21,7 +21,7 @@ export default function ServiceCard({ service, savingsPool = 750000 * 0.025 }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const tokenCost = service.tokens ? Math.round(savingsPool * (service.tokens / 10000)) : 0;
+  const tokenCost = service.tokens || 0;
 
   const handleUnlock = async () => {
     if (!name || !phone) return;

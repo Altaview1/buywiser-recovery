@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, Zap, ChevronDown, ChevronUp, Sparkles, RotateCcw, Clock, CheckCircle, Lock } from "lucide-react";
-import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "../components/smartbuy/marketplace/marketplaceData.js";
+import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "../components/smartbuy/marketplace/marketplaceData";
 import ServiceCard from "../components/smartbuy/marketplace/ServiceCard";
 import ClosingCostVisualizer from "../components/smartbuy/marketplace/ClosingCostVisualizer";
 
