@@ -8,6 +8,7 @@ import CommonQuestions from "../components/smartbuy/CommonQuestions";
 import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
 import TokenRewind from "../components/smartbuy/TokenRewind";
 import PropertyServicesMarketplace from "../components/smartbuy/marketplace/PropertyServicesMarketplace";
+import ServicePriceList from "../components/smartbuy/ServicePriceList";
 import TokenBalanceIndicator from "../components/smartbuy/TokenBalanceIndicator";
 import ReferralSection from "../components/smartbuy/ReferralSection";
 import TokenTutorial from "../components/smartbuy/TokenTutorial";
@@ -565,6 +566,11 @@ export default function SmartBuy() {
           </div>
 
         </div>
+      </section>
+
+      {/* ── Service Pricing Guide ── */}
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/40 bg-white">
+        <ServicePriceList />
       </section>
 
       {/* ── Property Services Marketplace™ ── */}
