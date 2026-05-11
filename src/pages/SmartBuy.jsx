@@ -16,6 +16,7 @@ import TokenTutorial from "../components/smartbuy/TokenTutorial";
 import MyReports from "../components/smartbuy/MyReports";
 import TestimonialRotator from "../components/smartbuy/TestimonialRotator";
 import SavingsMeterHero from "../components/smartbuy/SavingsMeterHero";
+import StageCompletionPopup from "../components/smartbuy/StageCompletionPopup";
 
 const DEFAULT_PRICE = 750000;
 
@@ -83,6 +84,7 @@ export default function SmartBuy() {
   const [unlockOpen, setUnlockOpen] = useState(false);
   const [tokensSpent, setTokensSpent] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [completionPopup, setCompletionPopup] = useState({ isOpen: false, stage: null });
   const formRef = useRef(null);
   const savingsPool = Math.round(price * 0.025);
 
@@ -105,6 +107,10 @@ export default function SmartBuy() {
 
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
+  const handleStageComplete = (stage) => {
+    setCompletionPopup({ isOpen: true, stage });
+  };
+
   if (submitted) return <SuccessScreen lead={submittedLead} />;
 
   return (
@@ -113,8 +119,16 @@ export default function SmartBuy() {
         isOpen={unlockOpen}
         onClose={() => setUnlockOpen(false)}
         savingsPool={savingsPool}
-        tokensSpent={tokensSpent}
+        cashSpent={tokensSpent}
         onUnlock={(cost) => setTokensSpent(t => t + cost)}
+      />
+
+      <StageCompletionPopup
+        isOpen={completionPopup.isOpen}
+        stage={completionPopup.stage}
+        savingsPool={savingsPool}
+        onClose={() => setCompletionPopup({ isOpen: false, stage: null })}
+        onProceedNext={() => setCompletionPopup({ isOpen: false, stage: null })}
       />
 
       {/* Nav */}
