@@ -39,7 +39,7 @@ function StageBlock({ stage, services, savingsPool, searchActive }) {
       {/* Stage header — the "timeline row" */}
       <button
         onClick={() => !searchActive && setOpen(v => !v)}
-        className={`w-full text-left px-5 py-4 flex items-start gap-4 transition-colors ${isOpen ? "bg-slate-900" : "bg-slate-900/60 hover:bg-slate-900"}`}
+        className={`w-full text-left px-5 py-4 flex items-start gap-4 transition-colors ${isOpen ? "bg-amber-50" : "bg-yellow-50/60 hover:bg-yellow-50"}`}
       >
         {/* Step indicator */}
         <div className="flex flex-col items-center gap-1.5 flex-shrink-0 mt-0.5">
@@ -91,9 +91,9 @@ function StageBlock({ stage, services, savingsPool, searchActive }) {
 
       {/* Services inside this stage */}
       {isOpen && (
-        <div className="border-t border-slate-800">
+        <div className="border-t border-yellow-300">
           {/* Context note */}
-          <div className={`px-5 py-3 ${colors.bg} border-b border-slate-800`}>
+          <div className={`px-5 py-3 bg-yellow-100 border-b border-yellow-300`}>
             <div className="flex items-start gap-2.5">
               <Clock className={`h-3.5 w-3.5 ${colors.text} flex-shrink-0 mt-0.5`} />
               <p className={`text-xs ${colors.text} leading-relaxed`}>
@@ -102,7 +102,7 @@ function StageBlock({ stage, services, savingsPool, searchActive }) {
             </div>
           </div>
 
-          <div className="px-4 py-3 space-y-2 bg-slate-950/40">
+          <div className="px-4 py-3 space-y-2 bg-yellow-50/60">
             {services.map(service => {
               const isSuggested = suggested.includes(service.id);
               return (
@@ -126,7 +126,7 @@ function StageBlock({ stage, services, savingsPool, searchActive }) {
 
           {/* Closing cost visualizer — only on closing stage */}
           {stage.isClosing && (
-            <div className="px-4 pb-4 bg-slate-950/40">
+            <div className="px-4 pb-4 bg-yellow-50/60">
               <div className="flex items-center gap-2 mb-3 pt-1">
                 <div className="h-px flex-1 bg-slate-800" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-rose-400 px-2">Closing Cost Token Breakdown</span>
