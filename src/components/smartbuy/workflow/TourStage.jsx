@@ -1,7 +1,13 @@
 import { AlertCircle, Zap, CreditCard, Calendar, ArrowRight, DollarSign } from "lucide-react";
+import { useState } from "react";
 import { WORKFLOW_COSTS, formatPrice } from "../pricing/servicePricing";
 
 export default function TourStage({ onContinue }) {
+  const [completed, setCompleted] = useState({
+    payment: false,
+    toured: false,
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -95,6 +101,37 @@ export default function TourStage({ onContinue }) {
           <p className="text-xs text-slate-600 mt-4 leading-relaxed">
             <strong>Important:</strong> You're still preserving substantial savings because these costs are transparent and only incurred when you actually schedule tours—unlike traditional agent relationships where commission is baked in from day one.
           </p>
+        </div>
+
+        {/* Progress Tracking */}
+        <div className="bg-white rounded-2xl border-2 border-blue-200 p-6 mt-8">
+          <p className="font-black text-blue-900 mb-4 flex items-center gap-2">
+            <span>📋</span> Tour Stage Progress
+          </p>
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-blue-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.payment}
+                onChange={(e) => setCompleted({ ...completed, payment: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-blue-400 accent-blue-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.payment ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Added payment method securely
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-blue-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.toured}
+                onChange={(e) => setCompleted({ ...completed, toured: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-blue-400 accent-blue-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.toured ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Toured one or more properties
+              </span>
+            </label>
+          </div>
         </div>
       </div>
     </div>

@@ -1,8 +1,14 @@
-import { Zap, Search, DollarSign, TrendingUp, ArrowRight } from "lucide-react";
+import { Zap, Search, DollarSign, TrendingUp, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
 import SavingsMeter from "../SavingsMeter";
 import { formatPrice } from "../pricing/servicePricing";
 
 export default function HomeSearchStage({ onPropertySubmit }) {
+  const [completed, setCompleted] = useState({
+    search: false,
+    understand: false,
+  });
+
   const handlePasteLink = (e) => {
     const url = prompt("Paste your Zillow, Redfin, or property link:");
     if (url) {
@@ -105,6 +111,37 @@ export default function HomeSearchStage({ onPropertySubmit }) {
                 Traditional agents consume commission through showing coordination, tours, and consultations early on. SmartBuy™ lets you explore affordably with AI first, then pay transparently for expertise only when you need it.
               </p>
             </div>
+          </div>
+        </div>
+
+        {/* Progress Tracking */}
+        <div className="bg-white rounded-2xl border-2 border-amber-200 p-6 mb-8">
+          <p className="font-black text-amber-900 mb-4 flex items-center gap-2">
+            <span>📋</span> Track Your Progress
+          </p>
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-amber-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.search}
+                onChange={(e) => setCompleted({ ...completed, search: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-amber-400 accent-amber-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.search ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Searched for properties and found options
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-amber-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.understand}
+                onChange={(e) => setCompleted({ ...completed, understand: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-amber-400 accent-amber-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.understand ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Understand my SmartBuy™ savings potential
+              </span>
+            </label>
           </div>
         </div>
 

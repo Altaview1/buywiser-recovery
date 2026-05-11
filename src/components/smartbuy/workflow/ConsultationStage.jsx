@@ -1,7 +1,14 @@
 import { Brain, Users, MessageSquare, Zap, Lock, Unlock, ArrowRight, DollarSign } from "lucide-react";
+import { useState } from "react";
 import { WORKFLOW_COSTS, formatPrice } from "../pricing/servicePricing";
 
 export default function ConsultationStage({ onContinue }) {
+  const [completed, setCompleted] = useState({
+    aiConsulted: false,
+    expertConsulted: false,
+    decidedOnOffer: false,
+  });
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-12 px-4">
       <div className="max-w-5xl mx-auto">
@@ -118,6 +125,48 @@ export default function ConsultationStage({ onContinue }) {
           <p className="text-sm text-slate-700 leading-relaxed">
             You're not locked into one Realtor or lender. You're selectively accessing expertise only when needed. This preserves your negotiating power and keeps you in control of every decision. Traditional agent relationships consume commission before you even start—SmartBuy™ lets you explore affordably with AI first.
           </p>
+        </div>
+
+        {/* Progress Tracking */}
+        <div className="bg-white rounded-2xl border-2 border-purple-200 p-6 mb-8">
+          <p className="font-black text-purple-900 mb-4 flex items-center gap-2">
+            <span>📋</span> Consultation Progress
+          </p>
+          <div className="space-y-3">
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.aiConsulted}
+                onChange={(e) => setCompleted({ ...completed, aiConsulted: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-purple-400 accent-purple-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.aiConsulted ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Used AI SmartBuy™ consultation
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.expertConsulted}
+                onChange={(e) => setCompleted({ ...completed, expertConsulted: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-purple-400 accent-purple-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.expertConsulted ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Spoke with licensed professional (optional)
+              </span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-purple-50 transition">
+              <input
+                type="checkbox"
+                checked={completed.decidedOnOffer}
+                onChange={(e) => setCompleted({ ...completed, decidedOnOffer: e.target.checked })}
+                className="w-5 h-5 rounded border-2 border-purple-400 accent-purple-500 cursor-pointer"
+              />
+              <span className={`text-sm font-semibold ${completed.decidedOnOffer ? "text-emerald-700 line-through text-slate-500" : "text-slate-900"}`}>
+                ✓ Ready to make an offer on this property
+              </span>
+            </label>
+          </div>
         </div>
 
         <div className="text-center">
