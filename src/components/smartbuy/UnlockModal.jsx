@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { X, Phone, Lock, Unlock, CheckCircle, Loader2, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const PROFESSIONALS = [
   {
@@ -11,6 +12,7 @@ const PROFESSIONALS = [
     expert: "Bennett Liss",
     title: "30-Year CA Mortgage Expert · NMLS #1524446",
     description: "Rate strategy, pre-approval review, loan program comparison, or any financing question — answered by Bennett's team directly.",
+    value: "Ensures you get the best rate and terms for your situation, potentially saving thousands over the life of the loan.",
     cashCost: 0.08,
     deliveryMethod: "Call or text within 2 hours",
     phone: "tel:+18183002642",
@@ -23,6 +25,7 @@ const PROFESSIONALS = [
     expert: "Compass / Keller Williams",
     title: "Licensed CA Buyer's Agent",
     description: "Tour scheduling, offer negotiation strategy, local market insight, or representation on a specific property.",
+    value: "Expert negotiation and market knowledge help you avoid overpaying and navigate complex local conditions.",
     cashCost: 0.12,
     deliveryMethod: "Agent assigned within 4 hours",
     phone: null,
@@ -35,6 +38,7 @@ const PROFESSIONALS = [
     expert: "Bennett + Partner Agent",
     title: "Financing + Negotiation Alignment",
     description: "A coordinated review of your offer price, contingencies, financing terms, and competitive positioning before you submit.",
+    value: "Professional alignment ensures your offer is competitive while protecting you with proper contingencies.",
     cashCost: 0.10,
     deliveryMethod: "Video or phone call within 24 hours",
     phone: null,
@@ -47,6 +51,7 @@ const PROFESSIONALS = [
     expert: "RE Law Firm Partner",
     title: "Licensed CA Real Estate Attorney",
     description: "Contract clause review, title concerns, disclosure questions, or dispute resolution — by a licensed real estate attorney.",
+    value: "Legal expertise identifies hidden risks in contracts and disclosures, protecting your investment.",
     cashCost: 0.09,
     deliveryMethod: "Attorney response within 1 business day",
     phone: null,
@@ -257,37 +262,47 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
             </div>
 
           ) : (
-            /* Service selection */
-            <div className="px-5 py-4 space-y-3">
-              <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
-              {PROFESSIONALS.map(pro => {
-                const cost = Math.round(savingsPool * pro.cashCost);
-                const canAfford = remaining >= cost;
-                return (
-                  <button
-                    key={pro.id}
-                    onClick={() => canAfford && setSelected(pro.id)}
-                    disabled={!canAfford}
-                    className={`w-full text-left rounded-xl border p-4 transition ${canAfford ? "border-slate-700 bg-slate-800/50 hover:border-amber-500/50 hover:bg-slate-800" : "border-slate-800 bg-slate-900/30 opacity-40 cursor-not-allowed"}`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="text-xl flex-shrink-0 mt-0.5">{pro.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2 mb-0.5">
-                          <p className="text-sm font-black text-white">{pro.name}</p>
-                          <span className="text-sm font-black text-amber-400 flex-shrink-0">{formatCurrency(cost)}</span>
-                        </div>
-                        <p className="text-[10px] text-slate-500 mb-1">{pro.expert} · {pro.title}</p>
-                        <p className="text-xs text-slate-400 leading-snug">{pro.description}</p>
-                        <p className="text-[10px] text-emerald-500 mt-1.5 font-semibold">{pro.deliveryMethod}</p>
-                      </div>
-                      <ArrowRight className="h-4 w-4 text-slate-600 flex-shrink-0 mt-0.5" />
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          )}
+             /* Service selection */
+             <div className="px-5 py-4 space-y-3">
+               <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
+               <TooltipProvider>
+                 {PROFESSIONALS.map(pro => {
+                   const cost = Math.round(savingsPool * pro.cashCost);
+                   const canAfford = remaining >= cost;
+                   return (
+                     <Tooltip key={pro.id}>
+                       <TooltipTrigger asChild>
+                         <button
+                           onClick={() => canAfford && setSelected(pro.id)}
+                           disabled={!canAfford}
+                           className={`w-full text-left rounded-xl border p-4 transition ${canAfford ? "border-slate-700 bg-slate-800/50 hover:border-amber-500/50 hover:bg-slate-800" : "border-slate-800 bg-slate-900/30 opacity-40 cursor-not-allowed"}`}
+                         >
+                           <div className="flex items-start gap-3">
+                             <span className="text-xl flex-shrink-0 mt-0.5">{pro.icon}</span>
+                             <div className="flex-1 min-w-0">
+                               <div className="flex items-center justify-between gap-2 mb-0.5">
+                                 <p className="text-sm font-black text-white">{pro.name}</p>
+                                 <span className="text-sm font-black text-amber-400 flex-shrink-0">{formatCurrency(cost)}</span>
+                               </div>
+                               <p className="text-[10px] text-slate-500 mb-1">{pro.expert} · {pro.title}</p>
+                               <p className="text-xs text-slate-400 leading-snug">{pro.description}</p>
+                               <p className="text-[10px] text-emerald-500 mt-1.5 font-semibold">{pro.deliveryMethod}</p>
+                             </div>
+                             <ArrowRight className="h-4 w-4 text-slate-600 flex-shrink-0 mt-0.5" />
+                           </div>
+                         </button>
+                       </TooltipTrigger>
+                       {canAfford && (
+                         <TooltipContent side="left" className="max-w-xs bg-emerald-900 border-emerald-700 text-emerald-50">
+                           <p className="text-sm font-semibold">{pro.value}</p>
+                         </TooltipContent>
+                       )}
+                     </Tooltip>
+                   );
+                 })}
+               </TooltipProvider>
+             </div>
+           )}
         </div>
       </div>
     </div>
