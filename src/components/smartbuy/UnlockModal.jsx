@@ -13,6 +13,7 @@ const PROFESSIONALS = [
     cashCost: 0.08,
     deliveryMethod: "Call or text within 2 hours",
     phone: "tel:+18183002642",
+    isOptional: true,
   },
   {
     id: "agent",
@@ -24,6 +25,7 @@ const PROFESSIONALS = [
     cashCost: 0.12,
     deliveryMethod: "Agent assigned within 4 hours",
     phone: null,
+    isOptional: true,
   },
   {
     id: "offer",
@@ -35,6 +37,7 @@ const PROFESSIONALS = [
     cashCost: 0.10,
     deliveryMethod: "Video or phone call within 24 hours",
     phone: null,
+    isOptional: true,
   },
   {
     id: "legal",
@@ -46,6 +49,7 @@ const PROFESSIONALS = [
     cashCost: 0.09,
     deliveryMethod: "Attorney response within 1 business day",
     phone: null,
+    isOptional: true,
   },
 ];
 
@@ -168,12 +172,15 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
                 </div>
               </div>
 
-              {/* Encouragement message */}
-              <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/30 rounded-xl p-3.5 mb-4">
-                <p className="text-xs text-emerald-700 font-bold leading-relaxed">
-                  ✨ <strong>Money well spent.</strong> You're investing in expert guidance that could save you thousands more. Skip this step solo, and you'll likely spend more — or make costly mistakes.
-                </p>
-              </div>
+              {/* Gamification celebration for optional choices */}
+              {selectedPro?.isOptional && (
+                <div className="bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border-2 border-emerald-400 rounded-xl p-3.5 mb-4 relative overflow-hidden">
+                  <div className="absolute top-1 right-1 text-xl opacity-30 animate-pulse">🎯</div>
+                  <p className="text-xs text-emerald-800 font-bold leading-relaxed">
+                    🚀 <strong>Smart move!</strong> You're investing in expert guidance that could save you thousands. That's money well spent. You're playing to win.
+                  </p>
+                </div>
+              )}
 
               <div className="space-y-3 mb-4">
                 <div>
