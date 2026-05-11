@@ -3,6 +3,8 @@ import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
+import UnlockSteps from "../components/smartbuy/UnlockSteps";
+import CommonQuestions from "../components/smartbuy/CommonQuestions";
 
 const DEFAULT_PRICE = 750000;
 
@@ -306,6 +308,9 @@ export default function SmartBuy() {
         </div>
       </section>
 
+      {/* ── Unlock Steps ── */}
+      <UnlockSteps onUnlock={() => setUnlockOpen(true)} />
+
       {/* ── Partner Credibility Bar ── */}
       <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60">
         <div className="max-w-5xl mx-auto">
@@ -516,6 +521,9 @@ export default function SmartBuy() {
 
         </div>
       </section>
+
+      {/* ── Common Questions ── */}
+      <CommonQuestions />
 
       {/* vs Traditional */}
       <section className="px-4 sm:px-6 py-20">
