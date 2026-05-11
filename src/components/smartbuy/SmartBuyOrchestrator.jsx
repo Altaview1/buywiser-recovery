@@ -10,6 +10,7 @@ import FinancingStage from "./workflow/FinancingStage";
 import AppraisalStage from "./workflow/AppraisalStage";
 import ClosingStage from "./workflow/ClosingStage";
 import StageNavigation from "./workflow/StageNavigation";
+import SaveoMeter from "./SaveoMeter";
 
 export default function SmartBuyOrchestrator() {
   const [stage, setStage] = useState(1);
@@ -54,6 +55,14 @@ export default function SmartBuyOrchestrator() {
       <StageNavigation currentStage={stage} completedStages={completedStages} />
       
       <div className="flex-1 overflow-y-auto">
+        <div className="sticky top-0 z-40 bg-white border-b border-slate-200 px-6 py-4">
+          <SaveoMeter 
+            savingsPool={savingsPool}
+            completedStages={completedStages}
+            currentStage={stage}
+            tokensSpent={totalTokensSpent}
+          />
+        </div>
         {stage === 1 && (
         <PrequalificationStage 
           onNext={(prequal) => {
