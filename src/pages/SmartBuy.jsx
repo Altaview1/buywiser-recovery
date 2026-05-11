@@ -26,7 +26,7 @@ function formatCurrency(n) {
 const HOW_IT_WORKS = [
   { icon: "🔍", step: "01", title: "Submit Your Property", desc: "Paste a listing link or enter your target city and budget. The Machine™ initializes your Savings Pool instantly." },
   { icon: "🤖", step: "02", title: "AI Guides Every Step", desc: "Property intelligence, offer prep, document management — AI handles the work. You stay in control." },
-  { icon: "💰", step: "03", title: "Keep What You Earn", desc: "Complete each stage yourself and the savings stay in your pocket. Human help is available, but it costs tokens." },
+  { icon: "💰", step: "03", title: "Track Your Savings", desc: "Utilize the professional services you need. The SAVE-o-Meter keeps a running tab of your savings throughout your transaction." },
   { icon: "🔑", step: "04", title: "Close With Confidence", desc: "Licensed professionals handle the legal and compliance pieces. You close smarter, faster, and wealthier." },
 ];
 
