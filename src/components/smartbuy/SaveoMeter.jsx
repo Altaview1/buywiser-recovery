@@ -1,12 +1,12 @@
 import { TrendingUp, Zap } from "lucide-react";
 
 const STAGE_SAVINGS = [
-  { stage: 1, label: "Property Intelligence", pct: 0.12, icon: "🔍" },
-  { stage: 2, label: "Pre-Qualification", pct: 0.15, icon: "📋" },
-  { stage: 3, label: "Offer Prep", pct: 0.20, icon: "✍️" },
-  { stage: 4, label: "Transaction Mgmt", pct: 0.25, icon: "📁" },
-  { stage: 5, label: "Closing Coord", pct: 0.18, icon: "🔑" },
-  { stage: 6, label: "Post-Close", pct: 0.10, icon: "💰" },
+  { stage: 1, label: "Get Pre-Qualified", pct: 0.05, icon: "📋" },
+  { stage: 2, label: "Search Properties", pct: 0.12, icon: "🔍" },
+  { stage: 3, label: "Schedule Tours", pct: 0.08, icon: "🏠" },
+  { stage: 4, label: "Write Offer", pct: 0.20, icon: "✍️" },
+  { stage: 5, label: "Inspections & Appraisal", pct: 0.30, icon: "📊" },
+  { stage: 6, label: "Close Transaction", pct: 0.25, icon: "🔑" },
 ];
 
 function formatCurrency(n) {

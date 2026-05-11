@@ -12,34 +12,34 @@ const STAGES = [
 
 const STAGE_TASKS = [
   [
-    { id: 1, label: "Enter property address or link" },
+    { id: 1, label: "Enter your annual income" },
+    { id: 2, label: "Enter your down payment amount" },
+    { id: 3, label: "Set your target purchase price" },
+  ],
+  [
+    { id: 1, label: "Search listings by price & location" },
     { id: 2, label: "Review AI property analysis" },
-    { id: 3, label: "Check comparable sales" },
+    { id: 3, label: "Save properties you're interested in" },
   ],
   [
-    { id: 1, label: "Submit financial documents" },
-    { id: 2, label: "Get mortgage pre-approval" },
-    { id: 3, label: "Confirm purchase power" },
+    { id: 1, label: "Schedule your property tour" },
+    { id: 2, label: "Visit the property" },
+    { id: 3, label: "Take notes & photos" },
   ],
   [
-    { id: 1, label: "Review offer draft" },
+    { id: 1, label: "Review AI offer recommendations" },
     { id: 2, label: "Adjust price & contingencies" },
     { id: 3, label: "Submit offer" },
   ],
   [
-    { id: 1, label: "Review inspection reports" },
-    { id: 2, label: "Track escrow timeline" },
-    { id: 3, label: "Approve final walkthrough" },
+    { id: 1, label: "Schedule inspections" },
+    { id: 2, label: "Review inspection reports" },
+    { id: 3, label: "Order appraisal" },
   ],
   [
-    { id: 1, label: "Review closing disclosure" },
-    { id: 2, label: "Verify loan terms" },
-    { id: 3, label: "Sign closing documents" },
-  ],
-  [
-    { id: 1, label: "Receive keys" },
-    { id: 2, label: "Get funds distribution" },
-    { id: 3, label: "Celebrate! 🎉" },
+    { id: 1, label: "Final walkthrough" },
+    { id: 2, label: "Sign closing documents" },
+    { id: 3, label: "Receive keys & funds" },
   ],
 ];
 
@@ -173,27 +173,27 @@ export default function JourneyProgressBar() {
 
 const STAGE_DETAILS = [
   {
-    desc: "AI pulls public data on your target property — comps, price history, listing flags, neighborhood trends. You get an instant intelligence report without paying an agent for it.",
+    desc: "Determine your buying power by entering your income, down payment, and target price. Calculate your estimated monthly payment and SmartBuy Savings Pool™.",
+    pct: "5%",
+  },
+  {
+    desc: "Browse listings and select properties that fit your budget. Use AI-powered property intelligence to evaluate each listing before scheduling tours.",
     pct: "12%",
   },
   {
-    desc: "Connect with Buywiser's mortgage team to review your financing options, lock in a pre-approval, and understand your purchase power before writing an offer.",
-    pct: "15%",
+    desc: "Schedule your own property showings. No agent coordination fees — you control your tour schedule and visit properties at your pace.",
+    pct: "8%",
   },
   {
-    desc: "AI drafts your offer with smart contingencies and competitive pricing guidance. You review, adjust, and submit — with the option to unlock an expert negotiator if needed.",
+    desc: "Write and submit your offer with AI guidance on pricing, contingencies, and terms. Unlock expert negotiation only if you need it.",
     pct: "20%",
   },
   {
-    desc: "The Machine™ tracks every document, deadline, and disclosure across your transaction — keeping you on schedule from accepted offer to final signing.",
+    desc: "After offer acceptance, coordinate inspections, appraisals, and transaction documents. The Machine™ keeps everything on track.",
+    pct: "30%",
+  },
+  {
+    desc: "Final walkthrough, title review, closing coordination, and document signing. Your SmartBuy Savings Pool™ is distributed at closing.",
     pct: "25%",
-  },
-  {
-    desc: "Licensed professionals handle the escrow, title, and legal compliance pieces. You coordinate with guidance — and stay fully informed every step of the way.",
-    pct: "18%",
-  },
-  {
-    desc: "Your SmartBuy Savings Pool™ is distributed at closing. The amount you kept by self-directing your journey — minus any token unlocks — comes back to you.",
-    pct: "10%",
   },
 ];
