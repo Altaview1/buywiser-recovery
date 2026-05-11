@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Users, Gift, Copy, CheckCircle, Mail, Share2, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import SocialPostGenerator from "./SocialPostGenerator";
 
 const REFERRAL_BONUS = 500; // Tokens earned per successful referral
 
@@ -106,6 +107,12 @@ export default function ReferralSection({ userEmail, savingsPool }) {
               >
                 <Share2 className="h-4 w-4" /> Share on X
               </button>
+            </div>
+
+            {/* Social Media Posts */}
+            <div className="bg-white border border-slate-200 rounded-2xl p-5">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-600 mb-3">📱 Share on Social</p>
+              <SocialPostGenerator userEmail={userEmail} referralLink={referralLink} />
             </div>
 
             {/* Referral Activity */}

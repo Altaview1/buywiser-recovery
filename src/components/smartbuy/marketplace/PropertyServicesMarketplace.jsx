@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, Zap, Sparkles, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
-import { SERVICES, CATEGORIES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "./marketplaceData.js";
+import { SERVICES, CATEGORIES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "./marketplaceData";
 import ServiceCard from "./ServiceCard";
 
 const PHASE_ICONS = {
