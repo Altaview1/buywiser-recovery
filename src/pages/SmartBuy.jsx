@@ -127,16 +127,6 @@ export default function SmartBuy() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-white">
-        {/* Full-width hero image */}
-        <div className="relative w-full h-56 sm:h-72 lg:hidden overflow-hidden">
-          <img
-            src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/e39aada91_generated_image.png"
-            alt="Expert-led California homebuying"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/90" />
-        </div>
-
         <div className="px-4 sm:px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -193,41 +183,49 @@ export default function SmartBuy() {
               </div>
             </div>
 
-            {/* Right: Hero image + Savings Meter */}
-            <div>
-              {/* Premium hero image — desktop only */}
-              <div className="hidden lg:block relative rounded-2xl overflow-hidden mb-5 shadow-xl border border-slate-200">
-                <img
-                  src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/e39aada91_generated_image.png"
-                  alt="Expert-led California homebuying"
-                  className="w-full h-52 object-cover object-center"
+            {/* Right: Live Address Input + Savings Meter */}
+            <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl border-2 border-yellow-300 p-6 lg:p-8 sticky top-32">
+              <h2 className="text-lg font-black text-amber-900 mb-4 flex items-center gap-2">
+                🔍 Find Your Home
+              </h2>
+              <p className="text-sm text-slate-600 mb-6">Enter an address or paste a listing link to see your savings in real-time.</p>
+
+              {/* Live Address Input */}
+              <div className="mb-6">
+                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Property Address or Link</label>
+                <input
+                  type="text"
+                  placeholder="123 Main St, Los Angeles, CA or Zillow link..."
+                  defaultValue=""
+                  className="w-full px-4 py-3 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
-                  <div>
-                    <p className="text-white text-xs font-black uppercase tracking-widest">Licensed · Expert-Led · California</p>
-                    <p className="text-white/70 text-[10px] mt-0.5">30 Years of Homebuying Expertise</p>
-                  </div>
-                  <div className="flex items-center gap-1 bg-emerald-400/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
-                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    <span className="text-slate-900 text-[10px] font-black uppercase tracking-wider">SmartBuy™</span>
-                  </div>
+                <p className="text-[10px] text-slate-500 mt-1">Updates automatically as you type</p>
+              </div>
+
+              {/* Or enter price manually */}
+              <div className="mb-6">
+                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Or Enter Price</label>
+                <div className="flex gap-2">
+                  <div className="h-10 w-10 text-slate-400 flex items-center justify-center flex-shrink-0 bg-slate-100 rounded-lg font-black text-lg">$</div>
+                  <input
+                    type="number"
+                    placeholder="750000"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value) || 750000)}
+                    className="flex-1 px-4 py-3 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                  />
                 </div>
               </div>
 
+              {/* Savings Meter inside the box */}
               <SavingsMeter price={price} animated={true} />
-              {/* Slider */}
-              <div className="mt-4 bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-slate-500 font-semibold">Adjust Purchase Price</span>
-                  <span className="text-sm font-black text-slate-900">{formatCurrency(price)}</span>
-                </div>
-                <input type="range" min={300000} max={3000000} step={25000} value={price}
-                  onChange={e => setPrice(Number(e.target.value))}
-                  className="w-full" style={{ accentColor: "#059669" }} />
-                <div className="flex justify-between text-[10px] text-slate-400 mt-1">
-                  <span>$300K</span><span>$3M</span>
-                </div>
+
+              {/* Tips */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-xs text-blue-900 font-semibold mb-2">💡 Updates in Real-Time</p>
+                <p className="text-[10px] text-blue-800 leading-relaxed">
+                  As you adjust the price, your savings pool updates instantly. See exactly how much you can keep.
+                </p>
               </div>
             </div>
           </div>
