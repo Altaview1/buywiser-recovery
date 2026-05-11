@@ -3,7 +3,6 @@ import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
-import MeetYourExpert from "../components/smartbuy/MeetYourExpert";
 
 const DEFAULT_PRICE = 750000;
 
@@ -243,6 +242,131 @@ export default function SmartBuy() {
         </div>
       </section>
 
+      {/* ── Meet Your Expert ── */}
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60 bg-slate-900/20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <p className="text-xs font-black uppercase tracking-widest text-amber-400 mb-2">Meet Your Expert</p>
+            <h2 className="text-3xl font-black text-white">The Human Behind The Machine™</h2>
+            <p className="text-slate-400 text-sm mt-3 max-w-xl mx-auto">SmartBuy™ is powered by AI — and backed by 30 years of real California mortgage expertise. You're never flying blind.</p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+            {/* Portrait side */}
+            <div className="lg:col-span-2 flex flex-col items-center lg:items-start gap-5">
+              <div className="relative">
+                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-slate-700 to-slate-800 border-2 border-amber-500/40 flex items-center justify-center text-6xl shadow-2xl">
+                  🏦
+                </div>
+                <div className="absolute -bottom-3 -right-3 bg-emerald-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest shadow-lg">
+                  Since 1991
+                </div>
+              </div>
+              <div className="text-center lg:text-left">
+                <h3 className="text-2xl font-black text-white">Bennett Liss</h3>
+                <p className="text-sm text-amber-400 font-semibold mt-0.5">Founder, BuyWiser Home Loans</p>
+                <p className="text-xs text-slate-500 mt-1">NMLS #1524446 · CA DRE #01107013</p>
+              </div>
+              <a href="tel:+18183002642"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 text-slate-900 font-black rounded-xl text-sm hover:bg-amber-300 transition shadow-lg w-full sm:w-auto justify-center lg:justify-start">
+                <Phone className="h-4 w-4" /> (818) 300-2642
+              </a>
+            </div>
+
+            {/* Bio side */}
+            <div className="lg:col-span-3 space-y-5">
+              <blockquote className="border-l-4 border-amber-400 pl-5">
+                <p className="text-lg text-slate-200 font-semibold leading-relaxed italic">
+                  "SmartBuy™ gives buyers the tools to handle what they can handle — and makes sure a real expert is there the moment they need one. I've been doing this for 30 years. I know where buyers get stuck, and that's exactly where we step in."
+                </p>
+                <footer className="text-xs text-slate-500 mt-2 not-italic">— Bennett Liss, Founder</footer>
+              </blockquote>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {[
+                  { stat: "30+", label: "Years in CA Mortgage" },
+                  { stat: "1,000s", label: "Buyers Helped" },
+                  { stat: "1991", label: "Licensed in California" },
+                  { stat: "VA", label: "Loan Specialist" },
+                  { stat: "FHA", label: "Streamline Expert" },
+                  { stat: "Jumbo", label: "High-Value Purchases" },
+                ].map(({ stat, label }) => (
+                  <div key={label} className="bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-3 text-center">
+                    <p className="text-lg font-black text-amber-400">{stat}</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold leading-tight mt-0.5">{label}</p>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-sm text-slate-400 leading-relaxed">
+                When you unlock mortgage guidance on SmartBuy™, you get direct access to Bennett's team — not a call center, not a chatbot. A licensed California mortgage professional who has navigated every market cycle since the early 1990s.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Partner Credibility Bar ── */}
+      <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-600 mb-8">Our Professional Partner Network</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+            {/* Compass */}
+            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <svg viewBox="0 0 80 80" className="w-8 h-8" fill="none">
+                  <circle cx="40" cy="40" r="38" stroke="#111" strokeWidth="4"/>
+                  <polygon points="40,10 52,40 40,35 28,40" fill="#111"/>
+                  <polygon points="40,70 28,40 40,45 52,40" fill="#555"/>
+                </svg>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-black text-white">Compass</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Real Estate</p>
+              </div>
+            </div>
+
+            {/* Rocket Pro */}
+            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+              <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <span className="text-white text-2xl">🚀</span>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-black text-white">Rocket Pro</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Mortgage</p>
+              </div>
+            </div>
+
+            {/* Keller Williams */}
+            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <span className="text-slate-900 font-black text-xl tracking-tighter">KW</span>
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-black text-white">Keller Williams</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Realty</p>
+              </div>
+            </div>
+
+            {/* RE Law */}
+            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+              <div className="w-14 h-14 rounded-2xl bg-blue-900 border border-blue-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <Award className="h-6 w-6 text-blue-300" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-black text-white">RE Law Firm</p>
+                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Legal Counsel</p>
+              </div>
+            </div>
+          </div>
+
+          <p className="text-center text-xs text-slate-700 mt-6 max-w-lg mx-auto">
+            Partner firms are available on-demand through the SmartBuy™ token unlock system. Buywiser coordinates access — you choose when and what to activate.
+          </p>
+        </div>
+      </section>
+
       {/* Professional Backup Section */}
       <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60">
         <div className="max-w-5xl mx-auto">
@@ -424,9 +548,6 @@ export default function SmartBuy() {
           </div>
         </div>
       </section>
-
-      {/* Meet Your Expert */}
-      <MeetYourExpert onScrollToForm={scrollToForm} />
 
       {/* Intake Form */}
       <section ref={formRef} className="px-4 sm:px-6 py-20 border-t border-slate-800/60 bg-slate-900/30">
