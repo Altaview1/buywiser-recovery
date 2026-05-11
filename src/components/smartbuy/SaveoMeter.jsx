@@ -94,22 +94,36 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
         >
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-1">YOUR CUSTOM SAVINGS POOL</p>
           <div className="flex items-baseline justify-between mb-2">
-            <span className="text-4xl font-black text-emerald-700">{formatCurrency(remaining)}</span>
+            <motion.span 
+              className="text-4xl font-black text-emerald-700"
+              key={remaining}
+              initial={{ scale: 1 }}
+              animate={cashSpent > 0 ? { scale: [1, 1.15, 0.95, 1.08, 1] } : {}}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              {formatCurrency(remaining)}
+            </motion.span>
             <span className="text-xs text-slate-500 text-right">
               <p className="font-bold">Pool: {formatCurrency(savingsPool)}</p>
               <p>Spent: {balanceChange}</p>
             </span>
           </div>
-          <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-            <div 
+          <motion.div 
+            className="w-full h-2 rounded-full bg-slate-200 overflow-hidden"
+            animate={cashSpent > 0 ? { scale: [1, 1.05, 1] } : {}}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <motion.div 
               className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-300"
               style={{ width: `${((savingsPool - remaining) / savingsPool) * 100}%` }}
+              animate={cashSpent > 0 ? { brightness: [1, 1.3, 1] } : {}}
+              transition={{ duration: 0.6 }}
             />
-          </div>
+          </motion.div>
           <motion.p 
-            className="text-[10px] text-slate-600 mt-1.5"
-            animate={cashSpent > 0 ? { scale: [1, 1.05, 1] } : {}}
-            transition={{ duration: 0.4 }}
+            className="text-[10px] text-slate-600 mt-1.5 font-bold"
+            animate={cashSpent > 0 ? { scale: [1, 1.08, 1], color: ["#475569", "#059669", "#475569"] } : {}}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             {cashSpent > 0 ? `${((cashSpent / savingsPool) * 100).toFixed(1)}% of your pool allocated to services` : "No services selected yet"}
           </motion.p>
