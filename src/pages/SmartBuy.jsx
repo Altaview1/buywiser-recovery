@@ -118,20 +118,20 @@ export default function SmartBuy() {
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 mb-6">
                 <Brain className="h-3.5 w-3.5 text-emerald-600" />
-                <span className="text-xs font-black text-slate-600 uppercase tracking-widest">AI-Guided Homebuying</span>
+                <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Expert-Led Homebuying & Finance</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-5 text-slate-900">
-                Buy Your Home.<br />
-                <span className="text-emerald-600">Keep The Commission.</span>
+                Buy Smarter.<br />
+                <span className="text-emerald-600">Keep the Savings.</span>
               </h1>
 
               <p className="text-lg text-slate-600 leading-relaxed mb-4 max-w-lg">
-                Buywiser SmartBuy™ is an AI-guided platform that walks you through your home purchase step by step — and shares the savings back with you.
+                Buywiser SmartBuy™ pairs you with licensed mortgage and real estate professionals, backed by AI — so every step of your home purchase is guided by genuine expertise, not guesswork.
               </p>
 
-              <p className="text-sm text-slate-500 mb-8 max-w-md text-slate-500">
-                The more you self-direct, the more you keep. Licensed professionals are available when you need them — and only when you need them.
+              <p className="text-sm text-slate-500 mb-8 max-w-md">
+                Real professionals handle what matters most. AI handles the rest. And the savings that would have gone to commissions come back to you.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
@@ -193,7 +193,7 @@ export default function SmartBuy() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
             <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">How It Works</p>
-            <h2 className="text-3xl font-black text-slate-900">The Machine™ Workflow</h2>
+            <h2 className="text-3xl font-black text-slate-900">The SmartBuy™ Process</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_IT_WORKS.map(({ icon, step, title, desc }) => (
@@ -245,9 +245,9 @@ export default function SmartBuy() {
       <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black uppercase tracking-widest text-amber-600 mb-2">Meet Your Expert</p>
-            <h2 className="text-3xl font-black text-slate-900">The Human Behind The Machine™</h2>
-            <p className="text-slate-500 text-sm mt-3 max-w-xl mx-auto">SmartBuy™ is powered by AI — and backed by 30 years of real California mortgage expertise. You're never flying blind.</p>
+            <p className="text-xs font-black uppercase tracking-widest text-amber-600 mb-2">Your Lead Expert</p>
+            <h2 className="text-3xl font-black text-slate-900">Three Decades of California Expertise</h2>
+            <p className="text-slate-500 text-sm mt-3 max-w-xl mx-auto">Behind every SmartBuy™ transaction is a licensed professional with 30 years of California mortgage and real estate experience. You are always guided by someone who has seen it all.</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
@@ -377,11 +377,11 @@ export default function SmartBuy() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 mb-4">
               <Unlock className="h-3.5 w-3.5 text-amber-400" />
-              <span className="text-xs font-black text-amber-400 uppercase tracking-widest">Instant Professional Access · Unlock Anytime</span>
+              <span className="text-xs font-black text-amber-400 uppercase tracking-widest">Licensed Professionals · On Demand</span>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 mb-3">World-Class Professionals.<br />One Tap Away.</h2>
+            <h2 className="text-3xl font-black text-slate-900 mb-3">Seasoned Professionals,<br />Always Within Reach.</h2>
             <p className="text-slate-500 text-base max-w-2xl mx-auto leading-relaxed">
-              SmartBuy™ is self-directed by design — but you're never alone. The moment you want a licensed expert, you unlock them instantly. Our professional network is on standby throughout your entire transaction.
+              Every SmartBuy™ journey is backed by decades of California mortgage and real estate expertise. Our licensed professionals are available the moment you need them — no hold queues, no gatekeeping.
             </p>
           </div>
 
@@ -526,7 +526,7 @@ export default function SmartBuy() {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
             <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">Why SmartBuy™</p>
-            <h2 className="text-2xl font-black text-slate-900">SmartBuy™ vs. Traditional</h2>
+            <h2 className="text-2xl font-black text-slate-900">A Smarter Standard of Home Buying</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white border border-slate-200 rounded-xl p-4">
@@ -561,8 +561,8 @@ export default function SmartBuy() {
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Start Here</span>
             </div>
-            <h2 className="text-3xl font-black text-slate-900 mb-2">Activate Your SmartBuy™ Account</h2>
-            <p className="text-slate-500 text-sm">Enter your property details to initialize your Savings Pool and start the workflow.</p>
+            <h2 className="text-3xl font-black text-slate-900 mb-2">Begin Your SmartBuy™ Journey</h2>
+            <p className="text-slate-500 text-sm">Share your property details and we'll calculate your savings potential — and connect you with your expert team.</p>
           </div>
 
           <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
