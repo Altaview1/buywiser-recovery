@@ -62,15 +62,22 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
   const [note, setNote] = useState("");
 
   const remaining = savingsPool - tokensSpent;
+  const selectedPro = PROFESSIONALS.find(p => p.id === selected);
+  const tokenCost = selectedPro ? Math.round(savingsPool * selectedPro.tokenCost) : 0;
 
   const handleConfirm = async () => {
     if (!name || !phone) return;
     setLoading(true);
-    const cost = Math.round(savingsPool * selected.tokenCost);
+    const cost = Math.round(savingsPool * selectedPro.tokenCost);
 
-    // Notify office via SMS
-    await base44.functions.invoke("sendSMS", {
-      message: `🔓 SmartBuy™ Unlock Request!\nService: ${selected.name}\nBuyer: ${name}\nPhone: ${phone}\nNote: ${note || "None"}\nToken Cost: ${formatCurrency(cost)}\nPool Remaining After: ${formatCurrency(remaining - cost)}`,
+    await base44.functions.invoke("notifySmartBuyUnlock", {
+      buyerName: name,
+      buyerPhone: phone,
+      serviceName: selectedPro.name,
+      expert: selectedPro.expert,
+      note: note || "",
+      tokenCost: cost,
+      poolRemaining: remaining - cost,
     }).catch(() => {});
 
     setLoading(false);
@@ -79,9 +86,6 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
   };
 
   if (!isOpen) return null;
-
-  const selectedPro = PROFESSIONALS.find(p => p.id === selected);
-  const tokenCost = selectedPro ? Math.round(savingsPool * selectedPro.tokenCost) : 0;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
