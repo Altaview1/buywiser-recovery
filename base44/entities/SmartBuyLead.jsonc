@@ -1,0 +1,86 @@
+{
+  "name": "SmartBuyLead",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "property_link": {
+      "type": "string",
+      "description": "Zillow/Redfin/listing URL"
+    },
+    "property_address": {
+      "type": "string"
+    },
+    "target_city": {
+      "type": "string"
+    },
+    "purchase_price": {
+      "type": "number",
+      "description": "Estimated purchase price"
+    },
+    "pre_approved": {
+      "type": "string",
+      "enum": [
+        "yes",
+        "no",
+        "in_progress"
+      ],
+      "description": "Mortgage pre-approval status"
+    },
+    "timeline": {
+      "type": "string",
+      "enum": [
+        "0-3 months",
+        "3-6 months",
+        "6-12 months",
+        "just exploring"
+      ]
+    },
+    "first_time_buyer": {
+      "type": "boolean"
+    },
+    "savings_pool_estimate": {
+      "type": "number",
+      "description": "Estimated SmartBuy savings pool at intake"
+    },
+    "workflow_stage": {
+      "type": "string",
+      "default": "intake",
+      "description": "Current stage in The Machine workflow"
+    },
+    "tokens_remaining": {
+      "type": "number",
+      "description": "SmartBuy tokens remaining in pool"
+    },
+    "tokens_spent": {
+      "type": "number",
+      "default": 0
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "waitlist",
+        "active",
+        "paused",
+        "closed"
+      ],
+      "default": "waitlist"
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "phone"
+  ]
+}

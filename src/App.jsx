@@ -46,6 +46,7 @@ import FieldActivatorOnboarding from './pages/FieldActivatorOnboarding';
 import QRScanDashboard from './pages/QRScanDashboard';
 import PortalHubPage from './pages/PortalHubPage';
 import BuyerCashBack from './pages/BuyerCashBack';
+import SmartBuy from './pages/SmartBuy';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -132,6 +133,7 @@ function App() {
           <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />
           <Route path="/admin-settings" element={<AdminSettings />} />
           <Route path="/cashback" element={<BuyerCashBack />} />
+          <Route path="/smartbuy" element={<SmartBuy />} />
           
           {/* All other routes — auth-protected */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
