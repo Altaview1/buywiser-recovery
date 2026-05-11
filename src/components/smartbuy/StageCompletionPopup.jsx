@@ -122,7 +122,7 @@ export default function StageCompletionPopup({ isOpen, onClose, stage, savingsPo
                   ${stageSavings.toLocaleString()}
                 </motion.div>
                 <p className="text-[10px] text-slate-500">
-                  {(stageInfo.savingsPercent * 100).toFixed(0)}% of your savings pool
+                  {(stageInfo.savingsPercent * 100).toFixed(0)}% of your SAVINGS
                 </p>
               </motion.div>
 

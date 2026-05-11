@@ -114,7 +114,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
             <div>
               <p className="text-sm font-black text-white">Unlock Professional Help</p>
               <p className="text-[10px] text-slate-500">
-                Pool: <span className="text-emerald-400 font-bold">{formatCurrency(remaining)}</span> remaining
+                SAVINGS: <span className="text-emerald-400 font-bold">{formatCurrency(remaining)}</span> remaining
               </p>
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
                   <span className="text-red-400 font-bold">− {formatCurrency(serviceCost)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span className="text-slate-400">New pool balance</span>
+                  <span className="text-slate-400">New SAVINGS balance</span>
                   <span className="text-emerald-400 font-bold">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
                   <span className="text-base font-black text-amber-400">{formatCurrency(serviceCost)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-slate-500">Pool after service</span>
+                  <span className="text-xs text-slate-500">SAVINGS after service</span>
                   <span className="text-sm font-bold text-emerald-400">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
@@ -258,13 +258,13 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Unlock className="h-4 w-4" /> Confirm Unlock · {formatCurrency(serviceCost)}</>}
               </button>
-              <p className="text-[10px] text-slate-600 text-center mt-2">Service cost deducted from your Savings Pool at closing</p>
+              <p className="text-[10px] text-slate-600 text-center mt-2">Service cost deducted from your SAVINGS at closing</p>
             </div>
 
           ) : (
              /* Service selection */
              <div className="px-5 py-4 space-y-3">
-               <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
+               <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your SAVINGS — whatever remains is yours at closing.</p>
                <TooltipProvider>
                  {PROFESSIONALS.map(pro => {
                    const cost = Math.round(savingsPool * pro.cashCost);

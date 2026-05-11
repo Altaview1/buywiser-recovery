@@ -49,7 +49,7 @@ export default function SavingsMeterHero({ price = 850000 }) {
 
         {/* Breakdown */}
         <div className="mb-8 pb-8 border-b border-slate-200">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">Your SmartBuy™ Pool</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-4">Your SmartBuy™ SAVINGS</p>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="text-xs text-slate-700">Preserved buyer savings</span>
@@ -69,7 +69,7 @@ export default function SavingsMeterHero({ price = 850000 }) {
 
         {/* Use cases */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-3">Use your pool for:</p>
+          <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-3">Use your SAVINGS for:</p>
           <ul className="space-y-2">
             {["✓ Lower interest rate", "✓ Closing costs", "✓ Cash at closing", "✓ Reduced monthly payment"].map(
               (item, i) => (

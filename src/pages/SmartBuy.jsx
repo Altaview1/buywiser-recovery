@@ -59,9 +59,9 @@ function SuccessScreen({ lead }) {
         <h1 className="text-3xl font-black text-white mb-3">You're In The Machine™</h1>
         {savings && (
           <div className="bg-slate-900 border border-emerald-500/30 rounded-2xl px-6 py-5 mb-6">
-            <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-1">Your SmartBuy Savings Pool™</p>
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-1">Your SmartBuy SAVINGS™</p>
             <p className="text-5xl font-black text-white mb-1">{formatCurrency(savings)}</p>
-            <p className="text-sm text-slate-400">estimated · complete each stage yourself to keep it all</p>
+            <p className="text-sm text-slate-400">estimated · complete each stage yourself to keep all SAVINGS</p>
           </div>
         )}
         <p className="text-slate-400 leading-relaxed mb-6">
@@ -280,7 +280,7 @@ export default function SmartBuy() {
               </div>
             ))}
             <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3.5 mt-2">
-              <span className="text-sm font-black text-slate-900">Your estimated SmartBuy™ Savings Pool</span>
+              <span className="text-sm font-black text-slate-900">Your Estimated SmartBuy™ SAVINGS</span>
               <span className="text-xl font-black text-emerald-700">{formatCurrency(Math.round(price * 0.025))}</span>
             </div>
           </div>
