@@ -1,20 +1,35 @@
-import { Zap, Search, DollarSign, TrendingUp, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Zap, Search, DollarSign, TrendingUp, ArrowRight, CheckCircle2, MapPin, Zap as ZapIcon } from "lucide-react";
 import { useState } from "react";
 import SavingsMeter from "../SavingsMeter";
 import { formatPrice } from "../pricing/servicePricing";
 
 export default function HomeSearchStage({ onPropertySubmit }) {
+  const [price, setPrice] = useState(750000);
+  const [address, setAddress] = useState("");
   const [completed, setCompleted] = useState({
     search: false,
     understand: false,
   });
+
+  const handleAddressChange = (e) => {
+    const value = e.target.value;
+    setAddress(value);
+    // Extract price from address if it's a number
+    const priceMatch = value.match(/\$?([\d,]+)/);
+    if (priceMatch) {
+      const extractedPrice = parseInt(priceMatch[1].replace(/,/g, ""), 10);
+      if (extractedPrice > 0 && extractedPrice < 10000000) {
+        setPrice(extractedPrice);
+      }
+    }
+  };
 
   const handlePasteLink = (e) => {
     const url = prompt("Paste your Zillow, Redfin, or property link:");
     if (url) {
       // For now, just transition to next stage
       // In production, would fetch property data and calculate savings
-      onPropertySubmit({ url, price: 750000 });
+      onPropertySubmit({ url, price });
     }
   };
 
@@ -33,39 +48,42 @@ export default function HomeSearchStage({ onPropertySubmit }) {
         </div>
 
         {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-12">
-          {/* Left: Input */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* Left: Live Address Input */}
           <div>
-            <div className="bg-white rounded-2xl border-2 border-yellow-300 p-8 shadow-sm">
-              <h2 className="text-lg font-black text-amber-900 mb-4">Find Your Home</h2>
-              <p className="text-sm text-slate-600 mb-6">Paste a link from any listing site—Zillow, Redfin, Realtor.com, or anywhere.</p>
+            <div className="bg-white rounded-2xl border-2 border-yellow-300 p-8 shadow-sm sticky top-32">
+              <h2 className="text-lg font-black text-amber-900 mb-4 flex items-center gap-2">
+                <MapPin className="h-5 w-5" /> Find Your Home
+              </h2>
+              <p className="text-sm text-slate-600 mb-6">Enter an address or listing link to see your savings in real-time.</p>
 
-              <button
-                onClick={handlePasteLink}
-                className="w-full flex items-center justify-center gap-2 px-6 py-4 bg-yellow-400 text-amber-900 font-black rounded-xl hover:bg-yellow-300 transition text-base mb-4"
-              >
-                <Search className="h-5 w-5" /> Paste Property Link
-              </button>
-
-              <div className="relative mb-4">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200"></div>
-                </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-2 bg-white text-slate-500 font-semibold">OR</span>
-                </div>
+              {/* Live Address Input */}
+              <div className="mb-6">
+                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Property Address or Link</label>
+                <input
+                  type="text"
+                  placeholder="123 Main St, Los Angeles, CA 90001 or paste a Zillow link..."
+                  value={address}
+                  onChange={handleAddressChange}
+                  className="w-full px-4 py-4 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                />
+                <p className="text-[10px] text-slate-500 mt-1">Updates automatically as you type</p>
               </div>
 
-              <input
-                type="number"
-                placeholder="Enter target purchase price..."
-                defaultValue={750000}
-                className="w-full px-4 py-3 border border-slate-300 rounded-xl text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              />
-
-              <button className="w-full px-6 py-3 border-2 border-amber-600 text-amber-900 font-black rounded-xl hover:bg-amber-50 transition text-sm">
-                Calculate Savings
-              </button>
+              {/* Or enter price manually */}
+              <div>
+                <label className="block text-xs font-black text-slate-700 mb-2 uppercase">Or Enter Price Directly</label>
+                <div className="flex gap-2">
+                  <DollarSign className="h-10 w-10 text-slate-400 flex items-center justify-center flex-shrink-0 bg-slate-100 rounded-lg" />
+                  <input
+                    type="number"
+                    placeholder="750000"
+                    value={price}
+                    onChange={(e) => setPrice(Number(e.target.value) || 750000)}
+                    className="flex-1 px-4 py-3 border-2 border-yellow-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-yellow-400 transition"
+                  />
+                </div>
+              </div>
 
               {/* Tips */}
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -77,38 +95,42 @@ export default function HomeSearchStage({ onPropertySubmit }) {
             </div>
           </div>
 
-          {/* Right: Savings Preview */}
+          {/* Right: Live Savings Meter */}
           <div>
             <div className="mb-6">
-              <h2 className="text-lg font-black text-amber-900 mb-4">Your SmartBuy™ Potential</h2>
-              <SavingsMeter price={750000} animated={false} />
+              <h2 className="text-lg font-black text-amber-900 mb-2 flex items-center gap-2">
+                <ZapIcon className="h-5 w-5 text-amber-500" /> Your SmartBuy™ Savings
+              </h2>
+              <p className="text-xs text-slate-600 mb-4">Updates in real-time as you adjust the price</p>
+              <SavingsMeter price={price} animated={true} />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
+            {/* Live Savings Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+              <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4 transition">
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className="h-4 w-4 text-emerald-600" />
                   <span className="text-[10px] font-black text-emerald-700 uppercase">Commission Savings</span>
                 </div>
-                <p className="text-xl font-black text-emerald-700">{formatPrice(750000 * 0.025)}</p>
+                <p className="text-2xl font-black text-emerald-700">{formatPrice(price * 0.025)}</p>
                 <p className="text-[10px] text-emerald-600">2.5% buyer rebate</p>
               </div>
 
               <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="h-4 w-4 text-blue-600" />
-                  <span className="text-[10px] font-black text-blue-700 uppercase">Service Flexibility</span>
+                  <Zap className="h-4 w-4 text-blue-600" />
+                  <span className="text-[10px] font-black text-blue-700 uppercase">Service Budget</span>
                 </div>
-                <p className="text-xl font-black text-blue-700">Pay-as-You-Go</p>
-                <p className="text-[10px] text-blue-600">Only for services used</p>
+                <p className="text-2xl font-black text-blue-700">{formatPrice(price * 0.015)}</p>
+                <p className="text-[10px] text-blue-600">For AI & pro services</p>
               </div>
             </div>
 
             {/* Education Box */}
-            <div className="mt-6 p-5 rounded-xl border-l-4 border-amber-500 bg-amber-50">
-              <p className="text-sm font-bold text-amber-900 mb-2">📚 How SmartBuy™ Works</p>
+            <div className="p-5 rounded-xl border-l-4 border-amber-500 bg-amber-50">
+              <p className="text-sm font-bold text-amber-900 mb-2">📚 How Your Savings Work</p>
               <p className="text-xs text-amber-800 leading-relaxed">
-                Traditional agents consume commission through showing coordination, tours, and consultations early on. SmartBuy™ lets you explore affordably with AI first, then pay transparently for expertise only when you need it.
+                Your entire 2.5% rebate goes into a savings pool. Use AI for free analysis first. Only activate licensed professionals when you find a serious property and need paid guidance.
               </p>
             </div>
           </div>
@@ -149,7 +171,7 @@ export default function HomeSearchStage({ onPropertySubmit }) {
         <div className="text-center">
           <p className="text-slate-600 mb-4">Ready to tour a property?</p>
           <button
-            onClick={() => onPropertySubmit({ price: 750000 })}
+            onClick={() => onPropertySubmit({ price })}
             className="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 text-white font-black rounded-xl hover:bg-amber-600 transition text-base"
           >
             Schedule a Tour <ArrowRight className="h-4 w-4" />
