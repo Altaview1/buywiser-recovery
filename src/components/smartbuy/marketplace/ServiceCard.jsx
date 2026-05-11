@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Star, ChevronDown, ChevronUp, Zap, Lock, Loader2, CheckCircle } from "lucide-react";
+import { Star, ChevronDown, ChevronUp, Zap, Lock, Loader2, CheckCircle, Clock } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
 function StarRating({ rating }) {
@@ -55,6 +55,15 @@ export default function ServiceCard({ service, savingsPool = 750000 * 0.025 }) {
             )}
           </div>
           <p className="text-xs text-slate-400 leading-relaxed line-clamp-2">{service.description}</p>
+
+          {/* When to use — visible on card without expanding */}
+          {service.why_now && !expanded && (
+            <div className="flex items-start gap-1.5 mt-2">
+              <Clock className="h-3 w-3 text-amber-400 flex-shrink-0 mt-0.5" />
+              <p className="text-[11px] text-amber-300/80 leading-relaxed line-clamp-1">{service.why_now}</p>
+            </div>
+          )}
+
           <div className="flex flex-wrap items-center gap-3 mt-2">
             {service.rating && <StarRating rating={service.rating} />}
             {service.reviews && <span className="text-[10px] text-slate-500">{service.reviews} reviews</span>}
@@ -89,9 +98,21 @@ export default function ServiceCard({ service, savingsPool = 750000 * 0.025 }) {
       {/* Expanded detail */}
       {expanded && (
         <div className="px-4 pb-4 border-t border-slate-800">
+
+          {/* When to use — full text */}
+          {service.why_now && (
+            <div className="mt-3 mb-3 flex items-start gap-2.5 bg-amber-500/5 border border-amber-500/15 rounded-xl px-4 py-3">
+              <Clock className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">When to Use This Service</p>
+                <p className="text-xs text-amber-200/80 leading-relaxed">{service.why_now}</p>
+              </div>
+            </div>
+          )}
+
           {/* AI tip */}
           {service.aiTip && (
-            <div className="mt-3 mb-3 flex items-start gap-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-4 py-3">
+            <div className="mt-2 mb-3 flex items-start gap-2.5 bg-violet-500/10 border border-violet-500/20 rounded-xl px-4 py-3">
               <span className="text-base flex-shrink-0">🤖</span>
               <p className="text-xs text-violet-200 leading-relaxed">{service.aiTip}</p>
             </div>
