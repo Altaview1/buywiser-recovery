@@ -110,8 +110,29 @@ export default function ServicePriceList() {
         })}
       </div>
 
-      {/* Workflow Costs */}
+      {/* Total Savings vs Costs */}
       <div className="mt-12 pt-8 border-t border-slate-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12">
+          {/* Total Credit / Savings Pool */}
+          <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6">
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-700 mb-2">Your SmartBuy™ Credit</p>
+            <p className="text-4xl font-black text-emerald-600 mb-1">$18,750+</p>
+            <p className="text-sm text-emerald-700 font-semibold">2.5% buyer commission savings pool</p>
+            <p className="text-xs text-slate-600 mt-3">Available on a $750K purchase. Actual amount based on final property price.</p>
+          </div>
+
+          {/* Max Potential Costs */}
+          <div className="bg-rose-50 border-2 border-rose-300 rounded-2xl p-6">
+            <p className="text-xs font-black uppercase tracking-widest text-rose-700 mb-2">Maximum Potential Costs</p>
+            <p className="text-4xl font-black text-rose-600 mb-1">~$8,530</p>
+            <p className="text-sm text-rose-700 font-semibold">If you use all guided services</p>
+            <p className="text-xs text-slate-600 mt-3">Most buyers spend 25-40% of their credit. The rest goes to your rate, costs, or closing cash.</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Workflow Costs */}
+      <div>
         <h3 className="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-rose-500"></div>
           Guided Workflow Costs
