@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, ChevronDown } from "lucide-react";
+import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock } from "lucide-react";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 
@@ -133,10 +133,19 @@ export default function SmartBuy() {
               </div>
 
               {/* Trust signals */}
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-3 mb-5">
                 {["NMLS #1887767", "CA DRE #01107013", "Licensed in California", "No Obligation"].map(t => (
                   <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
                     <Shield className="h-3 w-3 text-slate-600" /> {t}
+                  </div>
+                ))}
+              </div>
+              {/* Partner brand badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mr-1">Backed by:</span>
+                {["Compass", "Rocket Pro", "Keller Williams", "RE Law"].map(b => (
+                  <div key={b} className="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-400">
+                    {b}
                   </div>
                 ))}
               </div>
@@ -212,6 +221,156 @@ export default function SmartBuy() {
               <span className="text-xl font-black text-emerald-400">{formatCurrency(Math.round(price * 0.025))}</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Professional Backup Section */}
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60">
+        <div className="max-w-5xl mx-auto">
+
+          {/* Header */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 mb-4">
+              <Unlock className="h-3.5 w-3.5 text-amber-400" />
+              <span className="text-xs font-black text-amber-400 uppercase tracking-widest">Instant Professional Access · Unlock Anytime</span>
+            </div>
+            <h2 className="text-3xl font-black text-white mb-3">World-Class Professionals.<br />One Token Away.</h2>
+            <p className="text-slate-400 text-base max-w-2xl mx-auto leading-relaxed">
+              SmartBuy™ is self-directed by design — but you're never alone. The moment you want a licensed expert, you unlock them instantly. Our professional network is on standby throughout your entire transaction.
+            </p>
+          </div>
+
+          {/* Bennett Card — Hero Expert */}
+          <div className="bg-gradient-to-r from-slate-900 to-slate-800 border border-amber-500/30 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+            <div className="flex flex-col sm:flex-row gap-6 items-start relative">
+              {/* Avatar */}
+              <div className="flex-shrink-0">
+                <div className="w-20 h-20 rounded-2xl bg-slate-700 border-2 border-amber-500/50 flex items-center justify-center text-3xl overflow-hidden">
+                  🏦
+                </div>
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span className="text-xs font-black uppercase tracking-widest text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">Lead Mortgage Expert</span>
+                  <span className="text-xs text-slate-500 font-mono">30 Years Experience</span>
+                </div>
+                <h3 className="text-xl font-black text-white mb-1">Bennett Liss</h3>
+                <p className="text-sm text-slate-400 font-semibold mb-3">Founder, BuyWiser Home Loans · NMLS #1524446 · CA DRE #01107013</p>
+                <p className="text-sm text-slate-300 leading-relaxed mb-4 max-w-xl">
+                  With 30 years of California mortgage experience, Bennett has helped thousands of buyers navigate purchase financing — from first-time buyers to complex jumbo transactions. When you unlock mortgage guidance on SmartBuy™, Bennett's team is who you get.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> VA Loan Specialist
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> FHA · Conventional · Jumbo
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
+                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> California Expert Since 1991
+                  </div>
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <a href="tel:+18183002642" className="inline-flex items-center gap-2 px-5 py-3 bg-amber-400 text-slate-900 font-black rounded-xl text-sm hover:bg-amber-300 transition whitespace-nowrap">
+                  <Phone className="h-3.5 w-3.5" /> (818) 300-2642
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Partner Network Grid */}
+          <div className="mb-8">
+            <p className="text-xs font-black uppercase tracking-widest text-slate-500 text-center mb-6">Professional Partner Network — Available On Demand</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              {/* Compass */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                    <span className="text-slate-900 font-black text-sm tracking-tighter">✦</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-white">Compass</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Real Estate Brokerage</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">Top-tier buyer agent representation available when you choose to unlock agent support.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                </div>
+              </div>
+
+              {/* Rocket Pro */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                    <span className="text-white font-black text-xs">🚀</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-white">Rocket Pro</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Mortgage Partner</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">Backup mortgage origination channel for rate comparison and alternative loan programs.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                </div>
+              </div>
+
+              {/* KW */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-slate-700 border border-slate-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                    <span className="text-white font-black text-xs">KW</span>
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-white">Keller Williams</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Realty Network</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">Full-service KW agent representation across California markets when you need boots on the ground.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                </div>
+              </div>
+
+              {/* Real Estate Law */}
+              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-blue-900 border border-blue-700 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                    <Award className="h-4 w-4 text-blue-300" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-white">RE Law Firm</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Legal Counsel</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">Contract review, title issues, dispute resolution — licensed real estate attorneys on call.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Unlock Promise Banner */}
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
+                <Unlock className="h-4 w-4 text-emerald-400" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-white">You Are Never Stuck. Help Is One Tap Away.</p>
+                <p className="text-xs text-slate-400 mt-0.5">Every SmartBuy™ user has instant access to licensed professionals at any point in the workflow — no waiting, no hold music, no appointment required.</p>
+              </div>
+            </div>
+            <button onClick={scrollToForm} className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-emerald-400 text-slate-900 font-black rounded-xl text-sm hover:bg-emerald-300 transition whitespace-nowrap">
+              Start Free <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+
         </div>
       </section>
 
