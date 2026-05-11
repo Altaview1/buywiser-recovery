@@ -3,6 +3,7 @@ import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
+import MeetYourExpert from "../components/smartbuy/MeetYourExpert";
 
 const DEFAULT_PRICE = 750000;
 
@@ -423,6 +424,9 @@ export default function SmartBuy() {
           </div>
         </div>
       </section>
+
+      {/* Meet Your Expert */}
+      <MeetYourExpert onScrollToForm={scrollToForm} />
 
       {/* Intake Form */}
       <section ref={formRef} className="px-4 sm:px-6 py-20 border-t border-slate-800/60 bg-slate-900/30">
