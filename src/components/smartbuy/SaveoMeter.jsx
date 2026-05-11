@@ -25,20 +25,16 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
   const remaining = savingsPool - tokensSpent - earnedSavings;
   const percentComplete = (completedStages.filter(s => s <= 6).length / 6) * 100;
   
-  // Calculate running balance at each stage
+  // Calculate remaining balance at each stage
+  // Balance = Full Pool - (Earned % from stages up to this point) - (Total tokens spent)
   const getBalanceAtStage = (stage) => {
-    let balance = savingsPool;
-    // Subtract earned savings up to this stage
+    let earnedUpToStage = 0;
     STAGE_SAVINGS.forEach(s => {
       if (s.stage <= stage) {
-        balance -= savingsPool * s.pct;
+        earnedUpToStage += savingsPool * s.pct;
       }
     });
-    // Subtract tokens spent (approximate per stage)
-    if (stage <= currentStage) {
-      balance -= Math.round((tokensSpent / currentStage) * stage);
-    }
-    return Math.max(0, balance);
+    return Math.max(0, savingsPool - earnedUpToStage - tokensSpent);
   };
 
   return (
