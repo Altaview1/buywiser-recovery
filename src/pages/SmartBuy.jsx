@@ -10,6 +10,7 @@ import TokenRewind from "../components/smartbuy/TokenRewind";
 import PropertyServicesMarketplace from "../components/smartbuy/marketplace/PropertyServicesMarketplace";
 import TokenBalanceIndicator from "../components/smartbuy/TokenBalanceIndicator";
 import ReferralSection from "../components/smartbuy/ReferralSection";
+import TokenTutorial from "../components/smartbuy/TokenTutorial";
 
 const DEFAULT_PRICE = 750000;
 
@@ -573,6 +574,9 @@ export default function SmartBuy() {
 
       {/* ── Common Questions ── */}
       <CommonQuestions />
+
+      {/* ── Token Tutorial ── */}
+      <TokenTutorial />
 
       {/* ── Referral Section ── */}
       <ReferralSection userEmail={submittedLead?.email} savingsPool={savingsPool} />
