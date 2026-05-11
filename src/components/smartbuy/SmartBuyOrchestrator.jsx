@@ -9,9 +9,11 @@ import InspectionStage from "./workflow/InspectionStage";
 import FinancingStage from "./workflow/FinancingStage";
 import AppraisalStage from "./workflow/AppraisalStage";
 import ClosingStage from "./workflow/ClosingStage";
+import StageNavigation from "./workflow/StageNavigation";
 
 export default function SmartBuyOrchestrator() {
   const [stage, setStage] = useState(1);
+  const [completedStages, setCompletedStages] = useState([]);
   const [data, setData] = useState({
     prequalification: null,
     selectedHome: null,
@@ -25,6 +27,11 @@ export default function SmartBuyOrchestrator() {
 
   const handleNext = (newData) => {
     setData(prev => ({ ...prev, ...newData }));
+    
+    // Mark current stage as completed
+    if (!completedStages.includes(stage)) {
+      setCompletedStages(prev => [...prev, stage]);
+    }
     
     if (stage === 5 && newData.action === 'continue') {
       setStage(2); // Back to property search
@@ -43,8 +50,11 @@ export default function SmartBuyOrchestrator() {
   const savingsPool = data.prequalification?.savingsPool || 0;
 
   return (
-    <div className="min-h-screen bg-white">
-      {stage === 1 && (
+    <div className="flex min-h-screen bg-white">
+      <StageNavigation currentStage={stage} completedStages={completedStages} />
+      
+      <div className="flex-1 overflow-y-auto">
+        {stage === 1 && (
         <PrequalificationStage 
           onNext={(prequal) => {
             setData(prev => ({ ...prev, prequalification: prequal }));
@@ -144,6 +154,7 @@ export default function SmartBuyOrchestrator() {
           tokensSpent={totalTokensSpent}
         />
       )}
+      </div>
     </div>
   );
 }
