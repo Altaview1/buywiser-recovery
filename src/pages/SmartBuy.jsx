@@ -142,25 +142,26 @@ export default function SmartBuy() {
               {/* Left: Headline + Testimonial */}
               <div>
                 <div className="mb-8">
+                  <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">Economic Disruption</p>
                   <h1 className="text-5xl sm:text-6xl lg:text-6xl font-black leading-tight text-slate-900 mb-6">
-                    Homebuyers Are Keeping $10,000–$30,000 With SmartBuy™
+                    The Modular Transaction Model Is Changing Who Keeps The Commission
                   </h1>
                   <p className="text-lg text-slate-600 leading-relaxed mb-4">
-                    SmartBuy™ unbundles the traditional homebuying process so you only use—and pay for—the professional services you actually need.
+                    Traditional homebuying bundles all professional services into a single 2.5–3% buyer commission. SmartBuy™ disaggregates that fee structure, letting you source and pay for services modularly. The result: you keep $10,000–$30,000 in savings on a typical home purchase.
                   </p>
                   <p className="text-base text-slate-500 leading-relaxed">
-                    Use AI guidance, modular expert help, and transparent transaction pricing to preserve thousands in buyer savings.
+                    AI-guided self-direction, transparent service pricing, and expert backup only when you need it. The buyer, not the agent, captures the efficiency gains.
                   </p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mb-12">
                   <button onClick={scrollToForm}
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-emerald-600 text-white font-black rounded-xl text-base hover:bg-emerald-700 transition">
-                    Calculate My Savings <ArrowRight className="h-4 w-4" />
+                    See Your Savings Pool <ArrowRight className="h-4 w-4" />
                   </button>
                   <a href="tel:+18183002642"
                     className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-slate-300 text-slate-900 font-black rounded-xl text-base hover:bg-slate-50 transition">
-                    <Phone className="h-4 w-4" /> Call Now
+                    <Phone className="h-4 w-4" /> Discuss Your Deal
                   </a>
                 </div>
 
