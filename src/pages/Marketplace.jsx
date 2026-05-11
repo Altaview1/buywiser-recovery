@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Search, Zap, ChevronDown, ChevronUp, Sparkles, RotateCcw, Clock, CheckCircle, Lock } from "lucide-react";
-import { SERVICES, TIMELINE_STAGES, PHASE_SMART_SUGGESTIONS } from "../components/smartbuy/marketplace/marketplaceData";
+import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "../components/smartbuy/marketplace/marketplaceData.js";
 import ServiceCard from "../components/smartbuy/marketplace/ServiceCard";
 import ClosingCostVisualizer from "../components/smartbuy/marketplace/ClosingCostVisualizer";
 
@@ -148,7 +148,7 @@ export default function Marketplace() {
   // Group services by their PRIMARY phase (first in phases array)
   const servicesByStage = useMemo(() => {
     const map = {};
-    TIMELINE_STAGES.forEach(s => { map[s.id] = []; });
+    TRANSACTION_PHASES.forEach(s => { map[s.id] = []; });
 
     SERVICES.forEach(service => {
       // Put service in its first/primary phase
@@ -246,8 +246,8 @@ export default function Marketplace() {
                     {/* Show which stage this belongs to */}
                     <div className="flex items-center gap-2 mb-1 px-1">
                       <span className="text-[10px] text-slate-500">
-                        {TIMELINE_STAGES.find(st => st.id === s.phases?.[0])?.icon}{" "}
-                        {TIMELINE_STAGES.find(st => st.id === s.phases?.[0])?.label}
+                        {TRANSACTION_PHASES.find(st => st.id === s.phases?.[0])?.icon}{" "}
+                        {TRANSACTION_PHASES.find(st => st.id === s.phases?.[0])?.label}
                       </span>
                     </div>
                     <ServiceCard service={s} savingsPool={savingsPool} />
@@ -259,13 +259,13 @@ export default function Marketplace() {
         ) : (
           /* ── Timeline view ── */
           <div className="space-y-3">
-            {TIMELINE_STAGES.map((stage, idx) => {
+            {TRANSACTION_PHASES.map((stage, idx) => {
               const services = servicesByStage[stage.id] || [];
               if (services.length === 0) return null;
               return (
                 <div key={stage.id} className="relative">
                   {/* Vertical connector line */}
-                  {idx < TIMELINE_STAGES.length - 1 && (
+                  {idx < TRANSACTION_PHASES.length - 1 && (
                     <div className="absolute left-7 top-full w-0.5 h-3 bg-slate-800 z-10" />
                   )}
                   <StageBlock
