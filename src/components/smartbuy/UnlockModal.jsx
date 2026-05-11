@@ -168,6 +168,13 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
                 </div>
               </div>
 
+              {/* Encouragement message */}
+              <div className="bg-gradient-to-r from-emerald-500/10 to-blue-500/10 border border-emerald-500/30 rounded-xl p-3.5 mb-4">
+                <p className="text-xs text-emerald-700 font-bold leading-relaxed">
+                  ✨ <strong>Money well spent.</strong> You're investing in expert guidance that could save you thousands more. Skip this step solo, and you'll likely spend more — or make costly mistakes.
+                </p>
+              </div>
+
               <div className="space-y-3 mb-4">
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-1">Your Name *</label>
