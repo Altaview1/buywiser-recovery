@@ -144,13 +144,13 @@ export default function SmartBuy() {
                 <div className="mb-8">
                   <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">Economic Disruption</p>
                   <h1 className="text-5xl sm:text-6xl lg:text-6xl font-black leading-tight text-slate-900 mb-6">
-                    The Modular Transaction Model Is Changing Who Keeps The Commission
+                    You Just Gained Access to $10K–$30K in Savings
                   </h1>
                   <p className="text-lg text-slate-600 leading-relaxed mb-4">
-                    Traditional homebuying bundles all professional services into a single 2.5–3% buyer commission. SmartBuy™ disaggregates that fee structure, letting you source and pay for services modularly. The result: you keep $10,000–$30,000 in savings on a typical home purchase.
+                    For decades, traditional home buying funneled 2.5–3% of your purchase price to a single agent commission. SmartBuy™ breaks that model. Pay only for the professional services you actually use. The rest stays with you.
                   </p>
                   <p className="text-base text-slate-500 leading-relaxed">
-                    AI-guided self-direction, transparent service pricing, and expert backup only when you need it. The buyer, not the agent, captures the efficiency gains.
+                    Property intelligence from AI. Licensed experts on demand. A transparent SAVE-o-Meter tracking every dollar. You control the transaction—not an opaque commission structure.
                   </p>
                 </div>
 
