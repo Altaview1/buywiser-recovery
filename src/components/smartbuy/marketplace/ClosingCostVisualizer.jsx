@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Upload, DollarSign, CheckCircle, XCircle, Loader2, Info } from "lucide-react";
-import { CLOSING_COST_ITEMS } from "./marketplaceData.js";
+import { CLOSING_COST_ITEMS } from "./marketplaceData";
 import { base44 } from "@/api/base44Client";
 
 function fmt(n) {

@@ -1,0 +1,44 @@
+{
+  "name": "Referral",
+  "type": "object",
+  "properties": {
+    "referrer_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email of the user who shared the referral link"
+    },
+    "referred_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email of the new user who signed up via the referral link"
+    },
+    "referral_code": {
+      "type": "string",
+      "description": "Unique referral code generated for the referrer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Status of the referral (pending signup, completed, or cancelled)"
+    },
+    "tokens_awarded": {
+      "type": "number",
+      "default": 50,
+      "description": "Number of bonus tokens awarded upon completion"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the referred user completed their signup"
+    }
+  },
+  "required": [
+    "referrer_email",
+    "referral_code"
+  ]
+}
