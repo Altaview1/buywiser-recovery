@@ -10,7 +10,7 @@ const STAGES = [
   { icon: "🔑", label: "Close Deal", short: "Closing" },
 ];
 
-export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0 }) {
+export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0, completedStages = [] }) {
   const [activeStage, setActiveStage] = useState(0);
   const remainingBalance = savingsPool - cashSpent;
 
@@ -35,7 +35,7 @@ export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0 
           {/* Stage dots */}
           <div className="relative flex justify-between">
             {STAGES.map((stage, i) => {
-              const isComplete = i < activeStage;
+              const isComplete = completedStages.includes(i + 1);
               const isActive = i === activeStage;
               return (
                 <button
@@ -55,6 +55,7 @@ export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0 
                   `}>
                     {stage.short}
                   </span>
+                  {isComplete && <span className="text-[8px] font-black text-emerald-400 uppercase tracking-widest">✓</span>}
                 </button>
               );
             })}
