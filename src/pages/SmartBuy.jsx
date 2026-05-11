@@ -109,11 +109,20 @@ export default function SmartBuy() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 sm:px-6 py-20 sm:py-28 bg-gradient-to-br from-slate-50 to-white">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-100/60 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-white">
+        {/* Full-width hero image */}
+        <div className="relative w-full h-56 sm:h-72 lg:hidden overflow-hidden">
+          <img
+            src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/e39aada91_generated_image.png"
+            alt="Expert-led California homebuying"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/90" />
+        </div>
 
+        <div className="px-4 sm:px-6 py-14 sm:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left: copy */}
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 mb-6">
@@ -164,8 +173,28 @@ export default function SmartBuy() {
               </div>
             </div>
 
-            {/* Right: Savings Meter */}
+            {/* Right: Hero image + Savings Meter */}
             <div>
+              {/* Premium hero image — desktop only */}
+              <div className="hidden lg:block relative rounded-2xl overflow-hidden mb-5 shadow-xl border border-slate-200">
+                <img
+                  src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/e39aada91_generated_image.png"
+                  alt="Expert-led California homebuying"
+                  className="w-full h-52 object-cover object-center"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-white text-xs font-black uppercase tracking-widest">Licensed · Expert-Led · California</p>
+                    <p className="text-white/70 text-[10px] mt-0.5">30 Years of Homebuying Expertise</p>
+                  </div>
+                  <div className="flex items-center gap-1 bg-emerald-400/90 backdrop-blur-sm px-2.5 py-1 rounded-full">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    <span className="text-slate-900 text-[10px] font-black uppercase tracking-wider">SmartBuy™</span>
+                  </div>
+                </div>
+              </div>
+
               <SavingsMeter price={price} animated={true} />
               {/* Slider */}
               <div className="mt-4 bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
@@ -182,6 +211,7 @@ export default function SmartBuy() {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </section>
 
