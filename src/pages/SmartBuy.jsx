@@ -8,6 +8,7 @@ import CommonQuestions from "../components/smartbuy/CommonQuestions";
 import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
 import TokenRewind from "../components/smartbuy/TokenRewind";
 import PropertyServicesMarketplace from "../components/smartbuy/marketplace/PropertyServicesMarketplace";
+import TokenBalanceIndicator from "../components/smartbuy/TokenBalanceIndicator";
 
 const DEFAULT_PRICE = 750000;
 
@@ -102,6 +103,7 @@ export default function SmartBuy() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <TokenBalanceIndicator tokensRemaining={savingsPool - tokensSpent} savingsPool={savingsPool} />
             <a href="/our-experts" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 hover:text-amber-800 transition">
               <Award className="h-3.5 w-3.5" /> Our Experts
             </a>
