@@ -22,8 +22,8 @@ const STEPS = [
   {
     icon: CheckCircle,
     color: "bg-purple-500/20 border-purple-500/40 text-purple-400",
-    title: "Token Deducted At Closing",
-    desc: "The token cost is subtracted from your Savings Pool — not charged upfront. Whatever remains is yours at closing.",
+    title: "Service Cost Deducted At Closing",
+    desc: "The professional service cost is subtracted from your Savings Pool at closing — not charged upfront. Whatever remains is yours to keep.",
   },
 ];
 
