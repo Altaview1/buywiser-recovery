@@ -360,7 +360,7 @@ export default function OurExperts() {
             <span className="text-xs font-black text-amber-700 uppercase tracking-widest">SmartBuy™ Professional Network</span>
           </div>
           <h1 className="text-4xl sm:text-5xl font-black text-slate-900 mb-4 leading-tight">
-            Meet Your Expert Team
+            Your Experts
           </h1>
           <p className="text-lg text-slate-500 leading-relaxed mb-6 max-w-2xl mx-auto">
             Every professional in the SmartBuy™ network is independently licensed, insured, and bound by the Token Rewind™ guarantee. You unlock the expert you need, when you need them — no retainers, no pressure. <span className="font-semibold">Experts are matched to your zip code</span> so you get local market specialists — except our mortgage broker, which serves all of California.
