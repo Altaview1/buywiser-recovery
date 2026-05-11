@@ -42,7 +42,7 @@ export default function ServiceCard({ service, savingsPool = 750000 * 0.025 }) {
   const inputCls = "w-full px-3 py-2 text-xs rounded-lg border border-yellow-300 bg-yellow-50 text-amber-900 placeholder-amber-600 focus:outline-none focus:ring-1 focus:ring-yellow-400 transition";
 
   return (
-    <div className={`rounded-xl border transition-all duration-200 overflow-hidden ${expanded ? "border-yellow-300 bg-yellow-100/80" : "border-yellow-200 bg-yellow-50 hover:border-yellow-300"}`}>
+    <div className={`rounded-xl border transition-all duration-200 overflow-hidden ${expanded ? "border-sky-300 bg-sky-100/80" : "border-sky-200 bg-sky-50 hover:border-sky-300"}`}>
       {/* Card top row */}
       <button className="w-full text-left px-4 py-3.5 flex items-start gap-3" onClick={() => !service.comingSoon && setExpanded(v => !v)}>
         <div className="flex-1 min-w-0">
@@ -82,9 +82,12 @@ export default function ServiceCard({ service, savingsPool = 750000 * 0.025 }) {
             <>
               <div className="flex items-center gap-1">
                 <Zap className="h-3 w-3 text-amber-400" />
-                <span className="text-sm font-black text-amber-300">{service.tokens?.toLocaleString()} tokens</span>
+                <span className="text-sm font-black text-amber-900">{service.tokens?.toLocaleString()} tokens</span>
               </div>
-              <span className="text-[10px] text-amber-700">{service.pct} of savings</span>
+              <div className="flex flex-col items-end gap-0.5">
+                <span className="text-[10px] text-amber-700">{service.pct} of savings</span>
+                <span className="text-[10px] font-semibold text-sky-600">Balance: {(savingsPool - service.tokens)?.toLocaleString()} tokens</span>
+              </div>
             </>
           )}
           {!service.comingSoon && (
