@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { X, Phone, Lock, Unlock, CheckCircle, Loader2, ArrowRight } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
@@ -121,6 +122,41 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
           {confirmed ? (
             /* Success state */
             <div className="px-5 py-10 text-center">
+              {/* Celebratory Badge for Optional Services */}
+              {selectedPro?.isOptional && (
+                <div className="mb-5 relative inline-block">
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                    className="relative"
+                  >
+                    <div className="absolute -inset-2 bg-gradient-to-r from-amber-400 via-emerald-400 to-blue-400 rounded-full blur-md opacity-75 animate-pulse" />
+                    <div className="relative px-5 py-3 bg-gradient-to-r from-amber-300 to-emerald-300 rounded-full border-2 border-white shadow-lg">
+                      <p className="text-sm font-black text-slate-900 tracking-tight">💰 MONEY WELL SPENT!</p>
+                    </div>
+                  </motion.div>
+                  {/* Floating particles */}
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute text-lg pointer-events-none"
+                      initial={{ opacity: 1, scale: 1 }}
+                      animate={{ opacity: 0, scale: 0, y: -80, x: Math.cos(i * 1.57) * 60 }}
+                      transition={{ duration: 0.8, delay: i * 0.1 }}
+                      style={{
+                        left: "50%",
+                        top: "50%",
+                        marginLeft: "-12px",
+                        marginTop: "-12px",
+                      }}
+                    >
+                      {["💚", "🎯", "⚡", "🏆"][i]}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
               <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="h-7 w-7 text-emerald-400" />
               </div>
