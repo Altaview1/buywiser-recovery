@@ -52,6 +52,7 @@ import Marketplace from './pages/Marketplace';
 import OurExperts from './pages/OurExperts';
 import TokenAvailableFAQ from './pages/TokenAvailableFAQ';
 import MyProfile from './pages/MyProfile';
+import SmartBuyWorkflow from './pages/SmartBuyWorkflow';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -144,6 +145,7 @@ function App() {
           <Route path="/our-experts" element={<OurExperts />} />
           <Route path="/token-available-faq" element={<TokenAvailableFAQ />} />
           <Route path="/my-profile" element={<MyProfile />} />
+          <Route path="/smartbuy-workflow" element={<SmartBuyWorkflow />} />
           
           {/* All other routes — auth-protected */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
