@@ -1,4 +1,5 @@
 import { TrendingUp, Zap } from "lucide-react";
+import { motion } from "framer-motion";
 
 const STAGE_SAVINGS = [
   { stage: 1, label: "Get Pre-Qualified", pct: 0.05, icon: "📋" },
@@ -39,28 +40,58 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
   };
 
   return (
-    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 overflow-hidden shadow-sm hover:shadow-md transition">
+    <motion.div 
+      className="rounded-2xl border border-emerald-200 bg-emerald-50 overflow-hidden shadow-sm hover:shadow-md transition"
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       {/* Header */}
-      <div className="px-5 py-4 border-b border-emerald-200 bg-gradient-to-r from-emerald-500 to-emerald-600">
-        <div className="flex items-center justify-between mb-2">
+      <div className="px-5 py-4 border-b border-emerald-200 bg-gradient-to-r from-emerald-500 to-emerald-600 relative overflow-hidden">
+        {/* Animated background pulse */}
+        <motion.div
+          className="absolute inset-0 bg-white/10"
+          animate={{ opacity: [0.5, 0.2, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+        
+        <div className="flex items-center justify-between mb-2 relative z-10">
           <div className="flex items-center gap-2">
-            <TrendingUp className="h-5 w-5 text-white" />
+            <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ duration: 0.6, repeat: Infinity }}>
+              <TrendingUp className="h-5 w-5 text-white" />
+            </motion.div>
             <span className="text-sm font-black text-white uppercase tracking-widest">SAVE-o-Meter™</span>
           </div>
           <span className="text-xs font-bold text-emerald-100">{Math.round(percentComplete)}% complete</span>
         </div>
-        <div className="w-full h-1.5 rounded-full bg-emerald-700/30">
-          <div 
-            className="h-full rounded-full bg-white transition-all duration-300"
-            style={{ width: `${percentComplete}%` }}
+        
+        {/* Main progress bar with glow effect */}
+        <div className="w-full h-2 rounded-full bg-emerald-700/30 overflow-hidden relative z-10">
+          <motion.div 
+            className="h-full rounded-full bg-gradient-to-r from-white via-emerald-100 to-white shadow-lg"
+            initial={{ width: 0 }}
+            animate={{ width: `${percentComplete}%` }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           />
+          {/* Shimmer effect */}
+          {percentComplete > 0 && (
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-50"
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          )}
         </div>
       </div>
 
       {/* Main Content */}
       <div className="px-5 py-4">
-        {/* Real-Time Balance */}
-        <div className="mb-5 p-3 bg-white rounded-lg border-2 border-emerald-500 shadow-sm">
+        {/* Real-Time Balance - Pulse on service spend */}
+        <motion.div 
+          className="mb-5 p-3 bg-white rounded-lg border-2 border-emerald-500 shadow-sm"
+          animate={cashSpent > 0 ? { boxShadow: ["0 0 0 0 rgba(16, 185, 129, 0.7)", "0 0 0 12px rgba(16, 185, 129, 0)"] } : {}}
+          transition={{ duration: 0.6, repeat: cashSpent > 0 ? 1 : 0 }}
+        >
           <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-1">YOUR CUSTOM SAVINGS POOL</p>
           <div className="flex items-baseline justify-between mb-2">
             <span className="text-4xl font-black text-emerald-700">{formatCurrency(remaining)}</span>
@@ -75,10 +106,14 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
               style={{ width: `${((savingsPool - remaining) / savingsPool) * 100}%` }}
             />
           </div>
-          <p className="text-[10px] text-slate-600 mt-1.5">
+          <motion.p 
+            className="text-[10px] text-slate-600 mt-1.5"
+            animate={cashSpent > 0 ? { scale: [1, 1.05, 1] } : {}}
+            transition={{ duration: 0.4 }}
+          >
             {cashSpent > 0 ? `${((cashSpent / savingsPool) * 100).toFixed(1)}% of your pool allocated to services` : "No services selected yet"}
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         {/* Earned Savings */}
         <div className="mb-4">
@@ -133,6 +168,6 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
