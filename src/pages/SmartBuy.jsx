@@ -422,68 +422,7 @@ export default function SmartBuy() {
       {/* ── Unlock Steps ── */}
       <UnlockSteps onUnlock={() => setUnlockOpen(true)} />
 
-      {/* ── Partner Credibility Bar ── */}
-      <section className="px-4 sm:px-6 py-12 border-t border-slate-100 bg-slate-50">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-8">Our Professional Partner Network</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-
-            {/* Compass */}
-            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
-              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <svg viewBox="0 0 80 80" className="w-8 h-8" fill="none">
-                  <circle cx="40" cy="40" r="38" stroke="#111" strokeWidth="4"/>
-                  <polygon points="40,10 52,40 40,35 28,40" fill="#111"/>
-                  <polygon points="40,70 28,40 40,45 52,40" fill="#555"/>
-                </svg>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-black text-slate-800">Compass</p>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Real Estate</p>
-              </div>
-            </div>
-
-            {/* Rocket Pro */}
-            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
-              <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <span className="text-white text-2xl">🚀</span>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-black text-slate-800">Rocket Pro</p>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Mortgage</p>
-              </div>
-            </div>
-
-            {/* Keller Williams */}
-            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <span className="text-slate-800 font-black text-xl tracking-tighter">KW</span>
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-black text-slate-800">Keller Williams</p>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Realty</p>
-              </div>
-            </div>
-
-            {/* RE Law */}
-            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <Award className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-black text-slate-800">RE Law Firm</p>
-                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Legal Counsel</p>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-center text-xs text-slate-400 mt-6 max-w-lg mx-auto">
-            Partner firms are available on-demand through the SmartBuy™ token unlock system. Buywiser coordinates access — you choose when and what to activate.
-          </p>
-        </div>
-      </section>
-
-      {/* Professional Backup Section */}
+{/* Professional Backup Section */}
       <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-white">
         <div className="max-w-5xl mx-auto">
 
