@@ -102,6 +102,9 @@ export default function SmartBuy() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <a href="/marketplace" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-emerald-700 hover:text-emerald-800 transition">
+              <Zap className="h-3.5 w-3.5" /> Marketplace
+            </a>
             <a href="/token-rewind" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-violet-600 hover:text-violet-700 transition">
               <RotateCcw className="h-3.5 w-3.5" /> Token Rewind™
             </a>
