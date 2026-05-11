@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { useState, useMemo } from "react";
 import { Search, Zap, Sparkles, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { SERVICES, CATEGORIES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "./marketplaceData.js";
 import ServiceCard from "./ServiceCard";

@@ -9,6 +9,7 @@ import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
 import TokenRewind from "../components/smartbuy/TokenRewind";
 import PropertyServicesMarketplace from "../components/smartbuy/marketplace/PropertyServicesMarketplace";
 import TokenBalanceIndicator from "../components/smartbuy/TokenBalanceIndicator";
+import ReferralSection from "../components/smartbuy/ReferralSection";
 
 const DEFAULT_PRICE = 750000;
 
@@ -572,6 +573,9 @@ export default function SmartBuy() {
 
       {/* ── Common Questions ── */}
       <CommonQuestions />
+
+      {/* ── Referral Section ── */}
+      <ReferralSection userEmail={submittedLead?.email} savingsPool={savingsPool} />
 
       {/* vs Traditional */}
       <section className="px-4 sm:px-6 py-20 bg-slate-50 border-t border-slate-100">
