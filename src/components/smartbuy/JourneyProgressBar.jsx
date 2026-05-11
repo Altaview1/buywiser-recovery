@@ -1,51 +1,17 @@
 import { useState } from "react";
-import { CheckCircle, Circle, Check } from "lucide-react";
+import { CheckCircle, Circle } from "lucide-react";
 
 const STAGES = [
-  { icon: "🔍", label: "Property Intel", short: "Search" },
   { icon: "📋", label: "Pre-Qualification", short: "Pre-Qual" },
-  { icon: "✍️", label: "Offer Prep", short: "Offer" },
-  { icon: "📁", label: "Transaction Mgmt", short: "Transaction" },
-  { icon: "🔑", label: "Closing", short: "Closing" },
-  { icon: "💰", label: "You Get Paid", short: "Paid!" },
-];
-
-const STAGE_TASKS = [
-  [
-    { id: 1, label: "Enter your annual income" },
-    { id: 2, label: "Enter your down payment amount" },
-    { id: 3, label: "Set your target purchase price" },
-  ],
-  [
-    { id: 1, label: "Search listings by price & location" },
-    { id: 2, label: "Review AI property analysis" },
-    { id: 3, label: "Save properties you're interested in" },
-  ],
-  [
-    { id: 1, label: "Schedule your property tour" },
-    { id: 2, label: "Visit the property" },
-    { id: 3, label: "Take notes & photos" },
-  ],
-  [
-    { id: 1, label: "Review AI offer recommendations" },
-    { id: 2, label: "Adjust price & contingencies" },
-    { id: 3, label: "Submit offer" },
-  ],
-  [
-    { id: 1, label: "Schedule inspections" },
-    { id: 2, label: "Review inspection reports" },
-    { id: 3, label: "Order appraisal" },
-  ],
-  [
-    { id: 1, label: "Final walkthrough" },
-    { id: 2, label: "Sign closing documents" },
-    { id: 3, label: "Receive keys & funds" },
-  ],
+  { icon: "🔍", label: "Search Properties", short: "Search" },
+  { icon: "🏠", label: "Schedule Tours", short: "Tours" },
+  { icon: "✍️", label: "Write Offer", short: "Offer" },
+  { icon: "📊", label: "Inspections", short: "Inspect" },
+  { icon: "🔑", label: "Close Deal", short: "Closing" },
 ];
 
 export default function JourneyProgressBar() {
   const [activeStage, setActiveStage] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState({});
 
   return (
     <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60 bg-slate-900/60">
@@ -114,32 +80,7 @@ export default function JourneyProgressBar() {
             </div>
           </div>
 
-          {/* Tasks for current stage */}
-          <div className="mb-6 pb-6 border-b border-slate-800">
-            <p className="text-xs font-black text-slate-500 uppercase tracking-widest mb-3">Tasks for this stage</p>
-            <div className="space-y-2">
-              {STAGE_TASKS[activeStage].map((task) => {
-                const taskKey = `${activeStage}-${task.id}`;
-                const isCompleted = completedTasks[taskKey];
-                return (
-                  <label key={taskKey} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-800/50 cursor-pointer transition">
-                    <input
-                      type="checkbox"
-                      checked={isCompleted || false}
-                      onChange={() => setCompletedTasks(prev => ({
-                        ...prev,
-                        [taskKey]: !prev[taskKey]
-                      }))}
-                      className="w-4 h-4 rounded border border-slate-600 accent-emerald-500 cursor-pointer"
-                    />
-                    <span className={`text-xs transition ${isCompleted ? "text-slate-500 line-through" : "text-slate-300"}`}>
-                      {task.label}
-                    </span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
+
 
           {/* Navigation */}
           <div className="flex items-center justify-between">
