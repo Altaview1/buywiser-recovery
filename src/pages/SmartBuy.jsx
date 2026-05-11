@@ -223,6 +223,19 @@ export default function SmartBuy() {
                     </p>
                   </div>
 
+                  {/* Savings Summary Card */}
+                  <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 mt-6">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-2">Your Potential Savings</p>
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-emerald-800 font-semibold">Cash Back / Rebate</span>
+                        <span className="text-2xl font-black text-emerald-600">{formatCurrency(Math.round(price * 0.025))}</span>
+                      </div>
+                      <div className="h-px bg-emerald-200"></div>
+                      <p className="text-[10px] text-emerald-700 leading-relaxed">Complete your home purchase and keep this entire amount by using SmartBuy™ self-directed service.</p>
+                    </div>
+                  </div>
+
                   {/* Price Input */}
                   <div>
                     <label className="block text-xs font-black text-slate-700 mb-3 uppercase tracking-wider">Or Enter Price Directly</label>
