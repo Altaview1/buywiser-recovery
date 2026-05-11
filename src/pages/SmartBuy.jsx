@@ -80,7 +80,7 @@ export default function SmartBuy() {
   if (submitted) return <SuccessScreen lead={submittedLead} />;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white font-sans">
+    <div className="min-h-screen bg-white text-slate-900 font-sans">
       <UnlockModal
         isOpen={unlockOpen}
         onClose={() => setUnlockOpen(false)}
@@ -90,17 +90,17 @@ export default function SmartBuy() {
       />
 
       {/* Nav */}
-      <header className="px-4 sm:px-6 py-4 border-b border-slate-800/60 sticky top-0 z-50 bg-slate-950/90 backdrop-blur-sm">
+      <header className="px-4 sm:px-6 py-4 border-b border-slate-200 sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto brightness-0 invert opacity-80" />
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">SmartBuy™</span>
+            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto" />
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">SmartBuy™</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <a href="tel:+18183002642" className="hidden sm:block text-sm text-slate-400 hover:text-white transition font-medium">(818) 300-2642</a>
+            <a href="tel:+18183002642" className="hidden sm:block text-sm text-slate-600 hover:text-slate-900 transition font-medium">(818) 300-2642</a>
             <button onClick={scrollToForm} className="px-5 py-2 bg-emerald-400 text-slate-900 text-sm font-black rounded-xl hover:bg-emerald-300 transition">
               Get Started
             </button>
@@ -109,29 +109,28 @@ export default function SmartBuy() {
       </header>
 
       {/* Hero */}
-      <section className="relative overflow-hidden px-4 sm:px-6 py-20 sm:py-28">
-        {/* Background glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden px-4 sm:px-6 py-20 sm:py-28 bg-gradient-to-br from-slate-50 to-white">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-emerald-100/60 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left: copy */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 mb-6">
-                <Brain className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="text-xs font-black text-slate-300 uppercase tracking-widest">AI-Guided Homebuying</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 mb-6">
+                <Brain className="h-3.5 w-3.5 text-emerald-600" />
+                <span className="text-xs font-black text-slate-600 uppercase tracking-widest">AI-Guided Homebuying</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-5">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight mb-5 text-slate-900">
                 Buy Your Home.<br />
-                <span className="text-emerald-400">Keep The Commission.</span>
+                <span className="text-emerald-600">Keep The Commission.</span>
               </h1>
 
-              <p className="text-lg text-slate-400 leading-relaxed mb-4 max-w-lg">
+              <p className="text-lg text-slate-600 leading-relaxed mb-4 max-w-lg">
                 Buywiser SmartBuy™ is an AI-guided platform that walks you through your home purchase step by step — and shares the savings back with you.
               </p>
 
-              <p className="text-sm text-slate-500 mb-8 max-w-md">
+              <p className="text-sm text-slate-500 mb-8 max-w-md text-slate-500">
                 The more you self-direct, the more you keep. Licensed professionals are available when you need them — and only when you need them.
               </p>
 
@@ -141,7 +140,7 @@ export default function SmartBuy() {
                   Calculate My Savings Pool <ArrowRight className="h-4 w-4" />
                 </button>
                 <a href="tel:+18183002642"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-slate-700 text-slate-300 font-bold rounded-xl text-base hover:bg-slate-800 transition">
+                  className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-slate-300 text-slate-700 font-bold rounded-xl text-base hover:bg-slate-50 transition">
                   Talk to Buywiser
                 </a>
               </div>
@@ -150,15 +149,15 @@ export default function SmartBuy() {
               <div className="flex flex-wrap gap-3 mb-5">
                 {["NMLS #1887767", "CA DRE #01107013", "Licensed in California", "No Obligation"].map(t => (
                   <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <Shield className="h-3 w-3 text-slate-600" /> {t}
+                    <Shield className="h-3 w-3 text-slate-400" /> {t}
                   </div>
                 ))}
               </div>
               {/* Partner brand badges */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[10px] text-slate-600 uppercase tracking-widest font-bold mr-1">Backed by:</span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mr-1">Backed by:</span>
                 {["Compass", "Rocket Pro", "Keller Williams", "RE Law"].map(b => (
-                  <div key={b} className="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-400">
+                  <div key={b} className="px-3 py-1 rounded-lg bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-600">
                     {b}
                   </div>
                 ))}
@@ -169,15 +168,15 @@ export default function SmartBuy() {
             <div>
               <SavingsMeter price={price} animated={true} />
               {/* Slider */}
-              <div className="mt-4 bg-slate-900 rounded-xl border border-slate-800 px-4 py-3">
+              <div className="mt-4 bg-white rounded-xl border border-slate-200 px-4 py-3 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-slate-400 font-semibold">Adjust Purchase Price</span>
-                  <span className="text-sm font-black text-white">{formatCurrency(price)}</span>
+                  <span className="text-xs text-slate-500 font-semibold">Adjust Purchase Price</span>
+                  <span className="text-sm font-black text-slate-900">{formatCurrency(price)}</span>
                 </div>
                 <input type="range" min={300000} max={3000000} step={25000} value={price}
                   onChange={e => setPrice(Number(e.target.value))}
-                  className="w-full" style={{ accentColor: "#34d399" }} />
-                <div className="flex justify-between text-[10px] text-slate-600 mt-1">
+                  className="w-full" style={{ accentColor: "#059669" }} />
+                <div className="flex justify-between text-[10px] text-slate-400 mt-1">
                   <span>$300K</span><span>$3M</span>
                 </div>
               </div>
@@ -190,78 +189,72 @@ export default function SmartBuy() {
       <JourneyProgressBar />
 
       {/* How It Works */}
-      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60">
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12">
-            <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">How It Works</p>
-            <h2 className="text-3xl font-black text-white">The Machine™ Workflow</h2>
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">How It Works</p>
+            <h2 className="text-3xl font-black text-slate-900">The Machine™ Workflow</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_IT_WORKS.map(({ icon, step, title, desc }) => (
-              <div key={step} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 relative overflow-hidden flex flex-col">
-                <div className="absolute top-3 right-4 text-[10px] font-black text-slate-700">{step}</div>
+              <div key={step} className="bg-white border border-slate-200 rounded-2xl p-5 relative overflow-hidden flex flex-col shadow-sm">
+                <div className="absolute top-3 right-4 text-[10px] font-black text-slate-300">{step}</div>
                 <div className="text-2xl mb-3">{icon}</div>
-                <h3 className="text-sm font-black text-white mb-2">{title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed flex-1">{desc}</p>
+                <h3 className="text-sm font-black text-slate-900 mb-2">{title}</h3>
+                <p className="text-xs text-slate-500 leading-relaxed flex-1">{desc}</p>
                 <button
                   onClick={() => setUnlockOpen(true)}
-                  className="mt-4 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] font-black text-amber-400 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition"
+                  className="mt-4 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] font-black text-amber-600 border border-amber-300 bg-amber-50 hover:bg-amber-100 transition"
                 >
                   <Unlock className="h-3 w-3" /> Get Help
                 </button>
               </div>
             ))}
           </div>
-          <p className="text-center text-xs text-slate-600 mt-5">Stuck at any stage? Tap <span className="text-amber-400 font-bold">Get Help</span> to unlock a licensed professional — tokens deducted from your pool at closing.</p>
+          <p className="text-center text-xs text-slate-400 mt-5">Stuck at any stage? Tap <span className="text-amber-600 font-bold">Get Help</span> to connect with a licensed professional.</p>
         </div>
       </section>
 
-      {/* Workflow Stages with values */}
-      <section className="px-4 sm:px-6 py-16 bg-slate-900/50 border-y border-slate-800/60">
+      {/* Workflow Stages */}
+      <section className="px-4 sm:px-6 py-16 bg-white border-y border-slate-100">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">Savings Breakdown</p>
-            <h2 className="text-2xl font-black text-white">What Each Stage Is Worth</h2>
-            <p className="text-sm text-slate-400 mt-2">Based on a {formatCurrency(price)} home</p>
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">The Six Stages</p>
+            <h2 className="text-2xl font-black text-slate-900">Your Home Purchase, Step by Step</h2>
+            <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto">These are the six stages every buyer goes through. Complete each one yourself and keep the savings. Need help at any stage? One tap connects you to a licensed professional.</p>
           </div>
           <div className="space-y-3">
-            {WORKFLOW_STAGES.map((s, i) => {
-              const val = Math.round(price * 0.025 * s.value);
-              return (
-                <div key={i} className="flex items-center gap-4 bg-slate-900 border border-slate-800 rounded-xl px-5 py-3.5">
-                  <span className="text-lg flex-shrink-0">{s.icon}</span>
-                  <span className="flex-1 text-sm text-slate-300 font-medium">{s.label}</span>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 h-1.5 bg-slate-800 rounded-full overflow-hidden hidden sm:block">
-                      <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${s.value * 100 / 0.25 * 100}%` }} />
-                    </div>
-                    <span className="text-base font-black text-emerald-400 w-20 text-right">{formatCurrency(val)}</span>
-                  </div>
+            {WORKFLOW_STAGES.map((s, i) => (
+              <div key={i} className="flex items-center gap-4 bg-slate-50 border border-slate-200 rounded-xl px-5 py-3.5">
+                <span className="text-lg flex-shrink-0">{s.icon}</span>
+                <div className="flex-1">
+                  <span className="text-sm text-slate-800 font-semibold">{s.label}</span>
                 </div>
-              );
-            })}
-            <div className="flex items-center justify-between bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-5 py-3.5 mt-2">
-              <span className="text-sm font-black text-white">Total SmartBuy Savings Pool™</span>
-              <span className="text-xl font-black text-emerald-400">{formatCurrency(Math.round(price * 0.025))}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 hidden sm:block">Stage {i + 1}</span>
+              </div>
+            ))}
+            <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3.5 mt-2">
+              <span className="text-sm font-black text-slate-900">Your estimated SmartBuy™ Savings Pool</span>
+              <span className="text-xl font-black text-emerald-700">{formatCurrency(Math.round(price * 0.025))}</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Meet Your Expert ── */}
-      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60 bg-slate-900/20">
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-slate-50">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black uppercase tracking-widest text-amber-400 mb-2">Meet Your Expert</p>
-            <h2 className="text-3xl font-black text-white">The Human Behind The Machine™</h2>
-            <p className="text-slate-400 text-sm mt-3 max-w-xl mx-auto">SmartBuy™ is powered by AI — and backed by 30 years of real California mortgage expertise. You're never flying blind.</p>
+            <p className="text-xs font-black uppercase tracking-widest text-amber-600 mb-2">Meet Your Expert</p>
+            <h2 className="text-3xl font-black text-slate-900">The Human Behind The Machine™</h2>
+            <p className="text-slate-500 text-sm mt-3 max-w-xl mx-auto">SmartBuy™ is powered by AI — and backed by 30 years of real California mortgage expertise. You're never flying blind.</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
             {/* Portrait side */}
             <div className="lg:col-span-2 flex flex-col items-center lg:items-start gap-5">
               <div className="relative">
-                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-slate-700 to-slate-800 border-2 border-amber-500/40 flex items-center justify-center text-6xl shadow-2xl">
+                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-amber-300 flex items-center justify-center text-6xl shadow-lg">
                   🏦
                 </div>
                 <div className="absolute -bottom-3 -right-3 bg-emerald-400 text-slate-900 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-widest shadow-lg">
@@ -269,9 +262,9 @@ export default function SmartBuy() {
                 </div>
               </div>
               <div className="text-center lg:text-left">
-                <h3 className="text-2xl font-black text-white">Bennett Liss</h3>
-                <p className="text-sm text-amber-400 font-semibold mt-0.5">Founder, BuyWiser Home Loans</p>
-                <p className="text-xs text-slate-500 mt-1">NMLS #1524446 · CA DRE #01107013</p>
+                <h3 className="text-2xl font-black text-slate-900">Bennett Liss</h3>
+                <p className="text-sm text-amber-600 font-semibold mt-0.5">Founder, BuyWiser Home Loans</p>
+                <p className="text-xs text-slate-400 mt-1">NMLS #1524446 · CA DRE #01107013</p>
               </div>
               <a href="tel:+18183002642"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 text-slate-900 font-black rounded-xl text-sm hover:bg-amber-300 transition shadow-lg w-full sm:w-auto justify-center lg:justify-start">
@@ -282,7 +275,7 @@ export default function SmartBuy() {
             {/* Bio side */}
             <div className="lg:col-span-3 space-y-5">
               <blockquote className="border-l-4 border-amber-400 pl-5">
-                <p className="text-lg text-slate-200 font-semibold leading-relaxed italic">
+                <p className="text-lg text-slate-700 font-semibold leading-relaxed italic">
                   "SmartBuy™ gives buyers the tools to handle what they can handle — and makes sure a real expert is there the moment they need one. I've been doing this for 30 years. I know where buyers get stuck, and that's exactly where we step in."
                 </p>
                 <footer className="text-xs text-slate-500 mt-2 not-italic">— Bennett Liss, Founder</footer>
@@ -297,14 +290,14 @@ export default function SmartBuy() {
                   { stat: "FHA", label: "Streamline Expert" },
                   { stat: "Jumbo", label: "High-Value Purchases" },
                 ].map(({ stat, label }) => (
-                  <div key={label} className="bg-slate-800/60 border border-slate-700 rounded-xl px-4 py-3 text-center">
-                    <p className="text-lg font-black text-amber-400">{stat}</p>
-                    <p className="text-[10px] text-slate-400 uppercase tracking-wide font-semibold leading-tight mt-0.5">{label}</p>
+                  <div key={label} className="bg-white border border-slate-200 rounded-xl px-4 py-3 text-center shadow-sm">
+                    <p className="text-lg font-black text-amber-600">{stat}</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-wide font-semibold leading-tight mt-0.5">{label}</p>
                   </div>
                 ))}
               </div>
 
-              <p className="text-sm text-slate-400 leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed">
                 When you unlock mortgage guidance on SmartBuy™, you get direct access to Bennett's team — not a call center, not a chatbot. A licensed California mortgage professional who has navigated every market cycle since the early 1990s.
               </p>
             </div>
@@ -316,13 +309,13 @@ export default function SmartBuy() {
       <UnlockSteps onUnlock={() => setUnlockOpen(true)} />
 
       {/* ── Partner Credibility Bar ── */}
-      <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60">
+      <section className="px-4 sm:px-6 py-12 border-t border-slate-100 bg-slate-50">
         <div className="max-w-5xl mx-auto">
-          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-600 mb-8">Our Professional Partner Network</p>
+          <p className="text-center text-xs font-black uppercase tracking-widest text-slate-400 mb-8">Our Professional Partner Network</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
 
             {/* Compass */}
-            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
               <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition">
                 <svg viewBox="0 0 80 80" className="w-8 h-8" fill="none">
                   <circle cx="40" cy="40" r="38" stroke="#111" strokeWidth="4"/>
@@ -331,53 +324,53 @@ export default function SmartBuy() {
                 </svg>
               </div>
               <div className="text-center">
-                <p className="text-sm font-black text-white">Compass</p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Real Estate</p>
+                <p className="text-sm font-black text-slate-800">Compass</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Real Estate</p>
               </div>
             </div>
 
             {/* Rocket Pro */}
-            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
+            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
               <div className="w-14 h-14 rounded-2xl bg-red-600 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
                 <span className="text-white text-2xl">🚀</span>
               </div>
               <div className="text-center">
-                <p className="text-sm font-black text-white">Rocket Pro</p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Mortgage</p>
+                <p className="text-sm font-black text-slate-800">Rocket Pro</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Mortgage</p>
               </div>
             </div>
 
             {/* Keller Williams */}
-            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
-              <div className="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <span className="text-slate-900 font-black text-xl tracking-tighter">KW</span>
+            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
+              <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <span className="text-slate-800 font-black text-xl tracking-tighter">KW</span>
               </div>
               <div className="text-center">
-                <p className="text-sm font-black text-white">Keller Williams</p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Realty</p>
+                <p className="text-sm font-black text-slate-800">Keller Williams</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Realty</p>
               </div>
             </div>
 
             {/* RE Law */}
-            <div className="flex flex-col items-center gap-3 bg-slate-900 border border-slate-800 rounded-2xl px-4 py-6 hover:border-slate-600 transition group">
-              <div className="w-14 h-14 rounded-2xl bg-blue-900 border border-blue-700 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
-                <Award className="h-6 w-6 text-blue-300" />
+            <div className="flex flex-col items-center gap-3 bg-white border border-slate-200 rounded-2xl px-4 py-6 hover:border-slate-300 hover:shadow-sm transition group">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center shadow-sm group-hover:shadow-md transition">
+                <Award className="h-6 w-6 text-blue-600" />
               </div>
               <div className="text-center">
-                <p className="text-sm font-black text-white">RE Law Firm</p>
-                <p className="text-[10px] text-slate-500 uppercase tracking-widest">Legal Counsel</p>
+                <p className="text-sm font-black text-slate-800">RE Law Firm</p>
+                <p className="text-[10px] text-slate-400 uppercase tracking-widest">Legal Counsel</p>
               </div>
             </div>
           </div>
 
-          <p className="text-center text-xs text-slate-700 mt-6 max-w-lg mx-auto">
+          <p className="text-center text-xs text-slate-400 mt-6 max-w-lg mx-auto">
             Partner firms are available on-demand through the SmartBuy™ token unlock system. Buywiser coordinates access — you choose when and what to activate.
           </p>
         </div>
       </section>
 
       {/* Professional Backup Section */}
-      <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60">
+      <section className="px-4 sm:px-6 py-20 border-t border-slate-100 bg-white">
         <div className="max-w-5xl mx-auto">
 
           {/* Header */}
@@ -386,41 +379,40 @@ export default function SmartBuy() {
               <Unlock className="h-3.5 w-3.5 text-amber-400" />
               <span className="text-xs font-black text-amber-400 uppercase tracking-widest">Instant Professional Access · Unlock Anytime</span>
             </div>
-            <h2 className="text-3xl font-black text-white mb-3">World-Class Professionals.<br />One Token Away.</h2>
-            <p className="text-slate-400 text-base max-w-2xl mx-auto leading-relaxed">
+            <h2 className="text-3xl font-black text-slate-900 mb-3">World-Class Professionals.<br />One Tap Away.</h2>
+            <p className="text-slate-500 text-base max-w-2xl mx-auto leading-relaxed">
               SmartBuy™ is self-directed by design — but you're never alone. The moment you want a licensed expert, you unlock them instantly. Our professional network is on standby throughout your entire transaction.
             </p>
           </div>
 
           {/* Bennett Card — Hero Expert */}
-          <div className="bg-gradient-to-r from-slate-900 to-slate-800 border border-amber-500/30 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
             <div className="flex flex-col sm:flex-row gap-6 items-start relative">
               {/* Avatar */}
               <div className="flex-shrink-0">
-                <div className="w-20 h-20 rounded-2xl bg-slate-700 border-2 border-amber-500/50 flex items-center justify-center text-3xl overflow-hidden">
+                <div className="w-20 h-20 rounded-2xl bg-white border-2 border-amber-300 flex items-center justify-center text-3xl overflow-hidden shadow-sm">
                   🏦
                 </div>
               </div>
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2 mb-2">
-                  <span className="text-xs font-black uppercase tracking-widest text-amber-400 px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">Lead Mortgage Expert</span>
+                  <span className="text-xs font-black uppercase tracking-widest text-amber-700 px-2 py-0.5 rounded-full bg-amber-100 border border-amber-300">Lead Mortgage Expert</span>
                   <span className="text-xs text-slate-500 font-mono">30 Years Experience</span>
                 </div>
-                <h3 className="text-xl font-black text-white mb-1">Bennett Liss</h3>
-                <p className="text-sm text-slate-400 font-semibold mb-3">Founder, BuyWiser Home Loans · NMLS #1524446 · CA DRE #01107013</p>
-                <p className="text-sm text-slate-300 leading-relaxed mb-4 max-w-xl">
+                <h3 className="text-xl font-black text-slate-900 mb-1">Bennett Liss</h3>
+                <p className="text-sm text-slate-600 font-semibold mb-3">Founder, BuyWiser Home Loans · NMLS #1524446 · CA DRE #01107013</p>
+                <p className="text-sm text-slate-700 leading-relaxed mb-4 max-w-xl">
                   With 30 years of California mortgage experience, Bennett has helped thousands of buyers navigate purchase financing — from first-time buyers to complex jumbo transactions. When you unlock mortgage guidance on SmartBuy™, Bennett's team is who you get.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
-                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> VA Loan Specialist
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-white rounded-lg px-3 py-1.5 border border-amber-200">
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> VA Loan Specialist
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
-                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> FHA · Conventional · Jumbo
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-white rounded-lg px-3 py-1.5 border border-amber-200">
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> FHA · Conventional · Jumbo
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-800 rounded-lg px-3 py-1.5 border border-slate-700">
-                    <Star className="h-3 w-3 text-amber-400 fill-amber-400" /> California Expert Since 1991
+                  <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-white rounded-lg px-3 py-1.5 border border-amber-200">
+                    <Star className="h-3 w-3 text-amber-500 fill-amber-500" /> California Expert Since 1991
                   </div>
                 </div>
               </div>
@@ -434,91 +426,91 @@ export default function SmartBuy() {
 
           {/* Partner Network Grid */}
           <div className="mb-8">
-            <p className="text-xs font-black uppercase tracking-widest text-slate-500 text-center mb-6">Professional Partner Network — Available On Demand</p>
+            <p className="text-xs font-black uppercase tracking-widest text-slate-400 text-center mb-6">Professional Partner Network — Available On Demand</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
               {/* Compass */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+              <div className="bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm rounded-2xl p-5 transition group">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center flex-shrink-0">
                     <span className="text-slate-900 font-black text-sm tracking-tighter">✦</span>
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white">Compass</p>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Real Estate Brokerage</p>
+                    <p className="text-sm font-black text-slate-800">Compass</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Real Estate Brokerage</p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">Top-tier buyer agent representation available when you choose to unlock agent support.</p>
-                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
-                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                <p className="text-xs text-slate-500 leading-relaxed">Top-tier buyer agent representation available when you choose to unlock agent support.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Available on request
                 </div>
               </div>
 
               {/* Rocket Pro */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+              <div className="bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm rounded-2xl p-5 transition group">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
+                  <div className="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center flex-shrink-0">
                     <span className="text-white font-black text-xs">🚀</span>
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white">Rocket Pro</p>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Mortgage Partner</p>
+                    <p className="text-sm font-black text-slate-800">Rocket Pro</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Mortgage Partner</p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">Backup mortgage origination channel for rate comparison and alternative loan programs.</p>
-                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
-                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                <p className="text-xs text-slate-500 leading-relaxed">Backup mortgage origination channel for rate comparison and alternative loan programs.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Available on request
                 </div>
               </div>
 
               {/* KW */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+              <div className="bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm rounded-2xl p-5 transition group">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-slate-700 border border-slate-600 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
-                    <span className="text-white font-black text-xs">KW</span>
+                  <div className="w-10 h-10 rounded-xl bg-slate-200 flex items-center justify-center flex-shrink-0">
+                    <span className="text-slate-700 font-black text-xs">KW</span>
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white">Keller Williams</p>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Realty Network</p>
+                    <p className="text-sm font-black text-slate-800">Keller Williams</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Realty Network</p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">Full-service KW agent representation across California markets when you need boots on the ground.</p>
-                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
-                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                <p className="text-xs text-slate-500 leading-relaxed">Full-service KW agent representation across California markets when you need boots on the ground.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Available on request
                 </div>
               </div>
 
               {/* Real Estate Law */}
-              <div className="bg-slate-900 border border-slate-800 hover:border-slate-600 rounded-2xl p-5 transition group">
+              <div className="bg-slate-50 border border-slate-200 hover:border-slate-300 hover:shadow-sm rounded-2xl p-5 transition group">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-900 border border-blue-700 flex items-center justify-center flex-shrink-0 group-hover:shadow-lg transition">
-                    <Award className="h-4 w-4 text-blue-300" />
+                  <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center flex-shrink-0">
+                    <Award className="h-4 w-4 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white">RE Law Firm</p>
-                    <p className="text-[10px] text-slate-500 uppercase tracking-widest">Legal Counsel</p>
+                    <p className="text-sm font-black text-slate-800">RE Law Firm</p>
+                    <p className="text-[10px] text-slate-400 uppercase tracking-widest">Legal Counsel</p>
                   </div>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed">Contract review, title issues, dispute resolution — licensed real estate attorneys on call.</p>
-                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-400 font-bold">
-                  <Lock className="h-2.5 w-2.5" /> Unlock with token
+                <p className="text-xs text-slate-500 leading-relaxed">Contract review, title issues, dispute resolution — licensed real estate attorneys on call.</p>
+                <div className="mt-3 inline-flex items-center gap-1 text-[10px] text-emerald-600 font-bold">
+                  <Lock className="h-2.5 w-2.5" /> Available on request
                 </div>
               </div>
             </div>
           </div>
 
           {/* Unlock Promise Banner */}
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
-                <Unlock className="h-4 w-4 text-emerald-400" />
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center flex-shrink-0">
+                <Unlock className="h-4 w-4 text-emerald-700" />
               </div>
               <div>
-                <p className="text-sm font-black text-white">You Are Never Stuck. Help Is One Tap Away.</p>
-                <p className="text-xs text-slate-400 mt-0.5">Every SmartBuy™ user has instant access to licensed professionals at any point in the workflow — no waiting, no hold music, no appointment required.</p>
+                <p className="text-sm font-black text-slate-900">You Are Never Stuck. Help Is One Tap Away.</p>
+                <p className="text-xs text-slate-500 mt-0.5">Every SmartBuy™ user has instant access to licensed professionals at any point in the workflow — no waiting, no hold music, no appointment required.</p>
               </div>
             </div>
-            <button onClick={scrollToForm} className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-emerald-400 text-slate-900 font-black rounded-xl text-sm hover:bg-emerald-300 transition whitespace-nowrap">
+            <button onClick={scrollToForm} className="flex-shrink-0 inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white font-black rounded-xl text-sm hover:bg-emerald-700 transition whitespace-nowrap">
               Start Free <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -530,29 +522,29 @@ export default function SmartBuy() {
       <CommonQuestions />
 
       {/* vs Traditional */}
-      <section className="px-4 sm:px-6 py-20">
+      <section className="px-4 sm:px-6 py-20 bg-slate-50 border-t border-slate-100">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-10">
-            <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-2">Why SmartBuy™</p>
-            <h2 className="text-2xl font-black text-white">SmartBuy™ vs. Traditional</h2>
+            <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">Why SmartBuy™</p>
+            <h2 className="text-2xl font-black text-slate-900">SmartBuy™ vs. Traditional</h2>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-              <p className="text-xs font-black uppercase tracking-widest text-red-400 mb-3 flex items-center gap-1.5"><TrendingDown className="h-3 w-3" /> Traditional</p>
+            <div className="bg-white border border-slate-200 rounded-xl p-4">
+              <p className="text-xs font-black uppercase tracking-widest text-red-500 mb-3 flex items-center gap-1.5"><TrendingDown className="h-3 w-3" /> Traditional</p>
               <div className="space-y-3">
                 {VS_TRADITIONAL.map((r, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-slate-400 leading-relaxed">
-                    <span className="text-red-500 mt-0.5 flex-shrink-0">✗</span>{r.traditional}
+                  <div key={i} className="flex items-start gap-2 text-xs text-slate-500 leading-relaxed">
+                    <span className="text-red-400 mt-0.5 flex-shrink-0">✗</span>{r.traditional}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-4">
-              <p className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-1.5"><Zap className="h-3 w-3" /> SmartBuy™</p>
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+              <p className="text-xs font-black uppercase tracking-widest text-emerald-700 mb-3 flex items-center gap-1.5"><Zap className="h-3 w-3" /> SmartBuy™</p>
               <div className="space-y-3">
                 {VS_TRADITIONAL.map((r, i) => (
-                  <div key={i} className="flex items-start gap-2 text-xs text-slate-300 leading-relaxed">
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 mt-0.5 flex-shrink-0" />{r.smartbuy}
+                  <div key={i} className="flex items-start gap-2 text-xs text-slate-700 leading-relaxed">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-600 mt-0.5 flex-shrink-0" />{r.smartbuy}
                   </div>
                 ))}
               </div>
@@ -562,18 +554,18 @@ export default function SmartBuy() {
       </section>
 
       {/* Intake Form */}
-      <section ref={formRef} className="px-4 sm:px-6 py-20 border-t border-slate-800/60 bg-slate-900/30">
+      <section ref={formRef} className="px-4 sm:px-6 py-20 border-t border-slate-200 bg-white">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 mb-4">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">Start Here</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-4">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Start Here</span>
             </div>
-            <h2 className="text-3xl font-black text-white mb-2">Activate Your SmartBuy™ Account</h2>
-            <p className="text-slate-400 text-sm">Enter your property details to initialize your Savings Pool and start the workflow.</p>
+            <h2 className="text-3xl font-black text-slate-900 mb-2">Activate Your SmartBuy™ Account</h2>
+            <p className="text-slate-500 text-sm">Enter your property details to initialize your Savings Pool and start the workflow.</p>
           </div>
 
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 sm:p-8">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
             <SmartBuyIntakeForm
               onSuccess={(lead) => { setSubmittedLead(lead); setSubmitted(true); }}
               onPriceChange={setPrice}
