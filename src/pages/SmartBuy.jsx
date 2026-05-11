@@ -253,6 +253,7 @@ export default function SmartBuy() {
             <p className="text-xs font-black uppercase tracking-widest text-emerald-600 mb-2">The Six Stages</p>
             <h2 className="text-2xl font-black text-slate-900">Your Home Purchase, Step by Step</h2>
             <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto">These are the six stages every buyer goes through. Complete each one yourself and keep the savings. Need help at any stage? One tap connects you to a licensed professional.</p>
+            <p className="text-sm font-semibold text-emerald-700 mt-4 max-w-xl mx-auto">✨ And remember—you are never spending for services out of your own pocket. Everything comes from your savings pool.</p>
           </div>
           <div className="space-y-3">
             {WORKFLOW_STAGES.map((s, i) => (
