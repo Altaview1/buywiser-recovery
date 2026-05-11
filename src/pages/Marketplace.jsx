@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
 import { Search, Zap, ChevronDown, ChevronUp, Sparkles, RotateCcw, Clock, CheckCircle, Lock } from "lucide-react";
-import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "../components/smartbuy/marketplace/marketplaceData";
-import ServiceCard from "../components/smartbuy/marketplace/ServiceCard";
-import ClosingCostVisualizer from "../components/smartbuy/marketplace/ClosingCostVisualizer";
+import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "@/components/smartbuy/marketplace/marketplaceData";
+import ServiceCard from "@/components/smartbuy/marketplace/ServiceCard";
+import ClosingCostVisualizer from "@/components/smartbuy/marketplace/ClosingCostVisualizer";
 
 const STAGE_COLOR_MAP = {
   emerald: { ring: "ring-emerald-500/40", bg: "bg-emerald-500/10", border: "border-emerald-500/30", text: "text-emerald-300", dot: "bg-emerald-400", badge: "bg-emerald-500/20 border-emerald-500/30 text-emerald-300" },
