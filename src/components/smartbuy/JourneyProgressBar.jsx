@@ -10,8 +10,9 @@ const STAGES = [
   { icon: "🔑", label: "Close Deal", short: "Closing" },
 ];
 
-export default function JourneyProgressBar() {
+export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0 }) {
   const [activeStage, setActiveStage] = useState(0);
+  const remainingBalance = savingsPool - cashSpent;
 
   return (
     <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60 bg-slate-900/60">
@@ -74,9 +75,9 @@ export default function JourneyProgressBar() {
               <p className="text-xs text-slate-400 leading-relaxed">{STAGE_DETAILS[activeStage].desc}</p>
             </div>
             <div className="flex-shrink-0 text-right hidden sm:block">
-              <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-0.5">Stage Value</p>
-              <p className="text-lg font-black text-emerald-400">{STAGE_DETAILS[activeStage].pct}</p>
-              <p className="text-[10px] text-slate-600">of savings pool</p>
+              <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-0.5">Your Balance</p>
+              <p className="text-lg font-black text-emerald-400">${remainingBalance.toLocaleString()}</p>
+              <p className="text-[10px] text-slate-600">available to spend</p>
             </div>
           </div>
 
