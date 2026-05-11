@@ -101,6 +101,9 @@ export default function SmartBuy() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <a href="/token-rewind" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-violet-600 hover:text-violet-700 transition">
+              <RotateCcw className="h-3.5 w-3.5" /> Token Rewind™
+            </a>
             <a href="tel:+18183002642" className="hidden sm:block text-sm text-slate-600 hover:text-slate-900 transition font-medium">(818) 300-2642</a>
             <button onClick={scrollToForm} className="px-5 py-2 bg-emerald-400 text-slate-900 text-sm font-black rounded-xl hover:bg-emerald-300 transition">
               Get Started
