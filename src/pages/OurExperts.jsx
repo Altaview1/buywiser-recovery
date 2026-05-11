@@ -1,4 +1,6 @@
-import { Phone, Star, Shield, Award, CheckCircle, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Phone, Star, Shield, Award, CheckCircle, ArrowRight, Search, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
 
 const EXPERTS = [
   {
@@ -328,6 +330,28 @@ function ExpertCard({ expert }) {
 }
 
 export default function OurExperts() {
+  const [zipCode, setZipCode] = useState("");
+  const [availableExpertIds, setAvailableExpertIds] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const handleSearchZip = async () => {
+    if (!zipCode.trim()) return;
+    setLoading(true);
+    try {
+      const response = await base44.functions.invoke("getExpertsByZipCode", { zipCode: zipCode.trim() });
+      setAvailableExpertIds(response.data.availableExperts || []);
+    } catch (err) {
+      console.error("Error fetching experts:", err);
+      setAvailableExpertIds([]);
+    } finally {
+      setLoading(false);
+      setSearched(true);
+    }
+  };
+
+  const filteredExperts = availableExpertIds ? EXPERTS.filter(e => availableExpertIds.includes(e.id)) : EXPERTS;
+
   return (
     <div className="min-h-screen bg-slate-50">
 
@@ -351,6 +375,39 @@ export default function OurExperts() {
           </div>
         </div>
       </header>
+
+      {/* Zip Code Search */}
+      <section className="px-4 sm:px-6 py-12 bg-gradient-to-r from-blue-50 to-emerald-50 border-b border-slate-200">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-xs font-black uppercase tracking-widest text-slate-600 text-center mb-3">Find Local Experts</p>
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearchZip()}
+                placeholder="Enter property zip code..."
+                className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <button
+              onClick={handleSearchZip}
+              disabled={loading || !zipCode.trim()}
+              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-black rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed text-sm whitespace-nowrap"
+            >
+              {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              Search
+            </button>
+          </div>
+          {searched && zipCode && (
+            <p className="text-xs text-slate-600 mt-2 text-center">
+              {availableExpertIds?.length || 0} expert{availableExpertIds?.length !== 1 ? 's' : ''} available in {zipCode}
+            </p>
+          )}
+        </div>
+      </section>
 
       {/* Hero */}
       <section className="px-4 sm:px-6 py-16 bg-white border-b border-slate-100">
@@ -386,8 +443,14 @@ export default function OurExperts() {
       {/* Expert Grid */}
       <section className="px-4 sm:px-6 py-16">
         <div className="max-w-6xl mx-auto">
+          {searched && availableExpertIds && availableExpertIds.length === 0 && (
+            <div className="mb-8 p-6 bg-amber-50 border border-amber-200 rounded-xl text-center">
+              <p className="text-sm text-amber-900 font-semibold">No experts currently available in zip code {zipCode}</p>
+              <p className="text-xs text-amber-700 mt-1">Check back soon as our partner network expands</p>
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {EXPERTS.map(expert => (
+            {filteredExperts.map(expert => (
               <ExpertCard key={expert.id} expert={expert} />
             ))}
           </div>
