@@ -556,7 +556,7 @@ export default function SmartBuy() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 mb-4">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Start Here</span>
+              <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">Activate Your Account</span>
             </div>
             <h2 className="text-3xl font-black text-slate-900 mb-2">Begin Your SmartBuy™ Journey</h2>
             <p className="text-slate-500 text-sm">Share your property details and we'll calculate your savings potential — and connect you with your expert team.</p>

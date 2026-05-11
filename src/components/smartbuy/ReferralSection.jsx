@@ -3,7 +3,7 @@ import { Users, Gift, Copy, CheckCircle, Mail, Share2, Loader2 } from "lucide-re
 import { base44 } from "@/api/base44Client";
 import SocialPostGenerator from "./SocialPostGenerator";
 
-const REFERRAL_BONUS = 500; // Tokens earned per successful referral
+const REFERRAL_BONUS = 500; // Cash bonus earned per successful referral
 
 export default function ReferralSection({ userEmail, savingsPool }) {
   const [copied, setCopied] = useState(false);
@@ -50,11 +50,11 @@ export default function ReferralSection({ userEmail, savingsPool }) {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 border border-blue-300 mb-3">
             <Gift className="h-3.5 w-3.5 text-blue-600" />
-            <span className="text-xs font-black text-blue-700 uppercase tracking-widest">Earn Bonus Tokens</span>
+            <span className="text-xs font-black text-blue-700 uppercase tracking-widest">Earn Bonus Cash</span>
           </div>
           <h2 className="text-3xl font-black text-slate-900 mb-2">Refer Friends & Earn Rewards</h2>
           <p className="text-slate-600 text-sm max-w-2xl mx-auto">
-            Share your referral link with friends. When they complete their first transaction, you both earn bonus tokens added to your savings pools.
+            Share your referral link with friends. When they complete their first transaction, you both earn bonus cash added to your savings pools.
           </p>
         </div>
 
@@ -152,13 +152,13 @@ export default function ReferralSection({ userEmail, savingsPool }) {
             <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-3">Referral Rewards</p>
             <div className="mb-5">
               <p className="text-[10px] text-slate-600 mb-2">Bonus per referral</p>
-              <p className="text-3xl font-black text-emerald-600">{REFERRAL_BONUS.toLocaleString()}</p>
-              <p className="text-[10px] text-slate-500 mt-1">tokens per completed transaction</p>
+              <p className="text-3xl font-black text-emerald-600">${REFERRAL_BONUS.toLocaleString()}</p>
+              <p className="text-[10px] text-slate-500 mt-1">cash per completed transaction</p>
             </div>
 
             <div className="border-t-2 border-emerald-200 pt-5">
               <p className="text-[10px] text-slate-600 mb-1">Your earned bonus</p>
-              <p className="text-2xl font-black text-emerald-700">{bonusTokens.toLocaleString()}</p>
+              <p className="text-2xl font-black text-emerald-700">${bonusTokens.toLocaleString()}</p>
               <p className="text-[10px] text-slate-600 mt-2">from {referrals.filter(r => r.status === "completed").length} completed referral{referrals.filter(r => r.status === "completed").length !== 1 ? "s" : ""}</p>
             </div>
 

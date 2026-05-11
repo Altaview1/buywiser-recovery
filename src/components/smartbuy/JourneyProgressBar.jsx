@@ -10,9 +10,9 @@ const STAGES = [
   { icon: "🔑", label: "Close Deal", short: "Closing" },
 ];
 
-export default function JourneyProgressBar({ savingsPool = 18750, cashSpent = 0, completedStages = [] }) {
+export default function JourneyProgressBar({ savingsPool = 18750, moneySpent = 0, completedStages = [] }) {
   const [activeStage, setActiveStage] = useState(0);
-  const remainingBalance = savingsPool - cashSpent;
+  const remainingBalance = savingsPool - moneySpent;
 
   return (
     <section className="px-4 sm:px-6 py-12 border-t border-slate-800/60 bg-slate-900/60">

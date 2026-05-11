@@ -69,9 +69,9 @@ export default function UnlockSteps({ onUnlock }) {
             <span className="text-xl">🪙</span>
           </div>
           <div className="flex-1">
-            <p className="text-sm font-black text-white mb-1">Tokens Are Not Charged Upfront — Ever</p>
+            <p className="text-sm font-black text-white mb-1">No Upfront Costs — Ever</p>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Your Savings Pool is funded by commission savings at closing. Token costs come from that pool — not your bank account. Keep 100% if you never unlock help.
+              Your Savings Pool is funded by commission savings at closing. Service costs come from that pool — not your bank account. Keep 100% if you never unlock help.
             </p>
           </div>
           {onUnlock && (

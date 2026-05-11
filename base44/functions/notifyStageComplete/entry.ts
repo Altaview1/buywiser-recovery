@@ -36,6 +36,9 @@ Deno.serve(async (req) => {
     const savingsPool = lead_data.savings_pool_estimate || 0;
     const spentPercentage = Math.round(((savingsPool - remainingBalance) / savingsPool) * 100);
 
+    // Convert to USD currency display
+    const totalSpent = savingsPool - remainingBalance;
+
     const emailBody = `Hi ${lead_data.name?.split(" ")[0] || "there"},
 
 Congratulations! 🎉

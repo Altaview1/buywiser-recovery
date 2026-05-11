@@ -10,7 +10,7 @@ const PROFESSIONALS = [
     expert: "Bennett Liss",
     title: "30-Year CA Mortgage Expert · NMLS #1524446",
     description: "Rate strategy, pre-approval review, loan program comparison, or any financing question — answered by Bennett's team directly.",
-    tokenCost: 0.08,
+    cost: 0.08,
     deliveryMethod: "Call or text within 2 hours",
     phone: "tel:+18183002642",
   },
@@ -21,7 +21,7 @@ const PROFESSIONALS = [
     expert: "Compass / Keller Williams",
     title: "Licensed CA Buyer's Agent",
     description: "Tour scheduling, offer negotiation strategy, local market insight, or representation on a specific property.",
-    tokenCost: 0.12,
+    cost: 0.12,
     deliveryMethod: "Agent assigned within 4 hours",
     phone: null,
   },
@@ -32,7 +32,7 @@ const PROFESSIONALS = [
     expert: "Bennett + Partner Agent",
     title: "Financing + Negotiation Alignment",
     description: "A coordinated review of your offer price, contingencies, financing terms, and competitive positioning before you submit.",
-    tokenCost: 0.10,
+    cost: 0.10,
     deliveryMethod: "Video or phone call within 24 hours",
     phone: null,
   },
@@ -43,7 +43,7 @@ const PROFESSIONALS = [
     expert: "RE Law Firm Partner",
     title: "Licensed CA Real Estate Attorney",
     description: "Contract clause review, title concerns, disclosure questions, or dispute resolution — by a licensed real estate attorney.",
-    tokenCost: 0.09,
+    cost: 0.09,
     deliveryMethod: "Attorney response within 1 business day",
     phone: null,
   },
@@ -53,7 +53,7 @@ function formatCurrency(n) {
   return Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent, onUnlock }) {
+export default function UnlockModal({ isOpen, onClose, savingsPool, moneySpent, onUnlock }) {
   const [selected, setSelected] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,14 +61,14 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
 
-  const remaining = savingsPool - tokensSpent;
+  const remaining = savingsPool - moneySpent;
   const selectedPro = PROFESSIONALS.find(p => p.id === selected);
-  const tokenCost = selectedPro ? Math.round(savingsPool * selectedPro.tokenCost) : 0;
+  const serviceCost = selectedPro ? Math.round(savingsPool * selectedPro.cost) : 0;
 
   const handleConfirm = async () => {
     if (!name || !phone) return;
     setLoading(true);
-    const cost = Math.round(savingsPool * selectedPro.tokenCost);
+    const cost = Math.round(savingsPool * selectedPro.cost);
 
     await base44.functions.invoke("notifySmartBuyUnlock", {
       buyerName: name,
@@ -76,7 +76,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
       serviceName: selectedPro.name,
       expert: selectedPro.expert,
       note: note || "",
-      tokenCost: cost,
+      serviceCost: cost,
       poolRemaining: remaining - cost,
     }).catch(() => {});
 
@@ -127,12 +127,12 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
               <p className="text-xs text-slate-500 mb-1">{selectedPro?.deliveryMethod}</p>
               <div className="mt-5 bg-slate-800 rounded-xl px-4 py-3 text-left">
                 <div className="flex justify-between text-xs mb-1">
-                  <span className="text-slate-400">Token cost</span>
-                  <span className="text-red-400 font-bold">− {formatCurrency(tokenCost)}</span>
+                  <span className="text-slate-400">Service cost</span>
+                  <span className="text-red-400 font-bold">− {formatCurrency(serviceCost)}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-400">New pool balance</span>
-                  <span className="text-emerald-400 font-bold">{formatCurrency(remaining - tokenCost)}</span>
+                  <span className="text-emerald-400 font-bold">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
               {selectedPro?.phone && (
@@ -159,12 +159,12 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
                 </div>
                 <p className="text-xs text-slate-400 leading-relaxed mb-3">{selectedPro.description}</p>
                 <div className="flex items-center justify-between border-t border-slate-700 pt-3">
-                  <span className="text-xs text-slate-500">Token cost</span>
-                  <span className="text-base font-black text-amber-400">{formatCurrency(tokenCost)}</span>
+                  <span className="text-xs text-slate-500">Service cost</span>
+                  <span className="text-base font-black text-amber-400">{formatCurrency(serviceCost)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
                   <span className="text-xs text-slate-500">Pool after unlock</span>
-                  <span className="text-sm font-bold text-emerald-400">{formatCurrency(remaining - tokenCost)}</span>
+                  <span className="text-sm font-bold text-emerald-400">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
 
@@ -201,17 +201,17 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, tokensSpent,
                 disabled={!name || !phone || loading}
                 className="w-full py-3.5 rounded-xl font-black text-sm text-slate-900 bg-amber-400 hover:bg-amber-300 transition flex items-center justify-center gap-2 disabled:opacity-40"
               >
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Unlock className="h-4 w-4" /> Confirm Unlock · {formatCurrency(tokenCost)}</>}
+                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <><Unlock className="h-4 w-4" /> Confirm Unlock · {formatCurrency(serviceCost)}</>}
               </button>
-              <p className="text-[10px] text-slate-600 text-center mt-2">Tokens deducted from your Savings Pool at closing</p>
+              <p className="text-[10px] text-slate-600 text-center mt-2">Service cost deducted from your Savings Pool at closing</p>
             </div>
 
           ) : (
             /* Service selection */
             <div className="px-5 py-4 space-y-3">
-              <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The token cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
+              <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
               {PROFESSIONALS.map(pro => {
-                const cost = Math.round(savingsPool * pro.tokenCost);
+                const cost = Math.round(savingsPool * pro.cost);
                 const canAfford = remaining >= cost;
                 return (
                   <button
