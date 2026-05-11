@@ -116,28 +116,15 @@ export default function SmartBuy() {
       />
 
       {/* Nav */}
-      <header className="px-4 sm:px-6 py-4 border-b border-slate-200 sticky top-0 z-50 bg-white/95 backdrop-blur-sm">
+      <header className="px-4 sm:px-6 py-4 border-b border-slate-200 sticky top-0 z-50 bg-white shadow-sm">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto" />
-            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-black text-emerald-700 uppercase tracking-widest">SmartBuy™</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <TokenBalanceIndicator tokensRemaining={savingsPool - tokensSpent} savingsPool={savingsPool} />
-            <a href="/our-experts" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 hover:text-amber-800 transition">
-              <Award className="h-3.5 w-3.5" /> Our Experts
-            </a>
-            <a href="/marketplace" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-emerald-700 hover:text-emerald-800 transition">
-              <Zap className="h-3.5 w-3.5" /> Marketplace
-            </a>
-            <a href="/token-rewind" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-violet-600 hover:text-violet-700 transition">
-              <RotateCcw className="h-3.5 w-3.5" /> Token Rewind™
-            </a>
-            <a href="tel:+18183002642" className="hidden sm:block text-sm text-slate-600 hover:text-slate-900 transition font-medium">(818) 300-2642</a>
-            <button onClick={scrollToForm} className="px-5 py-2 bg-emerald-400 text-slate-900 text-sm font-black rounded-xl hover:bg-emerald-300 transition">
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto" />
+          <div className="flex items-center gap-6">
+            <a href="/marketplace" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Marketplace</a>
+            <a href="/our-experts" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Experts</a>
+            <a href="/token-rewind" className="hidden md:block text-xs font-black text-slate-700 hover:text-emerald-700 transition">Token Rewind™</a>
+            <a href="tel:+18183002642" className="hidden md:block text-xs font-semibold text-slate-600">(818) 300-2642</a>
+            <button onClick={scrollToForm} className="px-5 py-2 bg-emerald-500 text-white text-xs font-black rounded-lg hover:bg-emerald-600 transition">
               Get Started
             </button>
           </div>
@@ -162,6 +149,7 @@ export default function SmartBuy() {
               </div>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight tracking-tight mb-6 text-white">
+                <span className="text-emerald-300">BUY WISER</span><br />
                 Buy Smarter.<br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-emerald-400">Keep the Savings.</span>
               </h1>
