@@ -5,6 +5,7 @@ import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
 import UnlockSteps from "../components/smartbuy/UnlockSteps";
 import CommonQuestions from "../components/smartbuy/CommonQuestions";
+import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
 
 const DEFAULT_PRICE = 750000;
 
@@ -184,6 +185,9 @@ export default function SmartBuy() {
           </div>
         </div>
       </section>
+
+      {/* Journey Progress Bar */}
+      <JourneyProgressBar />
 
       {/* How It Works */}
       <section className="px-4 sm:px-6 py-20 border-t border-slate-800/60">
