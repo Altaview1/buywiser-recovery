@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock } from "lucide-react";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
+import UnlockModal from "../components/smartbuy/UnlockModal";
 
 const DEFAULT_PRICE = 750000;
 
@@ -66,7 +67,10 @@ export default function SmartBuy() {
   const [submitted, setSubmitted] = useState(false);
   const [submittedLead, setSubmittedLead] = useState(null);
   const [price, setPrice] = useState(DEFAULT_PRICE);
+  const [unlockOpen, setUnlockOpen] = useState(false);
+  const [tokensSpent, setTokensSpent] = useState(0);
   const formRef = useRef(null);
+  const savingsPool = Math.round(price * 0.025);
 
   const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
 
@@ -74,6 +78,13 @@ export default function SmartBuy() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-white font-sans">
+      <UnlockModal
+        isOpen={unlockOpen}
+        onClose={() => setUnlockOpen(false)}
+        savingsPool={savingsPool}
+        tokensSpent={tokensSpent}
+        onUnlock={(cost) => setTokensSpent(t => t + cost)}
+      />
 
       {/* Nav */}
       <header className="px-4 sm:px-6 py-4 border-b border-slate-800/60 sticky top-0 z-50 bg-slate-950/90 backdrop-blur-sm">
@@ -181,14 +192,21 @@ export default function SmartBuy() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {HOW_IT_WORKS.map(({ icon, step, title, desc }) => (
-              <div key={step} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 relative overflow-hidden">
+              <div key={step} className="bg-slate-900 border border-slate-800 rounded-2xl p-5 relative overflow-hidden flex flex-col">
                 <div className="absolute top-3 right-4 text-[10px] font-black text-slate-700">{step}</div>
                 <div className="text-2xl mb-3">{icon}</div>
                 <h3 className="text-sm font-black text-white mb-2">{title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{desc}</p>
+                <p className="text-xs text-slate-400 leading-relaxed flex-1">{desc}</p>
+                <button
+                  onClick={() => setUnlockOpen(true)}
+                  className="mt-4 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-[11px] font-black text-amber-400 border border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 transition"
+                >
+                  <Unlock className="h-3 w-3" /> Get Help
+                </button>
               </div>
             ))}
           </div>
+          <p className="text-center text-xs text-slate-600 mt-5">Stuck at any stage? Tap <span className="text-amber-400 font-bold">Get Help</span> to unlock a licensed professional — tokens deducted from your pool at closing.</p>
         </div>
       </section>
 
