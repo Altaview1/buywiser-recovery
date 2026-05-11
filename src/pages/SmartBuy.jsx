@@ -7,6 +7,7 @@ import UnlockSteps from "../components/smartbuy/UnlockSteps";
 import CommonQuestions from "../components/smartbuy/CommonQuestions";
 import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
 import TokenRewind from "../components/smartbuy/TokenRewind";
+import PropertyServicesMarketplace from "../components/smartbuy/marketplace/PropertyServicesMarketplace";
 
 const DEFAULT_PRICE = 750000;
 
@@ -554,6 +555,9 @@ export default function SmartBuy() {
 
         </div>
       </section>
+
+      {/* ── Property Services Marketplace™ ── */}
+      <PropertyServicesMarketplace savingsPool={savingsPool} />
 
       {/* ── Token Rewind™ Guarantee ── */}
       <TokenRewind onGetStarted={scrollToForm} />
