@@ -10,7 +10,7 @@ const PROFESSIONALS = [
     expert: "Bennett Liss",
     title: "30-Year CA Mortgage Expert · NMLS #1524446",
     description: "Rate strategy, pre-approval review, loan program comparison, or any financing question — answered by Bennett's team directly.",
-    cost: 0.08,
+    cashCost: 0.08,
     deliveryMethod: "Call or text within 2 hours",
     phone: "tel:+18183002642",
   },
@@ -21,7 +21,7 @@ const PROFESSIONALS = [
     expert: "Compass / Keller Williams",
     title: "Licensed CA Buyer's Agent",
     description: "Tour scheduling, offer negotiation strategy, local market insight, or representation on a specific property.",
-    cost: 0.12,
+    cashCost: 0.12,
     deliveryMethod: "Agent assigned within 4 hours",
     phone: null,
   },
@@ -32,7 +32,7 @@ const PROFESSIONALS = [
     expert: "Bennett + Partner Agent",
     title: "Financing + Negotiation Alignment",
     description: "A coordinated review of your offer price, contingencies, financing terms, and competitive positioning before you submit.",
-    cost: 0.10,
+    cashCost: 0.10,
     deliveryMethod: "Video or phone call within 24 hours",
     phone: null,
   },
@@ -43,7 +43,7 @@ const PROFESSIONALS = [
     expert: "RE Law Firm Partner",
     title: "Licensed CA Real Estate Attorney",
     description: "Contract clause review, title concerns, disclosure questions, or dispute resolution — by a licensed real estate attorney.",
-    cost: 0.09,
+    cashCost: 0.09,
     deliveryMethod: "Attorney response within 1 business day",
     phone: null,
   },
@@ -53,7 +53,7 @@ function formatCurrency(n) {
   return Number(n).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 }
 
-export default function UnlockModal({ isOpen, onClose, savingsPool, moneySpent, onUnlock }) {
+export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, onUnlock }) {
   const [selected, setSelected] = useState(null);
   const [confirmed, setConfirmed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,14 +61,14 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, moneySpent, 
   const [phone, setPhone] = useState("");
   const [note, setNote] = useState("");
 
-  const remaining = savingsPool - moneySpent;
+  const remaining = savingsPool - cashSpent;
   const selectedPro = PROFESSIONALS.find(p => p.id === selected);
-  const serviceCost = selectedPro ? Math.round(savingsPool * selectedPro.cost) : 0;
+  const serviceCost = selectedPro ? Math.round(savingsPool * selectedPro.cashCost) : 0;
 
   const handleConfirm = async () => {
     if (!name || !phone) return;
     setLoading(true);
-    const cost = Math.round(savingsPool * selectedPro.cost);
+    const cost = Math.round(savingsPool * selectedPro.cashCost);
 
     await base44.functions.invoke("notifySmartBuyUnlock", {
       buyerName: name,
@@ -163,7 +163,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, moneySpent, 
                   <span className="text-base font-black text-amber-400">{formatCurrency(serviceCost)}</span>
                 </div>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-xs text-slate-500">Pool after unlock</span>
+                  <span className="text-xs text-slate-500">Pool after service</span>
                   <span className="text-sm font-bold text-emerald-400">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
@@ -211,7 +211,7 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, moneySpent, 
             <div className="px-5 py-4 space-y-3">
               <p className="text-xs text-slate-500 mb-4">Choose the type of help you need. The service cost is deducted from your Savings Pool — whatever remains is yours at closing.</p>
               {PROFESSIONALS.map(pro => {
-                const cost = Math.round(savingsPool * pro.cost);
+                const cost = Math.round(savingsPool * pro.cashCost);
                 const canAfford = remaining >= cost;
                 return (
                   <button

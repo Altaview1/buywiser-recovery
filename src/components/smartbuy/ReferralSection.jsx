@@ -14,7 +14,7 @@ export default function ReferralSection({ userEmail, savingsPool }) {
   const [sending, setSending] = useState(false);
 
   const referralLink = `https://buywiser.com/smartbuy?ref=${encodeURIComponent(userEmail || "user")}`;
-  const bonusTokens = referrals.filter(r => r.status === "completed").length * REFERRAL_BONUS;
+  const bonusCash = referrals.filter(r => r.status === "completed").length * REFERRAL_BONUS;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(referralLink);
@@ -158,21 +158,21 @@ export default function ReferralSection({ userEmail, savingsPool }) {
 
             <div className="border-t-2 border-emerald-200 pt-5">
               <p className="text-[10px] text-slate-600 mb-1">Your earned bonus</p>
-              <p className="text-2xl font-black text-emerald-700">${bonusTokens.toLocaleString()}</p>
+              <p className="text-2xl font-black text-emerald-700">${bonusCash.toLocaleString()}</p>
               <p className="text-[10px] text-slate-600 mt-2">from {referrals.filter(r => r.status === "completed").length} completed referral{referrals.filter(r => r.status === "completed").length !== 1 ? "s" : ""}</p>
             </div>
 
             <div className="mt-5 p-3 bg-white rounded-xl border border-emerald-200">
               <p className="text-xs font-semibold text-slate-800 mb-1">Total Pool + Bonus</p>
               <p className="text-xl font-black text-slate-900">
-                {(savingsPool + bonusTokens).toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 })}
+                ${(savingsPool + bonusCash).toLocaleString()}
               </p>
               <p className="text-[10px] text-slate-500 mt-1">Available at closing</p>
             </div>
 
             <div className="mt-4 p-3 rounded-xl bg-blue-100 border border-blue-300">
               <p className="text-[10px] font-bold text-blue-900 leading-relaxed">
-                ✓ No caps on referral bonuses · Keep earning unlimited tokens · Bonuses applied at closing
+                ✓ No caps on referral bonuses · Unlimited earning potential · Cash applied at closing
               </p>
             </div>
           </div>
