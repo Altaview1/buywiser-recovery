@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Phone, Star, Shield, Award, CheckCircle, ArrowRight, Search, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
+import ConsultationRequestModal from "../components/smartbuy/ConsultationRequestModal";
 
 const EXPERTS = [
   {
@@ -224,7 +225,7 @@ function StarRating({ rating }) {
   );
 }
 
-function ExpertCard({ expert }) {
+function ExpertCard({ expert, onConsultationClick }) {
   return (
     <div className={`rounded-2xl border ${expert.bgColor} p-6 flex flex-col h-full`}>
       {/* Header */}
@@ -314,17 +315,24 @@ function ExpertCard({ expert }) {
       </div>
 
       {/* CTA */}
-      {expert.phone ? (
-        <a href={expert.phone}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm bg-amber-400 hover:bg-amber-300 text-slate-900 transition">
-          <Phone className="h-4 w-4" /> {expert.phoneLabel}
-        </a>
-      ) : (
-        <a href="/smartbuy"
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm bg-slate-900 hover:bg-slate-800 text-white transition">
-          Unlock via SmartBuy™ <ArrowRight className="h-3.5 w-3.5" />
-        </a>
-      )}
+      <div className="flex flex-col gap-2">
+        {expert.phone ? (
+          <a href={expert.phone}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm bg-amber-400 hover:bg-amber-300 text-slate-900 transition">
+            <Phone className="h-4 w-4" /> {expert.phoneLabel}
+          </a>
+        ) : (
+          <a href="/smartbuy"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm bg-slate-900 hover:bg-slate-800 text-white transition">
+            Unlock via SmartBuy™ <ArrowRight className="h-3.5 w-3.5" />
+          </a>
+        )}
+        <button
+          onClick={() => onConsultationClick(expert)}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm border-2 border-slate-300 text-slate-700 hover:bg-slate-50 transition">
+          Request Consultation
+        </button>
+      </div>
     </div>
   );
 }
@@ -334,6 +342,8 @@ export default function OurExperts() {
   const [availableExpertIds, setAvailableExpertIds] = useState(null);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [selectedExpert, setSelectedExpert] = useState(null);
+  const [consultationModalOpen, setConsultationModalOpen] = useState(false);
 
   const handleSearchZip = async () => {
     if (!zipCode.trim()) return;
@@ -451,7 +461,14 @@ export default function OurExperts() {
           )}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {filteredExperts.map(expert => (
-              <ExpertCard key={expert.id} expert={expert} />
+              <ExpertCard 
+                key={expert.id} 
+                expert={expert}
+                onConsultationClick={(expert) => {
+                  setSelectedExpert(expert);
+                  setConsultationModalOpen(true);
+                }}
+              />
             ))}
           </div>
         </div>
@@ -477,6 +494,16 @@ export default function OurExperts() {
           </a>
         </div>
       </section>
+
+      {/* Consultation Modal */}
+      <ConsultationRequestModal 
+        isOpen={consultationModalOpen}
+        expert={selectedExpert}
+        onClose={() => {
+          setConsultationModalOpen(false);
+          setSelectedExpert(null);
+        }}
+      />
 
       {/* Footer */}
       <footer className="px-4 sm:px-6 py-8 border-t border-slate-200 bg-slate-50 text-center">
