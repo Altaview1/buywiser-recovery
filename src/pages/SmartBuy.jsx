@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw } from "lucide-react";
+import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw, Users } from "lucide-react";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
@@ -102,6 +102,9 @@ export default function SmartBuy() {
             </div>
           </div>
           <div className="flex items-center gap-3">
+            <a href="/our-experts" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-amber-700 hover:text-amber-800 transition">
+              <Award className="h-3.5 w-3.5" /> Our Experts
+            </a>
             <a href="/marketplace" className="hidden sm:flex items-center gap-1.5 text-xs font-black text-emerald-700 hover:text-emerald-800 transition">
               <Zap className="h-3.5 w-3.5" /> Marketplace
             </a>

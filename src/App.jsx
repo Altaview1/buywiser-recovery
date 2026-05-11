@@ -49,6 +49,7 @@ import BuyerCashBack from './pages/BuyerCashBack';
 import SmartBuy from './pages/SmartBuy';
 import TokenRewindPage from './pages/TokenRewindPage';
 import Marketplace from './pages/Marketplace';
+import OurExperts from './pages/OurExperts';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -138,6 +139,7 @@ function App() {
           <Route path="/smartbuy" element={<SmartBuy />} />
           <Route path="/token-rewind" element={<TokenRewindPage />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/our-experts" element={<OurExperts />} />
           
           {/* All other routes — auth-protected */}
           <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
