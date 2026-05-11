@@ -1,11 +1,12 @@
 import { useState, useRef } from "react";
-import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock } from "lucide-react";
+import { ArrowRight, Zap, Shield, Brain, TrendingDown, CheckCircle, Phone, Award, Star, Lock, Unlock, RotateCcw } from "lucide-react";
 import SavingsMeter from "../components/smartbuy/SavingsMeter";
 import SmartBuyIntakeForm from "../components/smartbuy/SmartBuyIntakeForm";
 import UnlockModal from "../components/smartbuy/UnlockModal";
 import UnlockSteps from "../components/smartbuy/UnlockSteps";
 import CommonQuestions from "../components/smartbuy/CommonQuestions";
 import JourneyProgressBar from "../components/smartbuy/JourneyProgressBar";
+import TokenRewind from "../components/smartbuy/TokenRewind";
 
 const DEFAULT_PRICE = 750000;
 
@@ -161,6 +162,9 @@ export default function SmartBuy() {
                     <Shield className="h-3 w-3 text-slate-400" /> {t}
                   </div>
                 ))}
+                <div className="flex items-center gap-1.5 text-xs text-violet-600 font-bold bg-violet-50 border border-violet-200 rounded-full px-2.5 py-0.5">
+                  <RotateCcw className="h-3 w-3" /> Token Rewind™ Guarantee
+                </div>
               </div>
               {/* Partner brand badges */}
               <div className="flex flex-wrap items-center gap-2">
@@ -547,6 +551,9 @@ export default function SmartBuy() {
 
         </div>
       </section>
+
+      {/* ── Token Rewind™ Guarantee ── */}
+      <TokenRewind onGetStarted={scrollToForm} />
 
       {/* ── Common Questions ── */}
       <CommonQuestions />
