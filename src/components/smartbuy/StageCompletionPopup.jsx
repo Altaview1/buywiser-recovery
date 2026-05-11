@@ -14,7 +14,7 @@ const STAGE_INFO = {
 export default function StageCompletionPopup({ isOpen, onClose, stage, savingsPool, onProceedNext }) {
   const [autoClose, setAutoClose] = useState(false);
   const stageInfo = STAGE_INFO[stage];
-  const stageSavings = savingsPool ? Math.round(savingsPool * stageInfo.savingsPercent) : 0;
+  const stageSavings = stageInfo && savingsPool ? Math.round(savingsPool * stageInfo.savingsPercent) : 0;
 
   useEffect(() => {
     if (isOpen) {
