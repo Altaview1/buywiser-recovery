@@ -1,5 +1,5 @@
 import { useState } from "react";
-import StageIndicator from "@/components/smartbuy/workflow/StageIndicator";
+import ProgressBar from "@/components/smartbuy/ProgressBar";
 import HomeSearchStage from "@/components/smartbuy/workflow/HomeSearchStage";
 import TourStage from "@/components/smartbuy/workflow/TourStage";
 import ConsultationStage from "@/components/smartbuy/workflow/ConsultationStage";
@@ -27,7 +27,7 @@ export default function SmartBuyWorkflow() {
 
   return (
     <div className="min-h-screen bg-white">
-      <StageIndicator currentStage={currentStage} />
+      <ProgressBar currentStage={currentStage} />
 
       {currentStage === "search" && (
         <HomeSearchStage onPropertySubmit={handlePropertySubmit} />
