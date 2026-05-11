@@ -575,10 +575,10 @@ export default function SmartBuy() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/60">
+      <footer className="border-t border-slate-200 bg-slate-50">
 
         {/* License Bar */}
-        <div className="px-4 sm:px-6 py-6 border-b border-slate-800/40 bg-slate-900/40">
+        <div className="px-4 sm:px-6 py-6 border-b border-slate-200 bg-white">
           <div className="max-w-5xl mx-auto">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10">
 
@@ -593,7 +593,7 @@ export default function SmartBuy() {
                 </div>
               </div>
 
-              <div className="w-px h-8 bg-slate-700 hidden sm:block" />
+              <div className="w-px h-8 bg-slate-200 hidden sm:block" />
 
               {/* License grid */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-2 flex-1">
@@ -604,17 +604,17 @@ export default function SmartBuy() {
                   { label: "CA DFPI", value: "CRMLA Licensed" },
                 ].map(({ label, value }) => (
                   <div key={label}>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">{label}</p>
-                    <p className="text-xs font-semibold text-slate-400 mt-0.5">{value}</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">{label}</p>
+                    <p className="text-xs font-semibold text-slate-700 mt-0.5">{value}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="w-px h-8 bg-slate-700 hidden sm:block" />
+              <div className="w-px h-8 bg-slate-200 hidden sm:block" />
 
               {/* NMLS verify link */}
               <a href="https://www.nmlsconsumeraccess.org" target="_blank" rel="noopener noreferrer"
-                className="flex-shrink-0 text-[10px] text-slate-600 hover:text-slate-400 transition underline underline-offset-2 whitespace-nowrap">
+                className="flex-shrink-0 text-[10px] text-slate-500 hover:text-slate-800 transition underline underline-offset-2 whitespace-nowrap">
                 Verify at NMLS Consumer Access →
               </a>
             </div>
@@ -623,14 +623,14 @@ export default function SmartBuy() {
 
         {/* Main footer */}
         <div className="px-4 sm:px-6 py-8 text-center">
-          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto mx-auto mb-4 brightness-0 invert opacity-25" />
-          <p className="text-xs text-slate-600 max-w-2xl mx-auto leading-relaxed mb-3">
+          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-7 w-auto mx-auto mb-4 opacity-40" />
+          <p className="text-xs text-slate-500 max-w-2xl mx-auto leading-relaxed mb-3">
             Buywiser SmartBuy™ is a DBA of BuyWiser Technology, Inc. DBA BuyWiser Home Loans. This is a private program — not a government benefit. Savings estimates are based on typical buyer-side commission structures and are not guaranteed. Final savings depend on transaction structure, eligibility, and applicable rules. All loan programs subject to borrower qualification. Rates and terms subject to change without notice.{" "}
-            <a href="/Disclosures" className="underline hover:text-slate-400 transition">Licensing &amp; Disclosures</a>
+            <a href="/Disclosures" className="underline hover:text-slate-700 transition">Licensing &amp; Disclosures</a>
             {" · "}
-            <a href="/PrivacyPolicy" className="underline hover:text-slate-400 transition">Privacy Policy</a>
+            <a href="/PrivacyPolicy" className="underline hover:text-slate-700 transition">Privacy Policy</a>
           </p>
-          <p className="text-[10px] text-slate-700">© {new Date().getFullYear()} BuyWiser Technology, Inc. · All rights reserved.</p>
+          <p className="text-[10px] text-slate-400">© {new Date().getFullYear()} BuyWiser Technology, Inc. · All rights reserved.</p>
         </div>
       </footer>
     </div>
