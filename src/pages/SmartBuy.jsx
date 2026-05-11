@@ -11,6 +11,7 @@ import PropertyServicesMarketplace from "../components/smartbuy/marketplace/Prop
 import TokenBalanceIndicator from "../components/smartbuy/TokenBalanceIndicator";
 import ReferralSection from "../components/smartbuy/ReferralSection";
 import TokenTutorial from "../components/smartbuy/TokenTutorial";
+import MyReports from "../components/smartbuy/MyReports";
 
 const DEFAULT_PRICE = 750000;
 
@@ -574,6 +575,15 @@ export default function SmartBuy() {
 
       {/* ── Common Questions ── */}
       <CommonQuestions />
+
+      {/* ── My Reports ── */}
+      {submittedLead?.email && (
+        <section className="px-4 sm:px-6 py-16 border-t border-slate-100 bg-white">
+          <div className="max-w-5xl mx-auto">
+            <MyReports userEmail={submittedLead.email} />
+          </div>
+        </section>
+      )}
 
       {/* ── Token Tutorial ── */}
       <TokenTutorial />

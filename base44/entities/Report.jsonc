@@ -1,0 +1,78 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email of the user who purchased the report"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Property address evaluated"
+    },
+    "property_url": {
+      "type": "string",
+      "description": "Zillow/Redfin/listing URL for the property"
+    },
+    "report_type": {
+      "type": "string",
+      "enum": [
+        "property_valuation",
+        "market_intelligence",
+        "risk_assessment",
+        "investment_analysis"
+      ],
+      "description": "Type of HouseCanary report"
+    },
+    "tokens_spent": {
+      "type": "number",
+      "description": "Tokens spent on this report"
+    },
+    "report_url": {
+      "type": "string",
+      "description": "URL to download the report PDF or file"
+    },
+    "report_data": {
+      "type": "object",
+      "description": "JSON data from HouseCanary report (valuation, comps, risk scores, etc.)"
+    },
+    "purchase_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the report was purchased"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Report generation status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "User notes about the property or report"
+    }
+  },
+  "required": [
+    "user_email",
+    "property_address",
+    "report_type",
+    "tokens_spent"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "data.user_email": "{{user.email}}"
+    },
+    "update": {
+      "data.user_email": "{{user.email}}"
+    },
+    "delete": {
+      "data.user_email": "{{user.email}}"
+    }
+  }
+}
