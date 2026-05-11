@@ -14,7 +14,7 @@ function formatCurrency(n) {
 }
 
 export default function SaveoMeter({ savingsPool = 18750, completedStages = [], currentStage = 1, tokensSpent = 0 }) {
-  // Calculate earned savings from completed stages (up to 6, since workflow has 10 total stages)
+  // Calculate earned savings from completed stages
   let earnedSavings = 0;
   STAGE_SAVINGS.forEach(s => {
     if (completedStages.includes(s.stage)) {
@@ -24,6 +24,22 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
 
   const remaining = savingsPool - tokensSpent - earnedSavings;
   const percentComplete = (completedStages.filter(s => s <= 6).length / 6) * 100;
+  
+  // Calculate running balance at each stage
+  const getBalanceAtStage = (stage) => {
+    let balance = savingsPool;
+    // Subtract earned savings up to this stage
+    STAGE_SAVINGS.forEach(s => {
+      if (s.stage <= stage) {
+        balance -= savingsPool * s.pct;
+      }
+    });
+    // Subtract tokens spent (approximate per stage)
+    if (stage <= currentStage) {
+      balance -= Math.round((tokensSpent / currentStage) * stage);
+    }
+    return Math.max(0, balance);
+  };
 
   return (
     <div className="rounded-2xl border border-emerald-200 bg-emerald-50 overflow-hidden shadow-sm hover:shadow-md transition">
@@ -55,11 +71,11 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
           </div>
         </div>
 
-        {/* Breakdown */}
+        {/* Breakdown - Show remaining balance at each stage */}
         <div className="space-y-1.5 mb-4 p-3 bg-white rounded-lg border border-emerald-100">
           {STAGE_SAVINGS.map(s => {
             const isCompleted = completedStages.includes(s.stage);
-            const stageValue = Math.round(savingsPool * s.pct);
+            const balanceAfterStage = getBalanceAtStage(s.stage);
             return (
               <div key={s.stage} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
@@ -72,9 +88,12 @@ export default function SaveoMeter({ savingsPool = 18750, completedStages = [], 
                     {s.label}
                   </span>
                 </div>
-                <span className={`font-bold ${isCompleted ? "text-emerald-700" : "text-slate-300"}`}>
-                  {formatCurrency(stageValue)}
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className={`font-bold ${isCompleted ? "text-emerald-700" : "text-slate-500"}`}>
+                    {formatCurrency(balanceAfterStage)}
+                  </span>
+                  <span className="text-[9px] text-slate-400">remaining</span>
+                </div>
               </div>
             );
           })}
