@@ -17,6 +17,7 @@ const PROFESSIONALS = [
     deliveryMethod: "Call or text within 2 hours",
     phone: "tel:+18183002642",
     isOptional: true,
+    blinkLink: "https://www.blink.mortgage/app/signup/p/Buywiser/bennettliss?campaign=BennettLiss",
   },
   {
     id: "agent",
@@ -180,6 +181,12 @@ export default function UnlockModal({ isOpen, onClose, savingsPool, cashSpent, o
                   <span className="text-emerald-400 font-bold">{formatCurrency(remaining - serviceCost)}</span>
                 </div>
               </div>
+              {selectedPro?.id === "mortgage" && selectedPro.blinkLink && (
+                <a href={selectedPro.blinkLink} target="_blank" rel="noopener noreferrer"
+                  className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white font-black rounded-xl text-sm hover:bg-blue-700 transition">
+                  💰 Apply Now via Blink
+                </a>
+              )}
               {selectedPro?.phone && (
                 <a href={selectedPro.phone}
                   className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 bg-amber-400 text-slate-900 font-black rounded-xl text-sm hover:bg-amber-300 transition">
