@@ -262,7 +262,7 @@ export default function SmartBuy() {
                 <div className="flex-1">
                   <span className="text-sm text-slate-800 font-semibold">{s.label}</span>
                 </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 hidden sm:block">Stage {i + 1}</span>
+
               </div>
             ))}
             <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3.5 mt-2">
