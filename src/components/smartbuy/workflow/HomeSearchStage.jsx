@@ -1,5 +1,6 @@
 import { Zap, Search, DollarSign, TrendingUp, ArrowRight } from "lucide-react";
 import SavingsMeter from "../SavingsMeter";
+import { formatPrice } from "../pricing/servicePricing";
 
 export default function HomeSearchStage({ onPropertySubmit }) {
   const handlePasteLink = (e) => {
@@ -80,20 +81,20 @@ export default function HomeSearchStage({ onPropertySubmit }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-4 w-4 text-emerald-600" />
-                  <span className="text-[10px] font-black text-emerald-700 uppercase">Realtor Savings</span>
+                  <DollarSign className="h-4 w-4 text-emerald-600" />
+                  <span className="text-[10px] font-black text-emerald-700 uppercase">Commission Savings</span>
                 </div>
-                <p className="text-xl font-black text-emerald-700">$18,750</p>
+                <p className="text-xl font-black text-emerald-700">{formatPrice(750000 * 0.025)}</p>
                 <p className="text-[10px] text-emerald-600">2.5% buyer rebate</p>
               </div>
 
               <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className="h-4 w-4 text-blue-600" />
-                  <span className="text-[10px] font-black text-blue-700 uppercase">Financing Savings</span>
+                  <span className="text-[10px] font-black text-blue-700 uppercase">Service Flexibility</span>
                 </div>
-                <p className="text-xl font-black text-blue-700">$0 upfront</p>
-                <p className="text-[10px] text-blue-600">Then 0.125% rebate</p>
+                <p className="text-xl font-black text-blue-700">Pay-as-You-Go</p>
+                <p className="text-[10px] text-blue-600">Only for services used</p>
               </div>
             </div>
 

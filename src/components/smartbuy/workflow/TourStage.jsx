@@ -1,4 +1,5 @@
-import { AlertCircle, Zap, CreditCard, Calendar, ArrowRight } from "lucide-react";
+import { AlertCircle, Zap, CreditCard, Calendar, ArrowRight, DollarSign } from "lucide-react";
+import { WORKFLOW_COSTS, formatPrice } from "../pricing/servicePricing";
 
 export default function TourStage({ onContinue }) {
   return (
@@ -14,7 +15,7 @@ export default function TourStage({ onContinue }) {
                 Traditional real estate commissions are consumed early through showings, consultations, and touring coordination. SmartBuy™ makes this transparent.
               </p>
               <p className="text-sm text-blue-800 leading-relaxed">
-                <strong>Each property tour through SmartBuy™ costs 50 tokens</strong> because licensed showing agents and scheduling services are involved.
+                <strong>Each property tour through SmartBuy™ costs {formatPrice(WORKFLOW_COSTS.tour)}</strong> because licensed showing agents and scheduling services are involved.
               </p>
             </div>
           </div>
@@ -76,16 +77,16 @@ export default function TourStage({ onContinue }) {
             {[
               { label: "Single Property Tour", cost: 50, desc: "Licensed agent coordination, scheduling" },
               { label: "Multiple Tours (Same Day)", cost: 80, desc: "Full showing circuit with coordination" },
-              { label: "Additional Realtor Guidance", cost: "80/hr", desc: "Extended consultation during tours" }
+              { label: "Additional Realtor Guidance", cost: "$80/hr", desc: "Extended consultation during tours" }
             ].map((item, i) => (
               <div key={i} className="flex items-start justify-between p-3 bg-white rounded-lg border border-slate-200">
                 <div>
                   <p className="text-sm font-bold text-slate-900">{item.label}</p>
                   <p className="text-xs text-slate-600">{item.desc}</p>
                 </div>
-                <div className="flex items-center gap-1 font-black text-amber-600">
-                  <Zap className="h-4 w-4" />
-                  {item.cost}
+                <div className="flex items-center gap-1 font-black text-blue-600">
+                  <DollarSign className="h-4 w-4" />
+                  {typeof item.cost === "number" ? formatPrice(item.cost) : item.cost}
                 </div>
               </div>
             ))}

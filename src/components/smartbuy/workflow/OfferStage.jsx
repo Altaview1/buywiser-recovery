@@ -1,4 +1,5 @@
-import { AlertCircle, CheckCircle, Lock, Zap, ArrowRight } from "lucide-react";
+import { AlertCircle, CheckCircle, Lock, Zap, ArrowRight, DollarSign } from "lucide-react";
+import { WORKFLOW_COSTS, formatPrice } from "../pricing/servicePricing";
 
 export default function OfferStage() {
   return (
@@ -21,8 +22,8 @@ export default function OfferStage() {
           </div>
 
           <div className="flex items-baseline gap-2 mb-6">
-            <span className="text-4xl font-black text-rose-700">1500</span>
-            <Zap className="h-5 w-5 text-amber-500" />
+            <span className="text-4xl font-black text-rose-700">{formatPrice(WORKFLOW_COSTS.offer_package)}</span>
+            <DollarSign className="h-5 w-5 text-rose-600" />
             <span className="text-base font-black text-slate-600">MANDATORY</span>
           </div>
 
@@ -52,7 +53,7 @@ export default function OfferStage() {
           </button>
 
           <p className="text-xs text-slate-600 text-center">
-            By clicking above, you confirm you understand and accept that the offer package cost (1500 tokens) is mandatory for California-compliant contract preparation.
+            By clicking above, you confirm you understand and accept that the offer package cost ({formatPrice(WORKFLOW_COSTS.offer_package)}) is mandatory for California-compliant contract preparation.
           </p>
         </div>
 
@@ -66,14 +67,14 @@ export default function OfferStage() {
                 <p className="font-bold text-slate-900">Extended Realtor Negotiation Time</p>
                 <p className="text-xs text-slate-600 mt-1">Difficult sellers · Multiple bidding rounds · Complex strategy discussions</p>
               </div>
-              <div className="flex items-center gap-1 font-black text-amber-600 flex-shrink-0">
-                <Zap className="h-4 w-4" />
-                80/hr
+              <div className="flex items-center gap-1 font-black text-rose-600 flex-shrink-0">
+                <DollarSign className="h-4 w-4" />
+                $80/hr
               </div>
             </div>
 
             <p className="text-xs text-slate-600">
-              The 1500-token package includes 3 hours. Additional negotiation is billed hourly if needed.
+              The {formatPrice(WORKFLOW_COSTS.offer_package)} package includes 3 hours. Additional negotiation is billed hourly if needed.
             </p>
           </div>
         </div>

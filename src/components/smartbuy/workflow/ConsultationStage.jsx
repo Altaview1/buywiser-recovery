@@ -1,4 +1,5 @@
-import { Brain, Users, MessageSquare, Zap, Lock, Unlock, ArrowRight } from "lucide-react";
+import { Brain, Users, MessageSquare, Zap, Lock, Unlock, ArrowRight, DollarSign } from "lucide-react";
+import { WORKFLOW_COSTS, formatPrice } from "../pricing/servicePricing";
 
 export default function ConsultationStage({ onContinue }) {
   return (
@@ -73,8 +74,8 @@ export default function ConsultationStage({ onContinue }) {
               <div className="p-4 rounded-lg border border-blue-200 bg-blue-50">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-bold text-slate-900 text-sm">Speak to Mortgage Broker</p>
-                  <div className="flex items-center gap-1 font-black text-amber-600">
-                    <Zap className="h-3.5 w-3.5" /> 800
+                  <div className="flex items-center gap-1 font-black text-blue-600">
+                    <DollarSign className="h-3.5 w-3.5" /> {formatPrice(WORKFLOW_COSTS.consultation_broker)}
                   </div>
                 </div>
                 <p className="text-xs text-slate-600">Direct call with licensed broker · Rate guidance · Program review</p>
@@ -83,8 +84,8 @@ export default function ConsultationStage({ onContinue }) {
               <div className="p-4 rounded-lg border border-purple-200 bg-purple-50">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-bold text-slate-900 text-sm">Speak to 5-Star Realtor</p>
-                  <div className="flex items-center gap-1 font-black text-amber-600">
-                    <Zap className="h-3.5 w-3.5" /> 1000
+                  <div className="flex items-center gap-1 font-black text-purple-600">
+                    <DollarSign className="h-3.5 w-3.5" /> {formatPrice(WORKFLOW_COSTS.consultation_realtor)}
                   </div>
                 </div>
                 <p className="text-xs text-slate-600">Direct call with top agent · Offer strategy · Negotiation coaching</p>
@@ -93,8 +94,8 @@ export default function ConsultationStage({ onContinue }) {
               <div className="p-4 rounded-lg border border-rose-200 bg-rose-50">
                 <div className="flex items-center justify-between mb-2">
                   <p className="font-bold text-slate-900 text-sm">Senior Transaction Strategist</p>
-                  <div className="flex items-center gap-1 font-black text-amber-600">
-                    <Zap className="h-3.5 w-3.5" /> 1500
+                  <div className="flex items-center gap-1 font-black text-rose-600">
+                    <DollarSign className="h-3.5 w-3.5" /> {formatPrice(WORKFLOW_COSTS.consultation_strategist)}
                   </div>
                 </div>
                 <p className="text-xs text-slate-600">Premium consultation · Complex situations · Full transaction strategy</p>
