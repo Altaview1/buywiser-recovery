@@ -214,7 +214,7 @@ export default function SmartBuy() {
               <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-black text-emerald-300">2</span>
               </div>
-              <h3 className="text-lg font-black text-white mb-2">Use AI + Modular Experts</h3>
+              <h3 className="text-lg font-black text-white mb-2">Use AI + Modular Domain Experts</h3>
               <p className="text-sm text-slate-400 leading-relaxed">
                 Leverage free AI guidance, then unlock licensed professionals only when you need them.
               </p>
