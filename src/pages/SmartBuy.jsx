@@ -17,6 +17,7 @@ import MyReports from "../components/smartbuy/MyReports";
 import TestimonialRotator from "../components/smartbuy/TestimonialRotator";
 import SmartBuyTestimonials from "../components/smartbuy/SmartBuyTestimonials";
 import SmartBuyFAQ from "../components/smartbuy/SmartBuyFAQ";
+import SmartBuyVideoPlaceholder from "../components/smartbuy/SmartBuyVideoPlaceholder";
 import SavingsMeterHero from "../components/smartbuy/SavingsMeterHero";
 import StageCompletionPopup from "../components/smartbuy/StageCompletionPopup";
 
@@ -288,6 +289,9 @@ export default function SmartBuy() {
           </div>
         </div>
       </section>
+
+      {/* Video Explainer Placeholder */}
+      <SmartBuyVideoPlaceholder />
 
       {/* Customer Testimonials */}
       <SmartBuyTestimonials />
