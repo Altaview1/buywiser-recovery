@@ -16,6 +16,7 @@ import TokenTutorial from "../components/smartbuy/TokenTutorial";
 import MyReports from "../components/smartbuy/MyReports";
 import TestimonialRotator from "../components/smartbuy/TestimonialRotator";
 import SmartBuyTestimonials from "../components/smartbuy/SmartBuyTestimonials";
+import SmartBuyFAQ from "../components/smartbuy/SmartBuyFAQ";
 import SavingsMeterHero from "../components/smartbuy/SavingsMeterHero";
 import StageCompletionPopup from "../components/smartbuy/StageCompletionPopup";
 
@@ -523,6 +524,9 @@ export default function SmartBuy() {
 
       {/* ── SmartBuy Cash™ Savings Guarantee ── */}
       <TokenRewind onGetStarted={scrollToForm} />
+
+      {/* ── SmartBuy™ FAQ & Trust Section ── */}
+      <SmartBuyFAQ />
 
       {/* ── Common Questions ── */}
       <CommonQuestions />
