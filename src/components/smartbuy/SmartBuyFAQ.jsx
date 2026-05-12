@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, ShieldCheck, Brain, DollarSign, Scale, Users, Zap } from "lucide-react";
+import ComparisonTable from "./ComparisonTable";
 
 const TRUST_PILLARS = [
   {
@@ -165,6 +166,16 @@ export default function SmartBuyFAQ() {
           <p className="text-slate-500 text-base max-w-2xl mx-auto leading-relaxed">
             SmartBuy™ is a new model. It's disruptive. The concept is worth understanding completely — because the financial implications for your transaction are significant.
           </p>
+        </div>
+
+        {/* Comparison Table */}
+        <div className="mb-16">
+          <div className="text-center mb-6">
+            <p className="text-xs font-black uppercase tracking-widest text-red-500 mb-1">Side-by-Side</p>
+            <h3 className="text-xl font-black text-slate-900">Traditional vs. SmartBuy™ Cash-Preservation Model</h3>
+            <p className="text-slate-500 text-sm mt-2 max-w-xl mx-auto">The same home purchase. A fundamentally different financial outcome for the buyer.</p>
+          </div>
+          <ComparisonTable />
         </div>
 
         {/* Trust Pillars */}
