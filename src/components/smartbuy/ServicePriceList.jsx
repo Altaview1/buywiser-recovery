@@ -1,4 +1,5 @@
-import { DollarSign } from "lucide-react";
+import { useState } from "react";
+import { DollarSign, HelpCircle } from "lucide-react";
 import { SERVICE_PRICES, formatPrice } from "./pricing/servicePricing";
 
 const SERVICE_DESCRIPTIONS = {
@@ -55,6 +56,31 @@ const SERVICE_PHASES = {
   post_close: "Moving & Cleanup",
 };
 
+function Tooltip({ text }) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <span className="relative inline-flex items-center ml-1.5 flex-shrink-0">
+      <button
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        onFocus={() => setVisible(true)}
+        onBlur={() => setVisible(false)}
+        className="text-slate-400 hover:text-slate-600 transition"
+        type="button"
+        aria-label="More info"
+      >
+        <HelpCircle className="h-3.5 w-3.5" />
+      </button>
+      {visible && (
+        <span className="absolute left-5 top-1/2 -translate-y-1/2 z-50 w-60 bg-slate-900 text-white text-xs leading-relaxed rounded-xl px-3 py-2.5 shadow-xl pointer-events-none">
+          {text}
+          <span className="absolute left-[-5px] top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-r-4 border-transparent border-r-slate-900" />
+        </span>
+      )}
+    </span>
+  );
+}
+
 export default function ServicePriceList() {
   // Group services by phase
   const grouped = {};
@@ -87,19 +113,17 @@ export default function ServicePriceList() {
 
               <div className="space-y-3">
                 {services.map((service) => (
-                  <div key={service.id} className="bg-white rounded-lg border border-slate-200 p-5 hover:border-slate-300 transition">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-slate-900 mb-1">{service.name}</h4>
-                        <p className="text-sm text-slate-600 leading-relaxed">
-                          {SERVICE_DESCRIPTIONS[service.id]}
-                        </p>
+                  <div key={service.id} className="bg-white rounded-lg border border-slate-200 px-4 py-3 hover:border-slate-300 transition">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center min-w-0">
+                        <h4 className="font-semibold text-sm text-slate-900 leading-snug">{service.name}</h4>
+                        {SERVICE_DESCRIPTIONS[service.id] && (
+                          <Tooltip text={SERVICE_DESCRIPTIONS[service.id]} />
+                        )}
                       </div>
-                      <div className="flex-shrink-0 text-right">
-                        <div className="flex items-baseline gap-1">
-                          <DollarSign className="h-4 w-4 text-blue-600" />
-                          <span className="text-2xl font-black text-blue-600">{service.price}</span>
-                        </div>
+                      <div className="flex-shrink-0 flex items-baseline gap-0.5">
+                        <DollarSign className="h-3.5 w-3.5 text-blue-600" />
+                        <span className="text-lg font-black text-blue-600">{service.price}</span>
                       </div>
                     </div>
                   </div>
@@ -140,18 +164,21 @@ export default function ServicePriceList() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
-            { label: "Home Search & AI Guidance", price: "Free" },
-            { label: "Single Property Tour", price: "$50" },
-            { label: "AI Consultation", price: "Free" },
-            { label: "Mortgage Broker Consultation", price: "$800" },
-            { label: "Realtor Consultation", price: "$1,000" },
-            { label: "Senior Strategist Consultation", price: "$1,500" },
-            { label: "Offer Preparation & Negotiation (California Required)", price: "$1,500" },
-            { label: "Extended Realtor Time (hourly)", price: "$80/hr" },
+            { label: "Home Search & AI Guidance", price: "Free", tip: "AI-powered property search, neighborhood insights, price trend analysis, and school ratings — all at no cost." },
+            { label: "Single Property Tour", price: "$50", tip: "A licensed showing agent accompanies you to tour one specific property. Includes access coordination and on-site Q&A." },
+            { label: "AI Consultation", price: "Free", tip: "Unlimited AI chat for offer strategy questions, market research, document explanations, and timeline planning." },
+            { label: "Mortgage Broker Consultation", price: "$800", tip: "30–60 min session with a licensed mortgage broker to review loan programs, rate scenarios, and pre-approval strategy." },
+            { label: "Realtor Consultation", price: "$1,000", tip: "60–90 min strategy session with a licensed California Realtor covering market positioning, offer approach, and negotiation." },
+            { label: "Senior Strategist Consultation", price: "$1,500", tip: "Deep-dive strategy session with a senior advisor covering complex scenarios, competitive markets, or high-stakes negotiation." },
+            { label: "Offer Preparation & Negotiation (California Required)", price: "$1,500", tip: "California law requires a licensed Realtor to prepare and submit purchase offers. Includes contract review, counter-offer handling, and negotiation." },
+            { label: "Extended Realtor Time (hourly)", price: "$80/hr", tip: "Additional licensed Realtor hours beyond the included consultation block — for complex negotiations or extended property searches." },
           ].map((item, i) => (
-            <div key={i} className="bg-rose-50 border border-rose-200 rounded-lg p-4">
-              <p className="text-sm font-semibold text-slate-900">{item.label}</p>
-              <p className="text-lg font-black text-rose-600 mt-2">{item.price}</p>
+            <div key={i} className="bg-rose-50 border border-rose-200 rounded-lg px-4 py-3 flex items-center justify-between gap-3">
+              <div className="flex items-center min-w-0">
+                <p className="text-sm font-semibold text-slate-900 leading-snug">{item.label}</p>
+                <Tooltip text={item.tip} />
+              </div>
+              <p className="text-base font-black text-rose-600 flex-shrink-0">{item.price}</p>
             </div>
           ))}
         </div>
