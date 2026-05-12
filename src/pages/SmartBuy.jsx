@@ -319,7 +319,7 @@ export default function SmartBuy() {
               <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
                 <a href="https://www.blink.mortgage/app/signup/p/Buywiser/bennettliss?campaign=BennettLiss" target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-black rounded-xl text-sm hover:bg-blue-700 transition shadow-lg">
-                  💰 Apply via Blink Mortgage
+                  💰 Get Prequalified
                 </a>
                 <a href="tel:+18183002642"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-400 text-slate-900 font-black rounded-xl text-sm hover:bg-amber-300 transition shadow-lg">
