@@ -548,7 +548,7 @@ export default function SmartBuy() {
       <TokenTutorial />
 
       {/* ── Referral Section ── */}
-      <ReferralSection userEmail={submittedLead?.email} savingsPool={savingsPool} />
+      {submittedLead?.email && <ReferralSection userEmail={submittedLead.email} savingsPool={savingsPool} />}
 
       {/* vs Traditional */}
       <section className="px-4 sm:px-6 py-20 bg-slate-50 border-t border-slate-100">
