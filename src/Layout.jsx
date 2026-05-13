@@ -36,11 +36,22 @@ export default function Layout({ children, currentPageName }) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
       } catch (err) {
-        // 401 means not authenticated — that's expected on public routes
+        // Silently ignore 401 errors—expected on public routes where users aren't logged in
         setUser(null);
       }
     };
-    loadUser();
+    
+    // Temporarily suppress console.error for this auth check
+    const originalError = console.error;
+    console.error = (...args) => {
+      const msg = String(args[0] || '');
+      if (msg.includes('401') || msg.includes('User/me')) return;
+      originalError(...args);
+    };
+    
+    loadUser().finally(() => {
+      console.error = originalError;
+    });
   }, []);
 
   const adminLinks = [
