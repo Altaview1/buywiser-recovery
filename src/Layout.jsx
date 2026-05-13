@@ -33,12 +33,10 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const isAuth = await base44.auth.isAuthenticated();
-        if (isAuth) {
-          const currentUser = await base44.auth.me();
-          setUser(currentUser);
-        }
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
       } catch (err) {
+        // 401 means not authenticated — that's expected on public routes
         setUser(null);
       }
     };
