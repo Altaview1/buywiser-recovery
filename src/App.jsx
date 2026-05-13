@@ -141,7 +141,7 @@ function App() {
           <Route path="/admin-settings" element={<AdminSettings />} />
           <Route path="/cashback" element={<BuyerCashBack />} />
           <Route path="/smartbuy" element={<SmartBuy />} />
-          <Route path="/smartbuy-workflow" element={<SmartBuyOrchestrator />} />
+          <Route path="/smartbuy-orchestrator" element={<SmartBuyOrchestrator />} />
           <Route path="/token-rewind" element={<TokenRewindPage />} />
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/our-experts" element={<OurExperts />} />

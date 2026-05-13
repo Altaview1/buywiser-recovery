@@ -102,7 +102,7 @@ export default function HomeSearchStage({ onPropertySubmit }) {
                 <ZapIcon className="h-5 w-5 text-amber-500" /> Your SmartBuy™ Savings
               </h2>
               <p className="text-xs text-slate-600 mb-4">Updates in real-time as you adjust the price</p>
-              <SavingsMeter price={price} animated={true} />
+              <SavingsMeter price={price} animated={false} />
             </div>
 
             {/* Live Savings Cards */}
