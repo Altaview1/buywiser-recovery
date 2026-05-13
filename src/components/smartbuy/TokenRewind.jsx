@@ -154,7 +154,7 @@ export default function TokenRewind({ onGetStarted }) {
           {showNonRewindable && (
             <div className="px-5 pb-5 border-t border-amber-500/20">
               <p className="text-xs text-slate-400 leading-relaxed mt-4 mb-4">
-                Once a service has been <strong className="text-slate-300">performed and yields a binding real-world result</strong>, it cannot be reversed. The Token Rewind™ guarantee applies only to advisory and preparatory services — not to completed legal or financial events.
+                Once a service has been <strong className="text-slate-300">performed and yields a binding real-world result</strong>, it cannot be reversed. The Rewind™ guarantee applies only to advisory and preparatory services — not to completed legal or financial events.
               </p>
               <div className="space-y-2.5">
                 {NON_REWINDABLE.map((s, i) => (
