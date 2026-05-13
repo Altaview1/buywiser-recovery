@@ -31,7 +31,18 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
+    const loadUser = async () => {
+      try {
+        const isAuth = await base44.auth.isAuthenticated();
+        if (isAuth) {
+          const currentUser = await base44.auth.me();
+          setUser(currentUser);
+        }
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    loadUser();
   }, []);
 
   const adminLinks = [
