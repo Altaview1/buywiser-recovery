@@ -276,7 +276,9 @@ function LandingView() {
   const ctaRef = useRef(null);
 
   useEffect(() => {
-    base44.auth.me().then(setAuthUser).catch(() => setAuthUser(null));
+    base44.auth.isAuthenticated().then(authed => {
+      if (authed) base44.auth.me().then(setAuthUser).catch(() => setAuthUser(null));
+    });
   }, []);
 
   useEffect(() => {
