@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Check, X, Eye } from 'lucide-react';
+import { Check, X, Eye, ChevronDown } from 'lucide-react';
 
 export default function VTONLetterTemplateReview() {
   const [template, setTemplate] = useState('');
@@ -8,16 +8,9 @@ export default function VTONLetterTemplateReview() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
-
-  // Sample lead for preview
-  const sampleLead = {
-    first_name: 'John',
-    last_name: 'Smith',
-    property_address: '1234 Oak Avenue',
-    city: 'Los Angeles',
-    state: 'CA',
-    zip_code: '90001',
-  };
+  const [leads, setLeads] = useState([]);
+  const [selectedLeadId, setSelectedLeadId] = useState(null);
+  const [selectedLead, setSelectedLead] = useState(null);
 
   useEffect(() => {
     loadTemplate();
@@ -37,8 +30,15 @@ export default function VTONLetterTemplateReview() {
         setTemplate(config[0].letter_html);
         setIsApproved(config[0].is_approved || false);
       } else {
-        // No template yet, start with empty
         setTemplate('');
+      }
+      
+      // Fetch actual veteran leads for preview
+      const allLeads = await base44.entities.VTONLead.list();
+      setLeads(allLeads);
+      if (allLeads.length > 0) {
+        setSelectedLeadId(allLeads[0].id);
+        setSelectedLead(allLeads[0]);
       }
     } catch (err) {
       console.error('Failed to load template:', err);
@@ -48,14 +48,33 @@ export default function VTONLetterTemplateReview() {
     }
   };
 
+  const handleLeadSelect = (leadId) => {
+    const lead = leads.find(l => l.id === leadId);
+    setSelectedLeadId(leadId);
+    setSelectedLead(lead);
+  };
+
   const generatePreview = (html, lead) => {
-    return html
-      .replace(/\$\{first_name\}/g, lead.first_name)
-      .replace(/\$\{last_name\}/g, lead.last_name)
-      .replace(/\$\{property_address\}/g, lead.property_address)
-      .replace(/\$\{city\}/g, lead.city)
-      .replace(/\$\{state\}/g, lead.state)
-      .replace(/\$\{zip_code\}/g, lead.zip_code);
+    if (!lead || !html) return '';
+    
+    let preview = html;
+    // Personalization fields
+    preview = preview.replace(/\$\{first_name\}/g, lead.first_name || 'Veteran');
+    preview = preview.replace(/\$\{last_name\}/g, lead.last_name || '');
+    preview = preview.replace(/\$\{property_address\}/g, lead.property_address || '');
+    preview = preview.replace(/\$\{city\}/g, lead.city || '');
+    preview = preview.replace(/\$\{state\}/g, lead.state || '');
+    preview = preview.replace(/\$\{zip_code\}/g, lead.zip_code || '');
+    
+    // Benefit-related fields
+    preview = preview.replace(/\$\{estimated_benefit\}/g, 
+      lead.estimated_benefit ? `$${lead.estimated_benefit.toLocaleString()}` : '$0');
+    preview = preview.replace(/\$\{estimated_equity\}/g, 
+      lead.estimated_equity ? `$${lead.estimated_equity.toLocaleString()}` : '$0');
+    preview = preview.replace(/\$\{listing_price\}/g, 
+      lead.listing_price ? `$${lead.listing_price.toLocaleString()}` : '$0');
+    
+    return preview;
   };
 
   const handleApprove = async () => {
@@ -161,14 +180,25 @@ export default function VTONLetterTemplateReview() {
           <div>
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                <h2 className="font-semibold text-slate-900">Edit HTML</h2>
-                <p className="text-xs text-slate-500 mt-1">Use ${'{first_name}'}, ${'{last_name}'}, ${'{property_address}'}, ${'{city}'}, ${'{state}'}, ${'{zip_code}'} for personalization</p>
+                <h2 className="font-semibold text-slate-900">Edit HTML Template</h2>
+                <p className="text-xs text-slate-500 mt-2 mb-2">Use these fields for personalization:</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{first_name}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{last_name}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{property_address}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{city}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{state}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{zip_code}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{estimated_benefit}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{estimated_equity}'}</div>
+                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{listing_price}'}</div>
+                </div>
               </div>
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 disabled={isApproved}
-                className="w-full h-96 p-4 font-mono text-xs border-0 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
+                className="w-full h-80 p-4 font-mono text-xs border-0 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
                 placeholder="Paste your HTML letter template here..."
               />
             </div>
@@ -178,15 +208,33 @@ export default function VTONLetterTemplateReview() {
           <div>
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
               <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                <h2 className="font-semibold text-slate-900">Preview</h2>
-                <p className="text-xs text-slate-500 mt-1">Sample with demo data</p>
+                <h2 className="font-semibold text-slate-900">Live Preview</h2>
+                <p className="text-xs text-slate-500 mt-1 mb-3">Select a veteran to preview their personalized letter:</p>
+                <select
+                  value={selectedLeadId || ''}
+                  onChange={(e) => handleLeadSelect(e.target.value)}
+                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                >
+                  <option value="">-- Select a veteran --</option>
+                  {leads.map((lead) => (
+                    <option key={lead.id} value={lead.id}>
+                      {lead.first_name} {lead.last_name} · {lead.property_address}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <div className="h-96 overflow-y-auto p-4 bg-white">
-                <iframe
-                  srcDoc={generatePreview(template, sampleLead)}
-                  className="w-full h-full border-0"
-                  title="Letter Preview"
-                />
+              <div className="h-80 overflow-y-auto p-4 bg-white">
+                {selectedLead ? (
+                  <iframe
+                    srcDoc={generatePreview(template, selectedLead)}
+                    className="w-full h-full border-0"
+                    title="Letter Preview"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-slate-400">
+                    <p className="text-sm">Select a veteran to see preview</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -220,10 +268,27 @@ export default function VTONLetterTemplateReview() {
         </div>
 
         {/* Info */}
-        <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <p className="text-sm text-blue-800">
-            <strong>How it works:</strong> Once approved, this letter template will automatically be sent to all new VTONLead records that have a complete address. Each letter is personalized with the lead's information.
-          </p>
+        <div className="mt-8 space-y-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-sm text-blue-800 mb-2">
+              <strong>How it works:</strong> Once approved, this letter template will automatically be sent to all new VTONLead records that have a complete address. Each letter is personalized with the lead's information.
+            </p>
+          </div>
+          
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="text-sm text-amber-800 font-semibold mb-2">Available Personalization Fields:</p>
+            <div className="grid grid-cols-2 gap-2 text-xs text-amber-700">
+              <div><span className="font-mono bg-white px-2 py-1 rounded">first_name</span> - Veteran's first name</div>
+              <div><span className="font-mono bg-white px-2 py-1 rounded">last_name</span> - Veteran's last name</div>
+              <div><span className="font-mono bg-white px-2 py-1 rounded">property_address</span> - Home address</div>
+              <div><span className="font-mono bg-white px-2 py-1 rounded">city</span> - City</div>
+              <div><span className="font-mono bg-white px-2 py-1 rounded">state</span> - State code</div>
+              <div><span className="font-mono bg-white px-2 py-1 rounded">zip_code</span> - Zip code</div>
+              <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">estimated_benefit</span> - GAP benefit amount</div>
+              <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">estimated_equity</span> - Home equity</div>
+              <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">listing_price</span> - Property listing price</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
