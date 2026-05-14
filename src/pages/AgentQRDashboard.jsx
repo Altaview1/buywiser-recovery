@@ -25,7 +25,7 @@ function AccessGate({ onAccess }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16" style={{ background: NAVY }}>
+    <div className="fixed inset-0 flex flex-col items-center justify-center px-4" style={{ background: NAVY, zIndex: 9999 }}>
       <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" alt="BuyWiser" className="h-8 w-auto mb-6 opacity-60" />
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
         <div className="px-6 py-5 text-center" style={{ background: NAVY }}>
@@ -330,7 +330,7 @@ export default function AgentQRDashboard() {
   const closedCount = opps.filter(o => o.opportunity_status === "completed").length;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="fixed inset-0 bg-slate-50 overflow-y-auto" style={{ zIndex: 9990 }}>
       {/* Header */}
       <div className="bg-white border-b border-slate-200 px-4 sm:px-6 py-4 sticky top-0 z-10">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
