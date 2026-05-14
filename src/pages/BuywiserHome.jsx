@@ -656,20 +656,21 @@ function LandingView() {
       {/* ── Video ── */}
       <section className="px-4 pb-14 bg-white">
         <div className="max-w-xl mx-auto">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Hear From Bennett Directly</p>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonial — Cody &amp; Frank</p>
           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
             <iframe
-              src="https://app.heygen.com/embeds/f235762557ed4a008bfc3951c186107b"
-              title="Bennett Liss — BuyWiser"
+              src="https://www.youtube.com/embed/ZKUbVLVpzMw?si=FSu0uyk_svkxMoka"
+              title="YouTube video player"
               frameBorder="0"
-              allow="encrypted-media; fullscreen;"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
               style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
             />
           </div>
           <div className="mt-2.5 text-center">
-            <p className="text-sm font-semibold text-slate-700">Watch a 1-minute explanation</p>
-            <p className="text-xs text-slate-400">Bennett Liss — Buywiser</p>
+            <p className="text-sm font-semibold text-slate-700">Navy Veterans Cody &amp; Frank — GAP Benefit Story</p>
+            <p className="text-xs text-slate-400">Buywiser Home Loans</p>
           </div>
         </div>
       </section>
