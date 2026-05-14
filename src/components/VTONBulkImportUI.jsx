@@ -1,0 +1,200 @@
+import { useState } from 'react';
+import { Upload, File, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+
+export default function VTONBulkImportUI() {
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleFileSelect = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setError(null);
+      setResult(null);
+    }
+  };
+
+  const parseCSV = (text) => {
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    const data = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim());
+      const obj = {};
+      headers.forEach((header, i) => {
+        obj[header] = values[i];
+      });
+      return obj;
+    });
+    return data;
+  };
+
+  const parseJSON = (text) => {
+    return JSON.parse(text);
+  };
+
+  const handleImport = async () => {
+    if (!file) {
+      setError('Please select a file');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const fileContent = await file.text();
+      let leads = [];
+
+      if (file.name.endsWith('.csv')) {
+        leads = parseCSV(fileContent);
+      } else if (file.name.endsWith('.json')) {
+        const parsed = parseJSON(fileContent);
+        leads = Array.isArray(parsed) ? parsed : parsed.leads || [];
+      } else {
+        throw new Error('File must be CSV or JSON');
+      }
+
+      if (leads.length === 0) {
+        throw new Error('No leads found in file');
+      }
+
+      // Call backend import function
+      const response = await base44.functions.invoke('vtonBulkImportPropertyRadar', {
+        leads
+      });
+
+      setResult(response.data);
+      setFile(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl p-6 max-w-2xl">
+      <div className="mb-6">
+        <h3 className="text-lg font-bold text-slate-900 mb-1">Bulk Import PropertyRadar Data</h3>
+        <p className="text-sm text-slate-500">Upload CSV or JSON file with lead data. Campaigns auto-trigger on import.</p>
+      </div>
+
+      {!result ? (
+        <div className="space-y-4">
+          {/* File upload */}
+          <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition" onClick={() => document.getElementById('fileInput').click()}>
+            <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
+            <p className="text-sm font-medium text-slate-700">
+              {file ? file.name : 'Click or drag to upload CSV/JSON'}
+            </p>
+            <p className="text-xs text-slate-500 mt-1">Supports: CSV, JSON</p>
+            <input
+              id="fileInput"
+              type="file"
+              accept=".csv,.json"
+              onChange={handleFileSelect}
+              className="hidden"
+            />
+          </div>
+
+          {/* Error message */}
+          {error && (
+            <div className="flex items-start gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+              <AlertCircle className="h-4 w-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          {/* Format guide */}
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+            <p className="text-xs font-semibold text-slate-600 mb-2">Expected CSV/JSON Columns:</p>
+            <div className="text-xs text-slate-500 space-y-1">
+              <p>• first_name, last_name, phone, email</p>
+              <p>• property_address, city, state, zip_code</p>
+              <p>• listing_date, listing_price, estimated_equity</p>
+              <p>• likely_va_loan (true/false)</p>
+            </div>
+          </div>
+
+          {/* Import button */}
+          <button
+            onClick={handleImport}
+            disabled={!file || loading}
+            className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2"
+          >
+            {loading ? (
+              <>
+                <Loader className="h-4 w-4 animate-spin" />
+                Importing...
+              </>
+            ) : (
+              <>
+                <File className="h-4 w-4" />
+                Import {file ? `(${file.name})` : 'Leads'}
+              </>
+            )}
+          </button>
+        </div>
+      ) : (
+        /* Results */
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg p-4">
+            <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-green-900">Import Complete</p>
+              <p className="text-sm text-green-700">{result.import_summary.created} leads imported, {result.import_summary.campaign_triggered} campaigns triggered</p>
+            </div>
+          </div>
+
+          {/* Summary stats */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p className="text-xs text-blue-600 font-semibold">Created</p>
+              <p className="text-2xl font-black text-blue-700">{result.import_summary.created}</p>
+            </div>
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+              <p className="text-xs text-yellow-600 font-semibold">Duplicates</p>
+              <p className="text-2xl font-black text-yellow-700">{result.import_summary.duplicates}</p>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+              <p className="text-xs text-green-600 font-semibold">Campaigns</p>
+              <p className="text-2xl font-black text-green-700">{result.import_summary.campaign_triggered}</p>
+            </div>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+              <p className="text-xs text-red-600 font-semibold">Errors</p>
+              <p className="text-2xl font-black text-red-700">{result.import_summary.errors.length}</p>
+            </div>
+          </div>
+
+          {/* Error details */}
+          {result.import_summary.errors.length > 0 && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 max-h-32 overflow-y-auto">
+              <p className="text-xs font-semibold text-red-700 mb-2">Import Errors</p>
+              {result.import_summary.errors.slice(0, 3).map((err, i) => (
+                <p key={i} className="text-xs text-red-600 mb-1">• {err.error}</p>
+              ))}
+              {result.import_summary.errors.length > 3 && (
+                <p className="text-xs text-red-600">+ {result.import_summary.errors.length - 3} more errors</p>
+              )}
+            </div>
+          )}
+
+          {/* Reset button */}
+          <button
+            onClick={() => {
+              setResult(null);
+              setFile(null);
+            }}
+            className="w-full px-4 py-2 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition"
+          >
+            Import Another File
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
