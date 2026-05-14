@@ -659,7 +659,7 @@ function LandingView() {
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonial — Cody &amp; Frank</p>
           <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
             <iframe
-              src="https://www.youtube.com/embed/ZKUbVLVpzMw?si=FSu0uyk_svkxMoka"
+              src="https://www.youtube.com/embed/ZKUbVLVpzMw"
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

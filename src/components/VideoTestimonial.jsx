@@ -9,7 +9,7 @@ export default function VideoTestimonial() {
       {isPlaying ? (
         <>
           <iframe
-            src="https://www.youtube.com/embed/ZKUbVLVpzMw?autoplay=1&rel=0&modestbranding=1"
+            src="https://www.youtube.com/embed/ZKUbVLVpzMw?autoplay=1&rel=0"
             title="Cody & Frank Testimonial"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen
