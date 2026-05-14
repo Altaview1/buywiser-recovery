@@ -27,11 +27,39 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'LOB_API_KEY not configured' }, { status: 500 });
     }
 
+    // Load approved letter template
+    const configs = await base44.asServiceRole.entities.VTONMailConfig.list();
+    let templateHtml = '';
+    
+    if (configs.length > 0 && configs[0].is_approved) {
+      templateHtml = configs[0].letter_html;
+    } else {
+      // Template not approved yet, skip sending
+      return Response.json({ 
+        error: 'Letter template not yet approved', 
+        message: 'Please approve a template before sending letters' 
+      }, { status: 400 });
+    }
+
+    // Personalize the template with lead data
+    const letterHtml = templateHtml
+      .replace(/\$\{first_name\}/g, first_name || '')
+      .replace(/\$\{last_name\}/g, last_name || '')
+      .replace(/\$\{property_address\}/g, property_address)
+      .replace(/\$\{city\}/g, city)
+      .replace(/\$\{state\}/g, state)
+      .replace(/\$\{zip_code\}/g, zip_code);
+
     // Generate personalized QR code URL (points to benefit review page with tracking)
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-benefit?lead=${leadId}`)}`;
 
-    // Prepare letter content (HTML template for Lob) - Professional veteran transition communication
-    const letterHtml = `
+    // Insert QR code into personalized HTML
+    const finalLetterHtml = letterHtml.replace(
+      '${qrUrl}',
+      qrUrl
+    );
+
+    const staticLetterHtml = `
       <!DOCTYPE html>
       <html>
         <head>
@@ -160,7 +188,7 @@ Deno.serve(async (req) => {
     `;
 
     // Encode HTML as base64 for Lob API
-    const base64Html = btoa(letterHtml);
+    const base64Html = btoa(finalLetterHtml);
 
     // Create letter via Lob API
     const lobResponse = await fetch('https://api.lob.com/v1/letters', {

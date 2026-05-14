@@ -1,0 +1,22 @@
+{
+  "name": "VTONMailConfig",
+  "type": "object",
+  "properties": {
+    "letter_html": {
+      "type": "string",
+      "description": "The approved HTML template for VTON welcome letters"
+    },
+    "is_approved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this template is approved and active"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes about template changes"
+    }
+  },
+  "required": [
+    "letter_html"
+  ]
+}
