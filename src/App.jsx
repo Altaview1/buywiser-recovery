@@ -133,7 +133,7 @@ function App() {
           {/* Public portals — NO auth required */}
           <Route path="/" element={<BuywiserHome />} />
           <Route path="/portals" element={<PortalHubPage />} />
-          <Route path="/vton" element={<VTON />} />
+          <Route path="/vton" element={<BuywiserHome />} />
           <Route path="/vton-scan" element={<VTONScan />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
