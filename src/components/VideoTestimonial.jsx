@@ -8,12 +8,14 @@ export default function VideoTestimonial() {
     <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-lg bg-black w-full relative" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
       {isPlaying ? (
         <>
-          <video
-            src="https://drive.google.com/uc?export=download&id=146aNUL6nGwMmZcsSVwsFEtShqigNH9VG"
-            autoPlay
-            controls
-            playsInline
-            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: "#000" }}
+          <iframe
+            src="https://drive.google.com/file/d/146aNUL6nGwMmZcsSVwsFEtShqigNH9VG/preview"
+            title="Cody & Frank Testimonial"
+            allow="autoplay; fullscreen"
+            allowFullScreen
+            referrerPolicy="no-referrer"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+            style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none", background: "#000" }}
           />
           <button
             onClick={() => setIsPlaying(false)}
