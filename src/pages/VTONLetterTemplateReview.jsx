@@ -55,15 +55,15 @@ export default function VTONLetterTemplateReview() {
   const handleApprove = async () => {
     try {
       setSaving(true);
-      const config = await base44.asServiceRole.entities.VTONMailConfig.list();
+      const config = await base44.entities.VTONMailConfig.list();
       
       if (config.length > 0) {
-        await base44.asServiceRole.entities.VTONMailConfig.update(config[0].id, {
+        await base44.entities.VTONMailConfig.update(config[0].id, {
           letter_html: template,
           is_approved: true,
         });
       } else {
-        await base44.asServiceRole.entities.VTONMailConfig.create({
+        await base44.entities.VTONMailConfig.create({
           letter_html: template,
           is_approved: true,
         });
@@ -73,7 +73,8 @@ export default function VTONLetterTemplateReview() {
       setMessage('✓ Letter template approved and activated');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Error approving template');
+      console.error('Error approving:', err);
+      setMessage('Error approving template: ' + err.message);
     } finally {
       setSaving(false);
     }
@@ -82,10 +83,10 @@ export default function VTONLetterTemplateReview() {
   const handleUnapprove = async () => {
     try {
       setSaving(true);
-      const config = await base44.asServiceRole.entities.VTONMailConfig.list();
+      const config = await base44.entities.VTONMailConfig.list();
       
       if (config.length > 0) {
-        await base44.asServiceRole.entities.VTONMailConfig.update(config[0].id, {
+        await base44.entities.VTONMailConfig.update(config[0].id, {
           is_approved: false,
         });
       }
@@ -94,7 +95,8 @@ export default function VTONLetterTemplateReview() {
       setMessage('Letter template unapproved');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      setMessage('Error updating template');
+      console.error('Error updating:', err);
+      setMessage('Error updating template: ' + err.message);
     } finally {
       setSaving(false);
     }
