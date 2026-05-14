@@ -64,7 +64,7 @@ export default function GetStartedForm() {
 
       {submitted && (
         <div className="p-3 rounded-xl bg-green-50 border border-green-200 text-sm text-green-700 font-medium">
-          ✓ Thanks for getting started! We'll reach out soon.
+          ✓ CONGRATULATIONS! A licensed GAP LOAN OFFICER WILL BE CONTACTING YOU IN THE NEXT 24 HOURS.
         </div>
       )}
 
