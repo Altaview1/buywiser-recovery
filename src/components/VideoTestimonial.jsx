@@ -1,6 +1,6 @@
 export default function VideoTestimonial() {
   return (
-    <div style={{ position: "relative", width: "100%", borderRadius: "16px", overflow: "hidden" }}>
+    <div style={{ width: "100%", borderRadius: "16px", overflow: "hidden" }}>
       <iframe
         src="https://www.youtube.com/embed/ZKUbVLVpzMw"
         title="Veteran Testimonial — Cody & Frank"
