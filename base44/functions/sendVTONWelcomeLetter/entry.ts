@@ -27,33 +27,134 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'LOB_API_KEY not configured' }, { status: 500 });
     }
 
-    // Prepare letter content (HTML template for Lob)
+    // Generate personalized QR code URL (points to benefit review page with tracking)
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-benefit?lead=${leadId}`)}`;
+
+    // Prepare letter content (HTML template for Lob) - Professional veteran transition communication
     const letterHtml = `
+      <!DOCTYPE html>
       <html>
-        <body style="font-family: Arial, sans-serif; padding: 40px;">
-          <p>Dear ${first_name} ${last_name || ''},</p>
-          
-          <p>Congratulations on listing your home at:</p>
-          <p style="font-weight: bold; margin-left: 20px;">
-            ${property_address}<br/>
-            ${city}, ${state} ${zip_code}
-          </p>
+        <head>
+          <style>
+            * { margin: 0; padding: 0; }
+            body { font-family: 'Georgia', serif; color: #1a1a1a; line-height: 1.6; }
+            .wrapper { width: 100%; max-width: 850px; margin: 0 auto; padding: 60px 50px; }
+            .letterhead { border-top: 3px solid #0B1F3B; border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 40px; }
+            .logo { font-size: 18px; font-weight: bold; color: #0B1F3B; letter-spacing: 1px; }
+            .date { font-size: 11px; color: #666; margin-top: 8px; }
+            .recipient { margin-bottom: 30px; font-size: 12px; }
+            .salutation { margin-bottom: 25px; font-size: 13px; }
+            .body-text { margin-bottom: 18px; font-size: 12px; line-height: 1.8; text-align: justify; }
+            .property-box { background: #f5f5f5; border-left: 4px solid #0B1F3B; padding: 15px 18px; margin: 25px 0; font-size: 12px; }
+            .property-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 4px; }
+            .property-address { font-size: 13px; font-weight: bold; color: #1a1a1a; }
+            .benefit-highlight { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 22px 0; font-size: 12px; line-height: 1.7; }
+            .benefit-title { font-weight: bold; color: #0B1F3B; font-size: 12px; margin-bottom: 6px; }
+            .cta-section { margin: 35px 0; }
+            .primary-cta { font-size: 13px; font-weight: bold; color: #0B1F3B; margin-bottom: 12px; }
+            .qr-container { display: inline-block; margin: 15px 0; text-align: center; }
+            .qr-label { font-size: 10px; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+            .contact-info { margin: 20px 0; font-size: 12px; }
+            .contact-line { margin: 6px 0; }
+            .closing { margin-top: 35px; font-size: 12px; }
+            .signature { margin-top: 25px; font-size: 11px; }
+            .signature-name { font-weight: bold; color: #0B1F3B; }
+            .signature-title { color: #666; font-size: 11px; }
+            .disclaimer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 10px; color: #999; line-height: 1.6; }
+          </style>
+        </head>
+        <body>
+          <div class="wrapper">
+            <!-- Letterhead -->
+            <div class="letterhead">
+              <div class="logo">VETERAN TRANSITION OPPORTUNITY NETWORK™</div>
+              <div class="date">May 2026</div>
+            </div>
 
-          <p>As a veteran, you may be eligible for the Veteran's Next Home™ Program, which includes the Buywiser 1.5 GAP Benefit™—up to 1.5% back at closing on your next home purchase.</p>
+            <!-- Recipient -->
+            <div class="recipient">
+              ${first_name} ${last_name || ''}<br/>
+              ${property_address}<br/>
+              ${city}, ${state} ${zip_code}
+            </div>
 
-          <p>Our team specializes in helping veteran homeowners maximize their next-home purchase through expert negotiation and market insights not available to the general public.</p>
+            <!-- Salutation -->
+            <div class="salutation">
+              Dear ${first_name},
+            </div>
 
-          <p style="margin-top: 30px;">
-            <strong>Secure Your Next Home Benefits Today:</strong><br/>
-            Visit our personalized benefit page or call us to schedule a consultation.<br/>
-            <strong>Phone:</strong> (818) 300-2642<br/>
-            <strong>Website:</strong> buywiser.com/b
-          </p>
+            <!-- Body -->
+            <div class="body-text">
+              We are writing to inform you of a significant opportunity that may be available to you during this important transition period.
+            </div>
 
-          <p style="margin-top: 30px; font-size: 12px; color: #666;">
-            This letter is being sent to provide information about programs available to qualifying veterans. 
-            Veteran's Next Home™ is a private program offered through Buywiser, not affiliated with the U.S. Department of Veterans Affairs.
-          </p>
+            <div class="body-text">
+              Our records indicate that your property is currently being offered for sale:
+            </div>
+
+            <!-- Property Box -->
+            <div class="property-box">
+              <div class="property-label">Current Property</div>
+              <div class="property-address">${property_address}</div>
+              <div style="margin-top: 8px; font-size: 11px; color: #666;">${city}, ${state} ${zip_code}</div>
+            </div>
+
+            <div class="body-text">
+              Based on your homeownership history, you may qualify for the VTON™ Veteran Homeowner Transition Benefit—a qualification-based financial benefit designed specifically for veterans purchasing their next home. This benefit recognizes the unique financial position of veteran homeowners navigating the transition from one property to the next.
+            </div>
+
+            <!-- Benefit Highlight -->
+            <div class="benefit-highlight">
+              <div class="benefit-title">Your Potential Qualification</div>
+              <div style="font-size: 12px;">
+                Qualifying veteran homeowners may receive up to 1.5% in transition benefits applied at closing on their next home purchase. The actual benefit depends on how your next purchase is structured and your specific circumstances.
+              </div>
+            </div>
+
+            <div class="body-text">
+              <strong>Timing is important.</strong> As you prepare to transition from your current home, understanding your available benefits before making next-home decisions will ensure you capture opportunities that may not be available later.
+            </div>
+
+            <!-- CTA Section -->
+            <div class="cta-section">
+              <div class="primary-cta">Schedule a Confidential Benefit Review</div>
+              <div class="body-text" style="margin-bottom: 0;">
+                We invite you to schedule a brief, no-obligation benefit review consultation. Our team will assess your specific situation and clarify exactly what you may qualify for.
+              </div>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-container">
+              <img src="${qrUrl}" alt="QR Code" style="border: 1px solid #ccc; padding: 5px; background: white;" />
+              <div class="qr-label">Scan to Schedule</div>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+              <div class="contact-line"><strong>Phone:</strong> (818) 300-2642</div>
+              <div class="contact-line"><strong>Web:</strong> buywiser.com/vton</div>
+              <div class="contact-line"><strong>Personalized Benefit Page:</strong> buywiser.com/b</div>
+            </div>
+
+            <!-- Closing -->
+            <div class="closing">
+              Thank you for your service. We look forward to discussing how we can support your next home transition.
+            </div>
+
+            <!-- Signature -->
+            <div class="signature">
+              Sincerely,<br/>
+              <br/>
+              <span class="signature-name">Bennett Liss</span><br/>
+              <span class="signature-title">Founder, VTON™ | Buywiser Home Loans</span><br/>
+              <span style="color: #999; font-size: 10px;">NMLS #1524446 | CA RE License #01107013</span>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer">
+              <strong>Important Notice:</strong> This communication is being sent to provide information about programs available to qualifying veteran homeowners. The VTON™ Veteran Homeowner Transition Benefit is a private program operated by Buywiser Home Loans and is not affiliated with, endorsed by, or connected to the United States Department of Veterans Affairs or any government agency. All benefit amounts are qualification-based and subject to final verification and loan approval.
+            </div>
+          </div>
         </body>
       </html>
     `;
