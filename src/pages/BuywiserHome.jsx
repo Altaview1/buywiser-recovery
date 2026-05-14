@@ -6,6 +6,7 @@ import GetStartedForm from "../components/GetStartedForm";
 import ApplicationProgressSteps from "../components/ApplicationProgressSteps";
 import VeteranTestimonials from "../components/VeteranTestimonials";
 import VideoTestimonial from "../components/VideoTestimonial";
+import VideoTestimonialGallery from "../components/VideoTestimonialGallery";
 import QualificationCriteria from "../components/QualificationCriteria";
 import VeteransNextHomeFAQ from "@/components/VeteransNextHomeFAQ";
 import GAPBenefitTestimonials from "../components/GAPBenefitTestimonials";
@@ -655,15 +656,11 @@ function LandingView() {
         </div>
       </section>
 
-      {/* ── Video ── */}
+      {/* ── Video Gallery ── */}
       <section className="px-4 pb-14 bg-white">
         <div className="max-w-xl mx-auto">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonial — Cody &amp; Frank</p>
-          <VideoTestimonial />
-          <div className="mt-2.5 text-center">
-            <p className="text-sm font-semibold text-slate-700">Navy Veterans Cody &amp; Frank — GAP Benefit Story</p>
-            <p className="text-xs text-slate-400">Buywiser Home Loans</p>
-          </div>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonials</p>
+          <VideoTestimonialGallery />
         </div>
       </section>
 
