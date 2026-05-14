@@ -25,7 +25,7 @@ import MortgageAI from './pages/MortgageAI';
 import BuywiserHome from './pages/BuywiserHome';
 import LeadsDashboard from './pages/LeadsDashboard';
 import FlagWatermark from './components/FlagWatermark';
-import VTON from './pages/VTON';
+
 import PartnerDashboard from './pages/PartnerDashboard';
 import PersonalizedBenefit from './pages/PersonalizedBenefit';
 import AgentQRDashboard from './pages/AgentQRDashboard';
@@ -135,7 +135,7 @@ function App() {
           <Route path="/portals" element={<PortalHubPage />} />
           <Route path="/vton" element={<BuywiserHome />} />
           <Route path="/vton-home" element={<BuywiserHome />} />
-          <Route path="/vton-partner" element={<VTON />} />
+
           <Route path="/vton-scan" element={<VTONScan />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
