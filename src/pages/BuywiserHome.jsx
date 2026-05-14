@@ -37,6 +37,10 @@ const FAQS = [
     a: "The full 1.5% is available when Buywiser coordinates both the real estate side and the financing on your next purchase. If you only use Buywiser for financing, you may receive up to 0.5%. Real estate side only is up to 1.0%."
   },
   {
+    q: "What does Buywiser do?",
+    a: "Buywiser coordinates the full next-home purchase process: home search support, touring access, offer preparation, and above all, expert negotiation backed by public market data AND insider market knowledge to maximize your purchase price advantage. We also structure your financing and deliver the Buywiser 1.5 GAP Benefit™ — up to 1.5% back at closing for qualifying veterans. Whether you find homes yourself or we help, Buywiser's strength is in smart negotiation strategy and seamless transaction coordination."
+  },
+  {
     q: "Can I still find homes myself?",
     a: "Yes. Many buyers find homes online. Buywiser coordinates the professional pieces — touring access, offer strategy, negotiation, financing, and closing benefit structure — while you stay in control of the search."
   },
