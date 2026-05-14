@@ -33,25 +33,19 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     const loadUser = async () => {
       try {
-        const currentUser = await base44.auth.me();
-        setUser(currentUser);
+        const isAuthed = await base44.auth.isAuthenticated();
+        if (isAuthed) {
+          const currentUser = await base44.auth.me();
+          setUser(currentUser);
+        } else {
+          setUser(null);
+        }
       } catch (err) {
-        // Silently ignore 401 errors—expected on public routes where users aren't logged in
         setUser(null);
       }
     };
     
-    // Temporarily suppress console.error for this auth check
-    const originalError = console.error;
-    console.error = (...args) => {
-      const msg = String(args[0] || '');
-      if (msg.includes('401') || msg.includes('User/me')) return;
-      originalError(...args);
-    };
-    
-    loadUser().finally(() => {
-      console.error = originalError;
-    });
+    loadUser();
   }, []);
 
   const adminLinks = [
