@@ -148,9 +148,38 @@ function App() {
           <Route path="/token-available-faq" element={<TokenAvailableFAQ />} />
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/smartbuy-workflow" element={<SmartBuyWorkflow />} />
-          
-          {/* All other routes — auth-protected */}
-          <Route path="*" element={<AuthProvider><AuthenticatedApp /></AuthProvider>} />
+          <Route path="/Apply" element={<MortgageApplication />} />
+          <Route path="/Contact" element={<LayoutWrapper currentPageName="Contact"><Contact /></LayoutWrapper>} />
+          <Route path="/Calculators" element={<LayoutWrapper currentPageName="Calculators"><Calculators /></LayoutWrapper>} />
+          <Route path="/Refinance" element={<LayoutWrapper currentPageName="Refinance"><Refinance /></LayoutWrapper>} />
+          <Route path="/FHAStreamline" element={<LayoutWrapper currentPageName="FHAStreamline"><FHAStreamline /></LayoutWrapper>} />
+          <Route path="/VAStreamline" element={<LayoutWrapper currentPageName="VAStreamline"><VAStreamline /></LayoutWrapper>} />
+          <Route path="/CashOut" element={<LayoutWrapper currentPageName="CashOut"><CashOut /></LayoutWrapper>} />
+          <Route path="/Purchase" element={<LayoutWrapper currentPageName="Purchase"><Purchase /></LayoutWrapper>} />
+          <Route path="/About" element={<LayoutWrapper currentPageName="About"><About /></LayoutWrapper>} />
+          <Route path="/Reviews" element={<LayoutWrapper currentPageName="Reviews"><Reviews /></LayoutWrapper>} />
+          <Route path="/PrivacyPolicy" element={<LayoutWrapper currentPageName="PrivacyPolicy"><PrivacyPolicy /></LayoutWrapper>} />
+          <Route path="/Disclosures" element={<LayoutWrapper currentPageName="Disclosures"><Disclosures /></LayoutWrapper>} />
+          <Route path="/MortgageAI" element={<MortgageAI />} />
+          <Route path="/BuywiserHome" element={<BuywiserHome />} />
+          <Route path="/leads" element={<LeadsDashboard />} />
+          <Route path="/partner" element={<PartnerDashboard />} />
+          <Route path="/b" element={<PersonalizedBenefit />} />
+          <Route path="/agent-qr" element={<AgentQRDashboard />} />
+          <Route path="/FAQ" element={<LayoutWrapper currentPageName="FAQ"><FAQ /></LayoutWrapper>} />
+          <Route path="/MortgageFAQ" element={<LayoutWrapper currentPageName="MortgageFAQ"><MortgageFAQ /></LayoutWrapper>} />
+          <Route path="/activator" element={<FieldActivatorDashboard />} />
+          <Route path="/field-activator" element={<FieldActivatorPortal />} />
+          <Route path="/sales-coach" element={<SalesCoachChat />} />
+          <Route path="/management-dashboard" element={<ManagementDashboard />} />
+          <Route path="/resources" element={<ResourceHub />} />
+          <Route path="/field-rep-dashboard" element={<FieldRepDashboard />} />
+          <Route path="/fa-onboarding" element={<FieldActivatorOnboarding />} />
+          <Route path="/qr-scans" element={<QRScanDashboard />} />
+          <Route path="/ApplyNow" element={<Navigate to="/Apply" replace />} />
+          <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
+          <Route path="/MortgageCalculators" element={<Navigate to="/Calculators" replace />} />
+          <Route path="/MortgageReview" element={<Navigate to="/Apply" replace />} />
         </Routes>
         <Toaster />
       </Router>
