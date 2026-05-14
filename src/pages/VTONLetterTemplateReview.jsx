@@ -26,7 +26,7 @@ export default function VTONLetterTemplateReview() {
   const loadTemplate = async () => {
     try {
       setLoading(true);
-      const config = await base44.asServiceRole.entities.VTONMailConfig.list();
+      const config = await base44.entities.VTONMailConfig.list();
       if (config.length > 0) {
         setTemplate(config[0].letter_html);
         setIsApproved(config[0].is_approved || false);
@@ -35,7 +35,8 @@ export default function VTONLetterTemplateReview() {
         setTemplate('');
       }
     } catch (err) {
-      setMessage('Error loading template');
+      console.error('Failed to load template:', err);
+      setMessage('Error loading template: ' + err.message);
     } finally {
       setLoading(false);
     }
