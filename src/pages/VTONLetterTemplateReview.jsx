@@ -20,24 +20,37 @@ export default function VTONLetterTemplateReview() {
   const loadTemplate = async () => {
     try {
       setLoading(true);
-      const config = await base44.entities.VTONMailConfig.list();
-      if (config.length > 0) {
-        setTemplate(config[0].letter_html);
-        setIsApproved(config[0].is_approved || false);
-      } else {
-        setTemplate('');
+      
+      // Try to load config
+      try {
+        const config = await base44.entities.VTONMailConfig.list();
+        if (config.length > 0) {
+          setTemplate(config[0].letter_html);
+          setIsApproved(config[0].is_approved || false);
+        } else {
+          setTemplate('');
+        }
+      } catch (err) {
+        if (err.response?.status === 401) {
+          setMessage('Sign in required to access template');
+        } else {
+          console.error('Failed to load config:', err);
+        }
       }
       
-      // Fetch actual veteran leads for preview
-      const allLeads = await base44.entities.VTONLead.list();
-      setLeads(allLeads);
-      if (allLeads.length > 0) {
-        setSelectedLeadId(allLeads[0].id);
-        setSelectedLead(allLeads[0]);
+      // Try to load leads
+      try {
+        const allLeads = await base44.entities.VTONLead.list();
+        setLeads(allLeads);
+        if (allLeads.length > 0) {
+          setSelectedLeadId(allLeads[0].id);
+          setSelectedLead(allLeads[0]);
+        }
+      } catch (err) {
+        if (err.response?.status !== 401) {
+          console.error('Failed to load leads:', err);
+        }
       }
-    } catch (err) {
-      console.error('Failed to load template:', err);
-      setMessage('Error loading template: ' + err.message);
     } finally {
       setLoading(false);
     }
