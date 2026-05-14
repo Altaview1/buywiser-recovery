@@ -87,26 +87,28 @@ function LeadRow({ opp, onUpdate }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 flex items-center gap-3">
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-slate-800 truncate">{opp.homeowner_name || "Homeowner"}</p>
-        <p className="text-xs text-slate-400 truncate flex items-center gap-1">
-          <MapPin className="h-3 w-3 flex-shrink-0" />{address || "—"}
-        </p>
-        {opp.qr_scanned && (
-          <span className="inline-flex items-center gap-1 mt-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-            <CheckCircle className="h-3 w-3" /> QR Scanned
-          </span>
-        )}
-      </div>
-      <div className="flex items-center gap-2 flex-shrink-0">
+    <div className="bg-white border border-slate-200 rounded-xl px-4 py-3 space-y-2">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-slate-800 truncate">{opp.homeowner_name || "Homeowner"}</p>
+          <p className="text-xs text-slate-400 truncate flex items-center gap-1 mt-0.5">
+            <MapPin className="h-3 w-3 flex-shrink-0" />{address || "—"}
+          </p>
+        </div>
         {opp.homeowner_phone && (
           <a href={`tel:${opp.homeowner_phone}`}
-            className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-green-600 hover:border-green-200 transition" title="Call">
+            className="p-1.5 rounded-lg border border-slate-200 text-slate-400 hover:text-green-600 hover:border-green-200 transition flex-shrink-0" title="Call">
             <Phone className="h-4 w-4" />
           </a>
         )}
-        <div className="relative">
+      </div>
+      <div className="flex items-center gap-2">
+        {opp.qr_scanned && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+            <CheckCircle className="h-3 w-3" /> QR Scanned
+          </span>
+        )}
+        <div className="relative ml-auto">
           <select
             value={status}
             onChange={e => handleChange(e.target.value)}
@@ -356,7 +358,7 @@ export default function AgentQRDashboard() {
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-5">
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <div className="bg-white border border-slate-200 rounded-xl p-3 text-center">
             <p className="text-2xl font-black text-slate-800">{totalQRs}</p>
             <p className="text-xs text-slate-500 mt-0.5">Total Leads</p>
@@ -376,23 +378,22 @@ export default function AgentQRDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-200 pb-0">
-          <button onClick={() => setActiveTab("qr")}
-            className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition ${activeTab === "qr" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
-            My QR Codes
-          </button>
-          <button onClick={() => setActiveTab("leads")}
-            className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition ${activeTab === "leads" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
-            Lead Status
-          </button>
-          <button onClick={() => setActiveTab("profile")}
-            className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition ${activeTab === "profile" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
-            Contact Details
-          </button>
-          <button onClick={() => setActiveTab("engagement")}
-            className={`px-4 py-2 text-sm font-bold rounded-t-lg border-b-2 transition flex items-center gap-1.5 ${activeTab === "engagement" ? "border-slate-800 text-slate-900" : "border-transparent text-slate-500 hover:text-slate-700"}`}>
-            <TrendingUp className="h-3.5 w-3.5" /> Activator Engagement
-          </button>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          {[
+            { key: "qr", label: "My QR Codes" },
+            { key: "leads", label: "Lead Status" },
+            { key: "profile", label: "Contact Details" },
+            { key: "engagement", label: "Activator Data" },
+          ].map(tab => (
+            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+              className={`py-2.5 px-3 text-sm font-bold rounded-xl border-2 transition text-center ${
+                activeTab === tab.key
+                  ? "border-slate-800 bg-slate-800 text-white"
+                  : "border-slate-200 bg-white text-slate-500 hover:border-slate-400 hover:text-slate-700"
+              }`}>
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {activeTab === "qr" && (
