@@ -12,10 +12,26 @@ export default function VTONLetterTemplateReview() {
   const [leads, setLeads] = useState([]);
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    loadTemplate();
+    checkAuthAndLoad();
   }, []);
+
+  const checkAuthAndLoad = async () => {
+    try {
+      const isAuthed = await base44.auth.isAuthenticated();
+      if (!isAuthed) {
+        base44.auth.redirectToLogin('/vton-letter-review');
+        return;
+      }
+      setAuthenticated(true);
+      await loadTemplate();
+    } catch (err) {
+      console.error('Auth check failed:', err);
+      base44.auth.redirectToLogin('/vton-letter-review');
+    }
+  };
 
   const loadTemplate = async () => {
     try {
@@ -139,6 +155,17 @@ export default function VTONLetterTemplateReview() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-slate-600 mb-4">Redirecting to login...</p>
+          <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto"></div>
+        </div>
       </div>
     );
   }
