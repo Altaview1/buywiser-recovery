@@ -134,6 +134,8 @@ function App() {
           <Route path="/" element={<BuywiserHome />} />
           <Route path="/portals" element={<PortalHubPage />} />
           <Route path="/vton" element={<BuywiserHome />} />
+          <Route path="/vton-home" element={<BuywiserHome />} />
+          <Route path="/vton-partner" element={<VTON />} />
           <Route path="/vton-scan" element={<VTONScan />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
