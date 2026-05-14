@@ -657,15 +657,7 @@ function LandingView() {
       <section className="px-4 pb-14 bg-white">
         <div className="max-w-xl mx-auto">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonial — Cody &amp; Frank</p>
-          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/ZKUbVLVpzMw"
-              title="Veteran Testimonial — Cody & Frank"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
-            />
-          </div>
+          <VideoTestimonial />
           <div className="mt-2.5 text-center">
             <p className="text-sm font-semibold text-slate-700">Navy Veterans Cody &amp; Frank — GAP Benefit Story</p>
             <p className="text-xs text-slate-400">Buywiser Home Loans</p>
