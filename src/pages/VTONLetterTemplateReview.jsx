@@ -107,6 +107,19 @@ export default function VTONLetterTemplateReview() {
     );
   }
 
+  if (message.includes('Error')) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-6">
+        <div className="max-w-xl mx-auto">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
+            <p className="font-semibold">Error loading template:</p>
+            <p className="text-sm">{message}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-6xl mx-auto">
