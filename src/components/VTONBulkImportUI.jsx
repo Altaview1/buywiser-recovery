@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Upload, File, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
+import ColumnMapper from './ColumnMapper';
 
 export default function VTONBulkImportUI({ onImportComplete }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+  const [csvHeaders, setCsvHeaders] = useState(null);
+  const [csvData, setCsvData] = useState(null);
+  const [mapping, setMapping] = useState(null);
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -14,6 +18,9 @@ export default function VTONBulkImportUI({ onImportComplete }) {
       setFile(selectedFile);
       setError(null);
       setResult(null);
+      setCsvHeaders(null);
+      setCsvData(null);
+      setMapping(null);
     }
   };
 
@@ -35,40 +42,68 @@ export default function VTONBulkImportUI({ onImportComplete }) {
     return JSON.parse(text);
   };
 
-  const handleImport = async () => {
+  const handlePreviewAndMap = async () => {
     if (!file) {
       setError('Please select a file');
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    setResult(null);
-
     try {
       const fileContent = await file.text();
-      let leads = [];
+      let data = [];
+      let headers = [];
 
       if (file.name.endsWith('.csv')) {
-        leads = parseCSV(fileContent);
+        data = parseCSV(fileContent);
+        headers = Object.keys(data[0] || {});
       } else if (file.name.endsWith('.json')) {
         const parsed = parseJSON(fileContent);
-        leads = Array.isArray(parsed) ? parsed : parsed.leads || [];
+        data = Array.isArray(parsed) ? parsed : parsed.leads || [];
+        headers = Object.keys(data[0] || {});
       } else {
         throw new Error('File must be CSV or JSON');
       }
 
-      if (leads.length === 0) {
+      if (data.length === 0) {
         throw new Error('No leads found in file');
       }
 
-      // Call backend import function
+      setCsvData(data);
+      setCsvHeaders(headers);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+      setCsvData(null);
+      setCsvHeaders(null);
+    }
+  };
+
+  const handleMappingConfirm = async (columnMapping) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Remap CSV data based on column mapping
+      const remappedLeads = csvData.map(row => {
+        const remapped = {};
+        Object.entries(columnMapping).forEach(([vtonField, csvColumn]) => {
+          if (csvColumn && row[csvColumn] !== undefined) {
+            remapped[vtonField] = row[csvColumn];
+          }
+        });
+        return remapped;
+      });
+
+      // Call backend import function with remapped data
       const response = await base44.functions.invoke('vtonBulkImportPropertyRadar', {
-        leads
+        leads: remappedLeads
       });
 
       setResult(response.data);
       setFile(null);
+      setCsvHeaders(null);
+      setCsvData(null);
+      setMapping(null);
 
       // Trigger refresh if callback provided
       setTimeout(() => {
@@ -82,13 +117,23 @@ export default function VTONBulkImportUI({ onImportComplete }) {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-6 max-w-2xl">
+    <div className="bg-white border border-slate-200 rounded-xl p-6 max-w-4xl">
       <div className="mb-6">
         <h3 className="text-lg font-bold text-slate-900 mb-1">Bulk Import PropertyRadar Data</h3>
-        <p className="text-sm text-slate-500">Upload CSV or JSON file with lead data. Campaigns auto-trigger on import.</p>
+        <p className="text-sm text-slate-500">Upload CSV or JSON file with lead data. Map columns, then campaigns auto-trigger on import.</p>
       </div>
 
-      {!result ? (
+      {csvHeaders && !result ? (
+        <ColumnMapper
+          csvHeaders={csvHeaders}
+          onMappingConfirm={handleMappingConfirm}
+          onCancel={() => {
+            setCsvHeaders(null);
+            setCsvData(null);
+            setFile(null);
+          }}
+        />
+      ) : !result ? (
         <div className="space-y-4">
           {/* File upload */}
           <div className="border-2 border-dashed border-slate-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition" onClick={() => document.getElementById('fileInput').click()}>
@@ -125,21 +170,21 @@ export default function VTONBulkImportUI({ onImportComplete }) {
             </div>
           </div>
 
-          {/* Import button */}
+          {/* Preview & Map button */}
           <button
-            onClick={handleImport}
+            onClick={handlePreviewAndMap}
             disabled={!file || loading}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
                 <Loader className="h-4 w-4 animate-spin" />
-                Importing...
+                Loading...
               </>
             ) : (
               <>
                 <File className="h-4 w-4" />
-                Import {file ? `(${file.name})` : 'Leads'}
+                Preview & Map Columns
               </>
             )}
           </button>
