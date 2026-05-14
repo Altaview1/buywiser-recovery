@@ -97,7 +97,7 @@ const AuthenticatedApp = () => {
       <Route path="/MortgageAI" element={<MortgageAI />} />
       <Route path="/BuywiserHome" element={<BuywiserHome />} />
       <Route path="/leads" element={<LeadsDashboard />} />
-      <Route path="/vton" element={<VTON />} />
+      <Route path="/vton" element={<BuywiserHome />} />
       <Route path="/partner" element={<PartnerDashboard />} />
       <Route path="/b" element={<PersonalizedBenefit />} />
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
