@@ -54,6 +54,8 @@ import OurExperts from './pages/OurExperts';
 import TokenAvailableFAQ from './pages/TokenAvailableFAQ';
 import MyProfile from './pages/MyProfile';
 import SmartBuyWorkflow from './pages/SmartBuyWorkflow';
+import VTONBenefitBooking from './pages/VTONBenefitBooking';
+import VTONCampaignDashboard from './pages/VTONCampaignDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -138,6 +140,8 @@ function App() {
           <Route path="/vton-home" element={<BuywiserHome />} />
 
           <Route path="/vton-scan" element={<VTONScan />} />
+          <Route path="/vton-benefit" element={<VTONBenefitBooking />} />
+          <Route path="/vton-campaign" element={<VTONCampaignDashboard />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />

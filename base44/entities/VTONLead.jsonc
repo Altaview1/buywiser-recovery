@@ -1,0 +1,162 @@
+{
+  "name": "VTONLead",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "Veteran's first name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Veteran's last name"
+    },
+    "spouse_name": {
+      "type": "string",
+      "description": "Spouse name if available"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Primary phone number"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address"
+    },
+    "property_address": {
+      "type": "string",
+      "description": "Home address being sold"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "state": {
+      "type": "string",
+      "description": "State (2-letter code)"
+    },
+    "zip_code": {
+      "type": "string",
+      "description": "Zip code"
+    },
+    "listing_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date home was listed"
+    },
+    "listing_price": {
+      "type": "number",
+      "description": "Listing price"
+    },
+    "estimated_equity": {
+      "type": "number",
+      "description": "Estimated equity value"
+    },
+    "veteran_indicator": {
+      "type": "boolean",
+      "default": true,
+      "description": "Confirmed veteran"
+    },
+    "likely_va_loan_indicator": {
+      "type": "boolean",
+      "description": "Likely has prior VA financing"
+    },
+    "facebook_audience_synced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Synced to Meta custom audience"
+    },
+    "direct_mail_sent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Physical mail dispatched"
+    },
+    "sms_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "opened",
+        "clicked",
+        "unsubscribed"
+      ],
+      "default": "pending",
+      "description": "SMS campaign status"
+    },
+    "email_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "opened",
+        "clicked",
+        "unsubscribed"
+      ],
+      "default": "pending",
+      "description": "Email campaign status"
+    },
+    "appointment_booked": {
+      "type": "boolean",
+      "default": false,
+      "description": "Benefit review scheduled"
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Scheduled benefit review time"
+    },
+    "suppression_status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "unsubscribed",
+        "do_not_contact",
+        "complaint"
+      ],
+      "default": "active",
+      "description": "Opt-out/suppression status"
+    },
+    "campaign_stage": {
+      "type": "string",
+      "enum": [
+        "initial_outreach",
+        "engagement",
+        "nurture",
+        "booked",
+        "completed"
+      ],
+      "default": "initial_outreach",
+      "description": "Current campaign stage"
+    },
+    "assigned_advisor": {
+      "type": "string",
+      "description": "Assigned specialist email"
+    },
+    "site_visits": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times visited booking page"
+    },
+    "last_engagement": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Most recent engagement timestamp"
+    },
+    "estimated_benefit": {
+      "type": "number",
+      "description": "Estimated buyer benefit amount"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes"
+    }
+  },
+  "required": [
+    "first_name",
+    "email",
+    "phone",
+    "property_address",
+    "city",
+    "state"
+  ]
+}
