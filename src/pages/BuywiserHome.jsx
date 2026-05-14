@@ -37,6 +37,10 @@ const FAQS = [
     a: "The full 1.5% is available when Buywiser coordinates both the real estate side and the financing on your next purchase. If you only use Buywiser for financing, you may receive up to 0.5%. Real estate side only is up to 1.0%."
   },
   {
+    q: "What does VTON do?",
+    a: "The Veteran Transition Opportunity Network (VTON) is a comprehensive program that helps veterans maximize their next-home purchase through expert negotiation backed by 'inside-the-loop' market intelligence—not just public data, but real-time insights from our network of agents, lenders, and market professionals. VTON's core services: (1) Smart negotiation strategy to improve purchase price, (2) Buywiser 1.5 GAP Benefit™—up to 1.5% back at closing ($10,000+), (3) Touring access & offer preparation, (4) Financing coordination, and (5) Full transaction support. Our strength is turning market knowledge into real savings for veteran homebuyers."
+  },
+  {
     q: "What does Buywiser do?",
     a: "Buywiser coordinates the full next-home purchase process: home search support, touring access, offer preparation, and above all, expert negotiation backed by public market data AND insider market knowledge to maximize your purchase price advantage. We also structure your financing and deliver the Buywiser 1.5 GAP Benefit™ — up to 1.5% back at closing for qualifying veterans. Whether you find homes yourself or we help, Buywiser's strength is in smart negotiation strategy and seamless transaction coordination."
   },
