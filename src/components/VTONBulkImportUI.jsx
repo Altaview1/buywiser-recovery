@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Upload, File, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
-export default function VTONBulkImportUI() {
+export default function VTONBulkImportUI({ onImportComplete }) {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
@@ -69,6 +69,11 @@ export default function VTONBulkImportUI() {
 
       setResult(response.data);
       setFile(null);
+
+      // Trigger refresh if callback provided
+      setTimeout(() => {
+        if (onImportComplete) onImportComplete();
+      }, 1500);
     } catch (err) {
       setError(err.message);
     } finally {

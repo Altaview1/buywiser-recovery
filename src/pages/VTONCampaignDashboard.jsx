@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, Filter } from "lucide-react";
+import VTONBulkImportUI from "../components/VTONBulkImportUI";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -17,6 +18,7 @@ export default function VTONCampaignDashboard() {
     sms_sent: 0,
     email_sent: 0
   });
+  const [showImport, setShowImport] = useState(false);
 
   useEffect(() => {
     loadLeads();
@@ -81,7 +83,35 @@ export default function VTONCampaignDashboard() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats Cards */}
+        {/* Bulk Import Section */}
+        {showImport && (
+          <div className="mb-8">
+            <button
+              onClick={() => setShowImport(false)}
+              className="mb-4 text-sm text-slate-500 hover:text-slate-700 transition"
+            >
+              ← Back to Dashboard
+            </button>
+            <VTONBulkImportUI onImportComplete={() => {
+              setShowImport(false);
+              loadLeads();
+            }} />
+          </div>
+        )}
+
+        {!showImport && (
+          <>
+            {/* Import Button */}
+            <div className="mb-6 flex justify-end">
+              <button
+                onClick={() => setShowImport(true)}
+                className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm"
+              >
+                + Import PropertyRadar CSV
+              </button>
+            </div>
+
+            {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 border border-slate-200">
             <div className="flex items-center justify-between">
@@ -244,6 +274,8 @@ export default function VTONCampaignDashboard() {
             </div>
           )}
         </div>
+          </>
+        )}
       </div>
     </div>
   );
