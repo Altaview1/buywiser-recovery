@@ -26,6 +26,12 @@ export default function VTONLetterTemplateReview() {
   const loadTemplate = async () => {
     try {
       setLoading(true);
+      const isAuthed = await base44.auth.isAuthenticated();
+      if (!isAuthed) {
+        setMessage('Error: Please sign in to access this page');
+        setLoading(false);
+        return;
+      }
       const config = await base44.entities.VTONMailConfig.list();
       if (config.length > 0) {
         setTemplate(config[0].letter_html);
