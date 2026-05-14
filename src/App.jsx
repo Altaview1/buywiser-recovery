@@ -97,7 +97,6 @@ const AuthenticatedApp = () => {
       <Route path="/MortgageAI" element={<MortgageAI />} />
       <Route path="/BuywiserHome" element={<BuywiserHome />} />
       <Route path="/leads" element={<LeadsDashboard />} />
-      <Route path="/vton" element={<BuywiserHome />} />
       <Route path="/partner" element={<PartnerDashboard />} />
       <Route path="/b" element={<PersonalizedBenefit />} />
       <Route path="/agent-qr" element={<AgentQRDashboard />} />
@@ -134,6 +133,7 @@ function App() {
         <Routes>
           {/* Public portals — NO auth required */}
           <Route path="/portals" element={<PortalHubPage />} />
+          <Route path="/vton" element={<BuywiserHome />} />
           <Route path="/vton-scan" element={<VTONScan />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
