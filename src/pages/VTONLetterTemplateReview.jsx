@@ -20,55 +20,52 @@ export default function VTONLetterTemplateReview() {
 
   const checkAuthAndLoad = async () => {
     try {
+      // Verify authentication BEFORE loading any data
       const isAuthed = await base44.auth.isAuthenticated();
       if (!isAuthed) {
         base44.auth.redirectToLogin('/vton-letter-review');
         return;
       }
+      
+      // Only NOW set authenticated and load data
       setAuthenticated(true);
+      
+      // Load template data only after auth is confirmed
       await loadTemplate();
     } catch (err) {
       console.error('Auth check failed:', err);
       base44.auth.redirectToLogin('/vton-letter-review');
+    } finally {
+      setLoading(false);
     }
   };
 
   const loadTemplate = async () => {
     try {
-      setLoading(true);
-      
-      // Try to load config
-      try {
-        const config = await base44.entities.VTONMailConfig.list();
-        if (config.length > 0) {
-          setTemplate(config[0].letter_html);
-          setIsApproved(config[0].is_approved || false);
-        } else {
-          setTemplate('');
-        }
-      } catch (err) {
-        if (err.response?.status === 401) {
-          setMessage('Sign in required to access template');
-        } else {
-          console.error('Failed to load config:', err);
-        }
+      // Only load data after auth is confirmed
+      const config = await base44.entities.VTONMailConfig.list();
+      if (config.length > 0) {
+        setTemplate(config[0].letter_html);
+        setIsApproved(config[0].is_approved || false);
+      } else {
+        setTemplate('');
       }
       
-      // Try to load leads
-      try {
-        const allLeads = await base44.entities.VTONLead.list();
-        setLeads(allLeads);
-        if (allLeads.length > 0) {
-          setSelectedLeadId(allLeads[0].id);
-          setSelectedLead(allLeads[0]);
-        }
-      } catch (err) {
-        if (err.response?.status !== 401) {
-          console.error('Failed to load leads:', err);
-        }
+      // Load leads for preview
+      const allLeads = await base44.entities.VTONLead.list();
+      setLeads(allLeads);
+      if (allLeads.length > 0) {
+        setSelectedLeadId(allLeads[0].id);
+        setSelectedLead(allLeads[0]);
       }
-    } finally {
-      setLoading(false);
+    } catch (err) {
+      console.error('Failed to load template:', err);
+      if (err.response?.status === 401) {
+        setMessage('Sign in required to access template');
+        base44.auth.redirectToLogin('/vton-letter-review');
+      } else {
+        setMessage('Error loading template: ' + err.message);
+      }
     }
   };
 
@@ -151,19 +148,12 @@ export default function VTONLetterTemplateReview() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (!authenticated) {
+  // Show loading while checking authentication
+  if (loading || !authenticated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <p className="text-slate-600 mb-4">Redirecting to login...</p>
+          <p className="text-slate-600 mb-4">Loading...</p>
           <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin mx-auto"></div>
         </div>
       </div>
