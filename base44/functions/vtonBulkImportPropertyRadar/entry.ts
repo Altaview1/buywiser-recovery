@@ -100,14 +100,17 @@ Deno.serve(async (req) => {
 
 /**
  * Map PropertyRadar export fields to VTONLead entity
- * Flexible to handle various PropertyRadar export formats
+ * Handles standard PropertyRadar format: Type, Address, City, Est Value, Est Equity $, Owner, Distress Score, Listing DOM
  */
 function mapPropertyRadarLead(rawLead) {
+  // Parse Owner field: "LASTNAME,FIRSTNAME MIDDLE & SPOUSE" → {first_name, last_name, spouse_name}
+  const { first_name, last_name, spouse_name } = parseOwnerField(rawLead.Owner || '');
+
   return {
-    // Owner info (PropertyRadar fields: owner_first_name, first_name, name, etc.)
-    first_name: rawLead.owner_first_name || rawLead.first_name || rawLead.name?.split(' ')[0] || '',
-    last_name: rawLead.owner_last_name || rawLead.last_name || rawLead.name?.split(' ').slice(1).join(' ') || '',
-    spouse_name: rawLead.spouse_name || rawLead.co_owner_name || '',
+    // Owner info
+    first_name: first_name || rawLead.owner_first_name || rawLead.first_name || '',
+    last_name: last_name || rawLead.owner_last_name || rawLead.last_name || '',
+    spouse_name: spouse_name || rawLead.spouse_name || rawLead.co_owner_name || '',
     
     // Contact info
     phone: normalizePhone(rawLead.phone || rawLead.phone_number || ''),
@@ -116,23 +119,23 @@ function mapPropertyRadarLead(rawLead) {
     // Mailing address
     mailing_address: rawLead.mailing_address || rawLead.owner_address || '',
     
-    // Property address (PropertyRadar fields: property_address, address, street_address, etc.)
-    property_address: rawLead.property_address || rawLead.address || rawLead.street_address || '',
-    city: rawLead.city || rawLead.property_city || '',
-    state: rawLead.state || rawLead.property_state || '',
+    // Property address
+    property_address: rawLead.property_address || rawLead.Address || rawLead.address || rawLead.street_address || '',
+    city: rawLead.city || rawLead.City || rawLead.property_city || '',
+    state: rawLead.state || rawLead.property_state || 'CA', // Default to CA if not provided
     zip_code: rawLead.zip_code || rawLead.zip || rawLead.postal_code || '',
     
     // Listing info
     listing_date: rawLead.listing_date || rawLead.listed_date || null,
-    listing_price: parseFloat(rawLead.listing_price || rawLead.list_price || 0),
+    listing_price: parseFloat(rawLead.listing_price || rawLead['Est Value'] || rawLead.list_price || 0),
     
     // Equity estimates
-    estimated_equity: parseFloat(rawLead.estimated_equity || rawLead.equity || 0),
+    estimated_equity: parseFloat(rawLead.estimated_equity || rawLead['Est Equity $'] || rawLead.equity || 0),
     estimated_mortgage_balance: parseFloat(rawLead.estimated_mortgage_balance || rawLead.mortgage_balance || 0),
     
-    // Indicators
-    veteran_indicator: rawLead.veteran_indicator === true || rawLead.veteran_indicator === 'true',
-    likely_va_loan_indicator: rawLead.likely_va_loan === true || rawLead.likely_va_loan === 'true' || rawLead.va_loan === true,
+    // Indicators (assume veteran for now, can refine with distress scoring)
+    veteran_indicator: true, // PropertyRadar lists typically filtered
+    likely_va_loan_indicator: parseFloat(rawLead['Distress Score'] || 0) >= 30, // Higher distress = more likely VA loan
     
     // System fields
     lead_source: 'PropertyRadar',
@@ -148,6 +151,26 @@ function mapPropertyRadarLead(rawLead) {
     direct_mail_sent: false,
     appointment_booked: false,
     listing_verified: false
+  };
+}
+
+/**
+ * Parse PropertyRadar Owner field format: "LASTNAME,FIRSTNAME MIDDLE & SPOUSE"
+ */
+function parseOwnerField(owner) {
+  if (!owner) return { first_name: '', last_name: '', spouse_name: '' };
+
+  const parts = owner.split('&').map(p => p.trim());
+  const primary = parts[0];
+  const spouse = parts[1] || '';
+
+  const [lastName, firstAndMiddle] = primary.split(',').map(p => p.trim());
+  const firstName = firstAndMiddle?.split(' ')[0] || '';
+
+  return {
+    first_name: firstName,
+    last_name: lastName || '',
+    spouse_name: spouse
   };
 }
 
