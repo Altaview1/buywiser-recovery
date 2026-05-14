@@ -29,9 +29,10 @@ export default function VideoTestimonial() {
           className="absolute inset-0 w-full h-full group cursor-pointer"
         >
           <img
-            src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/b15e55a9b_codiandfrank.png"
+            src="https://img.youtube.com/vi/ZKUbVLVpzMw/maxresdefault.jpg"
             alt="Cody & Frank Testimonial"
             className="w-full h-full object-cover block"
+            onError={(e) => { e.target.src = "https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/b15e55a9b_codiandfrank.png"; }}
           />
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-white/90 group-hover:bg-white transition-colors flex items-center justify-center">
