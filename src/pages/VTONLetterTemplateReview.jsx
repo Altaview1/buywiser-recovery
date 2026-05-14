@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Check, X, Eye, ChevronDown } from 'lucide-react';
+import { Check, X, Eye, ChevronDown, Copy } from 'lucide-react';
+import { getVariablesByCategory, getVariableSyntax } from '@/lib/vtonTemplateVariables';
 
 export default function VTONLetterTemplateReview() {
   const [template, setTemplate] = useState('');
@@ -178,27 +179,41 @@ export default function VTONLetterTemplateReview() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Editor */}
           <div>
-            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
               <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                <h2 className="font-semibold text-slate-900">Edit HTML Template</h2>
-                <p className="text-xs text-slate-500 mt-2 mb-2">Use these fields for personalization:</p>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{first_name}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{last_name}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{property_address}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{city}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{state}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-white px-2 py-1 rounded border border-slate-100">${'{zip_code}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{estimated_benefit}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{estimated_equity}'}</div>
-                  <div className="text-xs text-slate-600 font-mono bg-blue-50 px-2 py-1 rounded border border-blue-200">${'{listing_price}'}</div>
+                <h2 className="font-semibold text-slate-900 mb-3">Edit HTML Template</h2>
+                <p className="text-xs text-slate-500 mb-2">Click a variable to insert it:</p>
+                <div className="space-y-2">
+                  {Object.entries(getVariablesByCategory()).map(([category, variables]) => (
+                    <div key={category}>
+                      <p className="text-xs font-semibold text-slate-600 mb-1">{category}</p>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {variables.map((v) => (
+                          <button
+                            key={v.name}
+                            onClick={() => {
+                              const syntax = getVariableSyntax(v.name);
+                              navigator.clipboard.writeText(syntax);
+                              setMessage(`Copied ${syntax}`);
+                              setTimeout(() => setMessage(''), 2000);
+                            }}
+                            title={v.placeholder}
+                            className="text-xs font-mono bg-white hover:bg-blue-50 px-2 py-1.5 rounded border border-slate-200 hover:border-blue-300 transition flex items-center justify-between group"
+                          >
+                            <span className="text-slate-700 group-hover:text-blue-700">${'{' + v.name + '}'}</span>
+                            <Copy className="h-3 w-3 text-slate-400 group-hover:text-blue-400 opacity-0 group-hover:opacity-100 transition" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
               <textarea
                 value={template}
                 onChange={(e) => setTemplate(e.target.value)}
                 disabled={isApproved}
-                className="w-full h-80 p-4 font-mono text-xs border-0 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
+                className="flex-1 p-4 font-mono text-xs border-0 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-50 disabled:text-slate-500"
                 placeholder="Paste your HTML letter template here..."
               />
             </div>
