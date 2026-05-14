@@ -657,14 +657,17 @@ function LandingView() {
       <section className="px-4 pb-14 bg-white">
         <div className="max-w-xl mx-auto">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 text-center">Veteran Testimonial — Cody &amp; Frank</p>
-          <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-sm" style={{ position: "relative", paddingBottom: "56.25%", height: 0 }}>
+          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden", borderRadius: "16px", border: "1px solid #e2e8f0" }}>
             <iframe
-              src="https://www.youtube.com/embed/ZKUbVLVpzMw"
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/ZKUbVLVpzMw?si=pxVztr0kUhfZYwkg"
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
-              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%" }}
+              allowFullScreen
+              style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
             />
           </div>
           <div className="mt-2.5 text-center">
