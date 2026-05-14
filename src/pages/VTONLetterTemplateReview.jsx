@@ -23,7 +23,7 @@ export default function VTONLetterTemplateReview() {
       // Verify authentication BEFORE loading any data
       const isAuthed = await base44.auth.isAuthenticated();
       if (!isAuthed) {
-        base44.auth.redirectToLogin('/vton-letter-review');
+        window.location.href = '/admin-login';
         return;
       }
       
@@ -34,7 +34,7 @@ export default function VTONLetterTemplateReview() {
       await loadTemplate();
     } catch (err) {
       console.error('Auth check failed:', err);
-      base44.auth.redirectToLogin('/vton-letter-review');
+      window.location.href = '/admin-login';
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export default function VTONLetterTemplateReview() {
       console.error('Failed to load template:', err);
       if (err.response?.status === 401) {
         setMessage('Sign in required to access template');
-        base44.auth.redirectToLogin('/vton-letter-review');
+        window.location.href = '/admin-login';
       } else {
         setMessage('Error loading template: ' + err.message);
       }
