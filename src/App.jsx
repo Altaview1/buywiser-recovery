@@ -120,6 +120,7 @@ const AuthenticatedApp = () => {
       <Route path="/ContactUs" element={<Navigate to="/Contact" replace />} />
       <Route path="/MortgageCalculators" element={<Navigate to="/Calculators" replace />} />
       <Route path="/MortgageReview" element={<Navigate to="/Apply" replace />} />
+      <Route path="/vton-partner" element={<Navigate to="/vton" replace />} />
     </Routes>
   );
 };
