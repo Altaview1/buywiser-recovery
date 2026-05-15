@@ -128,6 +128,7 @@ export default function VTONMailDashboard() {
   };
 
   const handlePreviewLetter = (lead) => {
+    console.log('Opening preview for lead:', lead.id, lead.first_name);
     setPreviewLead(lead);
     setPreviewOpen(true);
   };
@@ -169,9 +170,12 @@ export default function VTONMailDashboard() {
   };
 
   const handleSelectLead = (leadId) => {
-    setSelectedLeads(prev => 
-      prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
-    );
+    console.log('Toggling lead:', leadId);
+    setSelectedLeads(prev => {
+      const newSelection = prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId];
+      console.log('New selection:', newSelection);
+      return newSelection;
+    });
   };
 
   const isAllSelected = () => {
@@ -632,15 +636,21 @@ export default function VTONMailDashboard() {
         </Card>
 
         {/* Letter Preview Modal */}
-        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <Dialog open={previewOpen} onOpenChange={(open) => {
+          console.log('Dialog open changed:', open);
+          setPreviewOpen(open);
+        }}>
           <DialogContent className="max-w-4xl h-[90vh]">
             <DialogHeader>
               <div className="flex items-center justify-between">
-                <DialogTitle>Letter Preview</DialogTitle>
+                <DialogTitle>Letter Preview - {previewLead?.first_name} {previewLead?.last_name}</DialogTitle>
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setPreviewOpen(false)}
+                  onClick={() => {
+                    console.log('Closing dialog');
+                    setPreviewOpen(false);
+                  }}
                   className="h-8 w-8 p-0"
                 >
                   <X className="h-4 w-4" />
@@ -660,6 +670,11 @@ export default function VTONMailDashboard() {
               <div className="text-center py-8 text-slate-500">
                 <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
                 <p>No letter template found. Please approve a template first.</p>
+              </div>
+            )}
+            {!previewLead && (
+              <div className="text-center py-8 text-slate-500">
+                <p>Loading preview...</p>
               </div>
             )}
           </DialogContent>
