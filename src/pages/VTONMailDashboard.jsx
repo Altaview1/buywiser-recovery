@@ -511,6 +511,7 @@ export default function VTONMailDashboard() {
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
+                    <TableHead className="w-40">Lead ID</TableHead>
                     <TableHead>Priority</TableHead>
                     <TableHead>Veteran Name</TableHead>
                     <TableHead>Property Address</TableHead>
@@ -538,6 +539,18 @@ export default function VTONMailDashboard() {
                           disabled={lead.mail_approval_status !== 'pending_approval'}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
                         />
+                      </TableCell>
+                      <TableCell className="font-mono text-xs">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(lead.id);
+                            alert('ID copied!');
+                          }}
+                          className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-2 py-1 rounded transition truncate block w-full text-left"
+                          title="Click to copy"
+                        >
+                          {lead.id}
+                        </button>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
