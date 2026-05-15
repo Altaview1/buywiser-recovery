@@ -458,6 +458,29 @@ export default function VTONMailDashboard() {
                 <Button variant="outline" size="sm" onClick={() => refetch()}>
                   Refresh
                 </Button>
+
+                <Button 
+                  size="sm"
+                  variant="outline"
+                  className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                  onClick={() => {
+                    const selectableIds = getSelectableLeads(paginatedLeads).map(l => l.id);
+                    setSelectedLeads(selectableIds);
+                  }}
+                >
+                  ✓ Select All Pending
+                </Button>
+
+                {selectedLeads.length > 0 && (
+                  <Button 
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleBulkApprove}
+                    disabled={bulkProcessing}
+                  >
+                    {bulkProcessing ? 'Approving...' : `✓ Approve ${selectedLeads.length}`}
+                  </Button>
+                )}
               </div>
 
               {/* Search Bar */}
