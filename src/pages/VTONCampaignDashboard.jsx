@@ -125,10 +125,11 @@ export default function VTONCampaignDashboard() {
   };
 
   const filteredLeads = leads.filter(lead => {
-    const matchesSearch = 
-      lead.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.property_address.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      lead.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const term = searchTerm.toLowerCase();
+    const matchesSearch = !term ||
+      (lead.first_name || '').toLowerCase().includes(term) ||
+      (lead.property_address || '').toLowerCase().includes(term) ||
+      (lead.email || '').toLowerCase().includes(term);
     
     const matchesFilter = filterStage === 'all' || lead.campaign_stage === filterStage;
     const matchesContactStatus = filterContactStatus === 'all' || (lead.contact_status || 'New') === filterContactStatus;
