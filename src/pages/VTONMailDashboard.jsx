@@ -277,7 +277,7 @@ export default function VTONMailDashboard() {
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-slate-900 mb-2">VTON Direct Mail Dashboard</h1>
           <p className="text-slate-600">Track Lob letter delivery status, costs, and mailing progress</p>
-          <div className="mt-3 flex items-center gap-4 text-sm">
+          <div className="mt-3 flex items-center gap-4 text-sm flex-wrap">
             <a 
               href="https://dashboard.lob.com/#/settings/billing" 
               target="_blank" 
@@ -289,6 +289,10 @@ export default function VTONMailDashboard() {
             <span className="text-slate-400">|</span>
             <span className="text-slate-600">
               Avg. cost per letter: <strong className="text-slate-900">${leads && leads.length > 0 ? (stats.totalCost / leads.length).toFixed(2) : '0.00'}</strong>
+            </span>
+            <span className="text-slate-400">|</span>
+            <span className="text-slate-600">
+              Status: <strong className="text-green-600">{leads?.filter(l => l.mail_approval_status === 'approved').length || 0} Approved</strong>, <strong className="text-amber-600">{stats.pendingApproval} Pending</strong>, <strong className="text-red-600">{leads?.filter(l => l.mail_approval_status === 'rejected').length || 0} Rejected</strong>
             </span>
           </div>
         </div>
