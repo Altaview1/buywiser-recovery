@@ -252,7 +252,7 @@ export default function VTONCampaignDashboard() {
                 onClick={() => setShowDeleteImport(true)}
                 className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm flex items-center gap-2"
               >
-                <Trash2 className="h-4 w-4" /> Delete Import
+                <Trash2 className="h-4 w-4" /> Delete Last Import
               </button>
               <button
                 onClick={() => setShowAddLead(true)}
@@ -320,11 +320,11 @@ export default function VTONCampaignDashboard() {
               <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
                 <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
                   <div className="flex items-center justify-between px-6 py-4 border-b border-red-200">
-                    <h2 className="text-lg font-bold text-red-700">Delete Recent Import</h2>
+                    <h2 className="text-lg font-bold text-red-700">Delete Last Import Batch</h2>
                     <button onClick={() => { setShowDeleteImport(false); setDeleteResult(null); }} className="text-slate-400 hover:text-slate-700"><X className="h-5 w-5" /></button>
                   </div>
                   <div className="p-6 space-y-4">
-                    <p className="text-sm text-slate-700 font-medium">This will delete all leads imported in the current session (today). This action cannot be undone.</p>
+                    <p className="text-sm text-slate-700 font-medium">This will delete all leads from the most recent import batch. This action cannot be undone.</p>
                     
                     {deleteResult && (
                       <div className={`px-4 py-3 rounded-lg text-sm font-medium ${deleteResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
@@ -344,8 +344,28 @@ export default function VTONCampaignDashboard() {
                         onClick={async () => {
                           setDeleting(true);
                           try {
-                            const res = await base44.functions.invoke('deleteVTONImport', { delete_all_today: true });
-                            setDeleteResult({ success: true, message: `✓ Deleted ${res.data.deleted_count} leads` });
+                            // Find the most recent batch by getting all leads with import_batch_id
+                            const allLeads = await base44.entities.VTONLead.list();
+                            const leadsWithBatch = allLeads.filter(l => l.import_batch_id);
+                            
+                            if (leadsWithBatch.length === 0) {
+                              setDeleteResult({ success: false, message: 'No import batches found' });
+                              setDeleting(false);
+                              return;
+                            }
+                            
+                            // Find the most recent batch ID
+                            const batchCounts = {};
+                            leadsWithBatch.forEach(l => {
+                              batchCounts[l.import_batch_id] = (batchCounts[l.import_batch_id] || 0) + 1;
+                            });
+                            
+                            // Get the batch with the most leads (likely the most recent)
+                            const mostRecentBatch = Object.entries(batchCounts)
+                              .sort((a, b) => b[1] - a[1])[0][0];
+                            
+                            const res = await base44.functions.invoke('deleteVTONImport', { import_batch_id: mostRecentBatch });
+                            setDeleteResult({ success: true, message: `✓ Deleted ${res.data.deleted_count} leads from batch ${mostRecentBatch}` });
                             await loadLeads();
                           } catch (err) {
                             setDeleteResult({ success: false, message: 'Error: ' + err.message });
@@ -363,7 +383,7 @@ export default function VTONCampaignDashboard() {
                           </>
                         ) : (
                           <>
-                            <Trash2 className="h-4 w-4" /> Delete All
+                            <Trash2 className="h-4 w-4" /> Delete Last Batch
                           </>
                         )}
                       </button>

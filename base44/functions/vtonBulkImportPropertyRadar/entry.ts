@@ -17,12 +17,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Invalid or empty leads array' }, { status: 400 });
     }
 
+    // Generate unique batch ID for this import session
+    const importBatchId = `batch_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
     const results = {
       total: leads.length,
       created: 0,
       duplicates: 0,
       errors: [],
-      campaign_triggered: 0
+      campaign_triggered: 0,
+      import_batch_id: importBatchId
     };
 
     // Get existing leads for deduplication (email + phone + address combo)
@@ -56,6 +60,9 @@ Deno.serve(async (req) => {
           });
           continue;
         }
+
+        // Add batch ID to track this import
+        mappedLead.import_batch_id = importBatchId;
 
         // Create lead
         const created = await base44.entities.VTONLead.create(mappedLead);

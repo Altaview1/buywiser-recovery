@@ -159,6 +159,10 @@
     "notes": {
       "type": "string",
       "description": "Internal notes"
+    },
+    "import_batch_id": {
+      "type": "string",
+      "description": "Unique identifier for the import session this lead was created in"
     }
   },
   "required": [

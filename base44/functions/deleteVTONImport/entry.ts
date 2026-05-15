@@ -24,14 +24,21 @@ Deno.serve(async (req) => {
       // Delete by specific import batch
       query = { import_batch_id: import_batch_id };
     } else if (delete_all_today) {
-      // Delete ALL leads (use with caution)
-      query = {};
+      // Delete all leads created today (within last 48 hours to be safe)
+      const now = new Date();
+      const fortyEightHoursAgo = new Date(now.getTime() - (48 * 60 * 60 * 1000));
+      query = { 
+        created_date: { $gte: fortyEightHoursAgo.toISOString() }
+      };
     } else {
       return Response.json({ error: 'Must provide import_batch_id or delete_all_today' }, { status: 400 });
     }
 
     // Get ALL leads to delete (no limit)
     const leadsToDelete = await base44.entities.VTONLead.filter(query, undefined, 10000);
+    
+    console.log(`Delete query:`, JSON.stringify(query));
+    console.log(`Found ${leadsToDelete.length} leads to delete`);
     
     console.log(`Found ${leadsToDelete.length} leads to delete`);
     
