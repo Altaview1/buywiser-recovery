@@ -9,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import VTONMailPipeline from '@/components/vton/VTONMailPipeline';
+import MetaAudienceSyncPanel from '@/components/vton/MetaAudienceSyncPanel';
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -391,6 +392,11 @@ export default function VTONMailDashboard() {
               Status: <strong className="text-green-600">{leads?.filter(l => l.mail_approval_status === 'approved').length || 0} Approved</strong>, <strong className="text-amber-600">{stats.pendingApproval} Pending</strong>, <strong className="text-red-600">{leads?.filter(l => l.mail_approval_status === 'rejected').length || 0} Rejected</strong>
             </span>
           </div>
+        </div>
+
+        {/* Meta Audience Sync */}
+        <div className="mb-8">
+          <MetaAudienceSyncPanel />
         </div>
 
         {/* Pipeline View */}
