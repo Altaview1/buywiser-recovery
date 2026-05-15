@@ -384,7 +384,7 @@ export default function VTONMailDashboard() {
             </a>
             <span className="text-slate-400">|</span>
             <span className="text-slate-600">
-              Avg. cost per letter: <strong className="text-slate-900">${leads && leads.length > 0 ? (stats.totalCost / leads.length).toFixed(2) : '0.00'}</strong>
+              Avg. cost per letter: <strong className="text-slate-900">${leads && leads.length > 0 ? (stats.totalCost / leads.filter(l => l.lob_estimated_cost).length || leads.length).toFixed(2) : '0.00'}</strong>
             </span>
             <span className="text-slate-400">|</span>
             <span className="text-slate-600">
