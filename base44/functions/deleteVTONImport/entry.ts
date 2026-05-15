@@ -30,8 +30,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Must provide import_batch_id or delete_all_today' }, { status: 400 });
     }
 
-    // Get leads to delete
-    const leadsToDelete = await base44.entities.VTONLead.filter(query);
+    // Get ALL leads to delete (no limit)
+    const leadsToDelete = await base44.entities.VTONLead.filter(query, undefined, 10000);
+    
+    console.log(`Found ${leadsToDelete.length} leads to delete`);
     
     if (leadsToDelete.length === 0) {
       return Response.json({ 
@@ -41,21 +43,24 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Delete in batches to avoid timeout
-    const batchSize = 50;
+    // Delete in smaller batches to avoid timeout
+    const batchSize = 20;
     let deletedCount = 0;
     let errorCount = 0;
 
     for (let i = 0; i < leadsToDelete.length; i += batchSize) {
       const batch = leadsToDelete.slice(i, i + batchSize);
       
-      const deletePromises = batch.map(lead => 
-        base44.entities.VTONLead.delete(lead.id)
-          .then(() => deletedCount++)
-          .catch(() => errorCount++)
+      const results = await Promise.allSettled(
+        batch.map(lead => base44.entities.VTONLead.delete(lead.id))
       );
       
-      await Promise.all(deletePromises);
+      results.forEach(result => {
+        if (result.status === 'fulfilled') deletedCount++;
+        else errorCount++;
+      });
+      
+      console.log(`Deleted batch ${Math.floor(i/batchSize) + 1}, total so far: ${deletedCount}`);
     }
 
     return Response.json({
