@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLeads, setSelectedLeads] = useState([]);
   const [bulkProcessing, setBulkProcessing] = useState(false);
@@ -39,10 +40,21 @@ export default function VTONMailDashboard() {
     totalCost: leads?.reduce((sum, l) => sum + (l.lob_estimated_cost || 0), 0) || 0,
   };
 
-  // Filter leads by status
+  // Filter leads by status and search query
   const filteredLeads = leads?.filter(lead => {
-    if (statusFilter === 'all') return true;
-    return lead.lob_delivery_status === statusFilter;
+    // Status filter
+    if (statusFilter !== 'all' && lead.lob_delivery_status !== statusFilter) return false;
+    
+    // Search filter (name or address)
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      const fullName = `${lead.first_name} ${lead.last_name} ${lead.spouse_name || ''}`.toLowerCase();
+      const fullAddress = `${lead.property_address} ${lead.city} ${lead.state} ${lead.zip_code}`.toLowerCase();
+      
+      return fullName.includes(query) || fullAddress.includes(query);
+    }
+    
+    return true;
   }) || [];
 
   // Pagination
@@ -278,7 +290,7 @@ export default function VTONMailDashboard() {
         <Card className="mb-6">
           <CardContent className="pt-6">
             <div className="flex items-center justify-between gap-4 flex-wrap">
-              <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-4 flex-wrap flex-1">
                 <label className="text-sm font-medium text-slate-700">Filter by status:</label>
                 <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
                   <SelectTrigger className="w-48">
@@ -297,6 +309,30 @@ export default function VTONMailDashboard() {
                 <Button variant="outline" size="sm" onClick={() => refetch()}>
                   Refresh
                 </Button>
+              </div>
+
+              {/* Search Bar */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by name or address..."
+                  value={searchQuery}
+                  onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
+                  className="h-9 w-72 rounded-md border border-slate-300 pl-9 pr-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
+                <svg className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-2 top-2.5 text-slate-400 hover:text-slate-600"
+                  >
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                )}
               </div>
 
               {/* Bulk Action Buttons */}
@@ -341,6 +377,11 @@ export default function VTONMailDashboard() {
             <CardTitle className="flex items-center gap-2">
               <Mail className="h-5 w-5" />
               Mail Queue ({paginatedLeads.length} of {filteredLeads.length})
+              {searchQuery && (
+                <Badge variant="outline" className="text-xs font-normal">
+                  Searching: "{searchQuery}"
+                </Badge>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent>
