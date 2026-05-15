@@ -23,45 +23,56 @@ export default function VTONCampaignDashboard() {
   const [addingLead, setAddingLead] = useState(false);
   const [addLeadResult, setAddLeadResult] = useState(null);
 
+  const parseCSV = (text) => {
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    const headers = lines[0].split(',').map(h => h.replace(/"/g, '').trim());
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const vals = lines[i].split(',').map(v => v.replace(/"/g, '').trim());
+      if (vals.every(v => !v)) continue;
+      const row = {};
+      headers.forEach((h, idx) => { row[h] = vals[idx] || ''; });
+      rows.push(row);
+    }
+    return rows;
+  };
+
+  const mapPropertyRadarRow = (row) => {
+    // Support both PropertyRadar export columns and standard column names
+    const firstName = row['Primary First'] || row['first_name'] || row['First Name'] || '';
+    const lastName = row['Primary Last'] || row['last_name'] || row['Last Name'] || '';
+    const address = row['Address'] || row['property_address'] || row['Mail Address'] || '';
+    const city = row['City'] || row['city'] || row['Mail City'] || '';
+    const state = row['State'] || row['state'] || row['Mail State'] || 'CA';
+    const zip = row['ZIP'] || row['zip_code'] || row['Mail ZIP'] || row['Zip'] || '';
+    const email = row['Email'] || row['email'] || '';
+    const phone = row['Phone'] || row['phone'] || '';
+
+    // Skip disclaimer/footer rows
+    if (!firstName && !address) return null;
+    if (firstName.length > 60 && !address) return null; // disclaimer row
+
+    return { first_name: firstName, last_name: lastName, email, phone, property_address: address, city, state, zip_code: zip };
+  };
+
   const handleSingleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setAddingLead(true);
     setAddLeadResult(null);
     try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      const extracted = await base44.integrations.Core.ExtractDataFromUploadedFile({
-        file_url,
-        json_schema: {
-          type: 'object',
-          properties: {
-            leads: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  first_name: { type: 'string' },
-                  last_name: { type: 'string' },
-                  email: { type: 'string' },
-                  phone: { type: 'string' },
-                  property_address: { type: 'string' },
-                  city: { type: 'string' },
-                  state: { type: 'string' },
-                  zip_code: { type: 'string' },
-                  listing_price: { type: 'number' },
-                  estimated_equity: { type: 'number' },
-                  estimated_benefit: { type: 'number' }
-                }
-              }
-            }
-          }
-        }
-      });
+      const text = await file.text();
+      const rows = parseCSV(text);
+      const leads = rows.map(mapPropertyRadarRow).filter(Boolean);
 
-      const leads = extracted.output?.leads || (Array.isArray(extracted.output) ? extracted.output : [extracted.output]);
+      if (leads.length === 0) {
+        setAddLeadResult({ success: false, message: 'No valid leads found in file. Check that it has Address and name columns.' });
+        return;
+      }
+
       let created = 0;
       for (const lead of leads) {
-        if (!lead.first_name && !lead.property_address) continue;
         await base44.entities.VTONLead.create({
           ...lead,
           veteran_indicator: true,
