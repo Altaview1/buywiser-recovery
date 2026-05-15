@@ -7,38 +7,6 @@ import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
 
-const STATUS_STYLES = {
-  New:       "bg-slate-100 text-slate-700 border-slate-200",
-  Contacted: "bg-blue-100 text-blue-800 border-blue-200",
-  Qualified: "bg-green-100 text-green-800 border-green-200",
-};
-
-function ContactStatusDropdown({ lead, onChange }) {
-  const [saving, setSaving] = useState(false);
-
-  const handleChange = async (e) => {
-    const newStatus = e.target.value;
-    setSaving(true);
-    await base44.entities.VTONLead.update(lead.id, { contact_status: newStatus });
-    setSaving(false);
-    onChange(lead.id, newStatus);
-  };
-
-  const current = lead.contact_status || "New";
-  return (
-    <select
-      value={current}
-      onChange={handleChange}
-      disabled={saving}
-      className={`text-xs font-semibold px-2 py-1.5 rounded-lg border cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 transition disabled:opacity-50 ${STATUS_STYLES[current] || STATUS_STYLES.New}`}
-    >
-      <option value="New">New</option>
-      <option value="Contacted">Contacted</option>
-      <option value="Qualified">Qualified</option>
-    </select>
-  );
-}
-
 export default function VTONCampaignDashboard() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +22,7 @@ export default function VTONCampaignDashboard() {
   const [showImport, setShowImport] = useState(false);
   const [showAddLead, setShowAddLead] = useState(false);
   const [notesLead, setNotesLead] = useState(null);
+  const [filterContactStatus, setFilterContactStatus] = useState("all");
   const [addingLead, setAddingLead] = useState(false);
   const [addLeadResult, setAddLeadResult] = useState(null);
 
@@ -162,8 +131,9 @@ export default function VTONCampaignDashboard() {
       lead.email.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesFilter = filterStage === 'all' || lead.campaign_stage === filterStage;
+    const matchesContactStatus = filterContactStatus === 'all' || (lead.contact_status || 'New') === filterContactStatus;
     
-    return matchesSearch && matchesFilter;
+    return matchesSearch && matchesFilter && matchesContactStatus;
   });
 
   const campaignStages = [
@@ -173,6 +143,22 @@ export default function VTONCampaignDashboard() {
     { value: 'booked', label: 'Booked', color: 'bg-green-100 text-green-800' },
     { value: 'completed', label: 'Completed', color: 'bg-slate-100 text-slate-800' }
   ];
+
+  const contactStatuses = [
+    { value: 'New', label: 'New', color: 'bg-slate-100 text-slate-700' },
+    { value: 'Contacted', label: 'Contacted', color: 'bg-blue-100 text-blue-800' },
+    { value: 'Qualified', label: 'Qualified', color: 'bg-green-100 text-green-800' }
+  ];
+
+  const handleContactStatusChange = async (leadId, newStatus) => {
+    await base44.entities.VTONLead.update(leadId, { contact_status: newStatus });
+    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, contact_status: newStatus } : l));
+  };
+
+  const pipelineCounts = contactStatuses.map(s => ({
+    ...s,
+    count: leads.filter(l => (l.contact_status || 'New') === s.value).length
+  }));
 
   if (loading) {
     return (
@@ -279,6 +265,23 @@ export default function VTONCampaignDashboard() {
               </div>
             )}
 
+            {/* Pipeline Summary */}
+            <div className="mb-6 bg-white rounded-xl border border-slate-200 p-5">
+              <h2 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Pipeline at a Glance</h2>
+              <div className="grid grid-cols-3 gap-4">
+                {pipelineCounts.map(s => (
+                  <div
+                    key={s.value}
+                    onClick={() => setFilterContactStatus(filterContactStatus === s.value ? 'all' : s.value)}
+                    className={`rounded-xl p-4 text-center cursor-pointer transition border-2 ${filterContactStatus === s.value ? 'border-blue-500' : 'border-transparent'} ${s.color}`}
+                  >
+                    <p className="text-3xl font-bold">{s.count}</p>
+                    <p className="text-xs font-semibold mt-1 uppercase tracking-wider">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-white rounded-xl p-4 border border-slate-200">
@@ -372,7 +375,7 @@ export default function VTONCampaignDashboard() {
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Email</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Visits</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Status</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Review</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Pipeline</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Notes</th>
                   </tr>
               </thead>
@@ -432,9 +435,19 @@ export default function VTONCampaignDashboard() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
-                        <ContactStatusDropdown lead={lead} onChange={(id, status) =>
-                          setLeads(prev => prev.map(l => l.id === id ? { ...l, contact_status: status } : l))
-                        } />
+                        <select
+                          value={lead.contact_status || 'New'}
+                          onChange={(e) => handleContactStatusChange(lead.id, e.target.value)}
+                          className={`text-xs font-semibold px-2 py-1.5 rounded-lg border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                            (lead.contact_status || 'New') === 'Qualified' ? 'bg-green-100 text-green-800' :
+                            (lead.contact_status || 'New') === 'Contacted' ? 'bg-blue-100 text-blue-800' :
+                            'bg-slate-100 text-slate-700'
+                          }`}
+                        >
+                          <option value="New">New</option>
+                          <option value="Contacted">Contacted</option>
+                          <option value="Qualified">Qualified</option>
+                        </select>
                       </td>
                       <td className="px-6 py-4">
                         <button
