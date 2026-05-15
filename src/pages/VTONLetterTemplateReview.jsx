@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Check, X, Eye, ChevronDown, Copy } from 'lucide-react';
+import { Check, X, Eye, ChevronDown, Copy, Send } from 'lucide-react';
 import { getVariablesByCategory, getVariableSyntax } from '@/lib/vtonTemplateVariables';
 
 export default function VTONLetterTemplateReview() {
@@ -13,6 +13,8 @@ export default function VTONLetterTemplateReview() {
   const [selectedLeadId, setSelectedLeadId] = useState(null);
   const [selectedLead, setSelectedLead] = useState(null);
   const [authenticated, setAuthenticated] = useState(false);
+  const [testEmail, setTestEmail] = useState('');
+  const [sendingTest, setSendingTest] = useState(false);
 
   useEffect(() => {
     checkAuthAndLoad();
@@ -123,6 +125,24 @@ export default function VTONLetterTemplateReview() {
       setMessage('Error approving template: ' + err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    if (!testEmail || !template.trim()) return;
+    try {
+      setSendingTest(true);
+      await base44.functions.invoke('sendVTONTestEmail', {
+        toEmail: testEmail,
+        templateHtml: template,
+        leadId: selectedLeadId || null,
+      });
+      setMessage(`✓ Test email sent to ${testEmail}`);
+      setTimeout(() => setMessage(''), 4000);
+    } catch (err) {
+      setMessage('Error sending test email: ' + err.message);
+    } finally {
+      setSendingTest(false);
     }
   };
 
@@ -277,7 +297,7 @@ export default function VTONLetterTemplateReview() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 mt-6">
+        <div className="flex flex-wrap gap-3 mt-6 items-center">
           {!isApproved ? (
             <button
               onClick={handleApprove}
@@ -295,6 +315,26 @@ export default function VTONLetterTemplateReview() {
               {saving ? 'Updating...' : 'Unapprove for Editing'}
             </button>
           )}
+
+          {/* Send Test Email */}
+          <div className="flex items-center gap-2 ml-auto bg-blue-50 border border-blue-200 rounded-lg px-4 py-2">
+            <Send className="h-4 w-4 text-blue-600 flex-shrink-0" />
+            <input
+              type="email"
+              value={testEmail}
+              onChange={(e) => setTestEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="text-sm border-0 bg-transparent focus:outline-none w-48 placeholder-blue-300 text-blue-900"
+            />
+            <button
+              onClick={handleSendTestEmail}
+              disabled={sendingTest || !testEmail || !template.trim()}
+              className="px-3 py-1 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition whitespace-nowrap"
+            >
+              {sendingTest ? 'Sending...' : 'Send Test'}
+            </button>
+          </div>
+
           <button
             onClick={() => window.history.back()}
             className="px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold hover:bg-slate-300 transition"
