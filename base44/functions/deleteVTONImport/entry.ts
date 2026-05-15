@@ -49,22 +49,29 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Delete in smaller batches to avoid timeout
-    const batchSize = 20;
+    // Delete in smaller batches to avoid rate limiting
+    const batchSize = 10;
     let deletedCount = 0;
     let errorCount = 0;
 
     for (let i = 0; i < leadsToDelete.length; i += batchSize) {
       const batch = leadsToDelete.slice(i, i + batchSize);
       
-      const results = await Promise.allSettled(
-        batch.map(lead => base44.entities.VTONLead.delete(lead.id))
-      );
+      // Delete sequentially with small delay to avoid rate limits
+      for (const lead of batch) {
+        try {
+          await base44.entities.VTONLead.delete(lead.id);
+          deletedCount++;
+        } catch (err) {
+          console.error(`Failed to delete lead ${lead.id}:`, err.message);
+          errorCount++;
+        }
+      }
       
-      results.forEach(result => {
-        if (result.status === 'fulfilled') deletedCount++;
-        else errorCount++;
-      });
+      // Add delay between batches to avoid rate limiting
+      if (i + batchSize < leadsToDelete.length) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
       
       console.log(`Deleted batch ${Math.floor(i/batchSize) + 1}, total so far: ${deletedCount}`);
     }
