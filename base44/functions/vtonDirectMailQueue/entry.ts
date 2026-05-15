@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { Buffer } from 'node:buffer';
 
 /**
  * Send personalized VTON welcome letters via Lob API
@@ -55,35 +56,45 @@ Deno.serve(async (req) => {
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-personalized/${lead_id}`)}`;
     const finalLetterHtml = letterHtml.replace(/\$\{qrUrl\}/g, qrUrl);
 
-    // Encode HTML as base64 for Lob API
-    const base64Html = Buffer.from(finalLetterHtml).toString('base64');
+    // Create Basic Auth header (Deno-compatible)
+    const credentials = Buffer.from(lobApiKey + ':').toString('base64');
+
+    // Create FormData with the HTML content
+    const formData = new FormData();
+    formData.append('to[name]', `${first_name || ''} ${last_name || ''}`.trim() || 'Homeowner');
+    formData.append('to[address_line1]', property_address);
+    formData.append('to[address_city]', city);
+    formData.append('to[address_state]', state);
+    formData.append('to[address_zip]', zip_code);
+    formData.append('from[name]', 'Buywiser Home Loans');
+    formData.append('from[address_line1]', '12640 Riverside Drive');
+    formData.append('from[address_city]', 'North Hollywood');
+    formData.append('from[address_state]', 'CA');
+    formData.append('from[address_zip]', '91607');
+    formData.append('color', 'false');
+    formData.append('use_type', 'marketing');
+
+    // Append HTML file
+    const htmlBlob = new Blob([finalLetterHtml], { type: 'text/html' });
+    formData.append('file', htmlBlob, 'letter.html');
 
     // Send to Lob API
     const lobResponse = await fetch('https://api.lob.com/v1/letters', {
       method: 'POST',
       headers: {
-        'Authorization': `Basic ${btoa(lobApiKey + ':')}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${credentials}`,
       },
-      body: new URLSearchParams({
-        'to[name]': `${first_name || ''} ${last_name || ''}`.trim() || 'Homeowner',
-        'to[address_line1]': property_address,
-        'to[address_city]': city,
-        'to[address_state]': state,
-        'to[address_zip]': zip_code,
-        'from[name]': 'Buywiser Home Loans',
-        'from[address_line1]': '12640 Riverside Drive',
-        'from[address_city]': 'North Hollywood',
-        'from[address_state]': 'CA',
-        'from[address_zip]': '91607',
-        'html': base64Html,
-        'color': 'false',
-      }).toString(),
+      body: formData,
     });
 
     if (!lobResponse.ok) {
       const errorData = await lobResponse.text();
-      return Response.json({ error: 'Lob API error', details: errorData }, { status: 500 });
+      console.error('Lob API error response:', errorData);
+      return Response.json({ 
+        error: `Lob API error (${lobResponse.status}): ${errorData}`,
+        letterId: null,
+        estimatedCost: 0
+      }, { status: 500 });
     }
 
     const lobData = await lobResponse.json();

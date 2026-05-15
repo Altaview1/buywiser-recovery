@@ -44,18 +44,30 @@ Deno.serve(async (req) => {
       }
 
       // Send to Lob
-      const mailResult = await base44.functions.invoke('vtonDirectMailQueue', {
-        lead_id: lead.id,
-        first_name: lead.first_name,
-        last_name: lead.last_name,
-        property_address: lead.property_address,
-        city: lead.city,
-        state: lead.state,
-        zip_code: lead.zip_code,
-        estimated_benefit: lead.estimated_benefit
-      });
+      let mailResult;
+      try {
+        const invokeResponse = await base44.functions.invoke('vtonDirectMailQueue', {
+          lead_id: lead.id,
+          first_name: lead.first_name,
+          last_name: lead.last_name,
+          property_address: lead.property_address,
+          city: lead.city,
+          state: lead.state,
+          zip_code: lead.zip_code,
+          estimated_benefit: lead.estimated_benefit
+        });
+        
+        // Handle both response.data and direct response
+        mailResult = invokeResponse.data || invokeResponse;
+      } catch (invokeError) {
+        console.error('Function invoke error:', invokeError);
+        return Response.json({ 
+          error: `Failed to invoke mail queue: ${invokeError.message}` 
+        }, { status: 500 });
+      }
 
       if (mailResult.error) {
+        console.error('Mail queue error:', mailResult.error);
         return Response.json({ error: mailResult.error }, { status: 500 });
       }
 
@@ -71,7 +83,7 @@ Deno.serve(async (req) => {
 
       return Response.json({ 
         success: true, 
-        message: 'Mail sent to Lob',
+        message: 'Mail sent to Lob successfully',
         letterId: mailResult.letterId
       });
 

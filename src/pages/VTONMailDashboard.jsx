@@ -129,14 +129,27 @@ export default function VTONMailDashboard() {
 
   const handleApprove = async (leadId, action) => {
     try {
-      await base44.functions.invoke('approveVTONMail', {
+      const result = await base44.functions.invoke('approveVTONMail', {
         lead_id: leadId,
         action: action
       });
-      refetch();
+      
+      // Check if the response indicates success
+      if (result.data?.error) {
+        alert(`Error: ${result.data.error}`);
+        return;
+      }
+      
+      // Refetch after successful operation
+      await refetch();
+      
+      // Show success message
+      const actionLabel = action === 'send_to_lob' ? 'sent to Lob' : action === 'approve' ? 'approved' : 'rejected';
+      alert(`✓ Mail ${actionLabel} successfully!`);
     } catch (error) {
       console.error('Approval error:', error);
-      alert(`Failed to ${action} mail: ${error.message}`);
+      const message = error.response?.data?.error || error.message || 'Unknown error';
+      alert(`Failed to ${action} mail: ${message}`);
     }
   };
 
