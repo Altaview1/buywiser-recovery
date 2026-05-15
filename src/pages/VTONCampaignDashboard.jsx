@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, Filter } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
 
 const NAVY = "#0B1F3B";
@@ -19,6 +19,41 @@ export default function VTONCampaignDashboard() {
     email_sent: 0
   });
   const [showImport, setShowImport] = useState(false);
+  const [showAddLead, setShowAddLead] = useState(false);
+  const [addingLead, setAddingLead] = useState(false);
+  const [newLead, setNewLead] = useState({
+    first_name: '', last_name: '', email: '', phone: '',
+    property_address: '', city: '', state: 'CA', zip_code: '',
+    listing_price: '', estimated_equity: '', estimated_benefit: ''
+  });
+
+  const handleAddLead = async (e) => {
+    e.preventDefault();
+    setAddingLead(true);
+    try {
+      await base44.entities.VTONLead.create({
+        ...newLead,
+        listing_price: newLead.listing_price ? parseFloat(newLead.listing_price) : 0,
+        estimated_equity: newLead.estimated_equity ? parseFloat(newLead.estimated_equity) : 0,
+        estimated_benefit: newLead.estimated_benefit ? parseFloat(newLead.estimated_benefit) : 0,
+        veteran_indicator: true,
+        campaign_stage: 'initial_outreach',
+        sms_status: 'pending',
+        email_status: 'pending',
+        suppression_status: 'active',
+        facebook_audience_synced: false,
+        direct_mail_sent: false,
+        appointment_booked: false,
+      });
+      setShowAddLead(false);
+      setNewLead({ first_name: '', last_name: '', email: '', phone: '', property_address: '', city: '', state: 'CA', zip_code: '', listing_price: '', estimated_equity: '', estimated_benefit: '' });
+      await loadLeads();
+    } catch (err) {
+      alert('Error adding lead: ' + err.message);
+    } finally {
+      setAddingLead(false);
+    }
+  };
 
   useEffect(() => {
     loadLeads();
@@ -101,8 +136,14 @@ export default function VTONCampaignDashboard() {
 
         {!showImport && (
           <>
-            {/* Import Button */}
-            <div className="mb-6 flex justify-end">
+            {/* Action Buttons */}
+            <div className="mb-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowAddLead(true)}
+                className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition text-sm"
+              >
+                + Add Single Lead
+              </button>
               <button
                 onClick={() => setShowImport(true)}
                 className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm"
@@ -110,6 +151,78 @@ export default function VTONCampaignDashboard() {
                 + Import PropertyRadar CSV
               </button>
             </div>
+
+            {/* Add Single Lead Modal */}
+            {showAddLead && (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                    <h2 className="text-lg font-bold text-slate-900">Add Veteran Lead</h2>
+                    <button onClick={() => setShowAddLead(false)} className="text-slate-400 hover:text-slate-700"><X className="h-5 w-5" /></button>
+                  </div>
+                  <form onSubmit={handleAddLead} className="p-6 space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">First Name *</label>
+                        <input required value={newLead.first_name} onChange={e => setNewLead({...newLead, first_name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Last Name</label>
+                        <input value={newLead.last_name} onChange={e => setNewLead({...newLead, last_name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Email *</label>
+                        <input required type="email" value={newLead.email} onChange={e => setNewLead({...newLead, email: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Phone *</label>
+                        <input required value={newLead.phone} onChange={e => setNewLead({...newLead, phone: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-1">Property Address *</label>
+                      <input required value={newLead.property_address} onChange={e => setNewLead({...newLead, property_address: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">City *</label>
+                        <input required value={newLead.city} onChange={e => setNewLead({...newLead, city: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">State</label>
+                        <input value={newLead.state} onChange={e => setNewLead({...newLead, state: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Zip Code *</label>
+                        <input required value={newLead.zip_code} onChange={e => setNewLead({...newLead, zip_code: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Listing Price ($)</label>
+                        <input type="number" value={newLead.listing_price} onChange={e => setNewLead({...newLead, listing_price: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Est. Equity ($)</label>
+                        <input type="number" value={newLead.estimated_equity} onChange={e => setNewLead({...newLead, estimated_equity: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-600 mb-1">Est. Benefit ($)</label>
+                        <input type="number" value={newLead.estimated_benefit} onChange={e => setNewLead({...newLead, estimated_benefit: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                      </div>
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                      <button type="button" onClick={() => setShowAddLead(false)} className="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition">Cancel</button>
+                      <button type="submit" disabled={addingLead} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 disabled:bg-slate-300 transition">
+                        {addingLead ? 'Adding...' : 'Add Lead'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
 
             {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
