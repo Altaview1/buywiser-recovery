@@ -117,6 +117,7 @@ Deno.serve(async (req) => {
     }
 
     // Send notification email to admin
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'bennett@buywiser.com';
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -125,7 +126,7 @@ Deno.serve(async (req) => {
       },
       body: JSON.stringify({
         from: 'VTON System <noreply@buywiser.com>',
-        to: ['bennett@buywiser.com'],
+        to: [adminEmail],
         subject: `🚨 VTON Mail Failed: ${lead.first_name} ${lead.last_name} - ${lob_delivery_status || 'Delivery Failed'}`,
         html: emailHtml,
       }),

@@ -7,8 +7,33 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  */
 Deno.serve(async (req) => {
   try {
+    // Validate Lob webhook signature
+    const signature = req.headers.get('lob-signature');
+    const lobWebhookSecret = Deno.env.get('LOB_WEBHOOK_SECRET');
+    
+    if (!signature || !lobWebhookSecret) {
+      console.warn('Missing webhook signature or secret');
+      return Response.json({ error: 'Webhook signature validation failed' }, { status: 401 });
+    }
+
+    // Get the raw body for signature validation
+    const bodyText = await req.text();
+    const encoder = new TextEncoder();
+    const bodyData = encoder.encode(bodyText + lobWebhookSecret);
+    
+    // Compute HMAC SHA256
+    const keyData = encoder.encode(lobWebhookSecret);
+    const key = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const computed = await crypto.subtle.sign('HMAC', key, bodyData);
+    const computedHex = Array.from(new Uint8Array(computed)).map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    if (computedHex !== signature) {
+      console.warn(`Webhook signature mismatch: expected ${signature}, got ${computedHex}`);
+      return Response.json({ error: 'Invalid webhook signature' }, { status: 401 });
+    }
+
     const base44 = createClientFromRequest(req);
-    const payload = await req.json();
+    const payload = JSON.parse(bodyText);
 
     console.log('Lob Webhook Event Type:', payload.event_type);
 
