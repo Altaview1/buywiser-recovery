@@ -49,7 +49,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
             </p>
 
             <p style="margin:0 0 20px 0;">
-              Through our privately funded Veteran GAP Benefit program, as a qualifying veteran homeowner, you may be eligible to receive a closing credit applied toward your next home purchase. This benefit is funded entirely by Buywiser Home Loans—not by the VA or any government agency—as our way of honoring those who have served.
+              As a qualifying veteran homeowner, you may be eligible to receive a closing credit applied toward your next home purchase through our Veteran GAP Benefit program.
             </p>
           </td></tr>
           
@@ -64,14 +64,10 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
             </table>
           </td></tr>
           
-          <!-- Why This Matters -->
+          <!-- Next Step -->
           <tr><td style="padding:0 45px 24px 45px;font-size:12px;line-height:1.8;color:#2c3e50;">
             <p style="margin:0 0 16px 0;">
-              <strong>Why this matters now:</strong> This opportunity exists during your transition window—while your current home is actively listed. Timing is important, as available benefits can change based on individual circumstances and market conditions.
-            </p>
-            
-            <p style="margin:0;">
-              We recommend scheduling a brief, confidential consultation to understand your specific qualification and how this credit might apply to your next purchase. There is no cost or obligation.
+              <strong>Next step:</strong> Schedule a brief consultation to confirm your benefit amount and discuss how this credit applies to your next purchase. There is no cost and no obligation.
             </p>
           </td></tr>
           <!-- Contact and CTA -->
@@ -102,9 +98,9 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <!-- Footer -->
           <tr><td style="padding:24px 45px;background:#f8fafb;border-top:1px solid #e8eef5;font-size:9px;color:#7f8fa3;line-height:1.7;text-align:center;">
             <p style="margin:0;">
-              Buywiser Technology, Inc. DBA Buywiser Home Loans<br/>
-              Company NMLS #1887767 &nbsp; | &nbsp; Licensed by California DFPI<br/>
-              This program is privately funded and operated by Buywiser. It is not affiliated with or endorsed by the VA, any military branch, or any government agency. All benefits are subject to final qualification and loan approval. Equal Housing Opportunity.
+              Buywiser Technology, Inc. DBA Buywiser Home Loans &nbsp; | &nbsp; Company NMLS #1887767<br/>
+              Licensed by California DFPI under the Residential Mortgage Lending Act<br/>
+              This benefit is privately funded by Buywiser. All benefits subject to qualification and loan approval. Equal Housing Opportunity.
             </p>
           </td></tr>
         </table>
