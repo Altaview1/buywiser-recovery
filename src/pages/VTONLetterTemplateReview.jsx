@@ -45,10 +45,6 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <!-- Body Content -->
           <tr><td style="padding:24px 45px 0 45px;font-size:12px;line-height:1.8;color:#2c3e50;">
             <p style="margin:0 0 20px 0;">
-              Because you currently own (or recently owned) your home with VA financing, you qualify for an exclusive benefit through our privately funded Veteran GAP Benefit program. This program is designed specifically for veteran homeowners transitioning to their next home.
-            </p>
-
-            <p style="margin:0 0 20px 0;">
               As a qualifying veteran homeowner, you may be eligible to receive a closing credit applied toward your next home purchase through our Veteran GAP Benefit program.
             </p>
           </td></tr>
