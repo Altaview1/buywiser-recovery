@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { Resend } from 'npm:resend@3.2.0';
+
+const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 Deno.serve(async (req) => {
   try {
@@ -57,10 +60,11 @@ Deno.serve(async (req) => {
     `;
     const emailBody = testBanner + personalizedHtml;
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
+    await resend.emails.send({
+      from: 'BuyWiser VTON <notifications@buywiser.com>',
       to: toEmail,
       subject: `VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ' — Sample'}`,
-      body: emailBody,
+      html: emailBody,
     });
 
     return Response.json({ success: true, message: `Test email sent to ${toEmail}` });

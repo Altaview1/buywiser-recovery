@@ -1,4 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { Resend } from 'npm:resend@3.2.0';
+
+const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 Deno.serve(async (req) => {
   try {
@@ -14,7 +17,7 @@ Deno.serve(async (req) => {
     const name = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Unknown';
 
     const subject = `🎖️ New VTON Prospect Ready for Review: ${name}`;
-    const body = `A new veteran prospect has been imported and is ready for review.
+    const text = `A new veteran prospect has been imported and is ready for review.
 
 Name: ${name}
 Phone: ${lead.phone || 'Not provided'}
@@ -29,11 +32,11 @@ Review this lead in the VTON Campaign Dashboard:
 https://buywiser.com/vton-campaign
 `;
 
-    await base44.asServiceRole.integrations.Core.SendEmail({
+    await resend.emails.send({
+      from: 'BuyWiser VTON <notifications@buywiser.com>',
       to: adminEmail,
       subject,
-      body,
-      from_name: 'BuyWiser VTON',
+      text,
     });
 
     return Response.json({ status: 'success', leadName: name });
