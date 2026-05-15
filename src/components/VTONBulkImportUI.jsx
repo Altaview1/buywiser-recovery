@@ -13,6 +13,7 @@ export default function VTONBulkImportUI({ onImportComplete }) {
   const [mapping, setMapping] = useState(null);
   const [duplicateCheck, setDuplicateCheck] = useState(null);
   const [checkingDuplicates, setCheckingDuplicates] = useState(false);
+  const [addressDuplicates, setAddressDuplicates] = useState(null);
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -81,22 +82,63 @@ export default function VTONBulkImportUI({ onImportComplete }) {
         throw new Error('No leads found in file');
       }
 
-      // Extract emails and phones for duplicate check
+      // Extract emails, phones, and addresses for duplicate check
       const uploadEmails = data.filter(r => r.email).map(r => r.email.toLowerCase().trim());
       const uploadPhones = data.filter(r => r.phone).map(r => r.phone.replace(/\D/g, ''));
+      const uploadAddresses = data.filter(r => r.property_address).map(r => {
+        const addr = r.property_address.toLowerCase().trim();
+        const city = (r.city || '').toLowerCase().trim();
+        const state = (r.state || '').toUpperCase().trim();
+        const zip = (r.zip_code || '').replace(/\D/g, '').trim();
+        return `${addr}|${city}|${state}|${zip}`;
+      });
 
       // Get existing leads
       const existingLeads = await base44.entities.VTONLead.list(undefined, 10000);
       
       const existingEmails = new Set(existingLeads.map(l => l.email?.toLowerCase().trim()).filter(Boolean));
       const existingPhones = new Set(existingLeads.map(l => l.phone?.replace(/\D/g, '')).filter(Boolean));
+      const existingAddresses = new Map(
+        existingLeads
+          .filter(l => l.property_address)
+          .map(l => {
+            const addr = l.property_address.toLowerCase().trim();
+            const city = (l.city || '').toLowerCase().trim();
+            const state = (l.state || '').toUpperCase().trim();
+            const zip = (l.zip_code || '').replace(/\D/g, '').trim();
+            return [`${addr}|${city}|${state}|${zip}`, l];
+          })
+      );
 
-      // Find duplicates
+      // Find email and phone duplicates
       const emailDuplicates = data.filter(r => r.email && existingEmails.has(r.email.toLowerCase().trim()));
       const phoneDuplicates = data.filter(r => r.phone && existingPhones.has(r.phone.replace(/\D/g, '')));
       
-      // Combine duplicates (avoid counting same record twice)
-      const allDuplicates = new Set([...emailDuplicates, ...phoneDuplicates]);
+      // Find address duplicates
+      const addressDuplicateRecords = [];
+      data.forEach((record, index) => {
+        const addr = record.property_address?.toLowerCase().trim();
+        const city = (record.city || '').toLowerCase().trim();
+        const state = (record.state || '').toUpperCase().trim();
+        const zip = (record.zip_code || '').replace(/\D/g, '').trim();
+        const key = `${addr}|${city}|${state}|${zip}`;
+        
+        if (addr && existingAddresses.has(key)) {
+          addressDuplicateRecords.push({
+            row: index + 2,
+            address: record.property_address,
+            city: record.city,
+            state: record.state,
+            zip: record.zip_code,
+            existingLead: existingAddresses.get(key)
+          });
+        }
+      });
+
+      setAddressDuplicates(addressDuplicateRecords);
+      
+      // Combine all duplicates (avoid counting same record twice)
+      const allDuplicates = new Set([...emailDuplicates, ...phoneDuplicates, ...addressDuplicateRecords.map(d => data[d.row - 2])]);
 
       setDuplicateCheck({
         total: data.length,
@@ -104,6 +146,7 @@ export default function VTONBulkImportUI({ onImportComplete }) {
         newRecords: data.length - allDuplicates.size,
         emailDuplicates: emailDuplicates.length,
         phoneDuplicates: phoneDuplicates.length,
+        addressDuplicates: addressDuplicateRecords.length,
         duplicateRecords: [...allDuplicates].slice(0, 10) // First 10 for preview
       });
 
@@ -145,6 +188,7 @@ export default function VTONBulkImportUI({ onImportComplete }) {
       setCsvData(null);
       setMapping(null);
       setDuplicateCheck(null);
+      setAddressDuplicates(null);
 
       // Trigger refresh if callback provided
       setTimeout(() => {
@@ -198,6 +242,9 @@ export default function VTONBulkImportUI({ onImportComplete }) {
                   <div className="text-xs text-blue-600 space-y-1">
                     <p>• {duplicateCheck.emailDuplicates} records with matching email</p>
                     <p>• {duplicateCheck.phoneDuplicates} records with matching phone</p>
+                    {duplicateCheck.addressDuplicates > 0 && (
+                      <p>• {duplicateCheck.addressDuplicates} records with matching address</p>
+                    )}
                   </div>
                   
                   {duplicateCheck.duplicateRecords.length > 0 && (
@@ -205,11 +252,60 @@ export default function VTONBulkImportUI({ onImportComplete }) {
                       <p className="text-xs font-semibold text-blue-700 mb-1">Sample duplicates:</p>
                       {duplicateCheck.duplicateRecords.map((rec, i) => (
                         <p key={i} className="text-xs text-blue-600 truncate">
-                          • {rec.first_name} {rec.last_name} - {rec.email || rec.phone}
+                          • {rec.first_name} {rec.last_name} - {rec.email || rec.phone || rec.property_address}
                         </p>
                       ))}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* Address Duplicates Detail */}
+              {addressDuplicates && addressDuplicates.length > 0 && (
+                <div className="mt-4 bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <div className="flex items-start gap-2 mb-3">
+                    <AlertCircle className="h-5 w-5 text-orange-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="font-bold text-orange-900">Address Duplicates Detected</h4>
+                      <p className="text-sm text-orange-700">These properties already exist in your database</p>
+                    </div>
+                  </div>
+                  
+                  <div className="max-h-48 overflow-y-auto bg-white border border-orange-100 rounded-lg p-3">
+                    <table className="w-full text-xs">
+                      <thead className="text-orange-700 font-semibold border-b border-orange-200">
+                        <tr>
+                          <th className="text-left py-2">Row</th>
+                          <th className="text-left py-2">Address</th>
+                          <th className="text-left py-2">Existing Lead</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {addressDuplicates.slice(0, 10).map((dup, i) => (
+                          <tr key={i} className="border-b border-orange-100 last:border-0">
+                            <td className="py-2 text-orange-600 font-medium">{dup.row}</td>
+                            <td className="py-2 text-orange-700">
+                              {dup.address}<br/>
+                              <span className="text-orange-500">{dup.city}, {dup.state} {dup.zip}</span>
+                            </td>
+                            <td className="py-2 text-orange-600">
+                              {dup.existingLead.first_name} {dup.existingLead.last_name}<br/>
+                              <span className="text-orange-500">{dup.existingLead.email || dup.existingLead.phone}</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {addressDuplicates.length > 10 && (
+                      <p className="text-xs text-orange-600 text-center py-2">
+                        + {addressDuplicates.length - 10} more address duplicates
+                      </p>
+                    )}
+                  </div>
+                  
+                  <p className="text-xs text-orange-700 mt-3 font-medium">
+                    ⚠️ These {addressDuplicates.length} records will be skipped during import to prevent duplicates
+                  </p>
                 </div>
               )}
             </div>
@@ -223,6 +319,7 @@ export default function VTONBulkImportUI({ onImportComplete }) {
               setCsvData(null);
               setFile(null);
               setDuplicateCheck(null);
+              setAddressDuplicates(null);
             }}
           />
         </>
