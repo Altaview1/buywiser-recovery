@@ -221,7 +221,7 @@ export default function VTONLetterTemplateReview() {
       setMessage(`✓ Test email sent to ${testEmail}`);
       setTimeout(() => setMessage(''), 4000);
     } catch (err) {
-      setMessage('Error sending test email: ' + err.message);
+      setMessage('❌ Error: ' + (err?.response?.data?.error || err.message));
     } finally {
       setSendingTest(false);
     }
@@ -288,7 +288,7 @@ export default function VTONLetterTemplateReview() {
                 </>
               )}
             </div>
-            {message && <span className={`text-sm ${isApproved ? 'text-green-700' : 'text-slate-700'}`}>{message}</span>}
+            {message && <span className="text-sm font-medium text-slate-800">{message}</span>}
           </div>
         )}
 
