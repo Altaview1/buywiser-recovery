@@ -635,11 +635,21 @@ export default function VTONMailDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
+                              className="h-8 text-slate-600 hover:bg-slate-50 border-slate-200"
+                              onClick={() => window.open(`/vton-personalized/${lead.id}`, '_blank')}
+                              title="Preview personalized landing page"
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              Landing
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
                               className="h-8 text-blue-600 hover:bg-blue-50 border-blue-200"
                               onClick={() => handlePreviewLetter(lead)}
                             >
                               <Eye className="h-3 w-3 mr-1" />
-                              Preview
+                              Letter
                             </Button>
                             <Button
                               size="sm"
