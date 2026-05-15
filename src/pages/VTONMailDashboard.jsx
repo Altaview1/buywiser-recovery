@@ -174,10 +174,13 @@ export default function VTONMailDashboard() {
   };
 
   const handleSelectAll = (e) => {
-    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
-    console.log('Select all:', e.target.checked, pendingIds);
+    const selectableIds = paginatedLeads.filter(l => 
+      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
+      !l.lob_letter_id
+    ).map(l => l.id);
+    console.log('Select all:', e.target.checked, selectableIds);
     if (e.target.checked) {
-      setSelectedLeads([...pendingIds]);
+      setSelectedLeads([...selectableIds]);
     } else {
       setSelectedLeads([]);
     }
@@ -193,13 +196,19 @@ export default function VTONMailDashboard() {
   };
 
   const isAllSelected = () => {
-    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
-    return pendingIds.length > 0 && pendingIds.every(id => selectedLeads.includes(id));
+    const selectableIds = paginatedLeads.filter(l => 
+      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
+      !l.lob_letter_id
+    ).map(l => l.id);
+    return selectableIds.length > 0 && selectableIds.every(id => selectedLeads.includes(id));
   };
 
   const isSomeSelected = () => {
-    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
-    return selectedLeads.length > 0 && selectedLeads.some(id => pendingIds.includes(id));
+    const selectableIds = paginatedLeads.filter(l => 
+      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
+      !l.lob_letter_id
+    ).map(l => l.id);
+    return selectedLeads.length > 0 && selectedLeads.some(id => selectableIds.includes(id));
   };
 
   const handleBulkApprove = async () => {
@@ -230,6 +239,33 @@ export default function VTONMailDashboard() {
     } else {
       alert(`Successfully approved ${results.approved} mailers!`);
     }
+  };
+
+  const handleBulkSendToLob = async () => {
+    if (selectedLeads.length === 0) return;
+    
+    if (!confirm(`Send ${selectedLeads.length} approved letters to Lob?`)) return;
+    
+    setBulkProcessing(true);
+    const results = { sent: 0, failed: 0 };
+    
+    for (const leadId of selectedLeads) {
+      try {
+        await base44.functions.invoke('approveVTONMail', {
+          lead_id: leadId,
+          action: 'send_to_lob'
+        });
+        results.sent++;
+      } catch (error) {
+        results.failed++;
+      }
+    }
+    
+    setBulkProcessing(false);
+    setSelectedLeads([]);
+    refetch();
+    
+    alert(`Bulk Lob send: ${results.sent} sent, ${results.failed} failed`);
   };
 
   const handleBulkReject = async () => {
@@ -451,10 +487,18 @@ export default function VTONMailDashboard() {
 
               {/* Bulk Action Buttons */}
               {selectedLeads.length > 0 && (
-                <div className="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
-                  <span className="text-sm font-semibold text-amber-800">
+                <div className="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-lg border border-blue-200">
+                  <span className="text-sm font-semibold text-blue-800">
                     {selectedLeads.length} selected
                   </span>
+                  <Button
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    onClick={handleBulkSendToLob}
+                    disabled={bulkProcessing}
+                  >
+                    {bulkProcessing ? 'Sending...' : `📧 Send to Lob (${selectedLeads.length})`}
+                  </Button>
                   <Button
                     size="sm"
                     className="bg-green-600 hover:bg-green-700 text-white"
@@ -536,7 +580,7 @@ export default function VTONMailDashboard() {
                           type="checkbox"
                           onChange={() => handleSelectLead(lead.id)}
                           checked={selectedLeads.includes(lead.id)}
-                          disabled={lead.mail_approval_status !== 'pending_approval'}
+                          disabled={lead.lob_letter_id ? true : false}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
                         />
                       </TableCell>
