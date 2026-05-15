@@ -96,7 +96,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <tr><td style="padding:0 50px;">
             <p style="margin:0 0 16px 0;font-size:12px;color:#3d4856;">Sincerely,</p>
             <p style="margin:0 0 2px 0;font-size:12px;font-weight:600;color:#2c3e50;">Bennett Liss</p>
-            <p style="margin:0;font-size:11px;color:#8a96a8;">Founder<br/>Buywiser Home Loans | NMLS #1524446</p>
+            <p style="margin:0;font-size:11px;color:#8a96a8;">NMLS #1524446</p>
           </td></tr>
 
           <!-- Spacer -->
