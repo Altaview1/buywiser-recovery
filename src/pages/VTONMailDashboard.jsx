@@ -29,6 +29,7 @@ export default function VTONMailDashboard() {
     mailed: leads?.filter(l => l.lob_delivery_status === 'mailed').length || 0,
     delivered: leads?.filter(l => l.lob_delivery_status === 'delivered').length || 0,
     failed: leads?.filter(l => l.lob_delivery_status === 'failed' || l.lob_delivery_status === 'returned').length || 0,
+    totalCost: leads?.reduce((sum, l) => sum + (l.lob_estimated_cost || 0), 0) || 0,
   };
 
   // Filter leads by status
@@ -92,7 +93,21 @@ export default function VTONMailDashboard() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-slate-900 mb-2">VTON Direct Mail Dashboard</h1>
-          <p className="text-slate-600">Track Lob letter delivery status and mailing progress</p>
+          <p className="text-slate-600">Track Lob letter delivery status, costs, and mailing progress</p>
+          <div className="mt-3 flex items-center gap-4 text-sm">
+            <a 
+              href="https://dashboard.lob.com/#/settings/billing" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:underline flex items-center gap-1"
+            >
+              💳 View Lob Billing
+            </a>
+            <span className="text-slate-400">|</span>
+            <span className="text-slate-600">
+              Avg. cost per letter: <strong className="text-slate-900">${leads && leads.length > 0 ? (stats.totalCost / leads.length).toFixed(2) : '0.00'}</strong>
+            </span>
+          </div>
         </div>
 
         {/* Statistics Cards */}
@@ -146,6 +161,16 @@ export default function VTONMailDashboard() {
               <p className="text-xs text-slate-500 mt-1">Returned/failed</p>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-amber-600">Total Cost</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-amber-700">${stats.totalCost.toFixed(2)}</div>
+              <p className="text-xs text-slate-500 mt-1">Est. printing + postage</p>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Filters */}
@@ -195,6 +220,7 @@ export default function VTONMailDashboard() {
                     <TableHead>Property Address</TableHead>
                     <TableHead>Lob Letter ID</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Cost</TableHead>
                     <TableHead>Updated</TableHead>
                     <TableHead>Delivery Date</TableHead>
                   </TableRow>
@@ -230,6 +256,9 @@ export default function VTONMailDashboard() {
                       </TableCell>
                       <TableCell>
                         {getStatusBadge(lead.lob_delivery_status)}
+                      </TableCell>
+                      <TableCell className="text-sm font-medium text-slate-700">
+                        {lead.lob_estimated_cost ? `$${lead.lob_estimated_cost.toFixed(2)}` : '-'}
                       </TableCell>
                       <TableCell className="text-sm text-slate-600">
                         {formatDate(lead.lob_last_updated)}

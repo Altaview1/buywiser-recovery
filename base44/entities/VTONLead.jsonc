@@ -79,23 +79,27 @@
       "type": "string",
       "enum": [
         "processing",
-        "printed",
-        "in_transit",
+        "mailed",
         "delivered",
+        "failed",
         "returned",
         "cancelled"
       ],
-      "description": "Current Lob delivery tracking status"
-    },
-    "lob_delivered_date": {
-      "type": "string",
-      "format": "date-time",
-      "description": "Actual delivery date from Lob"
+      "description": "Current delivery status from Lob"
     },
     "lob_last_updated": {
       "type": "string",
       "format": "date-time",
-      "description": "Last tracking update timestamp"
+      "description": "Last status update from Lob webhook"
+    },
+    "lob_delivery_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Actual delivery date"
+    },
+    "lob_estimated_cost": {
+      "type": "number",
+      "description": "Estimated cost in USD (printing + postage)"
     },
     "sms_status": {
       "type": "string",

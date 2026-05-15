@@ -79,12 +79,16 @@ Deno.serve(async (req) => {
 
     const lobData = await lobResponse.json();
 
+    // Lob API response includes cost breakdown
+    const estimatedCost = lobData.amount ? (lobData.amount / 100) : 1.50; // Convert cents to USD, default $1.50
+
     // Update lead to mark letter as sent and store Lob letter ID for tracking
     await base44.asServiceRole.entities.VTONLead.update(lead_id, {
       direct_mail_sent: true,
       lob_letter_id: lobData.id,
       lob_delivery_status: 'processing',
-      lob_last_updated: new Date().toISOString()
+      lob_last_updated: new Date().toISOString(),
+      lob_estimated_cost: estimatedCost
     });
 
     return Response.json({ 
