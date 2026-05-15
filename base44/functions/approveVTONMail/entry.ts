@@ -57,8 +57,14 @@ Deno.serve(async (req) => {
           estimated_benefit: lead.estimated_benefit
         });
         
-        // Handle both response.data and direct response
-        mailResult = invokeResponse.data || invokeResponse;
+        // invokeResponse is an axios response with .data property
+        mailResult = invokeResponse.data;
+        
+        if (!mailResult) {
+          return Response.json({ 
+            error: 'Mail queue returned empty response' 
+          }, { status: 500 });
+        }
       } catch (invokeError) {
         console.error('Function invoke error:', invokeError);
         return Response.json({ 
