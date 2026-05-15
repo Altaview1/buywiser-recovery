@@ -530,17 +530,6 @@ export default function VTONMailDashboard() {
                 >
                   ✓ Select All Pending
                 </Button>
-
-                {selectedLeads.length > 0 && (
-                  <Button 
-                    size="sm"
-                    className="bg-green-600 hover:bg-green-700 text-white"
-                    onClick={handleBulkApprove}
-                    disabled={bulkProcessing}
-                  >
-                    {bulkProcessing ? 'Approving...' : `✓ Approve ${selectedLeads.length}`}
-                  </Button>
-                )}
               </div>
 
               {/* Search Bar */}
