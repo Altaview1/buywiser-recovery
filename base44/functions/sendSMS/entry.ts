@@ -17,7 +17,7 @@ Deno.serve(async (req) => {
     const { message, phone } = await req.json();
 
     const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-    const apiKey = Deno.env.get("TWILIO_API_KEY");
+    const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
     const from = Deno.env.get("TWILIO_FROM_NUMBER");
     const rawPhone = phone || Deno.env.get("BENNETT_PHONE");
     const to = formatPhone(rawPhone);
@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       {
         method: "POST",
         headers: {
-          "Authorization": "Bearer " + apiKey,
+          "Authorization": "Basic " + btoa(`${accountSid}:${authToken}`),
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: new URLSearchParams({ To: to, From: from, Body: message }),
