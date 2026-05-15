@@ -449,8 +449,7 @@ export default function VTONMailDashboard() {
                       <input
                         type="checkbox"
                         onChange={handleSelectAll}
-                        checked={paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').length > 0 && 
-                                paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').every(l => selectedLeads.includes(l.id))}
+                        checked={selectedLeads.length > 0 && paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').length === selectedLeads.length}
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
@@ -476,9 +475,23 @@ export default function VTONMailDashboard() {
                         />
                       </TableCell>
                       <TableCell className="font-medium">
-                        {lead.first_name} {lead.last_name}
-                        {lead.spouse_name && (
-                          <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
+                        {lead.mail_approval_status === 'pending_approval' ? (
+                          <button
+                            onClick={() => handlePreviewLetter(lead)}
+                            className="text-blue-600 hover:underline font-medium text-left"
+                          >
+                            {lead.first_name} {lead.last_name}
+                            {lead.spouse_name && (
+                              <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
+                            )}
+                          </button>
+                        ) : (
+                          <span>
+                            {lead.first_name} {lead.last_name}
+                            {lead.spouse_name && (
+                              <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
+                            )}
+                          </span>
                         )}
                       </TableCell>
                       <TableCell>
