@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import VTONMailPipeline from '@/components/vton/VTONMailPipeline';
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -390,6 +391,12 @@ export default function VTONMailDashboard() {
               Status: <strong className="text-green-600">{leads?.filter(l => l.mail_approval_status === 'approved').length || 0} Approved</strong>, <strong className="text-amber-600">{stats.pendingApproval} Pending</strong>, <strong className="text-red-600">{leads?.filter(l => l.mail_approval_status === 'rejected').length || 0} Rejected</strong>
             </span>
           </div>
+        </div>
+
+        {/* Pipeline View */}
+        <div className="mb-8">
+          <h2 className="text-lg font-semibold text-slate-900 mb-4">Mailing Pipeline Status</h2>
+          <VTONMailPipeline />
         </div>
 
         {/* Statistics Cards */}
