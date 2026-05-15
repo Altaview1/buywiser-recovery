@@ -308,9 +308,19 @@ export default function VTONLetterTemplateReview() {
   return (
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Header with Navigation */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">VTON™ Letter Template</h1>
+          <div className="flex items-center justify-between mb-2">
+            <h1 className="text-3xl font-bold text-slate-900">VTON™ Letter Template</h1>
+            <div className="flex gap-2">
+              <a href="/vton-mail-dashboard" className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+                📧 Mail Dashboard
+              </a>
+              <a href="/vton-campaign" className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+                📊 Campaign Dashboard
+              </a>
+            </div>
+          </div>
           <p className="text-slate-600">Customize and approve the letter that will be sent to all new veteran leads.</p>
         </div>
 
