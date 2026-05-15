@@ -30,13 +30,8 @@ export default function VTONMailPipeline() {
       color: 'bg-blue-50 border-blue-200',
       leads: []
     },
-    sent_to_lob: {
-      label: '📧 Sent to Lob',
-      color: 'bg-purple-50 border-purple-200',
-      leads: []
-    },
     processing: {
-      label: '🖨️ Printing',
+      label: '✅ At Lob (Printing)',
       color: 'bg-indigo-50 border-indigo-200',
       leads: []
     },
@@ -64,8 +59,6 @@ export default function VTONMailPipeline() {
         stages.pending_approval.leads.push(lead);
       } else if (lead.mail_approval_status === 'approved' && !lead.lob_letter_id) {
         stages.approved.leads.push(lead);
-      } else if (lead.lob_letter_id && !lead.lob_delivery_status) {
-        stages.sent_to_lob.leads.push(lead);
       } else if (lead.lob_delivery_status === 'processing') {
         stages.processing.leads.push(lead);
       } else if (lead.lob_delivery_status === 'mailed') {
@@ -89,7 +82,7 @@ export default function VTONMailPipeline() {
     );
   }
 
-  const stageOrder = ['pending_approval', 'approved', 'sent_to_lob', 'processing', 'mailed', 'delivered', 'failed'];
+  const stageOrder = ['pending_approval', 'approved', 'processing', 'mailed', 'delivered', 'failed'];
 
   return (
     <div className="space-y-4">
@@ -167,14 +160,13 @@ export default function VTONMailPipeline() {
       <Card className="bg-slate-50 border-slate-200">
         <CardContent className="pt-4">
           <p className="text-xs font-semibold text-slate-600 mb-3">Pipeline Stages:</p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs text-slate-600">
-            <div>📋 <strong>Pending Review</strong> - Waiting for approval</div>
-            <div>✓ <strong>Approved</strong> - Ready to send to Lob</div>
-            <div>📧 <strong>Sent to Lob</strong> - In Lob's queue</div>
-            <div>🖨️ <strong>Printing</strong> - Being produced</div>
-            <div>📦 <strong>In Transit</strong> - Mailed out</div>
-            <div>✓ <strong>Delivered</strong> - Successfully received</div>
-            <div>✕ <strong>Failed</strong> - Returned or failed</div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 text-xs text-slate-600">
+            <div>📋 <strong>Pending Review</strong> - Waiting for your approval</div>
+            <div>✓ <strong>Approved</strong> - Ready to submit to Lob</div>
+            <div>✅ <strong>At Lob (Printing)</strong> - Submitted to Lob, being printed (you're billed here)</div>
+            <div>📦 <strong>In Transit</strong> - Left Lob's facility, in postal system</div>
+            <div>✓ <strong>Delivered</strong> - Successfully delivered to homeowner</div>
+            <div>✕ <strong>Failed</strong> - Returned or failed delivery</div>
           </div>
         </CardContent>
       </Card>
