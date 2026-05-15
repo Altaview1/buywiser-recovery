@@ -606,6 +606,11 @@ export default function VTONMailDashboard() {
                             Sent
                           </Badge>
                         )}
+                        {!lead.mail_approval_status && (
+                          <Badge className="bg-gray-100 text-gray-700">
+                            No Status
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell>
                         {lead.lob_letter_id ? (
