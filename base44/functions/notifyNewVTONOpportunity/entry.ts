@@ -62,10 +62,12 @@ Deno.serve(async (req) => {
     const homeownerName = opportunity.homeowner_name || 'Unknown Homeowner';
     const city = opportunity.city || '';
     const state = opportunity.state || '';
-    const phone = opportunity.homeowner_phone || 'N/A';
+    const homeownerPhone = opportunity.homeowner_phone || 'N/A';
     const email = opportunity.homeowner_email || 'N/A';
     const partnerEmail = opportunity.partner_email || 'Unassigned';
     const estimatedPrice = opportunity.estimated_price ? `$${opportunity.estimated_price.toLocaleString()}` : 'Unknown';
+    const priority = opportunity.priority || 'medium';
+    const isHighPriority = priority === 'high';
 
     // Email HTML
     const emailHtml = `
@@ -121,12 +123,23 @@ Deno.serve(async (req) => {
       notes: `Automated notification for new VTON opportunity`
     });
 
-    // Send SMS notification
+    // Send SMS to admin
     if (ADMIN_PHONE) {
       await sendSMS(ADMIN_PHONE, smsMessage);
     }
 
-    console.log(`VTON opportunity notification sent for ${homeownerName}`);
+    // HIGH PRIORITY: Send urgent SMS to assigned partner
+    if (isHighPriority && partnerEmail !== 'Unassigned') {
+      const partner = await base44.asServiceRole.entities.PartnerApplication.filter({ email: partnerEmail, status: 'approved' }).then(results => results[0]);
+      
+      if (partner && partner.phone) {
+        const urgentSms = `🚨 HIGH PRIORITY VTON LEAD\n\n${homeownerName}\n${propertyAddress}\n${city}, ${state}\nPhone: ${homeownerPhone}\nValue: ${estimatedPrice}\n\n⚡ CONTACT IMMEDIATELY - Priority Lead!`;
+        await sendSMS(partner.phone, urgentSms);
+        console.log(`High priority SMS sent to partner ${partnerEmail} at ${partner.phone}`);
+      }
+    }
+
+    console.log(`VTON opportunity notification sent for ${homeownerName} (Priority: ${priority})`);
     return Response.json({ 
       success: true, 
       opportunityId: opportunity.id,
