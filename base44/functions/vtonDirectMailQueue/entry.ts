@@ -51,8 +51,8 @@ Deno.serve(async (req) => {
       .replace(/\$\{zip_code\}/g, zip_code)
       .replace(/\$\{estimated_benefit\}/g, estimated_benefit?.toString() || 'TBD');
 
-    // Generate personalized QR code URL
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-benefit?lead=${lead_id}`)}`;
+    // Generate QR code pointing to testimonials page (no lead tracking)
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-testimonials`)}`;
     const finalLetterHtml = letterHtml.replace(/\$\{qrUrl\}/g, qrUrl);
 
     // Encode HTML as base64 for Lob API

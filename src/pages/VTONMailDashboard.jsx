@@ -156,8 +156,8 @@ export default function VTONMailDashboard() {
     preview = preview.replace(/\$\{listing_price\}/g, 
       lead.listing_price ? `$${lead.listing_price.toLocaleString()}` : 'TBD');
     
-    // Add QR code URL
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-benefit?lead=${lead.id}`)}`;
+    // Add QR code URL pointing to testimonials page
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-testimonials`)}`;
     preview = preview.replace(/\$\{qrUrl\}/g, qrUrl);
     
     return preview;
