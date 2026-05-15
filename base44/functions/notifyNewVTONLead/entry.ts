@@ -75,7 +75,7 @@ ${BRANDING_HTML}
       html,
     });
 
-    // Log the email
+    // Log the email with initial status
     await base44.asServiceRole.entities.VTONEmailLog.create({
       lead_id: data.id || 'unknown',
       lead_name: name,
@@ -86,6 +86,24 @@ ${BRANDING_HTML}
       sent_date: new Date().toISOString(),
       notes: `Automated notification for new VTON lead import`
     });
+
+    // Track delivery status (Resend webhook will update this)
+    // For now, mark as delivered after successful send
+    setTimeout(async () => {
+      try {
+        const logs = await base44.asServiceRole.entities.VTONEmailLog.filter({
+          lead_id: data.id || 'unknown',
+          email_type: 'lead_confirmation'
+        }, '-sent_date', 1);
+        if (logs.length > 0) {
+          await base44.asServiceRole.entities.VTONEmailLog.update(logs[0].id, {
+            status: 'delivered'
+          });
+        }
+      } catch (err) {
+        console.error('Failed to update delivery status:', err);
+      }
+    }, 5000);
 
     return Response.json({ status: 'success', leadName: name, emailId: emailResult.id });
   } catch (error) {

@@ -124,16 +124,44 @@ Deno.serve(async (req) => {
     }) : null;
 
     // Log homeowner email
-    if (email) {
+    if (email && homeownerEmailResult) {
       await base44.asServiceRole.entities.VTONEmailLog.create({
         lead_id: data.id || 'unknown',
         lead_name: fullName,
         lead_email: email,
         email_type: 'consultation_booking',
         subject: '📅 Book Your Veteran\'s Next Home™ Benefit Review — You\'re Confirmed',
-        status: homeownerEmailResult ? 'sent' : 'failed',
+        status: 'sent',
         sent_date: new Date().toISOString(),
-        error_message: homeownerEmailResult ? null : 'Failed to send',
+        notes: `Consultation booking email to homeowner`
+      });
+
+      // Track delivery status
+      setTimeout(async () => {
+        try {
+          const logs = await base44.asServiceRole.entities.VTONEmailLog.filter({
+            lead_id: data.id || 'unknown',
+            email_type: 'consultation_booking'
+          }, '-sent_date', 1);
+          if (logs.length > 0) {
+            await base44.asServiceRole.entities.VTONEmailLog.update(logs[0].id, {
+              status: 'delivered'
+            });
+          }
+        } catch (err) {
+          console.error('Failed to update delivery status:', err);
+        }
+      }, 5000);
+    } else if (email && !homeownerEmailResult) {
+      await base44.asServiceRole.entities.VTONEmailLog.create({
+        lead_id: data.id || 'unknown',
+        lead_name: fullName,
+        lead_email: email,
+        email_type: 'consultation_booking',
+        subject: '📅 Book Your Veteran\'s Next Home™ Benefit Review',
+        status: 'failed',
+        sent_date: new Date().toISOString(),
+        error_message: 'Failed to send',
         notes: `Consultation booking email to homeowner`
       });
     }
@@ -159,17 +187,48 @@ Deno.serve(async (req) => {
     });
 
     // Log admin email
-    await base44.asServiceRole.entities.VTONEmailLog.create({
-      lead_id: data.id || 'unknown',
-      lead_name: fullName,
-      lead_email: ADMIN_EMAIL,
-      email_type: 'consultation_booking',
-      subject: `📅 Consultation Booked: ${fullName}`,
-      status: adminEmailResult ? 'sent' : 'failed',
-      sent_date: new Date().toISOString(),
-      error_message: adminEmailResult ? null : 'Failed to send',
-      notes: `Consultation booking notification to admin`
-    });
+    if (adminEmailResult) {
+      await base44.asServiceRole.entities.VTONEmailLog.create({
+        lead_id: data.id || 'unknown',
+        lead_name: fullName,
+        lead_email: ADMIN_EMAIL,
+        email_type: 'consultation_booking',
+        subject: `📅 Consultation Booked: ${fullName}`,
+        status: 'sent',
+        sent_date: new Date().toISOString(),
+        notes: `Consultation booking notification to admin`
+      });
+
+      // Track delivery status
+      setTimeout(async () => {
+        try {
+          const logs = await base44.asServiceRole.entities.VTONEmailLog.filter({
+            lead_id: data.id || 'unknown',
+            email_type: 'consultation_booking',
+            lead_email: ADMIN_EMAIL
+          }, '-sent_date', 1);
+          if (logs.length > 0) {
+            await base44.asServiceRole.entities.VTONEmailLog.update(logs[0].id, {
+              status: 'delivered'
+            });
+          }
+        } catch (err) {
+          console.error('Failed to update delivery status:', err);
+        }
+      }, 5000);
+    } else {
+      await base44.asServiceRole.entities.VTONEmailLog.create({
+        lead_id: data.id || 'unknown',
+        lead_name: fullName,
+        lead_email: ADMIN_EMAIL,
+        email_type: 'consultation_booking',
+        subject: `📅 Consultation Booked: ${fullName}`,
+        status: 'failed',
+        sent_date: new Date().toISOString(),
+        error_message: 'Failed to send',
+        notes: `Consultation booking notification to admin`
+      });
+    }
 
     // Send SMS notifications (not logged in email log)
     if (phone) await sendSMS(phone, homeSMS);

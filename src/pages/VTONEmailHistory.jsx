@@ -14,7 +14,10 @@ export default function VTONEmailHistory() {
   const [stats, setStats] = useState({
     total: 0,
     sent: 0,
+    delivered: 0,
+    opened: 0,
     failed: 0,
+    bounced: 0,
     thisWeek: 0
   });
 
@@ -32,8 +35,11 @@ export default function VTONEmailHistory() {
 
       const stats = {
         total: allLogs.length,
-        sent: allLogs.filter(l => l.status === 'sent' || l.status === 'delivered').length,
-        failed: allLogs.filter(l => l.status === 'failed' || l.status === 'bounced').length,
+        sent: allLogs.filter(l => l.status === 'sent').length,
+        delivered: allLogs.filter(l => l.status === 'delivered').length,
+        opened: allLogs.filter(l => l.status === 'opened').length,
+        failed: allLogs.filter(l => l.status === 'failed').length,
+        bounced: allLogs.filter(l => l.status === 'bounced').length,
         thisWeek: allLogs.filter(l => new Date(l.sent_date) > weekAgo).length
       };
       setStats(stats);
@@ -68,8 +74,9 @@ export default function VTONEmailHistory() {
   ];
 
   const statusConfig = {
-    sent: { color: 'bg-green-100 text-green-800', icon: CheckCircle, label: 'Sent' },
+    sent: { color: 'bg-blue-100 text-blue-800', icon: Mail, label: 'Sent' },
     delivered: { color: 'bg-green-100 text-green-800', icon: CheckCircle, label: 'Delivered' },
+    opened: { color: 'bg-purple-100 text-purple-800', icon: Eye, label: 'Opened' },
     failed: { color: 'bg-red-100 text-red-800', icon: XCircle, label: 'Failed' },
     bounced: { color: 'bg-red-100 text-red-800', icon: XCircle, label: 'Bounced' }
   };
@@ -132,10 +139,30 @@ export default function VTONEmailHistory() {
           <div className="bg-white rounded-xl p-4 border border-slate-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-semibold text-slate-500 uppercase">Sent Successfully</p>
-                <p className="text-3xl font-bold text-green-600 mt-1">{stats.sent}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Sent</p>
+                <p className="text-3xl font-bold text-blue-600 mt-1">{stats.sent}</p>
+              </div>
+              <Mail className="h-8 w-8 text-slate-300" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Delivered</p>
+                <p className="text-3xl font-bold text-green-600 mt-1">{stats.delivered}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-slate-300" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Opened</p>
+                <p className="text-3xl font-bold text-purple-600 mt-1">{stats.opened}</p>
+              </div>
+              <Eye className="h-8 w-8 text-slate-300" />
             </div>
           </div>
 
@@ -190,6 +217,7 @@ export default function VTONEmailHistory() {
               <option value="all">All Status</option>
               <option value="sent">Sent</option>
               <option value="delivered">Delivered</option>
+              <option value="opened">Opened</option>
               <option value="failed">Failed</option>
               <option value="bounced">Bounced</option>
             </select>

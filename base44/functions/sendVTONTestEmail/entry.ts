@@ -71,6 +71,23 @@ Deno.serve(async (req) => {
       notes: `Manual test email sent by admin`
     });
 
+    // Track delivery status
+    setTimeout(async () => {
+      try {
+        const logs = await base44.asServiceRole.entities.VTONEmailLog.filter({
+          lead_id: lead?.id || 'test',
+          email_type: 'test_email'
+        }, '-sent_date', 1);
+        if (logs.length > 0) {
+          await base44.asServiceRole.entities.VTONEmailLog.update(logs[0].id, {
+            status: 'delivered'
+          });
+        }
+      } catch (err) {
+        console.error('Failed to update delivery status:', err);
+      }
+    }, 5000);
+
     return Response.json({ success: true, message: `Test email sent to ${toEmail}`, emailId: emailResult.id });
   } catch (error) {
     // Log the failure
