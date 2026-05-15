@@ -529,13 +529,7 @@ export default function VTONMailDashboard() {
                       <TableCell>
                         <input
                           type="checkbox"
-                          onChange={(e) => {
-                            e.stopPropagation();
-                            handleSelectLead(lead.id);
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                          }}
+                          onChange={() => handleSelectLead(lead.id)}
                           checked={selectedLeads.includes(lead.id)}
                           disabled={lead.mail_approval_status !== 'pending_approval'}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
