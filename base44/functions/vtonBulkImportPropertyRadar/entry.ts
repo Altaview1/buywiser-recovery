@@ -100,16 +100,33 @@ Deno.serve(async (req) => {
 
 /**
  * Map PropertyRadar export fields to VTONLead entity
- * Handles standard PropertyRadar format: Type, Address, City, Est Value, Est Equity $, Owner, Distress Score, Listing DOM
+ * Handles both PropertyRadar export formats:
+ * - CSV export: Primary First, Primary Last, Secondary First, Secondary Last
+ * - Standard format: Owner, Address, City, Est Value, Est Equity $, Distress Score, Listing DOM
  */
 function mapPropertyRadarLead(rawLead) {
-  // Parse Owner field: "LASTNAME,FIRSTNAME MIDDLE & SPOUSE" → {first_name, last_name, spouse_name}
-  const { first_name, last_name, spouse_name } = parseOwnerField(rawLead.Owner || '');
+  // Try CSV format first (Primary First/Last), then fall back to Owner field parsing
+  let first_name = '';
+  let last_name = '';
+  let spouse_name = '';
+
+  if (rawLead['Primary First'] || rawLead['Primary Last']) {
+    // CSV export format
+    first_name = (rawLead['Primary First'] || '').trim();
+    last_name = (rawLead['Primary Last'] || '').trim();
+    spouse_name = ((rawLead['Secondary First'] || '') + ' ' + (rawLead['Secondary Last'] || '')).trim();
+  } else {
+    // Standard format - parse Owner field
+    const parsed = parseOwnerField(rawLead.Owner || '');
+    first_name = parsed.first_name;
+    last_name = parsed.last_name;
+    spouse_name = parsed.spouse_name;
+  }
 
   return {
-    // Owner info
-    first_name: first_name || rawLead.owner_first_name || rawLead.first_name || '',
-    last_name: last_name || rawLead.owner_last_name || rawLead.last_name || '',
+    // Owner info (use parsed values directly, no fallback to avoid duplication)
+    first_name: first_name,
+    last_name: last_name,
     spouse_name: spouse_name || rawLead.spouse_name || rawLead.co_owner_name || '',
     
     // Contact info
