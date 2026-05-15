@@ -12,21 +12,9 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
       <tr><td align="center">
         <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;margin-top:16px;margin-bottom:16px;">
 
-          <!-- Subtle Header with Logo & Date -->
-          <tr><td style="padding:48px 50px 8px 50px;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td style="vertical-align:middle;">
-                  <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="Buywiser" width="32" height="32" style="display:block;border-radius:2px;" />
-                </td>
-                <td style="vertical-align:middle;padding-left:12px;">
-                  <p style="margin:0;font-size:9px;text-transform:uppercase;letter-spacing:1.2px;color:#5a6c7d;font-weight:500;">VTON™ PROGRAM</p>
-                </td>
-                <td style="vertical-align:middle;text-align:right;">
-                  <p style="margin:0;font-size:10px;color:#8a96a8;">May 2026</p>
-                </td>
-              </tr>
-            </table>
+          <!-- Minimal Header - Date Only -->
+          <tr><td style="padding:48px 50px 8px 50px;text-align:right;">
+            <p style="margin:0;font-size:10px;color:#8a96a8;">May 2026</p>
           </td></tr>
 
           <!-- Spacer -->
