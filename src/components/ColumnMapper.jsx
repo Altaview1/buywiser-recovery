@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ChevronDown, AlertCircle, CheckCircle, Save, Trash2, Download } from 'lucide-react';
+import { ChevronDown, AlertCircle, CheckCircle, Save, Trash2, Download, Loader } from 'lucide-react';
 
 const MAPPING_STORAGE_KEY = 'vton_column_mappings';
 
@@ -43,6 +43,8 @@ export default function ColumnMapper({ csvHeaders, onMappingConfirm, onCancel })
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [saveName, setSaveName] = useState('');
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isImporting, setIsImporting] = useState(false);
+  const [importProgress, setImportProgress] = useState(0);
 
   const requiredFields = VTON_FIELDS.filter(f => f.required);
   const mappedRequired = requiredFields.filter(f => mapping[f.name]);
@@ -191,13 +193,14 @@ export default function ColumnMapper({ csvHeaders, onMappingConfirm, onCancel })
       <div className="flex gap-3 pt-4 border-t border-slate-200">
         <button
           onClick={onCancel}
-          className="px-4 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 transition"
+          disabled={isImporting}
+          className="px-4 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 transition"
         >
           Cancel
         </button>
         <button
           onClick={() => setShowSaveModal(true)}
-          disabled={!isValid}
+          disabled={!isValid || isImporting}
           className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 transition"
           title="Save this mapping for future imports"
         >
@@ -205,11 +208,30 @@ export default function ColumnMapper({ csvHeaders, onMappingConfirm, onCancel })
           Save Mapping
         </button>
         <button
-          onClick={() => onMappingConfirm(mapping)}
-          disabled={!isValid}
-          className="flex-1 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition"
+          onClick={async () => {
+            setIsImporting(true);
+            setImportProgress(0);
+            const progressInterval = setInterval(() => {
+              setImportProgress(prev => Math.min(prev + Math.random() * 25, 90));
+            }, 300);
+            try {
+              await onMappingConfirm(mapping);
+            } finally {
+              clearInterval(progressInterval);
+              setImportProgress(100);
+              setIsImporting(false);
+            }
+          }}
+          disabled={!isValid || isImporting}
+          className="flex-1 relative overflow-hidden px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition"
         >
-          Confirm & Import
+          {isImporting && (
+            <div className="absolute inset-0 bg-blue-400/30 transition-all" style={{ width: `${importProgress}%` }} />
+          )}
+          <span className="relative flex items-center justify-center gap-2">
+            {isImporting && <Loader className="h-4 w-4 animate-spin" />}
+            {isImporting ? 'Importing...' : 'Confirm & Import'}
+          </span>
         </button>
       </div>
 
