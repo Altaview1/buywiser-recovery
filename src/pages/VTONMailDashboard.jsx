@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+  const [bulkProcessing, setBulkProcessing] = useState(false);
   const itemsPerPage = 20;
 
   // Fetch all VTON leads with mail data (including pending approvals)
@@ -92,6 +94,77 @@ export default function VTONMailDashboard() {
       console.error('Approval error:', error);
       alert(`Failed to ${action} mail: ${error.message}`);
     }
+  };
+
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedLeads(paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id));
+    } else {
+      setSelectedLeads([]);
+    }
+  };
+
+  const handleSelectLead = (leadId) => {
+    setSelectedLeads(prev => 
+      prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
+    );
+  };
+
+  const handleBulkApprove = async () => {
+    if (selectedLeads.length === 0) return;
+    
+    setBulkProcessing(true);
+    const results = { approved: 0, failed: 0, errors: [] };
+    
+    for (const leadId of selectedLeads) {
+      try {
+        await base44.functions.invoke('approveVTONMail', {
+          lead_id: leadId,
+          action: 'approve'
+        });
+        results.approved++;
+      } catch (error) {
+        results.failed++;
+        results.errors.push({ leadId, error: error.message });
+      }
+    }
+    
+    setBulkProcessing(false);
+    setSelectedLeads([]);
+    refetch();
+    
+    if (results.failed > 0) {
+      alert(`Bulk approval complete: ${results.approved} approved, ${results.failed} failed`);
+    } else {
+      alert(`Successfully approved ${results.approved} mailers!`);
+    }
+  };
+
+  const handleBulkReject = async () => {
+    if (selectedLeads.length === 0) return;
+    
+    if (!confirm(`Reject ${selectedLeads.length} selected mailers? This cannot be undone.`)) return;
+    
+    setBulkProcessing(true);
+    const results = { rejected: 0, failed: 0 };
+    
+    for (const leadId of selectedLeads) {
+      try {
+        await base44.functions.invoke('approveVTONMail', {
+          lead_id: leadId,
+          action: 'reject'
+        });
+        results.rejected++;
+      } catch (error) {
+        results.failed++;
+      }
+    }
+    
+    setBulkProcessing(false);
+    setSelectedLeads([]);
+    refetch();
+    
+    alert(`Bulk rejection complete: ${results.rejected} rejected, ${results.failed} failed`);
   };
 
   if (isLoading) {
@@ -201,28 +274,63 @@ export default function VTONMailDashboard() {
           </Card>
         </div>
 
-        {/* Filters */}
+        {/* Filters and Bulk Actions */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4 flex-wrap">
-              <label className="text-sm font-medium text-slate-700">Filter by status:</label>
-              <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="All statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="pending_approval">Pending Approval</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="mailed">Mailed</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                  <SelectItem value="returned">Returned</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm" onClick={() => refetch()}>
-                Refresh
-              </Button>
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div className="flex items-center gap-4 flex-wrap">
+                <label className="text-sm font-medium text-slate-700">Filter by status:</label>
+                <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="All statuses" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Statuses</SelectItem>
+                    <SelectItem value="pending_approval">Pending Approval</SelectItem>
+                    <SelectItem value="processing">Processing</SelectItem>
+                    <SelectItem value="mailed">Mailed</SelectItem>
+                    <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="failed">Failed</SelectItem>
+                    <SelectItem value="returned">Returned</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm" onClick={() => refetch()}>
+                  Refresh
+                </Button>
+              </div>
+
+              {/* Bulk Action Buttons */}
+              {selectedLeads.length > 0 && (
+                <div className="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-lg border border-amber-200">
+                  <span className="text-sm font-semibold text-amber-800">
+                    {selectedLeads.length} selected
+                  </span>
+                  <Button
+                    size="sm"
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleBulkApprove}
+                    disabled={bulkProcessing}
+                  >
+                    {bulkProcessing ? 'Processing...' : `Approve ${selectedLeads.length}`}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 hover:bg-red-50 border-red-200"
+                    onClick={handleBulkReject}
+                    disabled={bulkProcessing}
+                  >
+                    Reject {selectedLeads.length}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedLeads([])}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -245,6 +353,15 @@ export default function VTONMailDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <input
+                        type="checkbox"
+                        onChange={handleSelectAll}
+                        checked={paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').length > 0 && 
+                                paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').every(l => selectedLeads.includes(l.id))}
+                        className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </TableHead>
                     <TableHead>Veteran Name</TableHead>
                     <TableHead>Property Address</TableHead>
                     <TableHead>Approval Status</TableHead>
@@ -256,7 +373,16 @@ export default function VTONMailDashboard() {
                 </TableHeader>
                 <TableBody>
                   {paginatedLeads.map((lead) => (
-                    <TableRow key={lead.id}>
+                    <TableRow key={lead.id} className={selectedLeads.includes(lead.id) ? 'bg-blue-50' : ''}>
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          onChange={() => handleSelectLead(lead.id)}
+                          checked={selectedLeads.includes(lead.id)}
+                          disabled={lead.mail_approval_status !== 'pending_approval'}
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">
                         {lead.first_name} {lead.last_name}
                         {lead.spouse_name && (
