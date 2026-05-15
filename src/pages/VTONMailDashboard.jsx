@@ -582,7 +582,7 @@ export default function VTONMailDashboard() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        {lead.mail_approval_status === 'pending_approval' && (
+                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && (
                           <Badge className="bg-amber-100 text-amber-800">
                             <Eye className="h-3 w-3 mr-1" />
                             Pending Review
@@ -604,11 +604,6 @@ export default function VTONMailDashboard() {
                           <Badge className="bg-green-100 text-green-800">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Sent
-                          </Badge>
-                        )}
-                        {!lead.mail_approval_status && (
-                          <Badge className="bg-gray-100 text-gray-700">
-                            No Status
                           </Badge>
                         )}
                       </TableCell>
