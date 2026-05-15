@@ -13,20 +13,8 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
         <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;margin-top:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
           <!-- Header Section -->
           <tr><td style="padding:40px 45px 20px 45px;border-bottom:1px solid #e8eef5;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0">
-              <tr>
-                <td style="vertical-align:top;">
-                  <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="48" height="48" style="display:block;border-radius:4px;" />
-                </td>
-                <td style="vertical-align:top;padding-left:16px;">
-                  <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#7f8fa3;font-weight:600;">Veteran Transition Benefit</p>
-                  <p style="margin:4px 0 0 0;font-size:12px;color:#2c3e50;">by Buywiser Home Loans</p>
-                </td>
-                <td style="vertical-align:top;text-align:right;padding-left:20px;">
-                  <p style="margin:0;font-size:11px;color:#7f8fa3;">May 2026</p>
-                </td>
-              </tr>
-            </table>
+            <p style="margin:0;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:#7f8fa3;font-weight:600;">Personal Notice</p>
+            <p style="margin:4px 0 0 0;font-size:12px;color:#2c3e50;">May 2026</p>
           </td></tr>
           <!-- Recipient Address -->
           <tr><td style="padding:36px 45px 32px 45px;border-bottom:1px solid #e8eef5;">
