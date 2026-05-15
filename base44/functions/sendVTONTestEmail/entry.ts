@@ -8,10 +8,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Authentication required' }, { status: 401 });
     }
 
-    const { toEmail, templateHtml, leadId } = await req.json();
+    const { toEmail, leadId } = await req.json();
 
-    if (!toEmail || !templateHtml) {
-      return Response.json({ error: 'toEmail and templateHtml are required' }, { status: 400 });
+    if (!toEmail) {
+      return Response.json({ error: 'toEmail is required' }, { status: 400 });
+    }
+
+    // Load template from DB
+    const configs = await base44.asServiceRole.entities.VTONMailConfig.list();
+    const templateHtml = configs.length > 0 ? configs[0].letter_html : null;
+    if (!templateHtml) {
+      return Response.json({ error: 'No template found in database. Please save a template first.' }, { status: 400 });
     }
 
     // If a leadId is provided, personalize with that lead's data

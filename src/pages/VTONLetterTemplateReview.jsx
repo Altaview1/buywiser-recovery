@@ -215,7 +215,6 @@ export default function VTONLetterTemplateReview() {
       setSendingTest(true);
       await base44.functions.invoke('sendVTONTestEmail', {
         toEmail: testEmail,
-        templateHtml: template,
         leadId: selectedLeadId || null,
       });
       setMessage(`✓ Test email sent to ${testEmail}`);
