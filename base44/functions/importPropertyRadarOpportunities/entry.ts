@@ -67,6 +67,7 @@ Deno.serve(async (req) => {
       created: 0,
       duplicates: 0,
       errors: [],
+      skipped: [],
       notifications_sent: 0
     };
 
@@ -76,10 +77,13 @@ Deno.serve(async (req) => {
       existingOpps.map(opp => opp.property_address?.toLowerCase())
     );
 
+    // Round-robin partner assignment index
+    let partnerIndex = 0;
+
     // Process each property
     for (const property of properties) {
       try {
-        const address = property.property_address || property.Address || property.address;
+        const address = normalizeAddress(property.property_address || property.Address || property.address || '');
         
         // Skip if already exists
         if (!address || existingAddresses.has(address.toLowerCase())) {
@@ -89,34 +93,54 @@ Deno.serve(async (req) => {
 
         // Parse owner info
         const ownerInfo = parseOwnerField(property.Owner || property.owner_name || '');
+        const spouseInfo = parseSpouseField(property.Owner || '');
         
         // Round-robin partner assignment
-        const assignedPartner = partners[results.created % partners.length];
+        const assignedPartner = partners[partnerIndex % partners.length];
+        partnerIndex++;
 
-        // Create VTONOpportunity record
+        // Map PropertyRadar fields to VTONOpportunity format
         const opportunity = await base44.entities.VTONOpportunity.create({
           partner_email: assignedPartner.email,
-          homeowner_name: `${ownerInfo.first_name} ${ownerInfo.last_name}`.trim(),
+          
+          // Homeowner information
+          homeowner_name: buildHomeownerName(ownerInfo, spouseInfo),
           homeowner_phone: normalizePhone(property.phone || property.owner_phone || ''),
-          homeowner_email: (property.email || property.owner_email || '').toLowerCase(),
+          homeowner_email: normalizeEmail(property.email || property.owner_email || ''),
+          
+          // Property address
           property_address: address,
-          city: property.city || property.City || '',
-          state: property.state || property.property_state || 'CA',
-          property_type: property.property_type || 'SFR',
-          estimated_price: parseFloat(property.listing_price || property['Est Value'] || 0),
-          estimated_equity: parseFloat(property.estimated_equity || property['Est Equity $'] || 0),
-          distress_score: parseFloat(property['Distress Score'] || 0),
-          listing_dom: parseFloat(property['Listing DOM'] || 0),
-          va_loan_confirmed: true,
-          listing_status: 'active',
+          city: normalizeText(property.city || property.City || ''),
+          state: normalizeState(property.state || property.property_state || 'CA'),
+          
+          // Property details
+          property_type: mapPropertyType(property.property_type || ''),
+          estimated_price: parseCurrency(property.listing_price || property['Est Value'] || 0),
+          estimated_equity: parseCurrency(property.estimated_equity || property['Est Equity $'] || 0),
+          
+          // Distress indicators
+          distress_score: parseNumber(property['Distress Score'] || 0),
+          listing_dom: parseNumber(property['Listing DOM'] || property.days_on_market || 0),
+          
+          // Loan indicators
+          va_loan_confirmed: detectVALoanIndicator(property),
+          
+          // Listing information
+          listing_status: mapListingStatus(property.listing_status || 'active'),
+          
+          // Opportunity tracking
           opportunity_status: 'assigned',
           priority: calculatePriority(property),
-          crm_notes: `Auto-imported from PropertyRadar API on ${new Date().toISOString().split('T')[0]}`
+          crm_notes: buildCrmNotes(property),
+          
+          // Default values
+          qr_scanned: false,
+          needs_reassignment: false
         });
 
         results.created++;
 
-        // Trigger notification to admin (already configured via automation)
+        // Trigger notification to admin
         await base44.functions.invoke('notifyNewVTONOpportunity', {
           opportunity_id: opportunity.id,
           property_address: opportunity.property_address,
@@ -131,7 +155,7 @@ Deno.serve(async (req) => {
 
       } catch (err) {
         results.errors.push({
-          property: property.property_address,
+          property: property.property_address || 'Unknown',
           error: err.message
         });
       }
@@ -149,37 +173,167 @@ Deno.serve(async (req) => {
   }
 });
 
+// ============ FIELD MAPPING UTILITIES ============
+
 /**
  * Parse PropertyRadar Owner field: "LASTNAME,FIRSTNAME MIDDLE & SPOUSE"
  */
 function parseOwnerField(owner) {
-  if (!owner) return { first_name: '', last_name: '' };
+  if (!owner) return { first_name: '', last_name: '', middle_name: '' };
 
   const parts = owner.split('&').map(p => p.trim());
   const primary = parts[0];
   
   const [lastName, firstAndMiddle] = primary.split(',').map(p => p.trim());
-  const firstName = firstAndMiddle?.split(' ')[0] || '';
+  const nameParts = (firstAndMiddle || '').split(' ').filter(p => p);
+  const firstName = nameParts[0] || '';
+  const middleName = nameParts.slice(1).join(' ') || '';
 
-  return {
-    first_name: firstName,
-    last_name: lastName || ''
-  };
+  return { first_name: firstName, last_name: lastName || '', middle_name: middleName };
 }
 
-function normalizePhone(phone) {
-  if (!phone) return '';
-  return phone.replace(/\D/g, '');
+/**
+ * Parse spouse/co-owner from Owner field
+ */
+function parseSpouseField(owner) {
+  if (!owner || !owner.includes('&')) return '';
+  const parts = owner.split('&').map(p => p.trim());
+  return parts[1] || '';
+}
+
+/**
+ * Build full homeowner name
+ */
+function buildHomeownerName(ownerInfo, spouseInfo) {
+  const fullName = `${ownerInfo.first_name} ${ownerInfo.last_name}`.trim();
+  return spouseInfo ? `${fullName} & ${spouseInfo}` : fullName;
 }
 
 /**
  * Calculate priority based on distress score and DOM
  */
 function calculatePriority(property) {
-  const distressScore = parseFloat(property['Distress Score'] || 0);
-  const dom = parseFloat(property['Listing DOM'] || 0);
+  const distressScore = parseNumber(property['Distress Score'] || 0);
+  const dom = parseNumber(property['Listing DOM'] || 0);
   
   if (distressScore >= 70 || dom >= 90) return 'high';
   if (distressScore >= 40 || dom >= 60) return 'medium';
   return 'low';
+}
+
+/**
+ * Detect VA loan likelihood
+ */
+function detectVALoanIndicator(property) {
+  const distressScore = parseNumber(property['Distress Score'] || 0);
+  const hasMortgage = parseCurrency(property.estimated_mortgage_balance || 0) > 0;
+  return distressScore >= 30 && hasMortgage;
+}
+
+/**
+ * Map property type to standard format
+ */
+function mapPropertyType(type) {
+  const typeMap = {
+    'single_family_residential': 'SFR',
+    'single family residential': 'SFR',
+    'sfr': 'SFR',
+    'condo': 'Condo',
+    'condominium': 'Condo',
+    'townhouse': 'Townhouse',
+    'multi_family': 'Multi-Family',
+    'manufactured': 'Manufactured',
+    'mobile': 'Mobile'
+  };
+  
+  const normalized = (type || '').toLowerCase().trim();
+  return typeMap[normalized] || 'SFR';
+}
+
+/**
+ * Map listing status
+ */
+function mapListingStatus(status) {
+  const statusMap = {
+    'active': 'active',
+    'for_sale': 'active',
+    'pending': 'pending',
+    'contingent': 'pending',
+    'sold': 'sold',
+    'closed': 'sold',
+    'off_market': 'off_market',
+    'withdrawn': 'off_market',
+    'expired': 'off_market'
+  };
+  
+  const normalized = (status || '').toLowerCase().trim();
+  return statusMap[normalized] || 'active';
+}
+
+/**
+ * Normalize phone number
+ */
+function normalizePhone(phone) {
+  if (!phone) return '';
+  return phone.replace(/\D/g, '');
+}
+
+/**
+ * Normalize email
+ */
+function normalizeEmail(email) {
+  if (!email) return '';
+  return email.toLowerCase().trim();
+}
+
+/**
+ * Normalize address
+ */
+function normalizeAddress(address) {
+  if (!address) return '';
+  return address.trim();
+}
+
+/**
+ * Normalize text
+ */
+function normalizeText(text) {
+  if (!text) return '';
+  return text.trim();
+}
+
+/**
+ * Normalize state to 2-letter code
+ */
+function normalizeState(state) {
+  if (!state) return 'CA';
+  const stateMap = { 'california': 'CA', 'ca': 'CA' };
+  const normalized = (state || '').toLowerCase().trim();
+  return stateMap[normalized] || normalized.toUpperCase().slice(0, 2);
+}
+
+/**
+ * Parse currency values
+ */
+function parseCurrency(value) {
+  if (typeof value === 'number') return value;
+  if (!value) return 0;
+  const cleaned = value.toString().replace(/[$,]/g, '');
+  return parseFloat(cleaned) || 0;
+}
+
+/**
+ * Parse number values
+ */
+function parseNumber(value) {
+  if (typeof value === 'number') return value;
+  if (!value) return 0;
+  return parseFloat(value) || 0;
+}
+
+/**
+ * Build CRM notes
+ */
+function buildCrmNotes(property) {
+  return `Auto-imported from PropertyRadar on ${new Date().toISOString().split('T')[0]} | Distress: ${property['Distress Score'] || 'N/A'} | DOM: ${property['Listing DOM'] || 'N/A'}`;
 }
