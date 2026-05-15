@@ -154,6 +154,7 @@ function App() {
           <Route path="/vton-mail-dashboard" element={<VTONMailDashboard />} />
           <Route path="/vton-testimonials" element={<VTONTestimonials />} />
           <Route path="/vton-personalized/:leadId" element={<VTONPersonalizedLanding />} />
+          <Route path="/vton-personalized" element={<VTONPersonalizedLanding />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />
