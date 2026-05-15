@@ -21,37 +21,67 @@ export default function VTONCampaignDashboard() {
   const [showImport, setShowImport] = useState(false);
   const [showAddLead, setShowAddLead] = useState(false);
   const [addingLead, setAddingLead] = useState(false);
-  const [newLead, setNewLead] = useState({
-    first_name: '', last_name: '', email: '', phone: '',
-    property_address: '', city: '', state: 'CA', zip_code: '',
-    listing_price: '', estimated_equity: '', estimated_benefit: ''
-  });
+  const [addLeadResult, setAddLeadResult] = useState(null);
 
-  const handleAddLead = async (e) => {
-    e.preventDefault();
+  const handleSingleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     setAddingLead(true);
+    setAddLeadResult(null);
     try {
-      await base44.entities.VTONLead.create({
-        ...newLead,
-        listing_price: newLead.listing_price ? parseFloat(newLead.listing_price) : 0,
-        estimated_equity: newLead.estimated_equity ? parseFloat(newLead.estimated_equity) : 0,
-        estimated_benefit: newLead.estimated_benefit ? parseFloat(newLead.estimated_benefit) : 0,
-        veteran_indicator: true,
-        campaign_stage: 'initial_outreach',
-        sms_status: 'pending',
-        email_status: 'pending',
-        suppression_status: 'active',
-        facebook_audience_synced: false,
-        direct_mail_sent: false,
-        appointment_booked: false,
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const extracted = await base44.integrations.Core.ExtractDataFromUploadedFile({
+        file_url,
+        json_schema: {
+          type: 'object',
+          properties: {
+            leads: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  first_name: { type: 'string' },
+                  last_name: { type: 'string' },
+                  email: { type: 'string' },
+                  phone: { type: 'string' },
+                  property_address: { type: 'string' },
+                  city: { type: 'string' },
+                  state: { type: 'string' },
+                  zip_code: { type: 'string' },
+                  listing_price: { type: 'number' },
+                  estimated_equity: { type: 'number' },
+                  estimated_benefit: { type: 'number' }
+                }
+              }
+            }
+          }
+        }
       });
-      setShowAddLead(false);
-      setNewLead({ first_name: '', last_name: '', email: '', phone: '', property_address: '', city: '', state: 'CA', zip_code: '', listing_price: '', estimated_equity: '', estimated_benefit: '' });
+
+      const leads = extracted.output?.leads || (Array.isArray(extracted.output) ? extracted.output : [extracted.output]);
+      let created = 0;
+      for (const lead of leads) {
+        if (!lead.first_name && !lead.property_address) continue;
+        await base44.entities.VTONLead.create({
+          ...lead,
+          veteran_indicator: true,
+          campaign_stage: 'initial_outreach',
+          sms_status: 'pending',
+          email_status: 'pending',
+          suppression_status: 'active',
+          facebook_audience_synced: false,
+          direct_mail_sent: false,
+          appointment_booked: false,
+        });
+        created++;
+      }
+      setAddLeadResult({ success: true, message: `✓ ${created} lead${created !== 1 ? 's' : ''} imported successfully` });
       await loadLeads();
     } catch (err) {
-      alert('Error adding lead: ' + err.message);
+      setAddLeadResult({ success: false, message: 'Error: ' + err.message });
     } finally {
       setAddingLead(false);
+      e.target.value = '';
     }
   };
 
@@ -155,71 +185,40 @@ export default function VTONCampaignDashboard() {
             {/* Add Single Lead Modal */}
             {showAddLead && (
               <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+                <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
                   <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-                    <h2 className="text-lg font-bold text-slate-900">Add Veteran Lead</h2>
-                    <button onClick={() => setShowAddLead(false)} className="text-slate-400 hover:text-slate-700"><X className="h-5 w-5" /></button>
+                    <h2 className="text-lg font-bold text-slate-900">Upload Lead File</h2>
+                    <button onClick={() => { setShowAddLead(false); setAddLeadResult(null); }} className="text-slate-400 hover:text-slate-700"><X className="h-5 w-5" /></button>
                   </div>
-                  <form onSubmit={handleAddLead} className="p-6 space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">First Name *</label>
-                        <input required value={newLead.first_name} onChange={e => setNewLead({...newLead, first_name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
+                  <div className="p-6 space-y-4">
+                    <p className="text-sm text-slate-600">Upload a CSV or Excel file with one or more leads. Column headers can be in any PropertyRadar or standard format.</p>
+                    
+                    <label className={`flex flex-col items-center justify-center w-full h-36 border-2 border-dashed rounded-xl cursor-pointer transition ${addingLead ? 'border-slate-200 bg-slate-50' : 'border-green-300 bg-green-50 hover:bg-green-100'}`}>
+                      {addingLead ? (
+                        <div className="flex flex-col items-center gap-2 text-slate-500">
+                          <div className="w-6 h-6 border-2 border-slate-300 border-t-slate-600 rounded-full animate-spin" />
+                          <span className="text-sm font-medium">Importing...</span>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center gap-2 text-green-700">
+                          <span className="text-3xl">📂</span>
+                          <span className="text-sm font-semibold">Click to select file</span>
+                          <span className="text-xs text-green-600">CSV or Excel (.xlsx)</span>
+                        </div>
+                      )}
+                      <input type="file" accept=".csv,.xlsx,.xls" className="hidden" disabled={addingLead} onChange={handleSingleFileUpload} />
+                    </label>
+
+                    {addLeadResult && (
+                      <div className={`px-4 py-3 rounded-lg text-sm font-medium ${addLeadResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                        {addLeadResult.message}
                       </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Last Name</label>
-                        <input value={newLead.last_name} onChange={e => setNewLead({...newLead, last_name: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Email *</label>
-                        <input required type="email" value={newLead.email} onChange={e => setNewLead({...newLead, email: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Phone *</label>
-                        <input required value={newLead.phone} onChange={e => setNewLead({...newLead, phone: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-600 mb-1">Property Address *</label>
-                      <input required value={newLead.property_address} onChange={e => setNewLead({...newLead, property_address: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">City *</label>
-                        <input required value={newLead.city} onChange={e => setNewLead({...newLead, city: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">State</label>
-                        <input value={newLead.state} onChange={e => setNewLead({...newLead, state: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Zip Code *</label>
-                        <input required value={newLead.zip_code} onChange={e => setNewLead({...newLead, zip_code: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Listing Price ($)</label>
-                        <input type="number" value={newLead.listing_price} onChange={e => setNewLead({...newLead, listing_price: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Est. Equity ($)</label>
-                        <input type="number" value={newLead.estimated_equity} onChange={e => setNewLead({...newLead, estimated_equity: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-600 mb-1">Est. Benefit ($)</label>
-                        <input type="number" value={newLead.estimated_benefit} onChange={e => setNewLead({...newLead, estimated_benefit: e.target.value})} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500" />
-                      </div>
-                    </div>
-                    <div className="flex gap-3 pt-2">
-                      <button type="button" onClick={() => setShowAddLead(false)} className="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition">Cancel</button>
-                      <button type="submit" disabled={addingLead} className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 disabled:bg-slate-300 transition">
-                        {addingLead ? 'Adding...' : 'Add Lead'}
-                      </button>
-                    </div>
-                  </form>
+                    )}
+
+                    <button onClick={() => { setShowAddLead(false); setAddLeadResult(null); }} className="w-full px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition">
+                      {addLeadResult?.success ? 'Done' : 'Cancel'}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
