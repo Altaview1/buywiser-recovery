@@ -6,16 +6,16 @@ export default function VTONTestimonials() {
   const [currentVideo, setCurrentVideo] = useState('frank-cody');
   const [autoPlay, setAutoPlay] = useState(true);
 
-  // Videos - replace URLs with actual testimonial links
+  // Videos - testimonial links (replace video IDs with actual uploaded videos)
   const videos = {
     'frank-cody': {
       title: 'Frank & Cody - Veterans Benefiting from VTON',
-      url: 'https://www.youtube.com/embed/DkMjJUaoDj4?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
       description: 'Real veterans share their experience with the Veteran\'s Next Home benefit program'
     },
     'your-speech': {
       title: 'Learn About Your Veteran\'s Next Home Benefit',
-      url: 'https://www.youtube.com/embed/DkMjJUaoDj4?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
       description: 'Hear directly from our team about how this benefit works'
     }
   };
