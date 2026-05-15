@@ -22,9 +22,24 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'LOB_API_KEY not configured' }, { status: 500 });
     }
 
-    // Check if lead is approved for mailing
+    // Get the lead and check if already sent
     const lead = await base44.asServiceRole.entities.VTONLead.get(lead_id);
-    if (lead && lead.mail_approval_status === 'pending_approval') {
+    if (!lead) {
+      return Response.json({ 
+        error: 'Lead not found' 
+      }, { status: 404 });
+    }
+
+    // Prevent duplicate sends - check if already has a Lob letter ID
+    if (lead.lob_letter_id) {
+      return Response.json({ 
+        error: 'Duplicate prevention: Lead already sent to Lob',
+        message: `This lead was already sent on ${lead.lob_last_updated || 'unknown date'} with letter ID: ${lead.lob_letter_id}`,
+        letterId: lead.lob_letter_id
+      }, { status: 400 });
+    }
+
+    if (lead.mail_approval_status === 'pending_approval') {
       return Response.json({ 
         error: 'Lead not approved for mailing', 
         message: 'Please approve this lead in the VTON Mail Dashboard before sending' 
@@ -101,6 +116,16 @@ Deno.serve(async (req) => {
 
     // Lob API response includes cost breakdown
     const estimatedCost = lobData.amount ? (lobData.amount / 100) : 1.50; // Convert cents to USD, default $1.50
+
+    // Double-check no duplicate was created between Lob API call and DB update
+    const latestLead = await base44.asServiceRole.entities.VTONLead.get(lead_id);
+    if (latestLead.lob_letter_id) {
+      console.warn(`Duplicate prevention: Lead ${lead_id} already has letter ID ${latestLead.lob_letter_id}`);
+      return Response.json({ 
+        error: 'Duplicate prevention: Another request already sent this lead to Lob',
+        letterId: latestLead.lob_letter_id
+      }, { status: 400 });
+    }
 
     // Update lead to mark letter as sent and store Lob letter ID for tracking
     await base44.asServiceRole.entities.VTONLead.update(lead_id, {
