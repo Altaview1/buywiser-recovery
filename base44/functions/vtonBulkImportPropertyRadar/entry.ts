@@ -83,18 +83,8 @@ Deno.serve(async (req) => {
           verification_confidence: 'HIGH'
         });
 
-        // Queue direct mail (welcome letter)
-        await base44.functions.invoke('vtonDirectMailQueue', {
-          lead_id: created.id,
-          first_name: mappedLead.first_name,
-          last_name: mappedLead.last_name,
-          property_address: mappedLead.property_address,
-          city: mappedLead.city,
-          state: mappedLead.state,
-          zip_code: mappedLead.zip_code,
-          estimated_benefit: mappedLead.estimated_equity
-        });
-
+        // Note: Direct mail is queued but won't send until approved in dashboard
+        // Mail approval status is set to 'pending_approval' by default
         results.campaign_triggered++;
 
       } catch (err) {
@@ -193,6 +183,7 @@ function mapPropertyRadarLead(rawLead) {
     suppression_status: 'active',
     facebook_audience_synced: false,
     direct_mail_sent: false,
+    mail_approval_status: 'pending_approval',
     appointment_booked: false,
     listing_verified: false
   };

@@ -21,6 +21,15 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'LOB_API_KEY not configured' }, { status: 500 });
     }
 
+    // Check if lead is approved for mailing
+    const lead = await base44.asServiceRole.entities.VTONLead.get(lead_id);
+    if (lead && lead.mail_approval_status === 'pending_approval') {
+      return Response.json({ 
+        error: 'Lead not approved for mailing', 
+        message: 'Please approve this lead in the VTON Mail Dashboard before sending' 
+      }, { status: 403 });
+    }
+
     // Load approved letter template
     const configs = await base44.asServiceRole.entities.VTONMailConfig.list();
     if (configs.length === 0 || !configs[0].is_approved) {
@@ -85,6 +94,7 @@ Deno.serve(async (req) => {
     // Update lead to mark letter as sent and store Lob letter ID for tracking
     await base44.asServiceRole.entities.VTONLead.update(lead_id, {
       direct_mail_sent: true,
+      mail_approval_status: 'sent',
       lob_letter_id: lobData.id,
       lob_delivery_status: 'processing',
       lob_last_updated: new Date().toISOString(),

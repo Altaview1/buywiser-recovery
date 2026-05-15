@@ -71,6 +71,17 @@
       "default": false,
       "description": "Physical mail dispatched"
     },
+    "mail_approval_status": {
+      "type": "string",
+      "enum": [
+        "pending_approval",
+        "approved",
+        "rejected",
+        "sent"
+      ],
+      "default": "pending_approval",
+      "description": "Approval status before sending to Lob"
+    },
     "lob_letter_id": {
       "type": "string",
       "description": "Lob letter ID for tracking"

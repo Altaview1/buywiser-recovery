@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Mail, CheckCircle, Clock, AlertCircle, Package, FileText } from 'lucide-react';
+import { Mail, CheckCircle, Clock, AlertCircle, Package, FileText, ThumbsUp, ThumbsDown, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,18 +13,23 @@ export default function VTONMailDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
 
-  // Fetch all VTON leads with mail data
+  // Fetch all VTON leads with mail data (including pending approvals)
   const { data: leads, isLoading, refetch } = useQuery({
     queryKey: ['vton-leads-mail'],
     queryFn: async () => {
       const allLeads = await base44.entities.VTONLead.list();
-      return allLeads.filter(lead => lead.direct_mail_sent || lead.lob_letter_id);
+      return allLeads.filter(lead => 
+        lead.direct_mail_sent || 
+        lead.lob_letter_id || 
+        lead.mail_approval_status === 'pending_approval'
+      );
     },
   });
 
   // Calculate statistics
   const stats = {
     total: leads?.length || 0,
+    pendingApproval: leads?.filter(l => l.mail_approval_status === 'pending_approval').length || 0,
     processing: leads?.filter(l => l.lob_delivery_status === 'processing').length || 0,
     mailed: leads?.filter(l => l.lob_delivery_status === 'mailed').length || 0,
     delivered: leads?.filter(l => l.lob_delivery_status === 'delivered').length || 0,
@@ -76,6 +81,19 @@ export default function VTONMailDashboard() {
     });
   };
 
+  const handleApprove = async (leadId, action) => {
+    try {
+      await base44.functions.invoke('approveVTONMail', {
+        lead_id: leadId,
+        action: action
+      });
+      refetch();
+    } catch (error) {
+      console.error('Approval error:', error);
+      alert(`Failed to ${action} mail: ${error.message}`);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -112,6 +130,16 @@ export default function VTONMailDashboard() {
 
         {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-medium text-amber-600">Pending Approval</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl font-bold text-amber-700">{stats.pendingApproval}</div>
+              <p className="text-xs text-slate-500 mt-1">Awaiting review</p>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-slate-600">Total Letters</CardTitle>
@@ -176,7 +204,7 @@ export default function VTONMailDashboard() {
         {/* Filters */}
         <Card className="mb-6">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-wrap">
               <label className="text-sm font-medium text-slate-700">Filter by status:</label>
               <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setCurrentPage(1); }}>
                 <SelectTrigger className="w-48">
@@ -184,6 +212,7 @@ export default function VTONMailDashboard() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="pending_approval">Pending Approval</SelectItem>
                   <SelectItem value="processing">Processing</SelectItem>
                   <SelectItem value="mailed">Mailed</SelectItem>
                   <SelectItem value="delivered">Delivered</SelectItem>
@@ -218,11 +247,11 @@ export default function VTONMailDashboard() {
                   <TableRow>
                     <TableHead>Veteran Name</TableHead>
                     <TableHead>Property Address</TableHead>
+                    <TableHead>Approval Status</TableHead>
                     <TableHead>Lob Letter ID</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Mail Status</TableHead>
                     <TableHead>Cost</TableHead>
-                    <TableHead>Updated</TableHead>
-                    <TableHead>Delivery Date</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -241,6 +270,32 @@ export default function VTONMailDashboard() {
                         </div>
                       </TableCell>
                       <TableCell>
+                        {lead.mail_approval_status === 'pending_approval' && (
+                          <Badge className="bg-amber-100 text-amber-800">
+                            <Eye className="h-3 w-3 mr-1" />
+                            Pending Review
+                          </Badge>
+                        )}
+                        {lead.mail_approval_status === 'approved' && (
+                          <Badge className="bg-blue-100 text-blue-800">
+                            <ThumbsUp className="h-3 w-3 mr-1" />
+                            Approved
+                          </Badge>
+                        )}
+                        {lead.mail_approval_status === 'rejected' && (
+                          <Badge className="bg-red-100 text-red-800">
+                            <ThumbsDown className="h-3 w-3 mr-1" />
+                            Rejected
+                          </Badge>
+                        )}
+                        {lead.mail_approval_status === 'sent' && (
+                          <Badge className="bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Sent
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
                         {lead.lob_letter_id ? (
                           <a
                             href={`https://dashboard.lob.com/#/mail/${lead.lob_letter_id}`}
@@ -251,20 +306,43 @@ export default function VTONMailDashboard() {
                             {lead.lob_letter_id}
                           </a>
                         ) : (
-                          <span className="text-xs text-slate-400">Queued</span>
+                          <span className="text-xs text-slate-400">-</span>
                         )}
                       </TableCell>
                       <TableCell>
-                        {getStatusBadge(lead.lob_delivery_status)}
+                        {lead.lob_delivery_status ? getStatusBadge(lead.lob_delivery_status) : (
+                          <span className="text-xs text-slate-400">Not sent</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-sm font-medium text-slate-700">
                         {lead.lob_estimated_cost ? `$${lead.lob_estimated_cost.toFixed(2)}` : '-'}
                       </TableCell>
-                      <TableCell className="text-sm text-slate-600">
-                        {formatDate(lead.lob_last_updated)}
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-600">
-                        {lead.lob_delivery_date ? formatDate(lead.lob_delivery_date) : '-'}
+                      <TableCell>
+                        {lead.mail_approval_status === 'pending_approval' && (
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 text-green-600 hover:bg-green-50 border-green-200"
+                              onClick={() => handleApprove(lead.id, 'approve')}
+                            >
+                              <ThumbsUp className="h-3 w-3 mr-1" />
+                              Approve
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-8 text-red-600 hover:bg-red-50 border-red-200"
+                              onClick={() => handleApprove(lead.id, 'reject')}
+                            >
+                              <ThumbsDown className="h-3 w-3 mr-1" />
+                              Reject
+                            </Button>
+                          </div>
+                        )}
+                        {lead.mail_approval_status !== 'pending_approval' && (
+                          <span className="text-xs text-slate-400">-</span>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
