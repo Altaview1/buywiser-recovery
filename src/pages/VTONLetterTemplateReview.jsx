@@ -13,13 +13,13 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
         <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;margin-top:20px;margin-bottom:20px;">
 
           <!-- Professional Header -->
-          <tr><td style="padding:60px 50px 8px 50px;text-align:center;border-bottom:2px solid #2c3e50;">
-            <p style="margin:0 0 4px 0;font-size:18px;font-weight:600;color:#2c3e50;letter-spacing:0.5px;line-height:1.4;">The Veteran GAP NextHome™ Benefit</p>
-            <p style="margin:8px 0 0 0;font-size:11px;color:#5a6c7d;letter-spacing:0.5px;">Buywiser</p>
+          <tr><td style="padding:40px 50px 8px 50px;text-align:center;border-bottom:2px solid #2c3e50;">
+            <p style="margin:0 0 4px 0;font-size:18px;font-weight:600;color:#2c3e50;letter-spacing:0.5px;line-height:1.3;">The Veteran GAP NextHome™ Benefit</p>
+            <p style="margin:6px 0 0 0;font-size:11px;color:#5a6c7d;letter-spacing:0.5px;">Buywiser</p>
           </td></tr>
 
           <!-- Spacer -->
-          <tr><td style="height:40px;"></td></tr>
+          <tr><td style="height:16px;"></td></tr>
 
           <!-- Date -->
           <tr><td style="padding:0 50px;text-align:right;">
@@ -27,7 +27,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           </td></tr>
 
           <!-- Spacer -->
-          <tr><td style="height:32px;"></td></tr>
+          <tr><td style="height:12px;"></td></tr>
 
           <!-- Recipient Block -->
           <tr><td style="padding:0 50px;">
