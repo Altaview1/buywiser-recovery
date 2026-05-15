@@ -9,6 +9,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 export default function VTONLobErrorDashboard() {
   const [deleting, setDeleting] = useState(null);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+  const [clearing, setClearing] = useState(false);
 
   // Fetch leads with failed Lob submissions
   const { data: errorLeads = [], isLoading, refetch } = useQuery({
@@ -16,9 +18,11 @@ export default function VTONLobErrorDashboard() {
     queryFn: async () => {
       const leads = await base44.entities.VTONLead.list();
       return leads.filter(lead => 
-        lead.lob_delivery_status === 'failed' || 
-        lead.lob_delivery_status === 'returned' ||
-        (lead.mail_approval_status === 'approved' && !lead.lob_letter_id && lead.created_date)
+        !lead.lob_error_resolved && (
+          lead.lob_delivery_status === 'failed' || 
+          lead.lob_delivery_status === 'returned' ||
+          (lead.mail_approval_status === 'approved' && !lead.lob_letter_id && lead.created_date)
+        )
       ).sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
     },
   });
@@ -52,6 +56,28 @@ export default function VTONLobErrorDashboard() {
     }
   };
 
+  const handleClearResolved = async () => {
+    if (selectedLeads.length === 0) return;
+    if (!confirm(`Mark ${selectedLeads.length} lead(s) as resolved?`)) return;
+
+    setClearing(true);
+    let cleared = 0;
+    for (const leadId of selectedLeads) {
+      try {
+        await base44.asServiceRole.entities.VTONLead.update(leadId, {
+          lob_error_resolved: true
+        });
+        cleared++;
+      } catch (err) {
+        console.error(`Failed to mark ${leadId} as resolved:`, err);
+      }
+    }
+    setClearing(false);
+    setSelectedLeads([]);
+    refetch();
+    if (cleared > 0) alert(`✓ Marked ${cleared} lead(s) as resolved`);
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8 min-h-screen">
@@ -76,14 +102,26 @@ export default function VTONLobErrorDashboard() {
               </h1>
               <p className="text-slate-600 text-sm mt-1">Leads that failed to send or were returned. Fix the address and retry.</p>
             </div>
-            <Button 
-              variant="outline" 
-              onClick={() => refetch()}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => refetch()}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Refresh
+              </Button>
+              {selectedLeads.length > 0 && (
+                <Button 
+                  variant="outline"
+                  className="flex items-center gap-2 border-green-200 text-green-600 hover:bg-green-50"
+                  onClick={handleClearResolved}
+                  disabled={clearing}
+                >
+                  ✓ Clear Resolved ({selectedLeads.length})
+                </Button>
+              )}
+            </div>
           </div>
 
           <Badge variant="outline" className="text-base px-3 py-1">
@@ -103,20 +141,48 @@ export default function VTONLobErrorDashboard() {
             ) : (
               <div className="overflow-x-auto">
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Lead Name</TableHead>
-                      <TableHead>Property Address</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Cost</TableHead>
-                      <TableHead>Failed Date</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {errorLeads.map((lead) => (
-                      <TableRow key={lead.id} className="hover:bg-slate-50">
-                        <TableCell className="font-medium">
+                   <TableHeader>
+                     <TableRow>
+                       <TableHead className="w-8">
+                         <input
+                           type="checkbox"
+                           onChange={(e) => {
+                             if (e.target.checked) {
+                               setSelectedLeads(errorLeads.map(l => l.id));
+                             } else {
+                               setSelectedLeads([]);
+                             }
+                           }}
+                           checked={selectedLeads.length === errorLeads.length && errorLeads.length > 0}
+                           className="h-4 w-4 rounded border-gray-300"
+                         />
+                       </TableHead>
+                       <TableHead>Lead Name</TableHead>
+                       <TableHead>Property Address</TableHead>
+                       <TableHead>Status</TableHead>
+                       <TableHead>Cost</TableHead>
+                       <TableHead>Failed Date</TableHead>
+                       <TableHead>Actions</TableHead>
+                     </TableRow>
+                   </TableHeader>
+                   <TableBody>
+                     {errorLeads.map((lead) => (
+                       <TableRow key={lead.id} className={`hover:bg-slate-50 ${selectedLeads.includes(lead.id) ? 'bg-green-50' : ''}`}>
+                         <TableCell className="w-8">
+                           <input
+                             type="checkbox"
+                             checked={selectedLeads.includes(lead.id)}
+                             onChange={(e) => {
+                               if (e.target.checked) {
+                                 setSelectedLeads([...selectedLeads, lead.id]);
+                               } else {
+                                 setSelectedLeads(selectedLeads.filter(id => id !== lead.id));
+                               }
+                             }}
+                             className="h-4 w-4 rounded border-gray-300"
+                           />
+                         </TableCell>
+                         <TableCell className="font-medium">
                           <div className="text-base">{lead.first_name} {lead.last_name}</div>
                           {lead.spouse_name && (
                             <div className="text-xs text-slate-500">& {lead.spouse_name}</div>

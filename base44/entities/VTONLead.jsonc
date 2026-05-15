@@ -98,6 +98,11 @@
       ],
       "description": "Current delivery status from Lob"
     },
+    "lob_error_resolved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this error has been addressed and resolved"
+    },
     "lob_last_updated": {
       "type": "string",
       "format": "date-time",
