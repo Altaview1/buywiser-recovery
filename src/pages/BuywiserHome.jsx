@@ -64,6 +64,10 @@ const FAQS = [
     q: "What if I already have an agent I'm working with?",
     a: "You can still receive a portion of the GAP Benefit. If you're using your own agent, your exact benefit amount will be clearly disclosed upfront — no guessing. We'll walk you through exactly what you qualify for based on how the transaction is structured."
   },
+  {
+    q: "Where do the GAP funds come from if not the VA?",
+    a: "The GAP program is made possible by a host of service providers — realtors, mortgage professionals, escrow and title companies — all agreeing to rebate a portion of their compensation from the transaction back into the Veteran's GAP Benefit program. It's a private, industry-funded initiative dedicated to honoring those who have served."
+  },
 ];
 
 function FAQ() {
