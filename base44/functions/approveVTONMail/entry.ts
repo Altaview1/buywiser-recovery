@@ -38,9 +38,9 @@ Deno.serve(async (req) => {
       });
 
     } else if (action === 'send_to_lob') {
-      // Check if already sent
-      if (lead.direct_mail_sent || lead.lob_letter_id) {
-        return Response.json({ error: 'Mail already sent for this lead' }, { status: 400 });
+      // Check if already successfully sent (has a Lob ID)
+      if (lead.lob_letter_id) {
+        return Response.json({ error: 'Mail already sent to Lob for this lead' }, { status: 400 });
       }
 
       // Send to Lob

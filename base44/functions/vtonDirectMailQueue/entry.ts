@@ -56,7 +56,7 @@ Deno.serve(async (req) => {
     const finalLetterHtml = letterHtml.replace(/\$\{qrUrl\}/g, qrUrl);
 
     // Encode HTML as base64 for Lob API
-    const base64Html = btoa(finalLetterHtml);
+    const base64Html = Buffer.from(finalLetterHtml).toString('base64');
 
     // Send to Lob API
     const lobResponse = await fetch('https://api.lob.com/v1/letters', {
