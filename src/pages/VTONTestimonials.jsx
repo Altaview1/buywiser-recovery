@@ -10,12 +10,12 @@ export default function VTONTestimonials() {
   const videos = {
     'frank-cody': {
       title: 'Frank & Cody - Veterans Benefiting from VTON',
-      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://youtu.be/DkMjJUaoDj4?si=j0T3yV5xK0m8fJ1Q',
       description: 'Real veterans share their experience with the Veteran\'s Next Home benefit program'
     },
     'your-speech': {
       title: 'Learn About Your Veteran\'s Next Home Benefit',
-      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://youtu.be/DkMjJUaoDj4?si=j0T3yV5xK0m8fJ1Q',
       description: 'Hear directly from our team about how this benefit works'
     }
   };
