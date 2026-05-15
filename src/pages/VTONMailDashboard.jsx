@@ -769,7 +769,7 @@ export default function VTONMailDashboard() {
                         {lead.lob_estimated_cost ? `$${lead.lob_estimated_cost.toFixed(2)}` : '-'}
                       </TableCell>
                       <TableCell>
-                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && !lead.lob_letter_id && (
+                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && !lead.lob_letter_id ? (
                           <div className="flex gap-1">
                             <Button
                               size="sm"
@@ -792,8 +792,7 @@ export default function VTONMailDashboard() {
                             </Button>
                             <Button
                               size="sm"
-                              variant="outline"
-                              className="h-8 text-green-600 hover:bg-green-50 border-green-200"
+                              className="h-8 bg-green-600 hover:bg-green-700 text-white"
                               onClick={() => handleApprove(lead.id, 'approve')}
                             >
                               <ThumbsUp className="h-3 w-3 mr-1" />
@@ -809,8 +808,7 @@ export default function VTONMailDashboard() {
                               Reject
                             </Button>
                           </div>
-                        )}
-                        {lead.mail_approval_status === 'approved' && !lead.lob_letter_id && (
+                        ) : lead.mail_approval_status === 'approved' && !lead.lob_letter_id ? (
                           <Button
                             size="sm"
                             className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
@@ -822,13 +820,11 @@ export default function VTONMailDashboard() {
                           >
                             📧 Send to Lob
                           </Button>
-                        )}
-                        {lead.lob_letter_id && (
+                        ) : lead.lob_letter_id ? (
                           <span className="text-xs text-slate-500 font-medium">In Lob Queue</span>
-                        )}
-                        {lead.mail_approval_status === 'rejected' && (
+                        ) : lead.mail_approval_status === 'rejected' ? (
                           <span className="text-xs text-red-600 font-medium">Rejected</span>
-                        )}
+                        ) : null}
                       </TableCell>
                     </TableRow>
                   ))}
