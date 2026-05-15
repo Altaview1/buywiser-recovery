@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import VTONMailPipeline from '@/components/vton/VTONMailPipeline';
 import MetaAudienceSyncPanel from '@/components/vton/MetaAudienceSyncPanel';
 import MetaCampaignSetup from '@/components/vton/MetaCampaignSetup';
+import MetaAudienceStatus from '@/components/vton/MetaAudienceStatus';
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -395,8 +396,11 @@ export default function VTONMailDashboard() {
           </div>
         </div>
 
-        {/* Meta Audience Sync & Campaigns */}
-        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Meta Audience Status & Sync */}
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div>
+            <MetaAudienceStatus />
+          </div>
           <div>
             <MetaAudienceSyncPanel />
           </div>
