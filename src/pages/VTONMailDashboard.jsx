@@ -640,7 +640,7 @@ export default function VTONMailDashboard() {
                         {lead.lob_estimated_cost ? `$${lead.lob_estimated_cost.toFixed(2)}` : '-'}
                       </TableCell>
                       <TableCell>
-                        {lead.mail_approval_status === 'pending_approval' && (
+                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && (
                           <div className="flex gap-1">
                             <Button
                               size="sm"
@@ -681,8 +681,24 @@ export default function VTONMailDashboard() {
                             </Button>
                           </div>
                         )}
-                        {lead.mail_approval_status !== 'pending_approval' && (
-                          <span className="text-xs text-slate-400">-</span>
+                        {lead.mail_approval_status === 'approved' && !lead.lob_letter_id && (
+                          <Button
+                            size="sm"
+                            className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
+                            onClick={() => {
+                              if (window.confirm(`Send ${lead.first_name} ${lead.last_name}'s letter to Lob?`)) {
+                                handleApprove(lead.id, 'send_to_lob');
+                              }
+                            }}
+                          >
+                            📧 Send to Lob
+                          </Button>
+                        )}
+                        {lead.lob_letter_id && (
+                          <span className="text-xs text-slate-500 font-medium">In Lob Queue</span>
+                        )}
+                        {lead.mail_approval_status === 'rejected' && (
+                          <span className="text-xs text-red-600 font-medium">Rejected</span>
                         )}
                       </TableCell>
                     </TableRow>
