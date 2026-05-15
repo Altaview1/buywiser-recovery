@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, File, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { Upload, File, CheckCircle, AlertCircle, Loader, Database } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import ColumnMapper from './ColumnMapper';
 
@@ -11,6 +11,8 @@ export default function VTONBulkImportUI({ onImportComplete }) {
   const [csvHeaders, setCsvHeaders] = useState(null);
   const [csvData, setCsvData] = useState(null);
   const [mapping, setMapping] = useState(null);
+  const [duplicateCheck, setDuplicateCheck] = useState(null);
+  const [checkingDuplicates, setCheckingDuplicates] = useState(false);
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files?.[0];
@@ -50,31 +52,69 @@ export default function VTONBulkImportUI({ onImportComplete }) {
 
     try {
       const fileContent = await file.text();
+      await checkDuplicates(fileContent, file.name.endsWith('.csv'));
+    } catch (err) {
+      setError(err.message);
+      setCsvData(null);
+      setCsvHeaders(null);
+    }
+  };
+
+  const checkDuplicates = async (fileContent, isCsv) => {
+    setCheckingDuplicates(true);
+    setDuplicateCheck(null);
+    
+    try {
       let data = [];
       let headers = [];
 
-      if (file.name.endsWith('.csv')) {
+      if (isCsv) {
         data = parseCSV(fileContent);
         headers = Object.keys(data[0] || {});
-      } else if (file.name.endsWith('.json')) {
+      } else {
         const parsed = parseJSON(fileContent);
         data = Array.isArray(parsed) ? parsed : parsed.leads || [];
         headers = Object.keys(data[0] || {});
-      } else {
-        throw new Error('File must be CSV or JSON');
       }
 
       if (data.length === 0) {
         throw new Error('No leads found in file');
       }
 
+      // Extract emails and phones for duplicate check
+      const uploadEmails = data.filter(r => r.email).map(r => r.email.toLowerCase().trim());
+      const uploadPhones = data.filter(r => r.phone).map(r => r.phone.replace(/\D/g, ''));
+
+      // Get existing leads
+      const existingLeads = await base44.entities.VTONLead.list(undefined, 10000);
+      
+      const existingEmails = new Set(existingLeads.map(l => l.email?.toLowerCase().trim()).filter(Boolean));
+      const existingPhones = new Set(existingLeads.map(l => l.phone?.replace(/\D/g, '')).filter(Boolean));
+
+      // Find duplicates
+      const emailDuplicates = data.filter(r => r.email && existingEmails.has(r.email.toLowerCase().trim()));
+      const phoneDuplicates = data.filter(r => r.phone && existingPhones.has(r.phone.replace(/\D/g, '')));
+      
+      // Combine duplicates (avoid counting same record twice)
+      const allDuplicates = new Set([...emailDuplicates, ...phoneDuplicates]);
+
+      setDuplicateCheck({
+        total: data.length,
+        duplicates: allDuplicates.size,
+        newRecords: data.length - allDuplicates.size,
+        emailDuplicates: emailDuplicates.length,
+        phoneDuplicates: phoneDuplicates.length,
+        duplicateRecords: [...allDuplicates].slice(0, 10) // First 10 for preview
+      });
+
       setCsvData(data);
       setCsvHeaders(headers);
-      setError(null);
     } catch (err) {
       setError(err.message);
       setCsvData(null);
       setCsvHeaders(null);
+    } finally {
+      setCheckingDuplicates(false);
     }
   };
 
@@ -104,6 +144,7 @@ export default function VTONBulkImportUI({ onImportComplete }) {
       setCsvHeaders(null);
       setCsvData(null);
       setMapping(null);
+      setDuplicateCheck(null);
 
       // Trigger refresh if callback provided
       setTimeout(() => {
@@ -124,15 +165,67 @@ export default function VTONBulkImportUI({ onImportComplete }) {
       </div>
 
       {csvHeaders && !result ? (
-        <ColumnMapper
-          csvHeaders={csvHeaders}
-          onMappingConfirm={handleMappingConfirm}
-          onCancel={() => {
-            setCsvHeaders(null);
-            setCsvData(null);
-            setFile(null);
-          }}
-        />
+        <>
+          {/* Duplicate Check Results */}
+          {duplicateCheck && (
+            <div className="mb-6 bg-blue-50 border border-blue-200 rounded-xl p-5">
+              <div className="flex items-start gap-3 mb-4">
+                <Database className="h-5 w-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-blue-900">Duplicate Check Complete</h4>
+                  <p className="text-sm text-blue-700">Scanned {duplicateCheck.total} records against existing database</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3">
+                <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+                  <p className="text-xs text-blue-600 font-semibold">New Records</p>
+                  <p className="text-2xl font-black text-green-600">{duplicateCheck.newRecords}</p>
+                </div>
+                <div className="bg-white border border-yellow-200 rounded-lg p-3 text-center">
+                  <p className="text-xs text-yellow-600 font-semibold">Duplicates</p>
+                  <p className="text-2xl font-black text-yellow-600">{duplicateCheck.duplicates}</p>
+                </div>
+                <div className="bg-white border border-blue-200 rounded-lg p-3 text-center">
+                  <p className="text-xs text-blue-600 font-semibold">Total Upload</p>
+                  <p className="text-2xl font-black text-blue-700">{duplicateCheck.total}</p>
+                </div>
+              </div>
+
+              {duplicateCheck.duplicates > 0 && (
+                <div className="mt-4 pt-4 border-t border-blue-200">
+                  <p className="text-xs font-semibold text-blue-700 mb-2">Duplicate Breakdown:</p>
+                  <div className="text-xs text-blue-600 space-y-1">
+                    <p>• {duplicateCheck.emailDuplicates} records with matching email</p>
+                    <p>• {duplicateCheck.phoneDuplicates} records with matching phone</p>
+                  </div>
+                  
+                  {duplicateCheck.duplicateRecords.length > 0 && (
+                    <div className="mt-3 max-h-32 overflow-y-auto bg-white border border-blue-100 rounded-lg p-2">
+                      <p className="text-xs font-semibold text-blue-700 mb-1">Sample duplicates:</p>
+                      {duplicateCheck.duplicateRecords.map((rec, i) => (
+                        <p key={i} className="text-xs text-blue-600 truncate">
+                          • {rec.first_name} {rec.last_name} - {rec.email || rec.phone}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          <ColumnMapper
+            csvHeaders={csvHeaders}
+            onMappingConfirm={handleMappingConfirm}
+            onCancel={() => {
+              setCsvHeaders(null);
+              setCsvData(null);
+              setFile(null);
+              setDuplicateCheck(null);
+            }}
+          />
+        </>
       ) : !result ? (
         <div className="space-y-4">
           {/* File upload */}
@@ -173,18 +266,23 @@ export default function VTONBulkImportUI({ onImportComplete }) {
           {/* Preview & Map button */}
           <button
             onClick={handlePreviewAndMap}
-            disabled={!file || loading}
+            disabled={!file || loading || checkingDuplicates}
             className="w-full px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2"
           >
-            {loading ? (
+            {checkingDuplicates ? (
+              <>
+                <Loader className="h-4 w-4 animate-spin" />
+                Checking Duplicates...
+              </>
+            ) : loading ? (
               <>
                 <Loader className="h-4 w-4 animate-spin" />
                 Loading...
               </>
             ) : (
               <>
-                <File className="h-4 w-4" />
-                Preview & Map Columns
+                <Database className="h-4 w-4" />
+                Check Duplicates & Map
               </>
             )}
           </button>
