@@ -67,8 +67,9 @@ Deno.serve(async (req) => {
         'from[address_city]': 'North Hollywood',
         'from[address_state]': 'CA',
         'from[address_zip]': '91607',
-        'html': base64Html,
+        'file': finalLetterHtml,
         'color': 'false',
+        'size': '6x11',
       }).toString(),
     });
 

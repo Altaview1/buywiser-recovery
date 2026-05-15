@@ -81,7 +81,6 @@ Deno.serve(async (req) => {
         'from[address_zip]': '91607',
         'file': '<html><body><h1>Test Letter</h1><p>This is a test of the Lob integration.</p></body></html>',
         'color': 'false',
-        'size': '6x11',
       }).toString(),
     });
 
