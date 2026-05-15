@@ -26,8 +26,20 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'approve') {
+      // Just approve — don't send yet
+      await base44.asServiceRole.entities.VTONLead.update(lead_id, {
+        mail_approval_status: 'approved',
+        notes: (lead.notes || '') + `\n[Approval] Approved by ${user.email} on ${new Date().toISOString()}`
+      });
+
+      return Response.json({ 
+        success: true, 
+        message: 'Mail approved - ready to send to Lob'
+      });
+
+    } else if (action === 'send_to_lob') {
       // Check if already sent
-      if (lead.direct_mail_sent) {
+      if (lead.direct_mail_sent || lead.lob_letter_id) {
         return Response.json({ error: 'Mail already sent for this lead' }, { status: 400 });
       }
 
@@ -44,10 +56,6 @@ Deno.serve(async (req) => {
       });
 
       if (mailResult.error) {
-        await base44.asServiceRole.entities.VTONLead.update(lead_id, {
-          mail_approval_status: 'rejected',
-          notes: (lead.notes || '') + `\n[Approval] Rejected - Lob error: ${mailResult.error}`
-        });
         return Response.json({ error: mailResult.error }, { status: 500 });
       }
 
@@ -63,7 +71,7 @@ Deno.serve(async (req) => {
 
       return Response.json({ 
         success: true, 
-        message: 'Mail approved and sent to Lob',
+        message: 'Mail sent to Lob',
         letterId: mailResult.letterId
       });
 
@@ -80,7 +88,7 @@ Deno.serve(async (req) => {
       });
 
     } else {
-      return Response.json({ error: 'Invalid action. Use "approve" or "reject"' }, { status: 400 });
+      return Response.json({ error: 'Invalid action. Use "approve", "send_to_lob", or "reject"' }, { status: 400 });
     }
 
   } catch (error) {
