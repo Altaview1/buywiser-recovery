@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useQuery } from '@tanstack/react-query';
-import { Mail, CheckCircle, Clock, AlertCircle, Package, FileText, ThumbsUp, ThumbsDown, Eye } from 'lucide-react';
+import { Mail, CheckCircle, Clock, AlertCircle, Package, FileText, ThumbsUp, ThumbsDown, Eye, X } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -14,6 +15,9 @@ export default function VTONMailDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedLeads, setSelectedLeads] = useState([]);
   const [bulkProcessing, setBulkProcessing] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewLead, setPreviewLead] = useState(null);
+  const [letterTemplate, setLetterTemplate] = useState('');
   const itemsPerPage = 20;
 
   // Fetch all VTON leads with mail data (including pending approvals)
@@ -28,6 +32,21 @@ export default function VTONMailDashboard() {
       );
     },
   });
+
+  // Load approved letter template
+  useEffect(() => {
+    const loadTemplate = async () => {
+      try {
+        const configs = await base44.entities.VTONMailConfig.list();
+        if (configs.length > 0 && configs[0].letter_html) {
+          setLetterTemplate(configs[0].letter_html);
+        }
+      } catch (err) {
+        console.error('Failed to load template:', err);
+      }
+    };
+    loadTemplate();
+  }, []);
 
   // Calculate statistics
   const stats = {
@@ -106,6 +125,38 @@ export default function VTONMailDashboard() {
       console.error('Approval error:', error);
       alert(`Failed to ${action} mail: ${error.message}`);
     }
+  };
+
+  const handlePreviewLetter = (lead) => {
+    setPreviewLead(lead);
+    setPreviewOpen(true);
+  };
+
+  const generateLetterPreview = (lead, template) => {
+    if (!lead || !template) return '';
+    
+    let preview = template;
+    // Personalization fields
+    preview = preview.replace(/\$\{first_name\}/g, lead.first_name || 'Veteran');
+    preview = preview.replace(/\$\{last_name\}/g, lead.last_name || '');
+    preview = preview.replace(/\$\{property_address\}/g, lead.property_address || '');
+    preview = preview.replace(/\$\{city\}/g, lead.city || '');
+    preview = preview.replace(/\$\{state\}/g, lead.state || '');
+    preview = preview.replace(/\$\{zip_code\}/g, lead.zip_code || '');
+    
+    // Benefit-related fields
+    preview = preview.replace(/\$\{estimated_benefit\}/g, 
+      lead.estimated_benefit ? `$${lead.estimated_benefit.toLocaleString()}` : 'TBD');
+    preview = preview.replace(/\$\{estimated_equity\}/g, 
+      lead.estimated_equity ? `$${lead.estimated_equity.toLocaleString()}` : 'TBD');
+    preview = preview.replace(/\$\{listing_price\}/g, 
+      lead.listing_price ? `$${lead.listing_price.toLocaleString()}` : 'TBD');
+    
+    // Add QR code URL
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(`https://buywiser.com/vton-benefit?lead=${lead.id}`)}`;
+    preview = preview.replace(/\$\{qrUrl\}/g, qrUrl);
+    
+    return preview;
   };
 
   const handleSelectAll = (e) => {
@@ -490,6 +541,15 @@ export default function VTONMailDashboard() {
                             <Button
                               size="sm"
                               variant="outline"
+                              className="h-8 text-blue-600 hover:bg-blue-50 border-blue-200"
+                              onClick={() => handlePreviewLetter(lead)}
+                            >
+                              <Eye className="h-3 w-3 mr-1" />
+                              Preview
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
                               className="h-8 text-green-600 hover:bg-green-50 border-green-200"
                               onClick={() => handleApprove(lead.id, 'approve')}
                             >
@@ -545,6 +605,40 @@ export default function VTONMailDashboard() {
             )}
           </CardContent>
         </Card>
+
+        {/* Letter Preview Modal */}
+        <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+          <DialogContent className="max-w-4xl h-[90vh]">
+            <DialogHeader>
+              <div className="flex items-center justify-between">
+                <DialogTitle>Letter Preview</DialogTitle>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setPreviewOpen(false)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </DialogHeader>
+            {previewLead && letterTemplate && (
+              <div className="flex-1 overflow-y-auto border rounded-lg">
+                <iframe
+                  srcDoc={generateLetterPreview(previewLead, letterTemplate)}
+                  className="w-full h-[calc(90vh-200px)] border-0"
+                  title="Letter Preview"
+                />
+              </div>
+            )}
+            {previewLead && !letterTemplate && (
+              <div className="text-center py-8 text-slate-500">
+                <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                <p>No letter template found. Please approve a template first.</p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
