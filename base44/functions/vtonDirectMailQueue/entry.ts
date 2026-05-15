@@ -116,7 +116,8 @@ Deno.serve(async (req) => {
       success: true, 
       message: 'Direct mail sent successfully',
       lead_id,
-      letterId: lobData.id
+      letterId: lobData.id,
+      estimatedCost: estimatedCost
     });
   } catch (error) {
     console.error('Direct Mail Queue Error:', error);
