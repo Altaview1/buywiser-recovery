@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
     const testLead = await base44.entities.VTONLead.create(testLeadData);
     console.log(`Created test lead: ${testLead.id}`);
 
-    // Send letter to test lead
+    // Send letter to test lead using Lob API v1 format
     const letterResponse = await fetch('https://api.lob.com/v1/letters', {
       method: 'POST',
       headers: {
@@ -79,8 +79,9 @@ Deno.serve(async (req) => {
         'from[address_city]': 'North Hollywood',
         'from[address_state]': 'CA',
         'from[address_zip]': '91607',
-        'html': btoa('<html><body><h1>Test Letter</h1><p>This is a test of the Lob integration.</p></body></html>'),
+        'file': '<html><body><h1>Test Letter</h1><p>This is a test of the Lob integration.</p></body></html>',
         'color': 'false',
+        'size': '6x11',
       }).toString(),
     });
 
