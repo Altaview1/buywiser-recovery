@@ -43,6 +43,11 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Mail already sent to Lob for this lead' }, { status: 400 });
       }
 
+      // Auto-approve before sending to Lob
+      await base44.asServiceRole.entities.VTONLead.update(lead_id, {
+        mail_approval_status: 'approved'
+      });
+
       // Send to Lob
       let mailResult;
       try {
