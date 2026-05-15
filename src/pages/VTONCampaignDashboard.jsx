@@ -239,6 +239,12 @@ export default function VTONCampaignDashboard() {
           <>
             {/* Action Buttons */}
             <div className="mb-6 flex justify-end gap-3">
+              <a
+                href="/vton-email-history"
+                className="px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition text-sm flex items-center gap-2"
+              >
+                <Mail className="h-4 w-4" /> Email History
+              </a>
               <button
                 onClick={() => setShowAddLead(true)}
                 className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition text-sm"

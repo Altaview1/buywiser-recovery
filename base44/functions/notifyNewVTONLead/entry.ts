@@ -68,15 +68,40 @@ ${BRANDING_HTML}
 </div>
 `;
 
-    await resend.emails.send({
+    const emailResult = await resend.emails.send({
       from: 'BuyWiser VTON <notifications@buywiser.com>',
       to: adminEmail,
       subject: `🎖️ New VTON Prospect: ${name}`,
       html,
     });
 
-    return Response.json({ status: 'success', leadName: name });
+    // Log the email
+    await base44.asServiceRole.entities.VTONEmailLog.create({
+      lead_id: data.id || 'unknown',
+      lead_name: name,
+      lead_email: adminEmail,
+      email_type: 'lead_confirmation',
+      subject: `🎖️ New VTON Prospect: ${name}`,
+      status: 'sent',
+      sent_date: new Date().toISOString(),
+      notes: `Automated notification for new VTON lead import`
+    });
+
+    return Response.json({ status: 'success', leadName: name, emailId: emailResult.id });
   } catch (error) {
+    // Log the failure
+    await base44.asServiceRole.entities.VTONEmailLog.create({
+      lead_id: data?.id || 'unknown',
+      lead_name: name || 'Unknown',
+      lead_email: adminEmail,
+      email_type: 'lead_confirmation',
+      subject: `🎖️ New VTON Prospect`,
+      status: 'failed',
+      sent_date: new Date().toISOString(),
+      error_message: error.message,
+      notes: `Failed to send automated notification`
+    });
+
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

@@ -57,6 +57,7 @@ import SmartBuyWorkflow from './pages/SmartBuyWorkflow';
 import VTONBenefitBooking from './pages/VTONBenefitBooking';
 import VTONCampaignDashboard from './pages/VTONCampaignDashboard';
 import VTONLetterTemplateReview from './pages/VTONLetterTemplateReview';
+import VTONEmailHistory from './pages/VTONEmailHistory';
 import AdminLogin from './pages/AdminLogin';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
@@ -146,6 +147,7 @@ function App() {
           <Route path="/vton-benefit" element={<VTONBenefitBooking />} />
           <Route path="/vton-campaign" element={<VTONCampaignDashboard />} />
           <Route path="/vton-letter-review" element={<VTONLetterTemplateReview />} />
+          <Route path="/vton-email-history" element={<VTONEmailHistory />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
           <Route path="/activator-admin" element={<AuthProvider><AdminDashboard /></AuthProvider>} />

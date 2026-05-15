@@ -52,15 +52,40 @@ Deno.serve(async (req) => {
       .replace(/\$\{estimated_equity\}/g, estimated_equity)
       .replace(/\$\{listing_price\}/g, listing_price);
 
-    await resend.emails.send({
+    const emailResult = await resend.emails.send({
       from: 'BuyWiser VTON <notifications@buywiser.com>',
       to: toEmail,
       subject: `VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ' — Sample'}`,
       html: personalizedHtml,
     });
 
-    return Response.json({ success: true, message: `Test email sent to ${toEmail}` });
+    // Log the email
+    await base44.asServiceRole.entities.VTONEmailLog.create({
+      lead_id: lead?.id || 'test',
+      lead_name: lead ? `${first_name} ${last_name}` : 'Test Preview',
+      lead_email: toEmail,
+      email_type: 'test_email',
+      subject: `VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ' — Sample'}`,
+      status: 'sent',
+      sent_date: new Date().toISOString(),
+      notes: `Manual test email sent by admin`
+    });
+
+    return Response.json({ success: true, message: `Test email sent to ${toEmail}`, emailId: emailResult.id });
   } catch (error) {
+    // Log the failure
+    await base44.asServiceRole.entities.VTONEmailLog.create({
+      lead_id: lead?.id || 'test',
+      lead_name: lead ? `${first_name} ${last_name}` : 'Test Preview',
+      lead_email: toEmail,
+      email_type: 'test_email',
+      subject: `VTON Letter Preview`,
+      status: 'failed',
+      sent_date: new Date().toISOString(),
+      error_message: error.message,
+      notes: `Failed to send test email`
+    });
+
     return Response.json({ error: error.message }, { status: 500 });
   }
 });

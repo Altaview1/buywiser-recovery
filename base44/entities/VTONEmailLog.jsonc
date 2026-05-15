@@ -1,0 +1,92 @@
+{
+  "name": "VTONEmailLog",
+  "type": "object",
+  "properties": {
+    "lead_id": {
+      "type": "string",
+      "description": "ID of the VTONLead record"
+    },
+    "lead_name": {
+      "type": "string",
+      "description": "Veteran's full name"
+    },
+    "lead_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Recipient email address"
+    },
+    "email_type": {
+      "type": "string",
+      "enum": [
+        "welcome_letter",
+        "test_email",
+        "consultation_booking",
+        "lead_confirmation",
+        "follow_up",
+        "other"
+      ],
+      "description": "Type of email sent"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject line"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "sent",
+        "delivered",
+        "failed",
+        "bounced"
+      ],
+      "default": "sent",
+      "description": "Delivery status"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error details if delivery failed"
+    },
+    "sent_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the email was sent"
+    },
+    "template_used": {
+      "type": "string",
+      "description": "Template ID or name if applicable"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional context or metadata"
+    }
+  },
+  "required": [
+    "lead_id",
+    "lead_email",
+    "email_type",
+    "status",
+    "sent_date"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -113,39 +113,67 @@ Deno.serve(async (req) => {
     const homeSMS = `Hi ${firstName}! Your Veteran's Next Home™ Benefit Review is confirmed. Book your free 15-min consultation here: ${CALENDLY_URL} — or call us at (818) 300-2642. Looking forward to it!`;
     const adminSMS = `📅 CONSULTATION BOOKED: ${fullName} | ${phone || 'no phone'} | ${email || 'no email'} | Property: ${address}`;
 
-    await Promise.all([
-      // Email to homeowner
-      email ? resend.emails.send({
-        from: 'BuyWiser VTON <notifications@buywiser.com>',
-        to: email,
+    const homeownerEmailResult = email ? await resend.emails.send({
+      from: 'BuyWiser VTON <notifications@buywiser.com>',
+      to: email,
+      subject: '📅 Book Your Veteran\'s Next Home™ Benefit Review — You\'re Confirmed',
+      html: emailHtml,
+    }).catch(err => {
+      console.error('Homeowner email error:', err.message);
+      return null;
+    }) : null;
+
+    // Log homeowner email
+    if (email) {
+      await base44.asServiceRole.entities.VTONEmailLog.create({
+        lead_id: data.id || 'unknown',
+        lead_name: fullName,
+        lead_email: email,
+        email_type: 'consultation_booking',
         subject: '📅 Book Your Veteran\'s Next Home™ Benefit Review — You\'re Confirmed',
-        html: emailHtml,
-      }).catch(err => console.error('Homeowner email error:', err.message)) : Promise.resolve(),
+        status: homeownerEmailResult ? 'sent' : 'failed',
+        sent_date: new Date().toISOString(),
+        error_message: homeownerEmailResult ? null : 'Failed to send',
+        notes: `Consultation booking email to homeowner`
+      });
+    }
 
-      // SMS to homeowner
-      phone ? sendSMS(phone, homeSMS) : Promise.resolve(),
+    const adminEmailResult = await resend.emails.send({
+      from: 'BuyWiser VTON <notifications@buywiser.com>',
+      to: ADMIN_EMAIL,
+      subject: `📅 Consultation Booked: ${fullName} — ${address}`,
+      html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:8px;">
+        <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" height="28" style="margin-bottom:16px;" />
+        <h2 style="color:#0B1F3B;margin:0 0 8px;">📅 New Consultation Booked</h2>
+        <table style="font-size:14px;width:100%;border-collapse:collapse;">
+          <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Name</td><td style="color:#0f172a;">${fullName}</td></tr>
+          <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Email</td><td><a href="mailto:${email}" style="color:#2563eb;">${email || 'N/A'}</a></td></tr>
+          <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Phone</td><td><a href="tel:${phone}" style="color:#2563eb;">${phone || 'N/A'}</a></td></tr>
+          <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Property</td><td style="color:#0f172a;">${address}</td></tr>
+        </table>
+        <p style="margin-top:16px;font-size:12px;color:#94a3b8;">BuyWiser Technology, Inc. · NMLS #1887767</p>
+      </div>`,
+    }).catch(err => {
+      console.error('Admin email error:', err.message);
+      return null;
+    });
 
-      // Alert admin by email
-      resend.emails.send({
-        from: 'BuyWiser VTON <notifications@buywiser.com>',
-        to: ADMIN_EMAIL,
-        subject: `📅 Consultation Booked: ${fullName} — ${address}`,
-        html: `<div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:8px;">
-          <img src="https://media.base44.com/images/public/69984fca7363ecc074d7a3fc/ce4df4224_buywiserlogo.png" height="28" style="margin-bottom:16px;" />
-          <h2 style="color:#0B1F3B;margin:0 0 8px;">📅 New Consultation Booked</h2>
-          <table style="font-size:14px;width:100%;border-collapse:collapse;">
-            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Name</td><td style="color:#0f172a;">${fullName}</td></tr>
-            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Email</td><td><a href="mailto:${email}" style="color:#2563eb;">${email || 'N/A'}</a></td></tr>
-            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Phone</td><td><a href="tel:${phone}" style="color:#2563eb;">${phone || 'N/A'}</a></td></tr>
-            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Property</td><td style="color:#0f172a;">${address}</td></tr>
-          </table>
-          <p style="margin-top:16px;font-size:12px;color:#94a3b8;">BuyWiser Technology, Inc. · NMLS #1887767</p>
-        </div>`,
-      }).catch(err => console.error('Admin email error:', err.message)),
+    // Log admin email
+    await base44.asServiceRole.entities.VTONEmailLog.create({
+      lead_id: data.id || 'unknown',
+      lead_name: fullName,
+      lead_email: ADMIN_EMAIL,
+      email_type: 'consultation_booking',
+      subject: `📅 Consultation Booked: ${fullName}`,
+      status: adminEmailResult ? 'sent' : 'failed',
+      sent_date: new Date().toISOString(),
+      error_message: adminEmailResult ? null : 'Failed to send',
+      notes: `Consultation booking notification to admin`
+    });
 
-      // SMS to admin
-      ADMIN_PHONE ? sendSMS(ADMIN_PHONE, adminSMS) : Promise.resolve(),
-    ]);
+    // Send SMS notifications (not logged in email log)
+    if (phone) await sendSMS(phone, homeSMS);
+    if (ADMIN_PHONE) await sendSMS(ADMIN_PHONE, adminSMS);
 
     console.log(`Consultation booking notification sent for ${fullName}`);
     return Response.json({ success: true, email_sent: !!email, sms_sent: !!phone });
