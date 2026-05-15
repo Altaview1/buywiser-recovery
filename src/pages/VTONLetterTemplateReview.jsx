@@ -44,6 +44,10 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
             <p style="margin:0 0 20px 0;font-size:12px;color:#2c3e50;line-height:1.8;">
               We are writing to inform you of an exclusive benefit opportunity available to you as a veteran homeowner. Based on your current property at <strong>\${property_address}, \${city}, \${state} \${zip_code}</strong>, you qualify for a meaningful transition benefit as you move forward to your next home.
             </p>
+            
+            <p style="margin:0 0 20px 0;font-size:12px;color:#2c3e50;line-height:1.8;">
+              You qualify for this benefit because you have utilized VA financing within the last seven years—demonstrating your commitment to responsible homeownership and your valuable service to our nation.
+            </p>
 
             <p style="margin:0 0 20px 0;font-size:12px;color:#2c3e50;line-height:1.8;">
               The Veteran GAP NextHome™ Benefit is designed to help qualifying veteran homeowners transition to their next purchase with meaningful financial support. Upon qualification for your next home purchase, you may be eligible to receive a closing credit of up to <strong>1.5%</strong> of your loan amount—applied directly at closing with no ongoing costs or obligations.
