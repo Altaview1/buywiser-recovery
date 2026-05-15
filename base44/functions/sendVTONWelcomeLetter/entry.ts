@@ -95,9 +95,12 @@ Deno.serve(async (req) => {
 
     const lobData = await lobResponse.json();
 
-    // Update lead to mark letter as sent
+    // Update lead to mark letter as sent and store Lob letter ID for tracking
     await base44.asServiceRole.entities.VTONLead.update(leadId, {
       direct_mail_sent: true,
+      lob_letter_id: lobData.id,
+      lob_delivery_status: 'processing',
+      lob_last_updated: new Date().toISOString()
     });
 
     return Response.json({

@@ -71,6 +71,32 @@
       "default": false,
       "description": "Physical mail dispatched"
     },
+    "lob_letter_id": {
+      "type": "string",
+      "description": "Lob letter ID for tracking"
+    },
+    "lob_delivery_status": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "printed",
+        "in_transit",
+        "delivered",
+        "returned",
+        "cancelled"
+      ],
+      "description": "Current Lob delivery tracking status"
+    },
+    "lob_delivered_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Actual delivery date from Lob"
+    },
+    "lob_last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last tracking update timestamp"
+    },
     "sms_status": {
       "type": "string",
       "enum": [
