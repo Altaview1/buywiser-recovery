@@ -19,8 +19,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
                   <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="72" height="72" style="display:block;border-radius:6px;" />
                 </td>
                 <td style="vertical-align:middle;padding-left:16px;">
-                  <p style="margin:0 0 2px 0;font-size:18px;font-weight:bold;color:#0B1F3B;letter-spacing:0.5px;">Veterans GAP NextMove™</p>
-                  <p style="margin:0 0 2px 0;font-size:12px;font-weight:600;color:#B8860B;letter-spacing:0.5px;">Benefit Program</p>
+                  <p style="margin:0 0 2px 0;font-size:18px;font-weight:bold;color:#0B1F3B;letter-spacing:0.5px;">Veteran GAP NextMove™ Benefits</p>
                   <p style="margin:0 0 6px 0;font-size:11px;font-weight:500;color:#666666;letter-spacing:0.3px;">by BuyWiser</p>
                   <span style="display:inline-block;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#ffffff;background:#555555;padding:2px 8px;border-radius:3px;">Private Program · Not a Government Program</span>
                 </td>
