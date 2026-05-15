@@ -518,6 +518,7 @@ export default function VTONMailDashboard() {
                     <TableHead>Approval Status</TableHead>
                     <TableHead>Lob Letter ID</TableHead>
                     <TableHead>Mail Status</TableHead>
+                    <TableHead>Site Visits</TableHead>
                     <TableHead>Cost</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
@@ -624,6 +625,16 @@ export default function VTONMailDashboard() {
                       <TableCell>
                         {lead.lob_delivery_status ? getStatusBadge(lead.lob_delivery_status) : (
                           <span className="text-xs text-slate-400">Not sent</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {lead.site_visits > 0 ? (
+                          <Badge className="bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            {lead.site_visits} visit{lead.site_visits !== 1 ? 's' : ''}
+                          </Badge>
+                        ) : (
+                          <span className="text-xs text-slate-400">No visits</span>
                         )}
                       </TableCell>
                       <TableCell className="text-sm font-medium text-slate-700">
