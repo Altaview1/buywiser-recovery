@@ -21,30 +21,43 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'PROPERTY_RADAR_API_KEY not configured' }, { status: 500 });
     }
 
-    // Fetch leads from PropertyRadar API
-    const response = await fetch('https://api.propertyradar.com/prcore/v1/properties', {
+    // Fetch leads from PropertyRadar API - First try to get account info to verify API key
+    const testResponse = await fetch('https://api.propertyradar.com/v1/account', {
       headers: {
         'Authorization': `Bearer ${PROPERTY_RADAR_API_KEY}`,
         'Content-Type': 'application/json'
       },
-      method: 'POST',
+      method: 'GET'
+    });
+
+    if (!testResponse.ok) {
+      const errorText = await testResponse.text();
+      throw new Error(`PropertyRadar API authentication failed: ${testResponse.status} ${testResponse.statusText} - ${errorText}`);
+    }
+
+    const accountInfo = await testResponse.json();
+    console.log('Account info:', accountInfo);
+
+    // Now search for properties
+    const searchResponse = await fetch('https://api.propertyradar.com/v1/properties', {
+      headers: {
+        'Authorization': `Bearer ${PROPERTY_RADAR_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      method: 'GET',
       body: JSON.stringify({
-        limit: 100,
-        offset: 0,
-        filters: {
-          state: 'CA',
-          listing_status: ['active', 'pending'],
-          veteran_friendly: true
-        }
+        limit: 50
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`PropertyRadar API error: ${response.status} ${response.statusText}`);
+    if (!searchResponse.ok) {
+      const errorText = await searchResponse.text();
+      throw new Error(`PropertyRadar search error: ${searchResponse.status} ${searchResponse.statusText} - ${errorText}`);
     }
 
-    const apiData = await response.json();
-    const properties = apiData.results || apiData.data || [];
+    const apiData = await searchResponse.json();
+    console.log('Search response:', apiData);
+    const properties = apiData.results || apiData.data || apiData.properties || [];
 
     if (!Array.isArray(properties) || properties.length === 0) {
       return Response.json({
