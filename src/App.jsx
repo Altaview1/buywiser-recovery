@@ -59,6 +59,7 @@ import VTONCampaignDashboard from './pages/VTONCampaignDashboard';
 import VTONLetterTemplateReview from './pages/VTONLetterTemplateReview';
 import VTONEmailHistory from './pages/VTONEmailHistory';
 import VTONMailDashboard from './pages/VTONMailDashboard';
+import VTONQRScanTest from './pages/VTONQRScanTest';
 import VTONTestimonials from './pages/VTONTestimonials';
 import VTONPersonalizedLanding from './pages/VTONPersonalizedLanding';
 import AdminLogin from './pages/AdminLogin';
@@ -152,6 +153,7 @@ function App() {
           <Route path="/vton-letter-review" element={<VTONLetterTemplateReview />} />
           <Route path="/vton-email-history" element={<VTONEmailHistory />} />
           <Route path="/vton-mail-dashboard" element={<VTONMailDashboard />} />
+          <Route path="/vton-qr-scan-test" element={<VTONQRScanTest />} />
           <Route path="/vton-testimonials" element={<VTONTestimonials />} />
           <Route path="/vton-personalized/:leadId" element={<VTONPersonalizedLanding />} />
           <Route path="/vton-personalized" element={<VTONPersonalizedLanding />} />
