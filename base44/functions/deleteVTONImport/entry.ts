@@ -24,14 +24,11 @@ Deno.serve(async (req) => {
       // Delete by specific import batch
       query = { import_batch_id: import_batch_id };
     } else if (delete_all_today) {
-      // Delete all leads created today
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      // Delete all leads created today (within last 24 hours)
+      const now = new Date();
+      const twentyFourHoursAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000));
       query = { 
-        $or: [
-          { import_batch_id: { $exists: true } },
-          { created_date: { $gte: today.toISOString() } }
-        ]
+        created_date: { $gte: twentyFourHoursAgo.toISOString() }
       };
     } else {
       return Response.json({ error: 'Must provide import_batch_id or delete_all_today' }, { status: 400 });
