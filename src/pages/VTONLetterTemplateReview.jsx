@@ -87,13 +87,28 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
             <span style="color:#666666;">Founder | Buywiser Home Loans</span><br/>
             <span style="color:#999999;font-size:10px;">NMLS #1524446 | CA RE License #01107013</span>
           </td></tr>
-          <!-- Disclosure box -->
-          <tr><td style="border:1px solid #cccccc;border-radius:4px;padding:10px 14px;background:#fafafa;font-size:10px;color:#666666;line-height:1.6;">
-            <strong>PRIVATE PROGRAM DISCLOSURE:</strong> The BuyWiser's Veterans GAP NextMove™ Benefit Program is privately funded and operated exclusively by Buywiser Technology, Inc. DBA Buywiser Home Loans (NMLS #1887767). It is not affiliated with, endorsed by, or connected to the U.S. Department of Veterans Affairs, any military branch, or any government agency. All amounts are privately funded, qualification-based, and subject to final loan approval.
-          </td></tr>
-          <!-- Legal disclaimer -->
-          <tr><td style="padding-top:24px;border-top:1px solid #dddddd;margin-top:32px;font-size:10px;color:#999999;line-height:1.6;">
-            BuyWiser's Veterans GAP NextMove™ Benefit Program · Buywiser Technology, Inc. DBA Buywiser Home Loans. Company NMLS #1887767. Individual NMLS #1524446. Licensed by the California DFPI under the California Residential Mortgage Lending Act. This is not a commitment to lend. All programs subject to borrower qualification. Equal Housing Opportunity.
+          <!-- Footer -->
+          <tr><td style="padding-top:32px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:3px solid #0B1F3B;">
+              <!-- Brand bar -->
+              <tr><td style="padding-top:18px;padding-bottom:14px;text-align:center;">
+                <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="44" height="44" style="display:inline-block;border-radius:5px;vertical-align:middle;margin-right:10px;" />
+                <span style="font-size:14px;font-weight:bold;color:#0B1F3B;vertical-align:middle;letter-spacing:0.3px;">Veterans GAP NextMove™</span>
+                <span style="font-size:12px;color:#B8860B;font-weight:600;vertical-align:middle;"> · Benefit Program</span>
+                <span style="font-size:11px;color:#888888;vertical-align:middle;"> by BuyWiser</span>
+              </td></tr>
+              <!-- Private funding disclaimer -->
+              <tr><td style="background:#fff8e1;border:1px solid #f5c842;border-radius:4px;padding:10px 14px;text-align:center;">
+                <p style="margin:0;font-size:10px;font-weight:bold;color:#7a5c00;text-transform:uppercase;letter-spacing:0.5px;">⚠ Private Program — Not a Government Benefit</p>
+                <p style="margin:6px 0 0 0;font-size:10px;color:#7a5c00;line-height:1.6;">This program is privately funded and operated exclusively by BuyWiser. It is not affiliated with, endorsed by, or connected to the U.S. Department of Veterans Affairs, any military branch, or any government agency. All benefits are privately funded, qualification-based, and subject to final loan approval.</p>
+              </td></tr>
+              <!-- Legal line -->
+              <tr><td style="padding-top:12px;padding-bottom:8px;text-align:center;font-size:9px;color:#aaaaaa;line-height:1.7;">
+                Buywiser Technology, Inc. DBA Buywiser Home Loans &nbsp;·&nbsp; Company NMLS #1887767 &nbsp;·&nbsp; Individual NMLS #1524446<br/>
+                Licensed by the California DFPI under the California Residential Mortgage Lending Act &nbsp;·&nbsp; Equal Housing Opportunity<br/>
+                This is not a commitment to lend. All programs subject to borrower qualification. &nbsp;·&nbsp; (818) 300-2642 &nbsp;·&nbsp; buywiser.com
+              </td></tr>
+            </table>
           </td></tr>
         </table>
       </td></tr>
