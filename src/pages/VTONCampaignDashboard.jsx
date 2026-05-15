@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download, Trash2 } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
 import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 
@@ -25,6 +25,9 @@ export default function VTONCampaignDashboard() {
   const [filterContactStatus, setFilterContactStatus] = useState("all");
   const [addingLead, setAddingLead] = useState(false);
   const [addLeadResult, setAddLeadResult] = useState(null);
+  const [showDeleteImport, setShowDeleteImport] = useState(false);
+  const [deleteResult, setDeleteResult] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const parseCSV = (text) => {
     const lines = text.trim().split('\n');
@@ -246,6 +249,12 @@ export default function VTONCampaignDashboard() {
                 <Mail className="h-4 w-4" /> Email History
               </a>
               <button
+                onClick={() => setShowDeleteImport(true)}
+                className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" /> Delete Import
+              </button>
+              <button
                 onClick={() => setShowAddLead(true)}
                 className="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition text-sm"
               >
@@ -301,6 +310,64 @@ export default function VTONCampaignDashboard() {
                     <button onClick={() => { setShowAddLead(false); setAddLeadResult(null); }} className="w-full px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition">
                       {addLeadResult?.success ? 'Done' : 'Cancel'}
                     </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Delete Import Modal */}
+            {showDeleteImport && (
+              <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+                  <div className="flex items-center justify-between px-6 py-4 border-b border-red-200">
+                    <h2 className="text-lg font-bold text-red-700">Delete Recent Import</h2>
+                    <button onClick={() => { setShowDeleteImport(false); setDeleteResult(null); }} className="text-slate-400 hover:text-slate-700"><X className="h-5 w-5" /></button>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    <p className="text-sm text-slate-700 font-medium">This will delete all leads imported in the current session (today). This action cannot be undone.</p>
+                    
+                    {deleteResult && (
+                      <div className={`px-4 py-3 rounded-lg text-sm font-medium ${deleteResult.success ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                        {deleteResult.message}
+                      </div>
+                    )}
+
+                    <div className="flex gap-3 pt-2">
+                      <button 
+                        onClick={() => { setShowDeleteImport(false); setDeleteResult(null); }} 
+                        className="flex-1 px-4 py-2 border border-slate-200 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition"
+                        disabled={deleting}
+                      >
+                        Cancel
+                      </button>
+                      <button 
+                        onClick={async () => {
+                          setDeleting(true);
+                          try {
+                            const res = await base44.functions.invoke('deleteVTONImport', { delete_all_today: true });
+                            setDeleteResult({ success: true, message: `✓ Deleted ${res.data.deleted_count} leads` });
+                            await loadLeads();
+                          } catch (err) {
+                            setDeleteResult({ success: false, message: 'Error: ' + err.message });
+                          } finally {
+                            setDeleting(false);
+                          }
+                        }} 
+                        className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2"
+                        disabled={deleting}
+                      >
+                        {deleting ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="h-4 w-4" /> Delete All
+                          </>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
