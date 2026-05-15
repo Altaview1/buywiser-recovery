@@ -99,8 +99,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
               <!-- Brand bar -->
               <tr><td style="padding-top:18px;padding-bottom:14px;text-align:center;">
                 <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="44" height="44" style="display:inline-block;border-radius:5px;vertical-align:middle;margin-right:10px;" />
-                <span style="font-size:14px;font-weight:bold;color:#0B1F3B;vertical-align:middle;letter-spacing:0.3px;">Veterans GAP NextMove™</span>
-                <span style="font-size:12px;color:#B8860B;font-weight:600;vertical-align:middle;"> · Benefit Program</span>
+                <span style="font-size:14px;font-weight:bold;color:#0B1F3B;vertical-align:middle;letter-spacing:0.3px;">Veteran GAP NextMove™ Benefits</span>
                 <span style="font-size:11px;color:#888888;vertical-align:middle;"> by BuyWiser</span>
               </td></tr>
               <!-- Private funding disclaimer -->
