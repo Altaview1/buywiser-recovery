@@ -24,7 +24,7 @@ Deno.serve(async (req) => {
     // If a leadId is provided, personalize with that lead's data
     let lead = null;
     if (leadId) {
-      lead = await base44.asServiceRole.entities.VTONLead.read(leadId);
+      lead = await base44.asServiceRole.entities.VTONLead.get(leadId);
     }
 
     // Apply personalization (use lead data or sample placeholders)
