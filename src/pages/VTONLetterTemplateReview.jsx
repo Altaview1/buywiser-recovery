@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { useNavigate } from 'react-router-dom';
 import { Check, X, Eye, ChevronDown, Copy, Send } from 'lucide-react';
 import { getVariablesByCategory, getVariableSyntax } from '@/lib/vtonTemplateVariables';
 
@@ -117,6 +118,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
 </html>`;
 
 export default function VTONLetterTemplateReview() {
+  const navigate = useNavigate();
   const [template, setTemplate] = useState('');
   const [isApproved, setIsApproved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -313,12 +315,18 @@ export default function VTONLetterTemplateReview() {
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-3xl font-bold text-slate-900">VTON™ Letter Template</h1>
             <div className="flex gap-2">
-              <a href="/vton-mail-dashboard" className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+              <button
+                onClick={() => navigate('/vton-mail-dashboard')}
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition"
+              >
                 📧 Mail Dashboard
-              </a>
-              <a href="/vton-campaign" className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition">
+              </button>
+              <button
+                onClick={() => navigate('/vton-campaign')}
+                className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition"
+              >
                 📊 Campaign Dashboard
-              </a>
+              </button>
             </div>
           </div>
           <p className="text-slate-600">Customize and approve the letter that will be sent to all new veteran leads.</p>
@@ -488,10 +496,10 @@ export default function VTONLetterTemplateReview() {
           </div>
 
           <button
-            onClick={() => window.history.back()}
+            onClick={() => navigate('/vton-mail-dashboard')}
             className="px-6 py-2 bg-slate-200 text-slate-700 rounded-lg font-semibold hover:bg-slate-300 transition"
           >
-            Back
+            Back to Mail Dashboard
           </button>
         </div>
 
