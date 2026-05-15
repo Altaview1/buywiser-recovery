@@ -493,7 +493,10 @@ export default function VTONMailDashboard() {
                         {lead.mail_approval_status === 'pending_approval' ? (
                           <button
                             type="button"
-                            onClick={() => handlePreviewLetter(lead)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePreviewLetter(lead);
+                            }}
                             className="text-blue-600 hover:underline font-medium text-left cursor-pointer bg-transparent border-none p-0"
                           >
                             {lead.first_name} {lead.last_name}
