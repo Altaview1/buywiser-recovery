@@ -52,19 +52,11 @@ Deno.serve(async (req) => {
       .replace(/\$\{estimated_equity\}/g, estimated_equity)
       .replace(/\$\{listing_price\}/g, listing_price);
 
-    // Wrap in preview banner
-    const testBanner = `
-      <div style="background:#1e40af;color:#ffffff;text-align:center;padding:10px 16px;font-family:Arial,sans-serif;font-size:12px;font-weight:bold;border-bottom:2px solid #1d4ed8;">
-        PREVIEW ONLY — Internal review copy.${lead ? ` Personalized for: ${first_name} ${last_name}` : ' Using sample data.'}
-      </div>
-    `;
-    const emailBody = testBanner + personalizedHtml;
-
     await resend.emails.send({
       from: 'BuyWiser VTON <notifications@buywiser.com>',
       to: toEmail,
       subject: `VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ' — Sample'}`,
-      html: emailBody,
+      html: personalizedHtml,
     });
 
     return Response.json({ success: true, message: `Test email sent to ${toEmail}` });
