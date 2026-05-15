@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download, Trash2 } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download, Trash2, ShieldCheck } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
 import LeadNotesPanel from "../components/vton/LeadNotesPanel";
+import DuplicateScanner from "../components/DuplicateScanner";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -28,6 +29,7 @@ export default function VTONCampaignDashboard() {
   const [showDeleteImport, setShowDeleteImport] = useState(false);
   const [deleteResult, setDeleteResult] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
 
   const parseCSV = (text) => {
     const lines = text.trim().split('\n');
@@ -224,18 +226,33 @@ export default function VTONCampaignDashboard() {
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Bulk Import Section */}
         {showImport && (
-          <div className="mb-8">
-            <button
-              onClick={() => setShowImport(false)}
-              className="mb-4 text-sm text-slate-500 hover:text-slate-700 transition"
-            >
-              ← Back to Dashboard
-            </button>
-            <VTONBulkImportUI onImportComplete={() => {
-              setShowImport(false);
-              loadLeads();
-            }} />
-          </div>
+        <div className="mb-8">
+        <button
+          onClick={() => setShowImport(false)}
+          className="mb-4 text-sm text-slate-500 hover:text-slate-700 transition"
+        >
+          ← Back to Dashboard
+        </button>
+        <VTONBulkImportUI onImportComplete={() => {
+          setShowImport(false);
+          loadLeads();
+        }} />
+        </div>
+        )}
+
+        {/* Duplicate Scanner Section */}
+        {showScanner && (
+        <div className="mb-8">
+        <button
+          onClick={() => setShowScanner(false)}
+          className="mb-4 text-sm text-slate-500 hover:text-slate-700 transition"
+        >
+          ← Back to Dashboard
+        </button>
+        <DuplicateScanner onScanComplete={(result) => {
+          console.log('Scan complete:', result);
+        }} />
+        </div>
         )}
 
         {!showImport && (
@@ -248,6 +265,12 @@ export default function VTONCampaignDashboard() {
               >
                 <Mail className="h-4 w-4" /> Email History
               </a>
+              <button
+                onClick={() => setShowScanner(true)}
+                className="px-4 py-2 bg-amber-600 text-white font-semibold rounded-lg hover:bg-amber-700 transition text-sm flex items-center gap-2"
+              >
+                <ShieldCheck className="h-4 w-4" /> Scan for Duplicates
+              </button>
               <button
                 onClick={() => setShowDeleteImport(true)}
                 className="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm flex items-center gap-2"
