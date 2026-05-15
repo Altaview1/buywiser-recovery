@@ -99,8 +99,13 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <!-- Closing -->
           <tr><td style="padding:0 50px;">
             <p style="margin:0 0 20px 0;font-size:12px;color:#2c3e50;">Sincerely,</p>
-            <p style="margin:0 0 4px 0;font-size:12px;font-weight:600;color:#2c3e50;">Bennett Liss</p>
-            <p style="margin:0;font-size:11px;color:#7f8fa3;">NMLS #1524446</p>
+            <p style="margin:0 0 2px 0;font-size:12px;font-weight:600;color:#2c3e50;">Bennett Liss</p>
+            <p style="margin:0 0 16px 0;font-size:11px;color:#5a6c7d;">CEO / Broker, BuyWiser</p>
+            <p style="margin:0 0 2px 0;font-size:10px;color:#7f8fa3;line-height:1.6;">
+              e: bennett@buywiser.com<br/>
+              w: www.buywiser.com
+            </p>
+            <p style="margin:8px 0 0 0;font-size:10px;color:#7f8fa3;">Cal DRE: 01107013 | NMLS: 1524446</p>
           </td></tr>
 
           <!-- Spacer -->
