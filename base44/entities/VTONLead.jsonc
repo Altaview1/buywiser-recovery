@@ -179,6 +179,11 @@
       "default": "New",
       "description": "Current outreach status for pipeline tracking"
     },
+    "contact_priority_score": {
+      "type": "number",
+      "default": 0,
+      "description": "Lead priority score (0-100) based on veteran status and years at property"
+    },
     "assigned_advisor": {
       "type": "string",
       "description": "Assigned specialist email"

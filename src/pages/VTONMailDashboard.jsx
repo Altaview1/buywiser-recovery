@@ -18,6 +18,8 @@ export default function VTONMailDashboard() {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewLead, setPreviewLead] = useState(null);
   const [letterTemplate, setLetterTemplate] = useState('');
+  const [sortBy, setSortBy] = useState('priority');
+  const [scoringLeads, setScoringLeads] = useState(false);
   const itemsPerPage = 20;
 
   // Fetch all VTON leads with mail data (including pending approvals)
@@ -63,7 +65,7 @@ export default function VTONMailDashboard() {
   };
 
   // Filter leads by status and search query
-  const filteredLeads = leads?.filter(lead => {
+  let filteredLeads = leads?.filter(lead => {
     // Status filter
     if (statusFilter !== 'all' && lead.lob_delivery_status !== statusFilter) return false;
     
@@ -78,6 +80,13 @@ export default function VTONMailDashboard() {
     
     return true;
   }) || [];
+
+  // Sort by priority score (default) or date
+  if (sortBy === 'priority') {
+    filteredLeads = [...filteredLeads].sort((a, b) => (b.contact_priority_score || 0) - (a.contact_priority_score || 0));
+  } else if (sortBy === 'recent') {
+    filteredLeads = [...filteredLeads].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+  }
 
   // Pagination
   const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
@@ -376,6 +385,36 @@ export default function VTONMailDashboard() {
                     <SelectItem value="returned">Returned</SelectItem>
                   </SelectContent>
                 </Select>
+                
+                <label className="text-sm font-medium text-slate-700">Sort by:</label>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="priority">🎯 Priority Score</SelectItem>
+                    <SelectItem value="recent">📅 Recently Added</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={async () => {
+                    setScoringLeads(true);
+                    try {
+                      await base44.functions.invoke('calculateLeadPriorityScore', {});
+                      refetch();
+                    } catch (err) {
+                      console.error('Scoring error:', err);
+                    }
+                    setScoringLeads(false);
+                  }}
+                  disabled={scoringLeads}
+                >
+                  {scoringLeads ? 'Calculating...' : '📊 Recalculate Scores'}
+                </Button>
+
                 <Button variant="outline" size="sm" onClick={() => refetch()}>
                   Refresh
                 </Button>
@@ -472,6 +511,7 @@ export default function VTONMailDashboard() {
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
+                    <TableHead>Priority</TableHead>
                     <TableHead>Veteran Name</TableHead>
                     <TableHead>Property Address</TableHead>
                     <TableHead>Approval Status</TableHead>
@@ -498,6 +538,14 @@ export default function VTONMailDashboard() {
                           disabled={lead.mail_approval_status !== 'pending_approval'}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
                         />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="w-12 h-6 rounded-full bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 flex items-center justify-center">
+                            <span className="text-xs font-bold text-white">{lead.contact_priority_score || 0}</span>
+                          </div>
+                          {lead.veteran_indicator && <span className="text-lg">🎖️</span>}
+                        </div>
                       </TableCell>
                       <TableCell className="font-medium">
                         <button
