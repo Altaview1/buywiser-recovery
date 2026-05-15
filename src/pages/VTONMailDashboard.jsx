@@ -498,21 +498,21 @@ export default function VTONMailDashboard() {
                       </TableCell>
                       <TableCell className="font-medium">
                         {lead.mail_approval_status === 'pending_approval' ? (
-                          <a
-                            href="#"
+                          <button
+                            type="button"
                             onClick={(e) => {
                               e.preventDefault();
                               e.stopPropagation();
                               console.log('Name clicked:', lead.first_name, lead.last_name, lead.id);
                               handlePreviewLetter(lead);
                             }}
-                            className="text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer block"
+                            className="text-left text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer block w-full"
                           >
                             {lead.first_name} {lead.last_name}
                             {lead.spouse_name && (
                               <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
                             )}
-                          </a>
+                          </button>
                         ) : (
                           <span className="font-medium">
                             {lead.first_name} {lead.last_name}
