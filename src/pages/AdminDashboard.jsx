@@ -181,6 +181,12 @@ export default function AdminDashboard() {
             <p className="text-xs text-slate-400 mt-1">Admin Dashboard</p>
           </div>
           <div className="flex items-center gap-3">
+            <a
+              href="/vton-letter-review"
+              className="px-3 py-2 text-xs font-bold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-1.5"
+            >
+              ✉️ Preview VTON Letter
+            </a>
             <button
               onClick={fetchData}
               className="p-2 rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition"
