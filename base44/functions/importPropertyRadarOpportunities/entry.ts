@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
         offset: 0,
         filters: {
           state: 'CA',
-          listing_status: 'active',
+          listing_status: ['active', 'pending'],
           veteran_friendly: true
         }
       })
