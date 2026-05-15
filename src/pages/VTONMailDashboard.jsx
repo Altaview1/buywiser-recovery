@@ -568,7 +568,7 @@ export default function VTONMailDashboard() {
                     onClick={handleBulkSendToLob}
                     disabled={bulkProcessing}
                   >
-                    {bulkProcessing ? 'Sending...' : `📧 Send to Lob (${selectedLeads.length})`}
+                    {bulkProcessing ? 'Submitting...' : `📧 Submit to Lob (${selectedLeads.length})`}
                   </Button>
                   <Button
                     size="sm"
@@ -775,12 +775,12 @@ export default function VTONMailDashboard() {
                               size="sm"
                               className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
                               onClick={() => {
-                                if (window.confirm(`Send ${lead.first_name} ${lead.last_name}'s letter to Lob?`)) {
+                                if (window.confirm(`Submit ${lead.first_name} ${lead.last_name}'s letter to Lob?`)) {
                                   handleApprove(lead.id, 'send_to_lob');
                                 }
                               }}
                             >
-                              📧 Send to Lob
+                              📧 Submit to Lob
                             </Button>
                             <Button
                               size="sm"
