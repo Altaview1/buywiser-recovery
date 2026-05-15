@@ -84,7 +84,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <tr><td style="padding-top:20px;padding-bottom:28px;font-size:11px;color:#1a1a1a;">
             Sincerely,<br/><br/>
             <span style="font-weight:bold;color:#0B1F3B;">Bennett Liss</span><br/>
-            <span style="color:#666666;">Founder | Buywiser Home Loans</span><br/>
+            <span style="color:#666666;">Founder | BUYWISER HOME LOANS</span><br/>
             <span style="color:#999999;font-size:10px;">NMLS #1524446 | CA RE License #01107013</span>
           </td></tr>
           <!-- QR Code Section -->
@@ -109,7 +109,7 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
               </td></tr>
               <!-- Legal line -->
               <tr><td style="padding-top:12px;padding-bottom:8px;text-align:center;font-size:9px;color:#aaaaaa;line-height:1.7;">
-                Buywiser Technology, Inc. DBA Buywiser Home Loans &nbsp;·&nbsp; Company NMLS #1887767 &nbsp;·&nbsp; Individual NMLS #1524446<br/>
+                Buywiser Technology, Inc. DBA BUYWISER HOME LOANS &nbsp;·&nbsp; Company NMLS #1887767 &nbsp;·&nbsp; Individual NMLS #1524446<br/>
                 Licensed by the California DFPI under the California Residential Mortgage Lending Act &nbsp;·&nbsp; Equal Housing Opportunity<br/>
                 This is not a commitment to lend. All programs subject to borrower qualification. &nbsp;·&nbsp; (818) 300-2642 &nbsp;·&nbsp; buywiser.com
               </td></tr>
