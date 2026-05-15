@@ -45,11 +45,11 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
           <!-- Body Content -->
           <tr><td style="padding:24px 45px 0 45px;font-size:12px;line-height:1.8;color:#2c3e50;">
             <p style="margin:0 0 20px 0;">
-              We are reaching out regarding your home, which is currently listed for sale. As a veteran homeowner, you may qualify for a meaningful financial credit when you purchase your next home — a benefit we've created specifically for those who have served.
+              Because you currently own (or recently owned) your home with VA financing, you qualify for an exclusive benefit through our privately funded Veteran GAP Benefit program. This program is designed specifically for veteran homeowners transitioning to their next home.
             </p>
-            
+
             <p style="margin:0 0 20px 0;">
-              The homebuying transition is complex. Our qualification program exists to make that transition more advantageous for veteran families. The credit may be applied toward closing costs, reducing the overall cost of your next home purchase.
+              Through our privately funded Veteran GAP Benefit program, as a qualifying veteran homeowner, you may be eligible to receive a closing credit applied toward your next home purchase. This benefit is funded entirely by Buywiser Home Loans—not by the VA or any government agency—as our way of honoring those who have served.
             </p>
           </td></tr>
           
