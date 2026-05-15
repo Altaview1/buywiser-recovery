@@ -162,8 +162,9 @@ export default function VTONMailDashboard() {
 
   const handleSelectAll = (e) => {
     const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
+    console.log('Select all:', e.target.checked, pendingIds);
     if (e.target.checked) {
-      setSelectedLeads(pendingIds);
+      setSelectedLeads([...pendingIds]);
     } else {
       setSelectedLeads([]);
     }
@@ -483,10 +484,16 @@ export default function VTONMailDashboard() {
                       <TableCell>
                         <input
                           type="checkbox"
-                          onChange={() => handleSelectLead(lead.id)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleSelectLead(lead.id);
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
                           checked={selectedLeads.includes(lead.id)}
                           disabled={lead.mail_approval_status !== 'pending_approval'}
-                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50"
+                          className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
                         />
                       </TableCell>
                       <TableCell className="font-medium">
