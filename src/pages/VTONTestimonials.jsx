@@ -6,16 +6,16 @@ export default function VTONTestimonials() {
   const [currentVideo, setCurrentVideo] = useState('frank-cody');
   const [autoPlay, setAutoPlay] = useState(true);
 
-  // Videos - testimonial links (replace video IDs with actual uploaded videos)
+  // Videos - testimonial links (use your actual YouTube video IDs)
   const videos = {
     'frank-cody': {
       title: 'Frank & Cody - Veterans Benefiting from VTON',
-      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://www.youtube-nocookie.com/embed/9bZkp7q19f0?controls=1&rel=0',
       description: 'Real veterans share their experience with the Veteran\'s Next Home benefit program'
     },
     'your-speech': {
       title: 'Learn About Your Veteran\'s Next Home Benefit',
-      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&modestbranding=1&rel=0',
+      url: 'https://www.youtube-nocookie.com/embed/9bZkp7q19f0?controls=1&rel=0',
       description: 'Hear directly from our team about how this benefit works'
     }
   };
@@ -47,14 +47,26 @@ export default function VTONTestimonials() {
 
       {/* Main Video Area */}
       <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
-        <div className="w-full h-full max-w-4xl">
-          <iframe
-            src={videos[currentVideo].url}
-            title={videos[currentVideo].title}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full rounded-xl shadow-2xl"
-          />
+        <div className="w-full h-full max-w-4xl flex flex-col items-center justify-center">
+          <a 
+            href={videos[currentVideo].url.replace('/embed/', '/watch?v=')} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="relative w-full h-full bg-black rounded-xl shadow-2xl flex items-center justify-center group hover:opacity-90 transition"
+          >
+            {/* Play Button */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-24 h-24 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition transform shadow-lg">
+                <svg className="w-12 h-12 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+              </div>
+            </div>
+            {/* Fallback message */}
+            <div className="absolute bottom-4 left-4 right-4 bg-black/70 text-white p-4 rounded">
+              <p className="text-sm">⚠️ To watch this video, click here or visit YouTube directly</p>
+            </div>
+          </a>
         </div>
       </div>
 
