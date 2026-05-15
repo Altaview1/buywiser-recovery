@@ -239,7 +239,19 @@ export default function VTONMailDashboard() {
     refetch();
     
     if (results.failed > 0) {
-      alert(`Bulk approval complete: ${results.approved} approved, ${results.failed} failed`);
+      const errorDetails = results.errors.map(e => `${e.leadId}: ${e.error}`).join('\n');
+      try {
+        await base44.functions.invoke('notifyBatchApprovalFailure', {
+          action: 'approve',
+          lead_count: selectedLeads.length,
+          failed_count: results.failed,
+          error_message: errorDetails,
+          lead_ids: results.errors.map(e => e.leadId)
+        });
+      } catch (notifyErr) {
+        console.error('Failed to send alert:', notifyErr);
+      }
+      alert(`Bulk approval complete: ${results.approved} approved, ${results.failed} failed\n\nEmail alert sent to admin.`);
     } else {
       alert(`Successfully approved ${results.approved} mailers!`);
     }
@@ -251,7 +263,7 @@ export default function VTONMailDashboard() {
    if (!confirm(`Send ${selectedLeads.length} letters to Lob?`)) return;
 
    setBulkProcessing(true);
-   const results = { sent: 0, failed: 0, errors: [] };
+   const results = { sent: 0, failed: 0, errors: [], failedLeadIds: [] };
 
    for (const leadId of selectedLeads) {
      try {
@@ -262,7 +274,8 @@ export default function VTONMailDashboard() {
        results.sent++;
      } catch (error) {
        results.failed++;
-       results.errors.push(error.message);
+       results.errors.push({ leadId, error: error.message });
+       results.failedLeadIds.push(leadId);
      }
    }
 
@@ -270,12 +283,28 @@ export default function VTONMailDashboard() {
    setSelectedLeads([]);
    refetch();
 
+   if (results.failed > 0) {
+     const errorDetails = results.errors.map(e => `${e.leadId}: ${e.error}`).join('\n');
+     try {
+       await base44.functions.invoke('notifyBatchApprovalFailure', {
+         action: 'send_to_lob',
+         lead_count: selectedLeads.length,
+         failed_count: results.failed,
+         error_message: errorDetails,
+         lead_ids: results.failedLeadIds
+       });
+     } catch (notifyErr) {
+       console.error('Failed to send alert:', notifyErr);
+     }
+   }
+
    let message = `Bulk Lob send: ${results.sent} sent`;
    if (results.failed > 0) {
      message += `, ${results.failed} failed`;
      if (results.errors.length > 0) {
-       message += `\n\nErrors:\n${results.errors.slice(0, 3).join('\n')}`;
+       message += `\n\nErrors:\n${results.errors.slice(0, 3).map(e => `${e.leadId}: ${e.error}`).join('\n')}`;
      }
+     message += '\n\n✓ Email alert sent to admin';
    }
    alert(message);
   };
@@ -286,7 +315,7 @@ export default function VTONMailDashboard() {
     if (!confirm(`Reject ${selectedLeads.length} selected mailers? This cannot be undone.`)) return;
     
     setBulkProcessing(true);
-    const results = { rejected: 0, failed: 0 };
+    const results = { rejected: 0, failed: 0, errors: [], failedLeadIds: [] };
     
     for (const leadId of selectedLeads) {
       try {
@@ -297,6 +326,8 @@ export default function VTONMailDashboard() {
         results.rejected++;
       } catch (error) {
         results.failed++;
+        results.errors.push({ leadId, error: error.message });
+        results.failedLeadIds.push(leadId);
       }
     }
     
@@ -304,7 +335,23 @@ export default function VTONMailDashboard() {
     setSelectedLeads([]);
     refetch();
     
-    alert(`Bulk rejection complete: ${results.rejected} rejected, ${results.failed} failed`);
+    if (results.failed > 0) {
+      const errorDetails = results.errors.map(e => `${e.leadId}: ${e.error}`).join('\n');
+      try {
+        await base44.functions.invoke('notifyBatchApprovalFailure', {
+          action: 'reject',
+          lead_count: selectedLeads.length,
+          failed_count: results.failed,
+          error_message: errorDetails,
+          lead_ids: results.failedLeadIds
+        });
+      } catch (notifyErr) {
+        console.error('Failed to send alert:', notifyErr);
+      }
+      alert(`Bulk rejection complete: ${results.rejected} rejected, ${results.failed} failed\n\n✓ Email alert sent to admin`);
+    } else {
+      alert(`Successfully rejected ${results.rejected} mailers!`);
+    }
   };
 
   if (isLoading) {
