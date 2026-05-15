@@ -97,11 +97,12 @@ export default function VTONMailDashboard() {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      processing: { color: 'bg-blue-100 text-blue-800', icon: Clock, label: 'Processing' },
-      mailed: { color: 'bg-purple-100 text-purple-800', icon: Package, label: 'Mailed' },
-      delivered: { color: 'bg-green-100 text-green-800', icon: CheckCircle, label: 'Delivered' },
-      failed: { color: 'bg-red-100 text-red-800', icon: AlertCircle, label: 'Failed' },
-      returned: { color: 'bg-orange-100 text-orange-800', icon: AlertCircle, label: 'Returned' },
+      processing: { color: 'bg-blue-100 text-blue-800', icon: Clock, label: '🖨️ Printing' },
+      mailed: { color: 'bg-purple-100 text-purple-800', icon: Package, label: '📦 In Transit' },
+      delivered: { color: 'bg-green-100 text-green-800', icon: CheckCircle, label: '✓ Delivered' },
+      failed: { color: 'bg-red-100 text-red-800', icon: AlertCircle, label: '✕ Failed' },
+      returned: { color: 'bg-orange-100 text-orange-800', icon: AlertCircle, label: '↩️ Returned' },
+      cancelled: { color: 'bg-gray-100 text-gray-800', icon: AlertCircle, label: '⊘ Cancelled' },
     };
 
     const config = statusConfig[status] || { color: 'bg-gray-100 text-gray-800', icon: FileText, label: status || 'Unknown' };
