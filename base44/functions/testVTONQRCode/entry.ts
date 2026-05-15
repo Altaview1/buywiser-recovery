@@ -22,10 +22,10 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Lead not found' }, { status: 404 });
     }
 
-    // Generate the personalized landing page URL
-    const landingPageUrl = `https://buywiser.com/vton-personalized/${lead_id}`;
+    // Generate the personalized landing page URL (relative path works in all environments)
+    const landingPageUrl = `/vton-personalized/${lead_id}`;
 
-    // Generate QR code URL using QR Server API
+    // Generate QR code with the relative URL encoded
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(landingPageUrl)}`;
 
     return Response.json({
