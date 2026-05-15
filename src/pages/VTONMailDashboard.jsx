@@ -38,8 +38,11 @@ export default function VTONMailDashboard() {
     const loadTemplate = async () => {
       try {
         const configs = await base44.entities.VTONMailConfig.list();
+        console.log('VTONMailConfig loaded:', configs.length, configs.length > 0 ? 'has HTML' : 'no configs');
         if (configs.length > 0 && configs[0].letter_html) {
           setLetterTemplate(configs[0].letter_html);
+        } else {
+          console.warn('No letter template found in config');
         }
       } catch (err) {
         console.error('Failed to load template:', err);
@@ -497,30 +500,19 @@ export default function VTONMailDashboard() {
                         />
                       </TableCell>
                       <TableCell className="font-medium">
-                        {lead.mail_approval_status === 'pending_approval' ? (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              console.log('Name clicked:', lead.first_name, lead.last_name, lead.id);
-                              handlePreviewLetter(lead);
-                            }}
-                            className="text-left text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer block w-full"
-                          >
-                            {lead.first_name} {lead.last_name}
-                            {lead.spouse_name && (
-                              <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
-                            )}
-                          </button>
-                        ) : (
-                          <span className="font-medium">
-                            {lead.first_name} {lead.last_name}
-                            {lead.spouse_name && (
-                              <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
-                            )}
-                          </span>
-                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            console.log('Name button clicked:', lead.first_name, lead.last_name, lead.id);
+                            handlePreviewLetter(lead);
+                          }}
+                          className="text-left text-blue-600 hover:text-blue-800 hover:underline font-medium cursor-pointer block w-full text-base"
+                        >
+                          {lead.first_name} {lead.last_name}
+                          {lead.spouse_name && (
+                            <div className="text-xs text-slate-500">& {lead.spouse_name}</div>
+                          )}
+                        </button>
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">{lead.property_address}</div>
