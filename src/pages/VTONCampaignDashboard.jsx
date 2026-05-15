@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
+import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -20,6 +21,7 @@ export default function VTONCampaignDashboard() {
   });
   const [showImport, setShowImport] = useState(false);
   const [showAddLead, setShowAddLead] = useState(false);
+  const [notesLead, setNotesLead] = useState(null);
   const [addingLead, setAddingLead] = useState(false);
   const [addLeadResult, setAddLeadResult] = useState(null);
 
@@ -148,8 +150,19 @@ export default function VTONCampaignDashboard() {
     );
   }
 
+  const handleNotesSaved = (leadId, newNotes) => {
+    setLeads(prev => prev.map(l => l.id === leadId ? { ...l, notes: newNotes } : l));
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
+      {notesLead && (
+        <LeadNotesPanel
+          lead={notesLead}
+          onClose={() => setNotesLead(null)}
+          onSaved={(id, notes) => { handleNotesSaved(id, notes); setNotesLead(null); }}
+        />
+      )}
       {/* Header */}
       <div style={{ background: NAVY }} className="text-white px-6 py-8">
         <div className="max-w-7xl mx-auto">
@@ -327,7 +340,8 @@ export default function VTONCampaignDashboard() {
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Email</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Visits</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Status</th>
-                </tr>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Notes</th>
+                  </tr>
               </thead>
               <tbody>
                 {filteredLeads.map((lead) => {
@@ -384,7 +398,19 @@ export default function VTONCampaignDashboard() {
                           {lead.suppression_status === 'active' ? 'Active' : 'Suppressed'}
                         </span>
                       </td>
-                    </tr>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => setNotesLead(lead)}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                            lead.notes ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                          }`}
+                          title={lead.notes || "Add notes"}
+                        >
+                          <StickyNote className="h-3.5 w-3.5" />
+                          {lead.notes ? "View" : "Add"}
+                        </button>
+                      </td>
+                      </tr>
                   );
                 })}
               </tbody>
