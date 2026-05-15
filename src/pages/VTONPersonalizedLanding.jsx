@@ -13,6 +13,12 @@ export default function VTONPersonalizedLanding() {
 
   useEffect(() => {
     loadLead();
+    // Track page visit
+    if (leadId) {
+      base44.functions.invoke('notifyLeadPageVisit', { lead_id: leadId }).catch(err => 
+        console.log('Could not track visit:', err)
+      );
+    }
   }, [leadId]);
 
   const loadLead = async () => {
