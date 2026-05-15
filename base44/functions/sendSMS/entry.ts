@@ -12,12 +12,14 @@ function formatPhone(phone) {
 }
 
 Deno.serve(async (req) => {
-  const { message, phone } = await req.json();
+  try {
+    const base44 = createClientFromRequest(req);
+    const { message, phone } = await req.json();
 
-  const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
-  const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
-  const from = Deno.env.get("TWILIO_FROM_NUMBER");
-  const rawPhone = phone || Deno.env.get("BENNETT_PHONE");
+    const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
+    const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
+    const from = Deno.env.get("TWILIO_FROM_NUMBER");
+    const rawPhone = phone || Deno.env.get("BENNETT_PHONE");
   const to = formatPhone(rawPhone);
 
   if (!to) {
@@ -42,5 +44,8 @@ Deno.serve(async (req) => {
     return Response.json({ error: data.message }, { status: 500 });
   }
 
-  return Response.json({ sid: data.sid });
+    return Response.json({ sid: data.sid });
+  } catch (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
 });
