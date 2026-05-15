@@ -7,111 +7,105 @@ import { getVariablesByCategory, getVariableSyntax } from '@/lib/vtonTemplateVar
 const DEFAULT_TEMPLATE = `<!DOCTYPE html>
 <html lang="en">
   <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
-  <body style="margin:0;padding:0;background:#ffffff;font-family:Georgia,serif;color:#1a1a1a;line-height:1.6;">
-    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+  <body style="margin:0;padding:0;background:#fafafa;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;color:#2c3e50;line-height:1.7;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#fafafa;">
       <tr><td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;padding:50px 40px;">
-          <!-- Letterhead -->
-          <tr><td style="border-top:3px solid #0B1F3B;border-bottom:1px solid #cccccc;padding-bottom:18px;margin-bottom:36px;">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;margin-top:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+          <!-- Header Section -->
+          <tr><td style="padding:40px 45px 20px 45px;border-bottom:1px solid #e8eef5;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0">
               <tr>
-                <td style="vertical-align:middle;">
-                  <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="72" height="72" style="display:block;border-radius:6px;" />
+                <td style="vertical-align:top;">
+                  <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="48" height="48" style="display:block;border-radius:4px;" />
                 </td>
-                <td style="vertical-align:middle;padding-left:16px;">
-                  <p style="margin:0 0 6px 0;font-size:18px;font-weight:bold;color:#0B1F3B;letter-spacing:0.5px;">BUYWISER HOME LOANS</p>
-                  <span style="display:inline-block;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#ffffff;background:#555555;padding:2px 8px;border-radius:3px;">Private Program · Not a Government Program</span>
+                <td style="vertical-align:top;padding-left:16px;">
+                  <p style="margin:0;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#7f8fa3;font-weight:600;">Veteran Transition Benefit</p>
+                  <p style="margin:4px 0 0 0;font-size:12px;color:#2c3e50;">by Buywiser Home Loans</p>
                 </td>
-                <td style="vertical-align:top;text-align:right;">
-                  <p style="margin:0;font-size:11px;color:#666666;">May 2026</p>
+                <td style="vertical-align:top;text-align:right;padding-left:20px;">
+                  <p style="margin:0;font-size:11px;color:#7f8fa3;">May 2026</p>
                 </td>
               </tr>
             </table>
           </td></tr>
-          <!-- Recipient -->
-          <tr><td style="padding-top:30px;padding-bottom:24px;font-size:12px;color:#1a1a1a;">
-            \${first_name} \${last_name}<br/>
-            \${property_address}<br/>
-            \${city}, \${state} \${zip_code}
+          <!-- Recipient Address -->
+          <tr><td style="padding:36px 45px 32px 45px;border-bottom:1px solid #e8eef5;">
+            <p style="margin:0 0 12px 0;font-size:11px;color:#7f8fa3;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Current Property</p>
+            <p style="margin:0 0 8px 0;font-size:13px;font-weight:600;color:#2c3e50;">\${property_address}</p>
+            <p style="margin:0 0 16px 0;font-size:12px;color:#5a6c7d;">\${city}, \${state} \${zip_code}</p>
+            
+            <p style="margin:16px 0 0 0;font-size:11px;color:#7f8fa3;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;">Recipient</p>
+            <p style="margin:4px 0 0 0;font-size:12px;color:#2c3e50;">\${first_name} \${last_name}</p>
           </td></tr>
+          
           <!-- Salutation -->
-          <tr><td style="padding-bottom:20px;font-size:13px;color:#1a1a1a;">
+          <tr><td style="padding:32px 45px 0 45px;font-size:13px;color:#2c3e50;">
             Dear \${first_name},
           </td></tr>
-          <!-- Body paragraphs -->
-          <tr><td style="padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
-            We are reaching out because your home is currently listed for sale — and as a veteran homeowner, you may be eligible for a meaningful financial credit when you purchase your next home.
+          <!-- Body Content -->
+          <tr><td style="padding:24px 45px 0 45px;font-size:12px;line-height:1.8;color:#2c3e50;">
+            <p style="margin:0 0 20px 0;">
+              We are reaching out regarding your home, which is currently listed for sale. As a veteran homeowner, you may qualify for a meaningful financial credit when you purchase your next home — a benefit we've created specifically for those who have served.
+            </p>
+            
+            <p style="margin:0 0 20px 0;">
+              The homebuying transition is complex. Our qualification program exists to make that transition more advantageous for veteran families. The credit may be applied toward closing costs, reducing the overall cost of your next home purchase.
+            </p>
           </td></tr>
-          <tr><td style="padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
-            Our records indicate your property is currently offered for sale:
-          </td></tr>
-          <!-- Property box -->
-          <tr><td style="background:#f5f5f5;border-left:4px solid #0B1F3B;padding:14px 18px;margin:20px 0;">
-            <p style="margin:0 0 4px 0;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#666666;">Current Property</p>
-            <p style="margin:0 0 6px 0;font-size:13px;font-weight:bold;color:#1a1a1a;">\${property_address}</p>
-            <p style="margin:0;font-size:11px;color:#666666;">\${city}, \${state} \${zip_code}</p>
-          </td></tr>
-          <!-- Program description -->
-          <tr><td style="padding-top:16px;padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
-            Through our privately funded program, qualifying veteran homeowners may receive a closing credit applied toward their next home purchase. This credit is funded entirely by BuyWiser's Veterans GAP NextMove™ Benefit Program — not by the VA or any government agency — as our way of honoring those who served.
-          </td></tr>
-          <!-- Benefit box -->
-          <tr><td style="background:#f9f9f9;border:1px solid #dddddd;padding:14px;margin:18px 0;">
-            <p style="margin:0 0 6px 0;font-weight:bold;color:#0B1F3B;font-size:12px;">What You May Qualify For</p>
-            <p style="margin:0;font-size:12px;line-height:1.7;color:#1a1a1a;">Qualifying veteran homeowners may receive up to 1.5% of their next home's purchase price as a credit applied at closing. The final amount depends on your individual situation and purchase structure.</p>
-          </td></tr>
-          <!-- Timing -->
-          <tr><td style="padding-top:16px;padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
-            <strong>Timing matters.</strong> This opportunity is available during your transition window — while your current home is listed. Understanding your options now ensures you do not miss a credit that may not be available after you have already moved.
-          </td></tr>
-          <!-- CTA -->
-          <tr><td style="padding-top:10px;padding-bottom:16px;">
-            <p style="margin:0 0 10px 0;font-size:13px;font-weight:bold;color:#0B1F3B;">Schedule Your Complimentary Review</p>
-            <p style="margin:0;font-size:12px;line-height:1.8;color:#1a1a1a;">We invite you to schedule a brief, no-obligation consultation. Our team will walk through your specific situation and confirm exactly what you qualify for — at no cost to you.</p>
-          </td></tr>
-          <!-- Contact info -->
-          <tr><td style="padding-bottom:8px;font-size:12px;color:#1a1a1a;">
-            <p style="margin:0 0 6px 0;"><strong>Phone:</strong> (818) 300-2642</p>
-            <p style="margin:0 0 6px 0;"><strong>Web:</strong> buywiser.com/vton</p>
-            <p style="margin:0;"><strong>Personalized Benefit Page:</strong> buywiser.com/b</p>
-          </td></tr>
-          <!-- Closing -->
-          <tr><td style="padding-top:28px;padding-bottom:8px;font-size:12px;color:#1a1a1a;">
-            Thank you for your service. We look forward to supporting your next chapter.
-          </td></tr>
-          <!-- Signature -->
-          <tr><td style="padding-top:20px;padding-bottom:28px;font-size:11px;color:#1a1a1a;">
-            Sincerely,<br/><br/>
-            <span style="font-weight:bold;color:#0B1F3B;">Bennett Liss</span><br/>
-            <span style="color:#666666;">Founder | BUYWISER HOME LOANS</span><br/>
-            <span style="color:#999999;font-size:10px;">NMLS #1524446 | CA RE License #01107013</span>
-          </td></tr>
-          <!-- QR Code Section -->
-          <tr><td style="padding-top:32px;padding-bottom:24px;text-align:center;">
-            <p style="margin:0 0 12px 0;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#666666;">Scan to Learn More</p>
-            <img src="\${qrUrl}" alt="QR Code - Scan to watch veteran testimonials" width="150" height="150" style="display:inline-block;" />
-            <p style="margin:10px 0 0 0;font-size:10px;color:#999999;">Scan with your phone to watch veteran testimonials and learn how the program works</p>
-          </td></tr>
-          <!-- Footer -->
-          <tr><td style="padding-top:32px;">
-            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:3px solid #0B1F3B;">
-              <!-- Brand bar -->
-              <tr><td style="padding-top:18px;padding-bottom:14px;text-align:center;">
-                <img src="https://media.base44.com/images/public/6a03e2a66969bf6b43fd5faf/a1ebeee25_BuywiserLogoGoldLighterBlueforFBCircle.jpg" alt="BuyWiser" width="44" height="44" style="display:inline-block;border-radius:5px;vertical-align:middle;margin-right:10px;" />
-                <span style="font-size:14px;font-weight:bold;color:#0B1F3B;vertical-align:middle;letter-spacing:0.3px;">BUYWISER HOME LOANS</span>
-              </td></tr>
-              <!-- Private funding disclaimer -->
-              <tr><td style="background:#fff8e1;border:1px solid #f5c842;border-radius:4px;padding:10px 14px;text-align:center;">
-                <p style="margin:0;font-size:10px;font-weight:bold;color:#7a5c00;text-transform:uppercase;letter-spacing:0.5px;">⚠ Private Program — Not a Government Benefit</p>
-                <p style="margin:6px 0 0 0;font-size:10px;color:#7a5c00;line-height:1.6;">This program is privately funded and operated exclusively by BuyWiser. It is not affiliated with, endorsed by, or connected to the U.S. Department of Veterans Affairs, any military branch, or any government agency. All benefits are privately funded, qualification-based, and subject to final loan approval.</p>
-              </td></tr>
-              <!-- Legal line -->
-              <tr><td style="padding-top:12px;padding-bottom:8px;text-align:center;font-size:9px;color:#aaaaaa;line-height:1.7;">
-                Buywiser Technology, Inc. DBA BUYWISER HOME LOANS &nbsp;·&nbsp; Company NMLS #1887767 &nbsp;·&nbsp; Individual NMLS #1524446<br/>
-                Licensed by the California DFPI under the California Residential Mortgage Lending Act &nbsp;·&nbsp; Equal Housing Opportunity<br/>
-                This is not a commitment to lend. All programs subject to borrower qualification. &nbsp;·&nbsp; (818) 300-2642 &nbsp;·&nbsp; buywiser.com
+          
+          <!-- Benefit Summary Box -->
+          <tr><td style="padding:0 45px 20px 45px;">
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f8fafb;border-left:3px solid #4a7c9e;padding:18px;border-radius:2px;">
+              <tr><td>
+                <p style="margin:0 0 8px 0;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:#7f8fa3;font-weight:600;">Your Potential Qualification</p>
+                <p style="margin:0;font-size:13px;font-weight:600;color:#2c3e50;">Up to 1.5% credit on your next home purchase</p>
+                <p style="margin:8px 0 0 0;font-size:11px;color:#5a6c7d;">Applied as a closing credit — subject to qualification and loan approval</p>
               </td></tr>
             </table>
+          </td></tr>
+          
+          <!-- Why This Matters -->
+          <tr><td style="padding:0 45px 24px 45px;font-size:12px;line-height:1.8;color:#2c3e50;">
+            <p style="margin:0 0 16px 0;">
+              <strong>Why this matters now:</strong> This opportunity exists during your transition window—while your current home is actively listed. Timing is important, as available benefits can change based on individual circumstances and market conditions.
+            </p>
+            
+            <p style="margin:0;">
+              We recommend scheduling a brief, confidential consultation to understand your specific qualification and how this credit might apply to your next purchase. There is no cost or obligation.
+            </p>
+          </td></tr>
+          <!-- Contact and CTA -->
+          <tr><td style="padding:28px 45px;border-top:1px solid #e8eef5;border-bottom:1px solid #e8eef5;">
+            <p style="margin:0 0 16px 0;font-size:12px;line-height:1.8;color:#2c3e50;">
+              <strong>Next Steps:</strong> Schedule a brief qualification consultation at your convenience. Our team will discuss your specific situation and answer any questions.
+            </p>
+            <p style="margin:0;font-size:12px;color:#2c3e50;">
+              <strong>Phone:</strong> (818) 300-2642 &nbsp; | &nbsp; <strong>Web:</strong> buywiser.com/vton
+            </p>
+          </td></tr>
+          
+          <!-- QR Code Section -->
+          <tr><td style="padding:32px 45px;text-align:center;border-bottom:1px solid #e8eef5;">
+            <p style="margin:0 0 14px 0;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#7f8fa3;font-weight:600;">Scan to Learn More</p>
+            <img src="\${qrUrl}" alt="QR Code" width="140" height="140" style="display:inline-block;" />
+            <p style="margin:12px 0 0 0;font-size:10px;color:#7f8fa3;">Learn more about the veteran benefit program</p>
+          </td></tr>
+          
+          <!-- Signature -->
+          <tr><td style="padding:32px 45px;text-align:left;">
+            <p style="margin:0 0 2px 0;font-size:12px;color:#2c3e50;">Sincerely,</p>
+            <p style="margin:12px 0 0 0;font-size:11px;font-weight:600;color:#2c3e50;">Bennett Liss</p>
+            <p style="margin:2px 0 0 0;font-size:10px;color:#7f8fa3;">Founder, Buywiser Home Loans</p>
+            <p style="margin:8px 0 0 0;font-size:9px;color:#999999;">NMLS #1524446</p>
+          </td></tr>
+          
+          <!-- Footer -->
+          <tr><td style="padding:24px 45px;background:#f8fafb;border-top:1px solid #e8eef5;font-size:9px;color:#7f8fa3;line-height:1.7;text-align:center;">
+            <p style="margin:0;">
+              Buywiser Technology, Inc. DBA Buywiser Home Loans<br/>
+              Company NMLS #1887767 &nbsp; | &nbsp; Licensed by California DFPI<br/>
+              This program is privately funded and operated by Buywiser. It is not affiliated with or endorsed by the VA, any military branch, or any government agency. All benefits are subject to final qualification and loan approval. Equal Housing Opportunity.
+            </p>
           </td></tr>
         </table>
       </td></tr>
