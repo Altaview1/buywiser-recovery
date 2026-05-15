@@ -16,18 +16,21 @@ Deno.serve(async (req) => {
     }
 
     const body = await req.json();
-    const { import_batch_id, delete_all_today = false } = body;
+    const { import_batch_id, delete_all_today = false, delete_new_only = false } = body;
 
     let query = {};
 
     if (import_batch_id) {
       // Delete by specific import batch
       query = { import_batch_id: import_batch_id };
+    } else if (delete_new_only) {
+      // Delete only leads with status "New"
+      query = { contact_status: "New" };
     } else if (delete_all_today) {
       // Delete ALL VTON leads (no date filter)
       query = {};
     } else {
-      return Response.json({ error: 'Must provide import_batch_id or delete_all_today' }, { status: 400 });
+      return Response.json({ error: 'Must provide import_batch_id, delete_all_today, or delete_new_only' }, { status: 400 });
     }
 
     // Get ALL leads to delete (no limit)

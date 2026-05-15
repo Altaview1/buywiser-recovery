@@ -337,6 +337,34 @@ export default function VTONCampaignDashboard() {
                         onClick={async () => {
                           setDeleting(true);
                           try {
+                            const res = await base44.functions.invoke('deleteVTONImport', { delete_new_only: true });
+                            setDeleteResult({ success: true, message: `✓ Deleted ${res.data.deleted_count} NEW leads` });
+                            await loadLeads();
+                          } catch (err) {
+                            setDeleteResult({ success: false, message: 'Error: ' + err.message });
+                          } finally {
+                            setDeleting(false);
+                          }
+                        }} 
+                        className="w-full px-4 py-3 bg-orange-600 text-white rounded-lg text-sm font-semibold hover:bg-orange-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2"
+                        disabled={deleting}
+                      >
+                        {deleting ? (
+                          <>
+                            <div className="w-4 h-4 border-2 border-white/60 border-t-white rounded-full animate-spin" />
+                            Deleting...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="h-4 w-4" /> Delete Only "New" Status Leads
+                          </>
+                        )}
+                      </button>
+
+                      <button 
+                        onClick={async () => {
+                          setDeleting(true);
+                          try {
                             const res = await base44.functions.invoke('deleteVTONImport', { delete_all_today: true });
                             setDeleteResult({ success: true, message: `✓ Deleted ${res.data.deleted_count} leads` });
                             await loadLeads();
@@ -356,7 +384,7 @@ export default function VTONCampaignDashboard() {
                           </>
                         ) : (
                           <>
-                            <Trash2 className="h-4 w-4" /> Delete All Leads (Last 48 Hours)
+                            <Trash2 className="h-4 w-4" /> Delete ALL Leads (Complete Clear)
                           </>
                         )}
                       </button>
