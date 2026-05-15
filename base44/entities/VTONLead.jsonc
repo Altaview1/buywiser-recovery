@@ -128,6 +128,16 @@
       "default": "initial_outreach",
       "description": "Current campaign stage"
     },
+    "contact_status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Contacted",
+        "Qualified"
+      ],
+      "default": "New",
+      "description": "Current outreach status for pipeline tracking"
+    },
     "assigned_advisor": {
       "type": "string",
       "description": "Assigned specialist email"

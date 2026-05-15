@@ -7,6 +7,38 @@ import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
 
+const STATUS_STYLES = {
+  New:       "bg-slate-100 text-slate-700 border-slate-200",
+  Contacted: "bg-blue-100 text-blue-800 border-blue-200",
+  Qualified: "bg-green-100 text-green-800 border-green-200",
+};
+
+function ContactStatusDropdown({ lead, onChange }) {
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = async (e) => {
+    const newStatus = e.target.value;
+    setSaving(true);
+    await base44.entities.VTONLead.update(lead.id, { contact_status: newStatus });
+    setSaving(false);
+    onChange(lead.id, newStatus);
+  };
+
+  const current = lead.contact_status || "New";
+  return (
+    <select
+      value={current}
+      onChange={handleChange}
+      disabled={saving}
+      className={`text-xs font-semibold px-2 py-1.5 rounded-lg border cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 transition disabled:opacity-50 ${STATUS_STYLES[current] || STATUS_STYLES.New}`}
+    >
+      <option value="New">New</option>
+      <option value="Contacted">Contacted</option>
+      <option value="Qualified">Qualified</option>
+    </select>
+  );
+}
+
 export default function VTONCampaignDashboard() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -340,6 +372,7 @@ export default function VTONCampaignDashboard() {
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Email</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Visits</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Status</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Review</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Notes</th>
                   </tr>
               </thead>
@@ -397,6 +430,11 @@ export default function VTONCampaignDashboard() {
                         }`}>
                           {lead.suppression_status === 'active' ? 'Active' : 'Suppressed'}
                         </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <ContactStatusDropdown lead={lead} onChange={(id, status) =>
+                          setLeads(prev => prev.map(l => l.id === id ? { ...l, contact_status: status } : l))
+                        } />
                       </td>
                       <td className="px-6 py-4">
                         <button
