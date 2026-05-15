@@ -1,4 +1,5 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
+import { createHmac } from 'node:crypto';
 
 /**
  * PropertyRadar Adapter — Abstraction layer for PropertyRadar API
@@ -6,14 +7,35 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  * Vendor-agnostic: replaceable without CRM logic changes
  */
 
+/**
+ * Validate PropertyRadar webhook signature
+ * Compares HMAC-SHA256 hash of payload with signature header
+ */
+function validateWebhookSignature(signature, payload, apiKey) {
+  if (!signature || !apiKey) return false;
+  
+  try {
+    const expectedSignature = createHmac('sha256', apiKey)
+      .update(JSON.stringify(payload))
+      .digest('hex');
+    
+    return signature === `sha256=${expectedSignature}`;
+  } catch (error) {
+    console.error('Signature validation error:', error);
+    return false;
+  }
+}
+
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     const body = await req.json();
 
-    // Webhook authentication (implement PropertyRadar signature validation here)
-    // const signature = req.headers.get('x-propertyradar-signature');
-    // validateSignature(signature, body);
+    // Webhook authentication - validate PropertyRadar signature
+    const signature = req.headers.get('x-propertyradar-signature');
+    if (!validateWebhookSignature(signature, body, Deno.env.get('PROPERTY_RADAR_API_KEY'))) {
+      return Response.json({ error: 'Invalid webhook signature' }, { status: 401 });
+    }
 
     // PropertyRadar webhook payload structure
     const leadData = body.lead || {};
