@@ -173,12 +173,12 @@ export default function VTONMailDashboard() {
     return preview;
   };
 
+  const getSelectableLeads = (leadsArray) => {
+    return leadsArray.filter(l => !l.lob_letter_id);
+  };
+
   const handleSelectAll = (e) => {
-    const selectableIds = paginatedLeads.filter(l => 
-      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
-      !l.lob_letter_id
-    ).map(l => l.id);
-    console.log('Select all:', e.target.checked, selectableIds);
+    const selectableIds = getSelectableLeads(paginatedLeads).map(l => l.id);
     if (e.target.checked) {
       setSelectedLeads([...selectableIds]);
     } else {
@@ -187,27 +187,18 @@ export default function VTONMailDashboard() {
   };
 
   const handleSelectLead = (leadId) => {
-    console.log('Toggling lead:', leadId);
     setSelectedLeads(prev => {
-      const newSelection = prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId];
-      console.log('New selection:', newSelection);
-      return newSelection;
+      return prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId];
     });
   };
 
   const isAllSelected = () => {
-    const selectableIds = paginatedLeads.filter(l => 
-      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
-      !l.lob_letter_id
-    ).map(l => l.id);
+    const selectableIds = getSelectableLeads(paginatedLeads).map(l => l.id);
     return selectableIds.length > 0 && selectableIds.every(id => selectedLeads.includes(id));
   };
 
   const isSomeSelected = () => {
-    const selectableIds = paginatedLeads.filter(l => 
-      (l.mail_approval_status === 'pending_approval' || !l.mail_approval_status || l.mail_approval_status === 'approved') && 
-      !l.lob_letter_id
-    ).map(l => l.id);
+    const selectableIds = getSelectableLeads(paginatedLeads).map(l => l.id);
     return selectedLeads.length > 0 && selectedLeads.some(id => selectableIds.includes(id));
   };
 
@@ -242,30 +233,38 @@ export default function VTONMailDashboard() {
   };
 
   const handleBulkSendToLob = async () => {
-    if (selectedLeads.length === 0) return;
-    
-    if (!confirm(`Send ${selectedLeads.length} approved letters to Lob?`)) return;
-    
-    setBulkProcessing(true);
-    const results = { sent: 0, failed: 0 };
-    
-    for (const leadId of selectedLeads) {
-      try {
-        await base44.functions.invoke('approveVTONMail', {
-          lead_id: leadId,
-          action: 'send_to_lob'
-        });
-        results.sent++;
-      } catch (error) {
-        results.failed++;
-      }
-    }
-    
-    setBulkProcessing(false);
-    setSelectedLeads([]);
-    refetch();
-    
-    alert(`Bulk Lob send: ${results.sent} sent, ${results.failed} failed`);
+   if (selectedLeads.length === 0) return;
+
+   if (!confirm(`Send ${selectedLeads.length} letters to Lob?`)) return;
+
+   setBulkProcessing(true);
+   const results = { sent: 0, failed: 0, errors: [] };
+
+   for (const leadId of selectedLeads) {
+     try {
+       await base44.functions.invoke('approveVTONMail', {
+         lead_id: leadId,
+         action: 'send_to_lob'
+       });
+       results.sent++;
+     } catch (error) {
+       results.failed++;
+       results.errors.push(error.message);
+     }
+   }
+
+   setBulkProcessing(false);
+   setSelectedLeads([]);
+   refetch();
+
+   let message = `Bulk Lob send: ${results.sent} sent`;
+   if (results.failed > 0) {
+     message += `, ${results.failed} failed`;
+     if (results.errors.length > 0) {
+       message += `\n\nErrors:\n${results.errors.slice(0, 3).join('\n')}`;
+     }
+   }
+   alert(message);
   };
 
   const handleBulkReject = async () => {
@@ -557,6 +556,7 @@ export default function VTONMailDashboard() {
                         type="checkbox"
                         onChange={handleSelectAll}
                         checked={isAllSelected()}
+                        indeterminate={isSomeSelected() && !isAllSelected()}
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
@@ -580,7 +580,7 @@ export default function VTONMailDashboard() {
                           type="checkbox"
                           onChange={() => handleSelectLead(lead.id)}
                           checked={selectedLeads.includes(lead.id)}
-                          disabled={lead.lob_letter_id ? true : false}
+                          disabled={!lead.lob_letter_id ? false : true}
                           className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
                         />
                       </TableCell>
@@ -684,7 +684,7 @@ export default function VTONMailDashboard() {
                         {lead.lob_estimated_cost ? `$${lead.lob_estimated_cost.toFixed(2)}` : '-'}
                       </TableCell>
                       <TableCell>
-                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && (
+                        {(lead.mail_approval_status === 'pending_approval' || !lead.mail_approval_status) && !lead.lob_letter_id && (
                           <div className="flex gap-1">
                             <Button
                               size="sm"
