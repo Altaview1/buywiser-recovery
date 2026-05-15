@@ -128,6 +128,99 @@ export default function VTONLetterTemplateReview() {
     }
   };
 
+  const DEFAULT_TEMPLATE = `<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      * { margin: 0; padding: 0; }
+      body { font-family: 'Georgia', serif; color: #1a1a1a; line-height: 1.6; }
+      .wrapper { width: 100%; max-width: 850px; margin: 0 auto; padding: 60px 50px; }
+      .letterhead { border-top: 3px solid #0B1F3B; border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 40px; }
+      .logo { font-size: 18px; font-weight: bold; color: #0B1F3B; letter-spacing: 1px; }
+      .date { font-size: 11px; color: #666; margin-top: 8px; }
+      .recipient { margin-bottom: 30px; font-size: 12px; }
+      .salutation { margin-bottom: 25px; font-size: 13px; }
+      .body-text { margin-bottom: 18px; font-size: 12px; line-height: 1.8; text-align: justify; }
+      .property-box { background: #f5f5f5; border-left: 4px solid #0B1F3B; padding: 15px 18px; margin: 25px 0; font-size: 12px; }
+      .property-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 4px; }
+      .property-address { font-size: 13px; font-weight: bold; color: #1a1a1a; }
+      .benefit-highlight { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 22px 0; font-size: 12px; line-height: 1.7; }
+      .benefit-title { font-weight: bold; color: #0B1F3B; font-size: 12px; margin-bottom: 6px; }
+      .cta-section { margin: 35px 0; }
+      .primary-cta { font-size: 13px; font-weight: bold; color: #0B1F3B; margin-bottom: 12px; }
+      .qr-container { display: inline-block; margin: 15px 0; text-align: center; }
+      .qr-label { font-size: 10px; color: #666; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+      .contact-info { margin: 20px 0; font-size: 12px; }
+      .contact-line { margin: 6px 0; }
+      .closing { margin-top: 35px; font-size: 12px; }
+      .signature { margin-top: 25px; font-size: 11px; }
+      .signature-name { font-weight: bold; color: #0B1F3B; }
+      .signature-title { color: #666; font-size: 11px; }
+      .disclaimer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 10px; color: #999; line-height: 1.6; }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="letterhead">
+        <div class="logo">VETERAN TRANSITION OPPORTUNITY NETWORK™</div>
+        <div class="date">May 2026</div>
+      </div>
+      <div class="recipient">
+        \${first_name} \${last_name}<br/>
+        \${property_address}<br/>
+        \${city}, \${state} \${zip_code}
+      </div>
+      <div class="salutation">Dear \${first_name},</div>
+      <div class="body-text">
+        We are writing to inform you of a significant opportunity that may be available to you during this important transition period.
+      </div>
+      <div class="body-text">
+        Our records indicate that your property is currently being offered for sale:
+      </div>
+      <div class="property-box">
+        <div class="property-label">Current Property</div>
+        <div class="property-address">\${property_address}</div>
+        <div style="margin-top: 8px; font-size: 11px; color: #666;">\${city}, \${state} \${zip_code}</div>
+      </div>
+      <div class="body-text">
+        Based on your homeownership history, you may qualify for the VTON™ Veteran Homeowner Transition Benefit—a qualification-based financial benefit designed specifically for veterans purchasing their next home. This benefit recognizes the unique financial position of veteran homeowners navigating the transition from one property to the next.
+      </div>
+      <div class="benefit-highlight">
+        <div class="benefit-title">Your Potential Qualification</div>
+        <div style="font-size: 12px;">
+          Qualifying veteran homeowners may receive up to 1.5% in transition benefits applied at closing on their next home purchase. The actual benefit depends on how your next purchase is structured and your specific circumstances.
+        </div>
+      </div>
+      <div class="body-text">
+        <strong>Timing is important.</strong> As you prepare to transition from your current home, understanding your available benefits before making next-home decisions will ensure you capture opportunities that may not be available later.
+      </div>
+      <div class="cta-section">
+        <div class="primary-cta">Schedule a Confidential Benefit Review</div>
+        <div class="body-text" style="margin-bottom: 0;">
+          We invite you to schedule a brief, no-obligation benefit review consultation. Our team will assess your specific situation and clarify exactly what you may qualify for.
+        </div>
+      </div>
+      <div class="contact-info">
+        <div class="contact-line"><strong>Phone:</strong> (818) 300-2642</div>
+        <div class="contact-line"><strong>Web:</strong> buywiser.com/vton</div>
+        <div class="contact-line"><strong>Personalized Benefit Page:</strong> buywiser.com/b</div>
+      </div>
+      <div class="closing">
+        Thank you for your service. We look forward to discussing how we can support your next home transition.
+      </div>
+      <div class="signature">
+        Sincerely,<br/><br/>
+        <span class="signature-name">Bennett Liss</span><br/>
+        <span class="signature-title">Founder, VTON™ | Buywiser Home Loans</span><br/>
+        <span style="color: #999; font-size: 10px;">NMLS #1524446 | CA RE License #01107013</span>
+      </div>
+      <div class="disclaimer">
+        <strong>Important Notice:</strong> This communication is being sent to provide information about programs available to qualifying veteran homeowners. The VTON™ Veteran Homeowner Transition Benefit is a private program operated by Buywiser Home Loans and is not affiliated with, endorsed by, or connected to the United States Department of Veterans Affairs or any government agency. All benefit amounts are qualification-based and subject to final verification and loan approval.
+      </div>
+    </div>
+  </body>
+</html>`;
+
   const handleSendTestEmail = async () => {
     if (!testEmail || !template.trim()) return;
     try {
@@ -222,7 +315,25 @@ export default function VTONLetterTemplateReview() {
           <div>
             <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden flex flex-col h-full">
               <div className="px-6 py-4 border-b border-slate-200 bg-slate-50">
-                <h2 className="font-semibold text-slate-900 mb-3">Edit HTML Template</h2>
+                <div className="flex items-center justify-between mb-3">
+                <h2 className="font-semibold text-slate-900">Edit HTML Template</h2>
+                {!template && (
+                  <button
+                    onClick={() => setTemplate(DEFAULT_TEMPLATE)}
+                    className="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition"
+                  >
+                    Load Default Template
+                  </button>
+                )}
+                {template && !isApproved && (
+                  <button
+                    onClick={() => { if (window.confirm('Reset to default template?')) setTemplate(DEFAULT_TEMPLATE); }}
+                    className="text-xs px-3 py-1.5 bg-slate-200 text-slate-600 rounded-lg font-semibold hover:bg-slate-300 transition"
+                  >
+                    Reset to Default
+                  </button>
+                )}
+              </div>
                 <p className="text-xs text-slate-500 mb-2">Click a variable to insert it:</p>
                 <div className="space-y-2">
                   {Object.entries(getVariablesByCategory()).map(([category, variables]) => (
