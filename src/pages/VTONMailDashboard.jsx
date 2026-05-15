@@ -488,8 +488,9 @@ export default function VTONMailDashboard() {
                       <TableCell className="font-medium">
                         {lead.mail_approval_status === 'pending_approval' ? (
                           <button
+                            type="button"
                             onClick={() => handlePreviewLetter(lead)}
-                            className="text-blue-600 hover:underline font-medium text-left"
+                            className="text-blue-600 hover:underline font-medium text-left cursor-pointer bg-transparent border-none p-0"
                           >
                             {lead.first_name} {lead.last_name}
                             {lead.spouse_name && (
