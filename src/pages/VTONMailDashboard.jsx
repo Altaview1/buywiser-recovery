@@ -160,8 +160,9 @@ export default function VTONMailDashboard() {
   };
 
   const handleSelectAll = (e) => {
+    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
     if (e.target.checked) {
-      setSelectedLeads(paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id));
+      setSelectedLeads(pendingIds);
     } else {
       setSelectedLeads([]);
     }
@@ -171,6 +172,16 @@ export default function VTONMailDashboard() {
     setSelectedLeads(prev => 
       prev.includes(leadId) ? prev.filter(id => id !== leadId) : [...prev, leadId]
     );
+  };
+
+  const isAllSelected = () => {
+    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
+    return pendingIds.length > 0 && pendingIds.every(id => selectedLeads.includes(id));
+  };
+
+  const isSomeSelected = () => {
+    const pendingIds = paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').map(l => l.id);
+    return selectedLeads.length > 0 && selectedLeads.some(id => pendingIds.includes(id));
   };
 
   const handleBulkApprove = async () => {
@@ -449,7 +460,7 @@ export default function VTONMailDashboard() {
                       <input
                         type="checkbox"
                         onChange={handleSelectAll}
-                        checked={selectedLeads.length > 0 && paginatedLeads.filter(l => l.mail_approval_status === 'pending_approval').length === selectedLeads.length}
+                        checked={isAllSelected()}
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
