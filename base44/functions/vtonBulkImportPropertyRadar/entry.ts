@@ -105,29 +105,37 @@ Deno.serve(async (req) => {
  * - Standard format: Owner, Address, City, Est Value, Est Equity $, Distress Score, Listing DOM
  */
 function mapPropertyRadarLead(rawLead) {
-  // Try CSV format first (Primary First/Last), then fall back to Owner field parsing
+  // Determine which format we're dealing with and extract names accordingly
   let first_name = '';
   let last_name = '';
   let spouse_name = '';
 
-  if (rawLead['Primary First'] || rawLead['Primary Last']) {
-    // CSV export format
+  // Check for CSV export format (Primary First/Last columns exist)
+  if (rawLead['Primary First'] !== undefined || rawLead['Primary Last'] !== undefined) {
+    // CSV export format - use Primary columns directly
     first_name = (rawLead['Primary First'] || '').trim();
     last_name = (rawLead['Primary Last'] || '').trim();
     spouse_name = ((rawLead['Secondary First'] || '') + ' ' + (rawLead['Secondary Last'] || '')).trim();
-  } else {
-    // Standard format - parse Owner field
-    const parsed = parseOwnerField(rawLead.Owner || '');
+  } 
+  // Check for Owner field format (e.g., "NELSON,GOINS & ASHLEIGH PADILLA")
+  else if (rawLead.Owner) {
+    const parsed = parseOwnerField(rawLead.Owner);
     first_name = parsed.first_name;
     last_name = parsed.last_name;
     spouse_name = parsed.spouse_name;
   }
+  // Fallback to generic field names if neither format matches
+  else {
+    first_name = (rawLead.first_name || rawLead.owner_first_name || '').trim();
+    last_name = (rawLead.last_name || rawLead.owner_last_name || '').trim();
+    spouse_name = (rawLead.spouse_name || rawLead.co_owner_name || '').trim();
+  }
 
   return {
-    // Owner info (use parsed values directly, no fallback to avoid duplication)
+    // Owner info - use extracted values only (no duplication)
     first_name: first_name,
     last_name: last_name,
-    spouse_name: spouse_name || rawLead.spouse_name || rawLead.co_owner_name || '',
+    spouse_name: spouse_name,
     
     // Contact info
     phone: normalizePhone(rawLead.phone || rawLead.phone_number || ''),
