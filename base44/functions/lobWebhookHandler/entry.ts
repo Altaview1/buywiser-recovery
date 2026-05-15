@@ -10,41 +10,61 @@ Deno.serve(async (req) => {
     const base44 = createClientFromRequest(req);
     const payload = await req.json();
 
-    console.log('Lob Webhook Event:', payload);
+    console.log('Lob Webhook Event Type:', payload.event_type);
 
-    // Lob sends different event types
-    const { event_type, id, object_type, object } = payload;
+    // Lob sends different event types - we care about letter events
+    const { event_type, data } = payload;
 
-    // We only care about letter tracking events
-    if (object_type !== 'letter') {
+    // Ignore non-letter events
+    if (!event_type?.includes('letter')) {
+      console.log('Ignoring non-letter event:', event_type);
       return Response.json({ received: true });
     }
 
-    // Extract tracking information
-    const letterId = id;
-    const trackingStatus = object?.tracking?.status; // 'in_transit', 'delivered', 'returned', etc.
-    const expectedDeliveryDate = object?.tracking?.expected_delivery_date;
+    // Extract letter ID from Lob webhook structure
+    const letterId = data?.id;
+    if (!letterId) {
+      console.warn('No letter ID found in webhook payload');
+      return Response.json({ received: true, warning: 'No letter ID' });
+    }
+
+    // Extract tracking status - map Lob event types to status
+    let trackingStatus = 'processing';
+    if (event_type === 'letter.rendered_pdf') {
+      trackingStatus = 'processing';
+    } else if (event_type === 'letter.created') {
+      trackingStatus = 'processing';
+    } else if (event_type === 'letter.in_transit') {
+      trackingStatus = 'in_transit';
+    } else if (event_type === 'letter.delivered') {
+      trackingStatus = 'delivered';
+    } else if (event_type === 'letter.failed') {
+      trackingStatus = 'failed';
+    } else if (event_type === 'letter.returned') {
+      trackingStatus = 'returned';
+    }
+
+    const expectedDeliveryDate = data?.expected_delivery_date;
     
-    console.log(`Letter ${letterId} status: ${trackingStatus}`);
+    console.log(`Letter ${letterId} event: ${event_type} -> status: ${trackingStatus}`);
 
     // Find the lead associated with this letter
-    // We need to store the Lob letter_id when we send the letter
     const leads = await base44.asServiceRole.entities.VTONLead.filter({});
     const lead = leads.find(l => l.lob_letter_id === letterId);
 
     if (!lead) {
-      console.log(`No lead found for Lob letter ${letterId}`);
+      console.log(`No lead found for Lob letter ${letterId} (event: ${event_type})`);
       return Response.json({ received: true, warning: 'Lead not found' });
     }
 
     // Update lead with tracking status
-    const updateData: any = {
+    const updateData = {
       lob_delivery_status: trackingStatus,
       lob_last_updated: new Date().toISOString()
     };
 
-    if (trackingStatus === 'delivered') {
-      updateData.lob_delivered_date = expectedDeliveryDate || new Date().toISOString();
+    if (trackingStatus === 'delivered' && expectedDeliveryDate) {
+      updateData.lob_delivery_date = expectedDeliveryDate;
     }
 
     await base44.asServiceRole.entities.VTONLead.update(lead.id, updateData);

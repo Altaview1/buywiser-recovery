@@ -589,10 +589,12 @@ export default function VTONMailDashboard() {
                   <TableRow>
                     <TableHead className="w-12">
                       <input
+                        ref={el => {
+                          if (el) el.indeterminate = isSomeSelected() && !isAllSelected();
+                        }}
                         type="checkbox"
                         onChange={handleSelectAll}
                         checked={isAllSelected()}
-                        indeterminate={isSomeSelected() && !isAllSelected()}
                         className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       />
                     </TableHead>
