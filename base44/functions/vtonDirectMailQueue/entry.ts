@@ -69,7 +69,6 @@ Deno.serve(async (req) => {
         'from[address_zip]': '91607',
         'file': finalLetterHtml,
         'color': 'false',
-        'size': '6x11',
       }).toString(),
     });
 
