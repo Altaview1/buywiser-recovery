@@ -572,14 +572,6 @@ export default function VTONMailDashboard() {
                   </Button>
                   <Button
                     size="sm"
-                    className="bg-green-600 hover:bg-green-700 text-white"
-                    onClick={handleBulkApprove}
-                    disabled={bulkProcessing}
-                  >
-                    {bulkProcessing ? 'Processing...' : `Approve ${selectedLeads.length}`}
-                  </Button>
-                  <Button
-                    size="sm"
                     variant="outline"
                     className="text-red-600 hover:bg-red-50 border-red-200"
                     onClick={handleBulkReject}
@@ -781,11 +773,14 @@ export default function VTONMailDashboard() {
                             </Button>
                             <Button
                               size="sm"
-                              className="h-8 bg-green-600 hover:bg-green-700 text-white"
-                              onClick={() => handleApprove(lead.id, 'approve')}
+                              className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
+                              onClick={() => {
+                                if (window.confirm(`Send ${lead.first_name} ${lead.last_name}'s letter to Lob?`)) {
+                                  handleApprove(lead.id, 'send_to_lob');
+                                }
+                              }}
                             >
-                              <ThumbsUp className="h-3 w-3 mr-1" />
-                              Approve
+                              📧 Send to Lob
                             </Button>
                             <Button
                               size="sm"
@@ -797,18 +792,6 @@ export default function VTONMailDashboard() {
                               Reject
                             </Button>
                           </div>
-                        ) : lead.mail_approval_status === 'approved' && !lead.lob_letter_id ? (
-                          <Button
-                            size="sm"
-                            className="h-8 bg-purple-600 hover:bg-purple-700 text-white"
-                            onClick={() => {
-                              if (window.confirm(`Send ${lead.first_name} ${lead.last_name}'s letter to Lob?`)) {
-                                handleApprove(lead.id, 'send_to_lob');
-                              }
-                            }}
-                          >
-                            📧 Send to Lob
-                          </Button>
                         ) : lead.lob_letter_id ? (
                           <span className="text-xs text-slate-500 font-medium">In Lob Queue</span>
                         ) : lead.mail_approval_status === 'rejected' ? (
