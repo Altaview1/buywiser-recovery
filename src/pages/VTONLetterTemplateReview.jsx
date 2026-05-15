@@ -88,6 +88,12 @@ const DEFAULT_TEMPLATE = `<!DOCTYPE html>
             <span style="color:#666666;">Founder | Buywiser Home Loans</span><br/>
             <span style="color:#999999;font-size:10px;">NMLS #1524446 | CA RE License #01107013</span>
           </td></tr>
+          <!-- QR Code Section -->
+          <tr><td style="padding-top:32px;padding-bottom:24px;text-align:center;">
+            <p style="margin:0 0 12px 0;font-size:11px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#666666;">Scan to Learn More</p>
+            <img src="\${qrUrl}" alt="QR Code - Scan to watch veteran testimonials" width="150" height="150" style="display:inline-block;" />
+            <p style="margin:10px 0 0 0;font-size:10px;color:#999999;">Scan with your phone to watch veteran testimonials and learn how the program works</p>
+          </td></tr>
           <!-- Footer -->
           <tr><td style="padding-top:32px;">
             <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:3px solid #0B1F3B;">
@@ -521,10 +527,11 @@ export default function VTONLetterTemplateReview() {
               <div><span className="font-mono bg-white px-2 py-1 rounded">state</span> - State code</div>
               <div><span className="font-mono bg-white px-2 py-1 rounded">zip_code</span> - Zip code</div>
               <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">estimated_benefit</span> - GAP benefit amount</div>
-              <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">estimated_equity</span> - Home equity</div>
-              <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">listing_price</span> - Property listing price</div>
-            </div>
-          </div>
+               <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">estimated_equity</span> - Home equity</div>
+               <div><span className="font-mono bg-blue-100 px-2 py-1 rounded">listing_price</span> - Property listing price</div>
+               <div><span className="font-mono bg-green-100 px-2 py-1 rounded">qrUrl</span> - QR code image (auto-generated)</div>
+              </div>
+              </div>
         </div>
       </div>
     </div>
