@@ -28,7 +28,11 @@ export default function MetaAudienceSyncPanel() {
 
     try {
       const response = await base44.functions.invoke('syncMetaCustomAudience', {
-        manual_trigger: true
+        manual_trigger: true,
+        filters: {
+          min_priority_score: 40,
+          exclude_suppressed: true
+        }
       });
 
       if (response.data.success) {

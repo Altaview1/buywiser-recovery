@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import VTONMailPipeline from '@/components/vton/VTONMailPipeline';
 import MetaAudienceSyncPanel from '@/components/vton/MetaAudienceSyncPanel';
+import MetaCampaignSetup from '@/components/vton/MetaCampaignSetup';
 
 export default function VTONMailDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
@@ -394,9 +395,14 @@ export default function VTONMailDashboard() {
           </div>
         </div>
 
-        {/* Meta Audience Sync */}
-        <div className="mb-8">
-          <MetaAudienceSyncPanel />
+        {/* Meta Audience Sync & Campaigns */}
+        <div className="mb-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <MetaAudienceSyncPanel />
+          </div>
+          <div>
+            <MetaCampaignSetup />
+          </div>
         </div>
 
         {/* Pipeline View */}
