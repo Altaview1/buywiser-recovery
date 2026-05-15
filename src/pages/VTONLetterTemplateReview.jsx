@@ -4,83 +4,87 @@ import { Check, X, Eye, ChevronDown, Copy, Send } from 'lucide-react';
 import { getVariablesByCategory, getVariableSyntax } from '@/lib/vtonTemplateVariables';
 
 const DEFAULT_TEMPLATE = `<!DOCTYPE html>
-<html>
-  <head>
-    <style>
-      * { margin: 0; padding: 0; }
-      body { font-family: 'Georgia', serif; color: #1a1a1a; line-height: 1.6; }
-      .wrapper { width: 100%; max-width: 850px; margin: 0 auto; padding: 60px 50px; }
-      .letterhead { border-top: 3px solid #0B1F3B; border-bottom: 1px solid #ccc; padding-bottom: 20px; margin-bottom: 40px; }
-      .logo { font-size: 18px; font-weight: bold; color: #0B1F3B; letter-spacing: 1px; }
-      .private-fund-notice { display: inline-block; margin-top: 8px; font-size: 9px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; background: #555; padding: 2px 8px; border-radius: 3px; }
-      .date { font-size: 11px; color: #666; margin-top: 8px; }
-      .recipient { margin-bottom: 30px; font-size: 12px; }
-      .salutation { margin-bottom: 25px; font-size: 13px; }
-      .body-text { margin-bottom: 18px; font-size: 12px; line-height: 1.8; text-align: justify; }
-      .property-box { background: #f5f5f5; border-left: 4px solid #0B1F3B; padding: 15px 18px; margin: 25px 0; font-size: 12px; }
-      .property-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #666; margin-bottom: 4px; }
-      .property-address { font-size: 13px; font-weight: bold; color: #1a1a1a; }
-      .benefit-highlight { background: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 22px 0; font-size: 12px; line-height: 1.7; }
-      .benefit-title { font-weight: bold; color: #0B1F3B; font-size: 12px; margin-bottom: 6px; }
-      .cta-section { margin: 35px 0; }
-      .primary-cta { font-size: 13px; font-weight: bold; color: #0B1F3B; margin-bottom: 12px; }
-      .contact-info { margin: 20px 0; font-size: 12px; }
-      .contact-line { margin: 6px 0; }
-      .closing { margin-top: 35px; font-size: 12px; }
-      .signature { margin-top: 25px; font-size: 11px; }
-      .signature-name { font-weight: bold; color: #0B1F3B; }
-      .signature-title { color: #666; font-size: 11px; }
-      .disclaimer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 10px; color: #999; line-height: 1.6; }
-      .not-govt-box { margin-top: 18px; padding: 10px 14px; border: 1px solid #ccc; border-radius: 4px; font-size: 10px; color: #666; background: #fafafa; line-height: 1.6; }
-    </style>
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="letterhead">
-        <div class="logo">BUYWISER HOME LOANS</div>
-        <div class="private-fund-notice">Private Fund · Not a Government Program</div>
-        <div class="date">May 2026</div>
-      </div>
-      <div class="recipient">
-        \${first_name} \${last_name}<br/>
-        \${property_address}<br/>
-        \${city}, \${state} \${zip_code}
-      </div>
-      <div class="salutation">Dear \${first_name},</div>
-      <div class="body-text">We are reaching out because your home is currently listed for sale—and as a veteran homeowner, you may qualify for a meaningful financial benefit when you purchase your next home.</div>
-      <div class="body-text">Our records indicate that your property is currently being offered for sale:</div>
-      <div class="property-box">
-        <div class="property-label">Current Property</div>
-        <div class="property-address">\${property_address}</div>
-        <div style="margin-top: 8px; font-size: 11px; color: #666;">\${city}, \${state} \${zip_code}</div>
-      </div>
-      <div class="body-text">Through our privately funded Veteran GAP Benefit program, qualifying veteran homeowners may be eligible to receive a closing credit applied toward their next home purchase. This benefit is funded entirely by Buywiser Home Loans—not by the VA or any government agency—as our way of honoring those who have served.</div>
-      <div class="benefit-highlight">
-        <div class="benefit-title">Veteran GAP Benefit — What You May Qualify For</div>
-        <div style="font-size: 12px;">Qualifying veteran homeowners may receive up to 1.5% of their next home's purchase price as a Veteran GAP Benefit credit applied at closing. The final benefit amount depends on your individual situation and how your purchase is structured.</div>
-      </div>
-      <div class="body-text"><strong>Timing matters.</strong> This benefit is available during your transition window—while your current home is listed. Understanding your options now will ensure you don't miss an opportunity that may not be available once you've already made your next move.</div>
-      <div class="cta-section">
-        <div class="primary-cta">Schedule Your Complimentary Veteran GAP Benefit Review</div>
-        <div class="body-text" style="margin-bottom: 0;">We invite you to schedule a brief, no-obligation consultation. Our team will walk through your specific situation and confirm exactly what you qualify for—at no cost to you.</div>
-      </div>
-      <div class="contact-info">
-        <div class="contact-line"><strong>Phone:</strong> (818) 300-2642</div>
-        <div class="contact-line"><strong>Web:</strong> buywiser.com/vton</div>
-        <div class="contact-line"><strong>Your Personalized Benefit Page:</strong> buywiser.com/b</div>
-      </div>
-      <div class="closing">Thank you for your service. We look forward to supporting your next chapter.</div>
-      <div class="signature">
-        Sincerely,<br/><br/>
-        <span class="signature-name">Bennett Liss</span><br/>
-        <span class="signature-title">Founder | Buywiser Home Loans</span><br/>
-        <span style="color: #999; font-size: 10px;">NMLS #1524446 | CA RE License #01107013</span>
-      </div>
-      <div class="not-govt-box">
-        <strong>IMPORTANT — PRIVATE PROGRAM DISCLOSURE:</strong> The Veteran GAP Benefit is a privately funded program created and operated exclusively by Buywiser Technology, Inc. DBA Buywiser Home Loans (NMLS #1887767). This program is <strong>not affiliated with, endorsed by, sponsored by, or connected in any way to the U.S. Department of Veterans Affairs (VA), any branch of the U.S. military, or any federal, state, or local government agency.</strong> Use of the word "Veteran" refers solely to military service status as self-reported by the recipient and does not imply any government relationship. All benefit amounts are privately funded, qualification-based, and subject to final loan approval.
-      </div>
-      <div class="disclaimer">Buywiser Technology, Inc. DBA Buywiser Home Loans. Company NMLS #1887767. Individual NMLS #1524446. Licensed by the California Department of Financial Protection and Innovation (DFPI) under the California Residential Mortgage Lending Act. This is not a commitment to lend. All loan programs subject to borrower qualification. Rates and terms subject to change without notice. Equal Housing Opportunity.</div>
-    </div>
+<html lang="en">
+  <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+  <body style="margin:0;padding:0;background:#ffffff;font-family:Georgia,serif;color:#1a1a1a;line-height:1.6;">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+      <tr><td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;padding:50px 40px;">
+          <!-- Letterhead -->
+          <tr><td style="border-top:3px solid #0B1F3B;border-bottom:1px solid #cccccc;padding-bottom:18px;margin-bottom:36px;">
+            <p style="margin:0 0 6px 0;font-size:17px;font-weight:bold;color:#0B1F3B;letter-spacing:1px;">BUYWISER HOME LOANS</p>
+            <span style="display:inline-block;font-size:9px;font-weight:bold;text-transform:uppercase;letter-spacing:0.5px;color:#ffffff;background:#555555;padding:2px 8px;border-radius:3px;">Private Program · Not a Government Program</span>
+            <p style="margin:8px 0 0 0;font-size:11px;color:#666666;">May 2026</p>
+          </td></tr>
+          <!-- Recipient -->
+          <tr><td style="padding-top:30px;padding-bottom:24px;font-size:12px;color:#1a1a1a;">
+            \${first_name} \${last_name}<br/>
+            \${property_address}<br/>
+            \${city}, \${state} \${zip_code}
+          </td></tr>
+          <!-- Salutation -->
+          <tr><td style="padding-bottom:20px;font-size:13px;color:#1a1a1a;">
+            Dear \${first_name},
+          </td></tr>
+          <!-- Body paragraphs -->
+          <tr><td style="padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
+            We are reaching out because your home is currently listed for sale — and as a veteran homeowner, you may be eligible for a meaningful financial credit when you purchase your next home.
+          </td></tr>
+          <tr><td style="padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
+            Our records indicate your property is currently offered for sale:
+          </td></tr>
+          <!-- Property box -->
+          <tr><td style="background:#f5f5f5;border-left:4px solid #0B1F3B;padding:14px 18px;margin:20px 0;">
+            <p style="margin:0 0 4px 0;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:#666666;">Current Property</p>
+            <p style="margin:0 0 6px 0;font-size:13px;font-weight:bold;color:#1a1a1a;">\${property_address}</p>
+            <p style="margin:0;font-size:11px;color:#666666;">\${city}, \${state} \${zip_code}</p>
+          </td></tr>
+          <!-- Program description -->
+          <tr><td style="padding-top:16px;padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
+            Through our privately funded program, qualifying veteran homeowners may receive a closing credit applied toward their next home purchase. This credit is funded entirely by Buywiser Home Loans — not by the VA or any government agency — as our way of honoring those who served.
+          </td></tr>
+          <!-- Benefit box -->
+          <tr><td style="background:#f9f9f9;border:1px solid #dddddd;padding:14px;margin:18px 0;">
+            <p style="margin:0 0 6px 0;font-weight:bold;color:#0B1F3B;font-size:12px;">What You May Qualify For</p>
+            <p style="margin:0;font-size:12px;line-height:1.7;color:#1a1a1a;">Qualifying veteran homeowners may receive up to 1.5% of their next home's purchase price as a credit applied at closing. The final amount depends on your individual situation and purchase structure.</p>
+          </td></tr>
+          <!-- Timing -->
+          <tr><td style="padding-top:16px;padding-bottom:16px;font-size:12px;line-height:1.8;color:#1a1a1a;">
+            <strong>Timing matters.</strong> This opportunity is available during your transition window — while your current home is listed. Understanding your options now ensures you do not miss a credit that may not be available after you have already moved.
+          </td></tr>
+          <!-- CTA -->
+          <tr><td style="padding-top:10px;padding-bottom:16px;">
+            <p style="margin:0 0 10px 0;font-size:13px;font-weight:bold;color:#0B1F3B;">Schedule Your Complimentary Review</p>
+            <p style="margin:0;font-size:12px;line-height:1.8;color:#1a1a1a;">We invite you to schedule a brief, no-obligation consultation. Our team will walk through your specific situation and confirm exactly what you qualify for — at no cost to you.</p>
+          </td></tr>
+          <!-- Contact info -->
+          <tr><td style="padding-bottom:8px;font-size:12px;color:#1a1a1a;">
+            <p style="margin:0 0 6px 0;"><strong>Phone:</strong> (818) 300-2642</p>
+            <p style="margin:0 0 6px 0;"><strong>Web:</strong> buywiser.com/vton</p>
+            <p style="margin:0;"><strong>Personalized Benefit Page:</strong> buywiser.com/b</p>
+          </td></tr>
+          <!-- Closing -->
+          <tr><td style="padding-top:28px;padding-bottom:8px;font-size:12px;color:#1a1a1a;">
+            Thank you for your service. We look forward to supporting your next chapter.
+          </td></tr>
+          <!-- Signature -->
+          <tr><td style="padding-top:20px;padding-bottom:28px;font-size:11px;color:#1a1a1a;">
+            Sincerely,<br/><br/>
+            <span style="font-weight:bold;color:#0B1F3B;">Bennett Liss</span><br/>
+            <span style="color:#666666;">Founder | Buywiser Home Loans</span><br/>
+            <span style="color:#999999;font-size:10px;">NMLS #1524446 | CA RE License #01107013</span>
+          </td></tr>
+          <!-- Disclosure box -->
+          <tr><td style="border:1px solid #cccccc;border-radius:4px;padding:10px 14px;background:#fafafa;font-size:10px;color:#666666;line-height:1.6;">
+            <strong>PRIVATE PROGRAM DISCLOSURE:</strong> The program described is privately funded and operated exclusively by Buywiser Technology, Inc. DBA Buywiser Home Loans (NMLS #1887767). It is not affiliated with, endorsed by, or connected to the U.S. Department of Veterans Affairs, any military branch, or any government agency. All amounts are privately funded, qualification-based, and subject to final loan approval.
+          </td></tr>
+          <!-- Legal disclaimer -->
+          <tr><td style="padding-top:24px;border-top:1px solid #dddddd;margin-top:32px;font-size:10px;color:#999999;line-height:1.6;">
+            Buywiser Technology, Inc. DBA Buywiser Home Loans. Company NMLS #1887767. Individual NMLS #1524446. Licensed by the California DFPI under the California Residential Mortgage Lending Act. This is not a commitment to lend. All programs subject to borrower qualification. Equal Housing Opportunity.
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
   </body>
 </html>`;
 

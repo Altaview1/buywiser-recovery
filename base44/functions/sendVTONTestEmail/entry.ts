@@ -49,18 +49,17 @@ Deno.serve(async (req) => {
       .replace(/\$\{estimated_equity\}/g, estimated_equity)
       .replace(/\$\{listing_price\}/g, listing_price);
 
-    // Wrap in test banner
+    // Wrap in preview banner
     const testBanner = `
-      <div style="background:#f59e0b;color:#1a1a1a;text-align:center;padding:12px;font-family:sans-serif;font-size:13px;font-weight:bold;border-bottom:2px solid #d97706;">
-        ⚠️ TEST EMAIL — This is a preview of the VTON letter. Not a real mailing.
-        ${lead ? ` | Personalized for: ${first_name} ${last_name} · ${property_address}` : ' | Using sample placeholder data'}
+      <div style="background:#1e40af;color:#ffffff;text-align:center;padding:10px 16px;font-family:Arial,sans-serif;font-size:12px;font-weight:bold;border-bottom:2px solid #1d4ed8;">
+        PREVIEW ONLY — Internal review copy.${lead ? ` Personalized for: ${first_name} ${last_name}` : ' Using sample data.'}
       </div>
     `;
     const emailBody = testBanner + personalizedHtml;
 
     await base44.asServiceRole.integrations.Core.SendEmail({
       to: toEmail,
-      subject: `[TEST] VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ''}`,
+      subject: `VTON Letter Preview${lead ? ` — ${first_name} ${last_name}` : ' — Sample'}`,
       body: emailBody,
     });
 
