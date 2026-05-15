@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
 import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 
@@ -150,6 +150,34 @@ export default function VTONCampaignDashboard() {
     { value: 'Qualified', label: 'Qualified', color: 'bg-green-100 text-green-800' }
   ];
 
+  const downloadCSV = () => {
+    const headers = [
+      'First Name', 'Last Name', 'Email', 'Phone', 'Property Address', 'City', 'State', 'Zip',
+      'Listing Price', 'Estimated Equity', 'Estimated Benefit', 'Veteran', 'VA Loan',
+      'Campaign Stage', 'Contact Status', 'SMS Status', 'Email Status',
+      'Appointment Booked', 'Appointment Date', 'Suppression Status',
+      'Site Visits', 'Notes', 'Created Date'
+    ];
+    const rows = leads.map(l => [
+      l.first_name, l.last_name, l.email, l.phone, l.property_address, l.city, l.state, l.zip_code,
+      l.listing_price || '', l.estimated_equity || '', l.estimated_benefit || '',
+      l.veteran_indicator ? 'Yes' : 'No', l.likely_va_loan_indicator ? 'Yes' : 'No',
+      l.campaign_stage, l.contact_status || 'New', l.sms_status, l.email_status,
+      l.appointment_booked ? 'Yes' : 'No', l.appointment_date || '',
+      l.suppression_status, l.site_visits || 0,
+      (l.notes || '').replace(/,/g, ';').replace(/\n/g, ' '),
+      l.created_date ? new Date(l.created_date).toLocaleDateString() : ''
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `vton-leads-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleContactStatusChange = async (leadId, newStatus) => {
     await base44.entities.VTONLead.update(leadId, { contact_status: newStatus });
     setLeads(prev => prev.map(l => l.id === leadId ? { ...l, contact_status: newStatus } : l));
@@ -221,6 +249,12 @@ export default function VTONCampaignDashboard() {
                 className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm"
               >
                 + Import PropertyRadar CSV
+              </button>
+              <button
+                onClick={downloadCSV}
+                className="px-4 py-2 bg-slate-700 text-white font-semibold rounded-lg hover:bg-slate-800 transition text-sm flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" /> Export CSV
               </button>
             </div>
 
