@@ -181,23 +181,34 @@ export default function VTONLetterTemplateReview() {
     return preview;
   };
 
+  const saveTemplateToDB = async (approve) => {
+    const config = await base44.entities.VTONMailConfig.list();
+    const data = { letter_html: template };
+    if (approve !== undefined) data.is_approved = approve;
+    if (config.length > 0) {
+      await base44.entities.VTONMailConfig.update(config[0].id, data);
+    } else {
+      await base44.entities.VTONMailConfig.create({ ...data, is_approved: approve === true });
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    try {
+      setSaving(true);
+      await saveTemplateToDB(null);
+      setMessage('✓ Template saved to database');
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage('Error saving template: ' + err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleApprove = async () => {
     try {
       setSaving(true);
-      const config = await base44.entities.VTONMailConfig.list();
-      
-      if (config.length > 0) {
-        await base44.entities.VTONMailConfig.update(config[0].id, {
-          letter_html: template,
-          is_approved: true,
-        });
-      } else {
-        await base44.entities.VTONMailConfig.create({
-          letter_html: template,
-          is_approved: true,
-        });
-      }
-      
+      await saveTemplateToDB(true);
       setIsApproved(true);
       setMessage('✓ Letter template approved and activated');
       setTimeout(() => setMessage(''), 3000);
@@ -389,13 +400,22 @@ export default function VTONLetterTemplateReview() {
         {/* Actions */}
         <div className="flex flex-wrap gap-3 mt-6 items-center">
           {!isApproved ? (
-            <button
-              onClick={handleApprove}
-              disabled={saving || !template.trim()}
-              className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
-            >
-              {saving ? 'Approving...' : 'Approve & Activate'}
-            </button>
+            <>
+              <button
+                onClick={handleSaveTemplate}
+                disabled={saving || !template.trim()}
+                className="px-6 py-2 bg-slate-700 text-white rounded-lg font-semibold hover:bg-slate-800 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+              >
+                {saving ? 'Saving...' : 'Save Template'}
+              </button>
+              <button
+                onClick={handleApprove}
+                disabled={saving || !template.trim()}
+                className="px-6 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition"
+              >
+                {saving ? 'Approving...' : 'Approve & Activate'}
+              </button>
+            </>
           ) : (
             <button
               onClick={handleUnapprove}
@@ -418,7 +438,7 @@ export default function VTONLetterTemplateReview() {
             />
             <button
               onClick={handleSendTestEmail}
-              disabled={sendingTest || !testEmail || !template.trim()}
+              disabled={sendingTest || !testEmail}
               className="px-3 py-1 text-sm font-semibold bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed transition whitespace-nowrap"
             >
               {sendingTest ? 'Sending...' : 'Send Test'}
