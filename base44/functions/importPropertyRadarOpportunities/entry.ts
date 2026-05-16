@@ -51,12 +51,12 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           Criteria: [
             { name: "State", value: ["CA"] },
-            { name: "OwnerOccupied", value: [1] },
-            { name: "OwnerHasMobilePhone", value: [1] },
+            { name: "isOwnerOccupied", value: [1] },
+            { name: "OwnerHasPhone", value: [1] },
             { name: "OwnerHasEmail", value: [1] },
             { name: "FirstLoanType", value: ["VA"] },
-            { name: "DaysOnMarket", value: ["1-12"] },
-            { name: "ListedForSale", value: [1] }
+            { name: "DaysOnMarket", value: [[1, 12]] },
+            { name: "ListingStatus", value: ["For Sale"] }
           ]
         })
       }
