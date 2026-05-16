@@ -46,14 +46,16 @@ async function sendSMS(to, message) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const { event, data } = await req.json();
+    const body = await req.json();
 
-    // Only trigger on create events
-    if (event.type !== 'create') {
+    // Support both automation payload format {event, data} and direct test format {id, ...}
+    const event = body.event;
+    const opportunity = body.data || body;
+
+    // Only trigger on create events (skip check if called directly)
+    if (event && event.type !== 'create') {
       return Response.json({ status: 'skipped', reason: 'Not a create event' });
     }
-
-    const opportunity = data;
     if (!opportunity) {
       return Response.json({ error: 'No opportunity data' }, { status: 400 });
     }
