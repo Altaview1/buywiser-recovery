@@ -71,7 +71,7 @@ Deno.serve(async (req) => {
     const priority = opportunity.priority || 'medium';
     const isHighPriority = priority === 'high';
 
-    const opportunityUrl = `https://app.base44.com/apps/SKbeaf55fac0e2c3bb27a19b52a7911463/prospects?id=${opportunity.id}`;
+    const opportunityUrl = `https://buywiser.base44.app/vton-campaign?id=${opportunity.id}`;
 
     // Email HTML
     const emailHtml = `
