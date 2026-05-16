@@ -24,6 +24,8 @@ export default function VTONCampaignDashboard() {
   const [showAddLead, setShowAddLead] = useState(false);
   const [notesLead, setNotesLead] = useState(null);
   const [filterContactStatus, setFilterContactStatus] = useState("all");
+  const [filterSmsStatus, setFilterSmsStatus] = useState("all");
+  const [filterBooked, setFilterBooked] = useState(false);
   const [addingLead, setAddingLead] = useState(false);
   const [addLeadResult, setAddLeadResult] = useState(null);
   const [showDeleteImport, setShowDeleteImport] = useState(false);
@@ -138,8 +140,10 @@ export default function VTONCampaignDashboard() {
     
     const matchesFilter = filterStage === 'all' || lead.campaign_stage === filterStage;
     const matchesContactStatus = filterContactStatus === 'all' || (lead.contact_status || 'New') === filterContactStatus;
+    const matchesSms = filterSmsStatus === 'all' || lead.sms_status === filterSmsStatus || (filterSmsStatus === 'sent' && (lead.sms_status === 'sent' || lead.sms_status === 'opened'));
+    const matchesBooked = !filterBooked || lead.appointment_booked === true;
     
-    return matchesSearch && matchesFilter && matchesContactStatus;
+    return matchesSearch && matchesFilter && matchesContactStatus && matchesSms && matchesBooked;
   });
 
   const campaignStages = [
@@ -487,7 +491,7 @@ export default function VTONCampaignDashboard() {
             {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div
-            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); }}
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("all"); setFilterBooked(false); }}
             className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-slate-400 hover:shadow-sm transition"
             title="Show all leads"
           >
@@ -501,9 +505,9 @@ export default function VTONCampaignDashboard() {
           </div>
 
           <div
-            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); }}
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("all"); setFilterBooked(false); }}
             className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-blue-400 hover:shadow-sm transition"
-            title="Show active leads"
+            title="Show all active leads"
           >
             <div className="flex items-center justify-between">
               <div>
@@ -515,7 +519,7 @@ export default function VTONCampaignDashboard() {
           </div>
 
           <div
-            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); document.querySelector('select[value]')?.scrollIntoView({ behavior: 'smooth' }); }}
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("sent"); setFilterBooked(false); }}
             className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-green-400 hover:shadow-sm transition"
             title="Filter by SMS sent"
           >
@@ -543,9 +547,9 @@ export default function VTONCampaignDashboard() {
           </div>
 
           <div
-            onClick={() => { setSearchTerm(""); setFilterStage("booked"); setFilterContactStatus("all"); }}
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("all"); setFilterBooked(true); }}
             className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-green-400 hover:shadow-sm transition"
-            title="Filter by booked"
+            title="Filter by appointment booked"
           >
             <div className="flex items-center justify-between">
               <div>
