@@ -21,14 +21,9 @@ Deno.serve(async (req) => {
     const limit = bodyParams.limit || 50;
     const purchase = bodyParams.purchase ?? 1; // Live mode — actually returns records (counts toward export quota)
 
-    // Search PropertyRadar using "1 to 12 Day 153 Peeps VA Listed Hon" list criteria:
-    // - State: California
-    // - Owner Occupied: Yes
-    // - Owner Mobile Phone: Yes
-    // - Owner Email: Yes
-    // - 1st Loan Type: VA
-    // - Listing DOM: 1-12 days
-    // - Listed for Sale: Yes
+    // Search PropertyRadar for active CA listings with VA loans
+    // Note: We request owner contact fields but filter by available criteria only
+    // Owner email/phone filtering is not available via API criteria, so we'll filter results in code
     const fields = [
       "RadarID", "Address", "City", "State", "ZipFive",
       "Owner", "OwnerFirstName", "OwnerLastName",
@@ -51,12 +46,9 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           Criteria: [
             { name: "State", value: ["CA"] },
-            { name: "isOwnerOccupied", value: [1] },
-            { name: "OwnerHasPhone", value: [1] },
-            { name: "OwnerHasEmail", value: [1] },
-            { name: "FirstLoanType", value: ["VA"] },
+            { name: "FirstLoanType", value: ["V"] },
             { name: "DaysOnMarket", value: [[1, 12]] },
-            { name: "ListingStatus", value: ["For Sale"] }
+            { name: "ListingStatus", value: ["Active"] }
           ]
         })
       }
@@ -71,14 +63,24 @@ Deno.serve(async (req) => {
     }
 
     const apiData = JSON.parse(responseText);
-    const properties = apiData.results || [];
+    let properties = apiData.results || [];
 
     console.log(`PropertyRadar returned ${properties.length} properties (resultCount: ${apiData.resultCount})`);
+
+    // Client-side filtering for owner contact info
+    // PropertyRadar API doesn't support email/phone criteria, so we filter here
+    properties = properties.filter(prop => {
+      const hasEmail = (prop.OwnerEmail || '').trim().length > 0;
+      const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
+      return hasEmail && hasPhone;
+    });
+
+    console.log(`After owner contact filtering: ${properties.length} properties with email & phone`);
 
     if (properties.length === 0) {
       return Response.json({
         status: 'success',
-        message: 'No properties returned from PropertyRadar',
+        message: 'No properties with owner contact info after PropertyRadar API call',
         resultCount: apiData.resultCount || 0,
         imported: 0
       });
@@ -128,6 +130,8 @@ Deno.serve(async (req) => {
         const opportunity = await base44.asServiceRole.entities.VTONOpportunity.create({
           partner_email: assignedPartner.email,
           homeowner_name: ownerName,
+          homeowner_phone: (prop.OwnerPhone || '').trim(),
+          homeowner_email: (prop.OwnerEmail || '').trim(),
           property_address: address,
           city: prop.City || '',
           state: prop.State || 'CA',
