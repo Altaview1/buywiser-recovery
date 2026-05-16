@@ -19,7 +19,7 @@ Deno.serve(async (req) => {
     let bodyParams = {};
     try { bodyParams = await req.json(); } catch (_) {}
     const limit = bodyParams.limit || 50;
-    const purchase = bodyParams.purchase ?? 0; // Default 0 = preview (no charge). Set to 1 in production.
+    const purchase = bodyParams.purchase ?? 1; // Live mode — actually returns records (counts toward export quota)
 
     // Search PropertyRadar for active CA listings that likely have VA financing
     // Fields go as query params, Criteria in the POST body
