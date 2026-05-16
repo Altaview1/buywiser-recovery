@@ -8,6 +8,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
   try {
+    console.log('=== importPropertyRadarOpportunities START ===');
     const base44 = createClientFromRequest(req);
 
     const PROPERTY_RADAR_API_KEY = Deno.env.get('PROPERTY_RADAR_API_KEY');
@@ -33,10 +34,13 @@ Deno.serve(async (req) => {
       "DistressScore", "PType",
       "FirstPurpose", "FirstLenderOriginal",
       "Latitude", "Longitude"
-    ].map(f => `Fields=${encodeURIComponent(f)}`).join('&');
+    ];
+    
+    // Build Fields query parameters
+    const fieldsQuery = fields.map(f => `Fields=${encodeURIComponent(f)}`).join('&');
 
     const searchResponse = await fetch(
-      `https://api.propertyradar.com/v1/properties?Purchase=${purchase}&Limit=${limit}&${fields}`,
+      `https://api.propertyradar.com/v1/properties?Purchase=${purchase}&Limit=${limit}&${fieldsQuery}`,
       {
         method: 'POST',
         headers: {
@@ -55,8 +59,6 @@ Deno.serve(async (req) => {
     );
 
     const responseText = await searchResponse.text();
-    console.log('PropertyRadar response status:', searchResponse.status);
-    console.log('PropertyRadar response:', responseText.substring(0, 500));
 
     if (!searchResponse.ok) {
       throw new Error(`PropertyRadar API error: ${searchResponse.status} - ${responseText}`);
@@ -65,8 +67,6 @@ Deno.serve(async (req) => {
     const apiData = JSON.parse(responseText);
     let properties = apiData.results || [];
 
-    console.log(`PropertyRadar returned ${properties.length} properties (resultCount: ${apiData.resultCount})`);
-
     // Client-side filtering for owner contact info
     // PropertyRadar API doesn't support email/phone criteria, so we filter here
     properties = properties.filter(prop => {
@@ -74,8 +74,6 @@ Deno.serve(async (req) => {
       const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
       return hasEmail && hasPhone;
     });
-
-    console.log(`After owner contact filtering: ${properties.length} properties with email & phone`);
 
     if (properties.length === 0) {
       return Response.json({
