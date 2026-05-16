@@ -21,11 +21,18 @@ Deno.serve(async (req) => {
     const limit = bodyParams.limit || 50;
     const purchase = bodyParams.purchase ?? 1; // Live mode — actually returns records (counts toward export quota)
 
-    // Search PropertyRadar for active CA listings that likely have VA financing
-    // Fields go as query params, Criteria in the POST body
+    // Search PropertyRadar using "1 to 12 Day 153 Peeps VA Listed Hon" list criteria:
+    // - State: California
+    // - Owner Occupied: Yes
+    // - Owner Mobile Phone: Yes
+    // - Owner Email: Yes
+    // - 1st Loan Type: VA
+    // - Listing DOM: 1-12 days
+    // - Listed for Sale: Yes
     const fields = [
       "RadarID", "Address", "City", "State", "ZipFive",
       "Owner", "OwnerFirstName", "OwnerLastName",
+      "OwnerPhone", "OwnerEmail",
       "AVM", "AvailableEquity", "TotalLoanBalance",
       "ListingPrice", "DaysOnMarket", "ListingStatus",
       "DistressScore", "PType",
@@ -44,7 +51,12 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           Criteria: [
             { name: "State", value: ["CA"] },
-            { name: "isListedForSale", value: [1] }
+            { name: "OwnerOccupied", value: [1] },
+            { name: "OwnerHasMobilePhone", value: [1] },
+            { name: "OwnerHasEmail", value: [1] },
+            { name: "FirstLoanType", value: ["VA"] },
+            { name: "DaysOnMarket", value: ["1-12"] },
+            { name: "ListedForSale", value: [1] }
           ]
         })
       }
