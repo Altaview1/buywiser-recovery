@@ -486,7 +486,11 @@ export default function VTONCampaignDashboard() {
 
             {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); }}
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-slate-400 hover:shadow-sm transition"
+            title="Show all leads"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">Total Leads</p>
@@ -496,7 +500,11 @@ export default function VTONCampaignDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); }}
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-blue-400 hover:shadow-sm transition"
+            title="Show active leads"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">Active</p>
@@ -506,7 +514,11 @@ export default function VTONCampaignDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); document.querySelector('select[value]')?.scrollIntoView({ behavior: 'smooth' }); }}
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-green-400 hover:shadow-sm transition"
+            title="Filter by SMS sent"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">SMS Sent</p>
@@ -516,7 +528,11 @@ export default function VTONCampaignDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div
+            onClick={() => { window.location.href = '/vton-email-history'; }}
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-purple-400 hover:shadow-sm transition"
+            title="View email history"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">Email Sent</p>
@@ -526,7 +542,11 @@ export default function VTONCampaignDashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200">
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("booked"); setFilterContactStatus("all"); }}
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-green-400 hover:shadow-sm transition"
+            title="Filter by booked"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-slate-500 uppercase">Booked</p>
