@@ -9,13 +9,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    
-    // Admin-only function
-    const user = await base44.auth.me();
-    if (user?.role !== 'admin') {
-      return Response.json({ error: 'Admin access required' }, { status: 403 });
-    }
 
+    // Use service role for scheduled/automated calls
     const PROPERTY_RADAR_API_KEY = Deno.env.get('PROPERTY_RADAR_API_KEY');
     if (!PROPERTY_RADAR_API_KEY) {
       return Response.json({ error: 'PROPERTY_RADAR_API_KEY not configured' }, { status: 500 });
@@ -68,7 +63,7 @@ Deno.serve(async (req) => {
     }
 
     // Get active partners for assignment
-    const partners = await base44.entities.PartnerApplication.filter({ status: 'approved' });
+    const partners = await base44.asServiceRole.entities.PartnerApplication.filter({ status: 'approved' });
     if (partners.length === 0) {
       return Response.json({ 
         error: 'No approved partners available to assign opportunities' 
@@ -85,7 +80,7 @@ Deno.serve(async (req) => {
     };
 
     // Get existing opportunities for deduplication
-    const existingOpps = await base44.entities.VTONOpportunity.list();
+    const existingOpps = await base44.asServiceRole.entities.VTONOpportunity.list();
     const existingAddresses = new Set(
       existingOpps.map(opp => opp.property_address?.toLowerCase())
     );
@@ -113,7 +108,7 @@ Deno.serve(async (req) => {
         partnerIndex++;
 
         // Map PropertyRadar fields to VTONOpportunity format
-        const opportunity = await base44.entities.VTONOpportunity.create({
+        const opportunity = await base44.asServiceRole.entities.VTONOpportunity.create({
           partner_email: assignedPartner.email,
           
           // Homeowner information
