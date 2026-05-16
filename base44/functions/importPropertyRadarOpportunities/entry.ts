@@ -168,6 +168,20 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Notify admin of import results
+    if (results.created > 0 || results.errors.length > 0) {
+      try {
+        await base44.functions.invoke('notifyPropertyRadarImportResults', {
+          created: results.created,
+          duplicates: results.duplicates,
+          total: results.total,
+          errors: results.errors
+        });
+      } catch (notifyErr) {
+        console.warn('Admin notification failed:', notifyErr.message);
+      }
+    }
+
     return Response.json({
       status: 'success',
       message: `Imported ${results.created} new opportunities. ${results.duplicates} duplicates skipped.`,
