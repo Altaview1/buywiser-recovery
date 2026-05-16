@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Shield, CheckCircle, Calendar, Heart, ArrowRight, Star } from "lucide-react";
+import SMSConsentCheckbox, { FormFooter, SubmissionSuccess } from "../components/vton/SMSConsentCheckbox";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -48,6 +49,7 @@ export default function VTONScan() {
       }).catch(err => console.warn("Could not fetch lead_type:", err));
     }
   }, [leadId, leadType, step]);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState({});
 
@@ -56,6 +58,7 @@ export default function VTONScan() {
     if (!form.first_name.trim()) e.first_name = "Required";
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = "Valid email required";
     if (!form.phone.trim()) e.phone = "Required";
+    if (!smsConsent) e.smsConsent = "You must agree to receive SMS communications to continue.";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -301,6 +304,12 @@ export default function VTONScan() {
               onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} />
             {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
           </div>
+
+          <SMSConsentCheckbox
+            checked={smsConsent}
+            onChange={setSmsConsent}
+            error={errors.smsConsent}
+          />
         </div>
 
         {repCode && (
@@ -320,6 +329,8 @@ export default function VTONScan() {
         >
           {saving ? "Verifying…" : "Verify & Continue"}
         </button>
+
+        <FormFooter />
 
         <button onClick={() => setStep(1)} className="w-full mt-2 py-2 text-sm text-slate-400 hover:text-slate-600 transition touch-manipulation">
           ← Back
@@ -578,9 +589,14 @@ export default function VTONScan() {
       <div className="text-center max-w-sm">
         <div className="text-5xl mb-4">🎖️</div>
         <h2 className="text-2xl font-extrabold text-white mb-3">You're All Set</h2>
-        <p className="text-blue-200 text-sm leading-relaxed mb-6">
+        <p className="text-blue-200 text-sm leading-relaxed mb-4">
           Your Veteran's Next Home™ Benefit Review is confirmed. A Buywiser specialist will be in touch shortly to walk you through the Buywiser 1.5 GAP Benefit™ and how it applies to your next purchase.
         </p>
+        <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 mb-4 text-left">
+          <p className="text-blue-200 text-xs leading-relaxed">
+            Thank you. Your request has been received. A VTON™ representative may contact you regarding your Veteran NextHome GAP Benefit Review. Reply <strong className="text-white">STOP</strong> at any time to opt out of SMS communications.
+          </p>
+        </div>
         {charity && (
           <div className="bg-white/10 rounded-xl px-4 py-3 mb-6">
             <p className="text-blue-200 text-xs">

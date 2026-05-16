@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calendar, CheckCircle2, Award, Phone, Shield, Clock } from "lucide-react";
+import SMSConsentCheckbox, { FormFooter } from "../components/vton/SMSConsentCheckbox";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -14,6 +15,8 @@ export default function VTONBenefitBooking() {
   const [step, setStep] = useState(1);
   const [appointmentDate, setAppointmentDate] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
+  const [smsConsent, setSmsConsent] = useState(false);
+  const [consentError, setConsentError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -37,6 +40,11 @@ export default function VTONBenefitBooking() {
   const handleBookAppointment = async (e) => {
     e.preventDefault();
     if (!appointmentDate || !appointmentTime) return;
+    if (!smsConsent) {
+      setConsentError("You must agree to receive SMS communications to confirm your appointment.");
+      return;
+    }
+    setConsentError("");
 
     setSubmitting(true);
     try {
@@ -231,11 +239,17 @@ The Veteran Transition Opportunity Network`
               </select>
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mt-2">
               <p className="text-sm text-blue-800">
                 We'll call you at <strong>{lead.phone}</strong> on your scheduled date and time.
               </p>
             </div>
+
+            <SMSConsentCheckbox
+              checked={smsConsent}
+              onChange={setSmsConsent}
+              error={consentError}
+            />
 
             <button
               type="submit"
@@ -245,6 +259,8 @@ The Veteran Transition Opportunity Network`
             >
               {submitting ? "Confirming..." : "Confirm Appointment"}
             </button>
+
+            <FormFooter />
 
             <button
               type="button"
@@ -284,9 +300,14 @@ The Veteran Transition Opportunity Network`
             </div>
           </div>
 
-          <p className="text-blue-400 text-sm mb-6">
+          <p className="text-blue-400 text-sm mb-3">
             A confirmation email has been sent to {lead.email}
           </p>
+          <div className="bg-white/10 border border-white/20 rounded-xl px-4 py-3 mb-6 text-left">
+            <p className="text-blue-200 text-xs leading-relaxed">
+              Thank you. Your request has been received. A VTON™ representative may contact you regarding your Veteran NextHome GAP Benefit Review. Reply <strong className="text-white">STOP</strong> at any time to opt out of SMS communications.
+            </p>
+          </div>
 
           <a
             href="/"
