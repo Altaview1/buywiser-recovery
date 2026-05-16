@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     properties = properties.filter(prop => {
       const hasEmail = (prop.OwnerEmail || '').trim().length > 0;
       const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
-      return hasEmail && hasPhone;
+      return hasEmail || hasPhone;
     });
 
     if (properties.length === 0) {
