@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download, Trash2, ShieldCheck } from "lucide-react";
+import { Mail, MessageSquare, Users, TrendingUp, Eye, Calendar, Search, X, StickyNote, Download, Trash2, ShieldCheck, Send, Share2, ShieldOff, AlertCircle, BarChart2 } from "lucide-react";
 import VTONBulkImportUI from "../components/VTONBulkImportUI";
 import LeadNotesPanel from "../components/vton/LeadNotesPanel";
 import DuplicateScanner from "../components/DuplicateScanner";
@@ -18,7 +18,12 @@ export default function VTONCampaignDashboard() {
     active: 0,
     booked: 0,
     sms_sent: 0,
-    email_sent: 0
+    email_sent: 0,
+    lob_sent: 0,
+    lob_delivered: 0,
+    suppressed: 0,
+    meta_synced: 0,
+    untouched: 0
   });
   const [showImport, setShowImport] = useState(false);
   const [showAddLead, setShowAddLead] = useState(false);
@@ -121,7 +126,16 @@ export default function VTONCampaignDashboard() {
         active: allLeads.filter(l => l.suppression_status === 'active').length,
         booked: allLeads.filter(l => l.appointment_booked).length,
         sms_sent: allLeads.filter(l => l.sms_status === 'sent' || l.sms_status === 'opened').length,
-        email_sent: allLeads.filter(l => l.email_status === 'sent' || l.email_status === 'opened').length
+        email_sent: allLeads.filter(l => l.email_status === 'sent' || l.email_status === 'opened').length,
+        lob_sent: allLeads.filter(l => l.lob_letter_id).length,
+        lob_delivered: allLeads.filter(l => l.lob_delivery_status === 'delivered').length,
+        suppressed: allLeads.filter(l => l.suppression_status !== 'active').length,
+        meta_synced: allLeads.filter(l => l.facebook_audience_synced).length,
+        untouched: allLeads.filter(l =>
+          (l.sms_status === 'pending' || !l.sms_status) &&
+          (l.email_status === 'pending' || !l.email_status) &&
+          !l.lob_letter_id
+        ).length
       };
       setStats(stats);
       setLoading(false);
@@ -561,6 +575,76 @@ export default function VTONCampaignDashboard() {
           </div>
         </div>
 
+        {/* Second row — Channel & Health stats */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <a href="/vton-email-history#letters"
+            className="bg-white rounded-xl p-4 border border-slate-200 cursor-pointer hover:border-amber-400 hover:shadow-sm transition block"
+            title="View Lob letters">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Letters Sent</p>
+                <p className="text-3xl font-bold text-amber-600 mt-1">{stats.lob_sent}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{stats.lob_delivered} delivered</p>
+              </div>
+              <Send className="h-8 w-8 text-slate-300" />
+            </div>
+          </a>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Meta Synced</p>
+                <p className="text-3xl font-bold text-blue-500 mt-1">{stats.meta_synced}</p>
+                <p className="text-xs text-slate-400 mt-0.5">{stats.total > 0 ? Math.round(stats.meta_synced / stats.total * 100) : 0}% of leads</p>
+              </div>
+              <Share2 className="h-8 w-8 text-slate-300" />
+            </div>
+          </div>
+
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("all"); setFilterBooked(false); }}
+            className="bg-white rounded-xl p-4 border border-red-100 cursor-pointer hover:border-red-300 hover:shadow-sm transition"
+            title="Show suppressed leads"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-red-400 uppercase">Suppressed</p>
+                <p className="text-3xl font-bold text-red-500 mt-1">{stats.suppressed}</p>
+                <p className="text-xs text-slate-400 mt-0.5">opt-outs / DNC</p>
+              </div>
+              <ShieldOff className="h-8 w-8 text-red-200" />
+            </div>
+          </div>
+
+          <div
+            onClick={() => { setSearchTerm(""); setFilterStage("all"); setFilterContactStatus("all"); setFilterSmsStatus("all"); setFilterBooked(false); }}
+            className="bg-white rounded-xl p-4 border border-orange-100 cursor-pointer hover:border-orange-300 hover:shadow-sm transition"
+            title="Leads with zero outreach"
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-orange-500 uppercase">Untouched</p>
+                <p className="text-3xl font-bold text-orange-500 mt-1">{stats.untouched}</p>
+                <p className="text-xs text-slate-400 mt-0.5">no outreach yet</p>
+              </div>
+              <AlertCircle className="h-8 w-8 text-orange-200" />
+            </div>
+          </div>
+
+          <div className="bg-white rounded-xl p-4 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-500 uppercase">Reach Rate</p>
+                <p className="text-3xl font-bold text-indigo-600 mt-1">
+                  {stats.total > 0 ? Math.round((stats.total - stats.untouched) / stats.total * 100) : 0}%
+                </p>
+                <p className="text-xs text-slate-400 mt-0.5">leads touched</p>
+              </div>
+              <BarChart2 className="h-8 w-8 text-slate-300" />
+            </div>
+          </div>
+        </div>
+
         {/* Filters */}
         <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -595,11 +679,14 @@ export default function VTONCampaignDashboard() {
                 <tr className="border-b border-slate-200">
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Name</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Property</th>
-                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Benefit</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Price / Equity</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">VA Loan</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Stage</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">SMS</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Email</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Mail</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Visits</th>
+                  <th className="px-6 py-3 text-left font-semibold text-slate-700">Last Touch</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Status</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Pipeline</th>
                   <th className="px-6 py-3 text-left font-semibold text-slate-700">Notes</th>
@@ -621,7 +708,19 @@ export default function VTONCampaignDashboard() {
                         <p className="text-xs text-slate-500">{lead.city}, {lead.state}</p>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="font-bold text-green-600">${(lead.estimated_benefit || 0).toLocaleString()}</p>
+                        {lead.listing_price ? (
+                          <p className="text-xs font-semibold text-slate-700">${(lead.listing_price / 1000).toFixed(0)}k</p>
+                        ) : <span className="text-xs text-slate-400">—</span>}
+                        {lead.estimated_equity ? (
+                          <p className="text-xs text-green-600 font-semibold">${(lead.estimated_equity / 1000).toFixed(0)}k equity</p>
+                        ) : null}
+                      </td>
+                      <td className="px-6 py-4">
+                        {lead.likely_va_loan_indicator ? (
+                          <span className="text-xs font-bold px-2 py-1 rounded bg-blue-100 text-blue-800">VA ✓</span>
+                        ) : (
+                          <span className="text-xs text-slate-400">—</span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${stage?.color || 'bg-slate-100'}`}>
@@ -647,10 +746,34 @@ export default function VTONCampaignDashboard() {
                         </span>
                       </td>
                       <td className="px-6 py-4">
+                        {lead.lob_letter_id ? (
+                          <span className={`text-xs font-semibold px-2 py-1 rounded capitalize ${
+                            lead.lob_delivery_status === 'delivered' ? 'bg-green-100 text-green-800' :
+                            lead.lob_delivery_status === 'mailed' ? 'bg-blue-100 text-blue-800' :
+                            lead.lob_delivery_status === 'failed' || lead.lob_delivery_status === 'returned' ? 'bg-red-100 text-red-800' :
+                            'bg-amber-100 text-amber-700'
+                          }`}>
+                            {lead.lob_delivery_status || 'processing'}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-slate-400">—</span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
                         <div className="flex items-center gap-1">
                           <Eye className="h-4 w-4 text-slate-400" />
                           <span className="font-semibold text-slate-700">{lead.site_visits || 0}</span>
                         </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        {lead.last_engagement ? (
+                          <div>
+                            <p className="text-xs font-semibold text-slate-700">{new Date(lead.last_engagement).toLocaleDateString()}</p>
+                            <p className="text-xs text-slate-400">{Math.floor((Date.now() - new Date(lead.last_engagement)) / (1000 * 60 * 60 * 24))}d ago</p>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-orange-500 font-semibold">Never</span>
+                        )}
                       </td>
                       <td className="px-6 py-4">
                         <span className={`text-xs font-semibold px-2 py-1 rounded ${
