@@ -105,7 +105,7 @@ The Veteran Transition Opportunity Network`
     );
   }
 
-  if (!lead) {
+  if (!leadId || !lead) {
     return <VTONPublicOptIn />;
   }
 
