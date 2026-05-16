@@ -69,6 +69,8 @@ Deno.serve(async (req) => {
     const priority = opportunity.priority || 'medium';
     const isHighPriority = priority === 'high';
 
+    const opportunityUrl = `https://app.base44.com/apps/SKbeaf55fac0e2c3bb27a19b52a7911463/prospects?id=${opportunity.id}`;
+
     // Email HTML
     const emailHtml = `
       <div style="font-family:sans-serif;max-width:600px;margin:0 auto;padding:24px;background:#f8fafc;border-radius:8px;">
@@ -81,11 +83,16 @@ Deno.serve(async (req) => {
           <table style="width:100%;font-size:14px;border-collapse:collapse;">
             <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Name</td><td style="color:#0f172a;">${homeownerName}</td></tr>
             <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Property</td><td style="color:#0f172a;">${propertyAddress}${city ? `, ${city}` : ''}${state ? `, ${state}` : ''}</td></tr>
-            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Phone</td><td><a href="tel:${phone}" style="color:#2563eb;">${phone}</a></td></tr>
+            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Phone</td><td><a href="tel:${homeownerPhone}" style="color:#2563eb;">${homeownerPhone}</a></td></tr>
             <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Email</td><td><a href="mailto:${email}" style="color:#2563eb;">${email}</a></td></tr>
             <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Est. Value</td><td style="color:#0f172a;">${estimatedPrice}</td></tr>
+            <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Priority</td><td style="color:#0f172a;text-transform:capitalize;">${priority}</td></tr>
             <tr><td style="padding:6px 12px 6px 0;color:#64748b;font-weight:600;">Assigned Partner</td><td style="color:#0f172a;">${partnerEmail}</td></tr>
           </table>
+        </div>
+
+        <div style="text-align:center;margin-bottom:16px;">
+          <a href="${opportunityUrl}" style="display:inline-block;padding:14px 32px;background:#0B1F3B;color:white;font-size:15px;font-weight:700;text-decoration:none;border-radius:8px;">👁️ View Full Opportunity →</a>
         </div>
 
         <div style="background:#fff8e1;border:1px solid #f5c842;border-radius:4px;padding:12px;margin-bottom:16px;">
