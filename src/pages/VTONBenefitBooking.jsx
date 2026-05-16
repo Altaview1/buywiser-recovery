@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calendar, CheckCircle2, Award, Phone, Shield, Clock } from "lucide-react";
 import SMSConsentCheckbox, { FormFooter } from "../components/vton/SMSConsentCheckbox";
+import VTONPublicOptIn from "../components/vton/VTONPublicOptIn";
 
 const NAVY = "#0B1F3B";
 const RED = "#C62828";
@@ -103,15 +104,7 @@ The Veteran Transition Opportunity Network`
   }
 
   if (!lead) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4" style={{ background: NAVY }}>
-        <div className="text-center text-white max-w-md">
-          <h1 className="text-2xl font-bold mb-2">Lead Not Found</h1>
-          <p>We couldn't locate your veteran transition record. Please contact us directly.</p>
-          <a href="tel:+18183002642" className="inline-block mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-bold">Call Us</a>
-        </div>
-      </div>
-    );
+    return <VTONPublicOptIn />;
   }
 
   // STEP 1: Benefit Overview
