@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
     `;
 
     // SMS message
-    const smsMessage = `🎖️ NEW VTON OPPORTUNITY\n\n${homeownerName}\n${propertyAddress}\n${city}, ${state}\nPhone: ${phone}\nValue: ${estimatedPrice}\n\nContact within 24hrs to schedule benefit review.`;
+    const smsMessage = `🎖️ NEW VTON OPPORTUNITY\n\n${homeownerName}\n${propertyAddress}\n${city}, ${state}\nPhone: ${homeownerPhone}\nValue: ${estimatedPrice}\n\nContact within 24hrs to schedule benefit review.`;
 
     // Send email notification
     const emailResult = await resend.emails.send({
