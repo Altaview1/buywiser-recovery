@@ -21,17 +21,19 @@ export default function VTONBenefitBooking() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
+    if (!leadId) {
+      setLoading(false);
+      return;
+    }
     const trackVisit = async () => {
-      if (leadId) {
-        base44.functions.invoke("vtonEngagementTracker", {
-          lead_id: leadId,
-          event_type: "visit"
-        }).catch(err => console.error("Engagement tracking failed:", err));
+      base44.functions.invoke("vtonEngagementTracker", {
+        lead_id: leadId,
+        event_type: "visit"
+      }).catch(err => console.error("Engagement tracking failed:", err));
 
-        const leads = await base44.entities.VTONLead.filter({ id: leadId });
-        if (leads.length) {
-          setLead(leads[0]);
-        }
+      const leads = await base44.entities.VTONLead.filter({ id: leadId });
+      if (leads.length) {
+        setLead(leads[0]);
       }
       setLoading(false);
     };
