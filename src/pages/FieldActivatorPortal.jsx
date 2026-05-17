@@ -347,6 +347,8 @@ export default function FieldActivatorPortal() {
   const today = new Date().toDateString();
   const todayVisits = visits.filter(v => new Date(v.visit_date).toDateString() === today).length;
 
+  const unvisitedCount = leads.filter(l => !visits.some(v => v.lead_id === l.id)).length;
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {showLogger && selectedLead && (
@@ -356,6 +358,13 @@ export default function FieldActivatorPortal() {
           onSaved={() => fetchData(activator)}
           onClose={() => { setShowLogger(false); setSelectedLead(null); }}
         />
+      )}
+
+      {/* Floating unvisited count badge */}
+      {unvisitedCount > 0 && !showLogger && (
+        <div className="fixed bottom-6 left-4 right-4 z-20 flex items-center justify-center gap-2 px-4 py-3 rounded-full bg-red-500 text-white font-bold text-sm shadow-lg">
+          🔴 {unvisitedCount} unvisited lead{unvisitedCount !== 1 ? 's' : ''} — tap a property to start
+        </div>
       )}
 
       {/* Header */}
@@ -387,7 +396,7 @@ export default function FieldActivatorPortal() {
       </div>
 
       {/* Leads List */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 pb-20 space-y-3">
         {loading ? (
           <div className="flex items-center justify-center py-16">
             <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
@@ -402,59 +411,65 @@ export default function FieldActivatorPortal() {
             const leadVisits = visits.filter(v => v.lead_id === lead.id).sort((a, b) => new Date(b.visit_date) - new Date(a.visit_date));
             const lastVisit = leadVisits[0];
             const isAuditFlagged = lead.audit_flag;
+            const isUnvisited = !lastVisit;
 
             return (
-              <div key={lead.id} className={`bg-white border rounded-xl p-3 sm:p-4 shadow-sm transition-shadow touch-manipulation ${isAuditFlagged ? "border-amber-300" : "border-slate-200"}`}>
-                <div className="flex items-start justify-between gap-2 sm:gap-3 mb-2 sm:mb-3">
+              <div 
+                key={lead.id} 
+                onClick={() => { setSelectedLead(lead); setShowLogger(true); }}
+                className={`bg-white border-2 rounded-xl p-4 shadow-sm transition-all touch-manipulation active:scale-95 cursor-pointer ${
+                  isAuditFlagged ? "border-amber-300 bg-amber-50" : isUnvisited ? "border-blue-300 bg-blue-50" : "border-slate-200"
+                }`}>
+                <div className="flex items-start justify-between gap-3 mb-3">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <p className="font-bold text-slate-900 text-sm truncate">{lead.first_name} {lead.last_name}</p>
-                      {isAuditFlagged && <span className="text-xs font-bold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded flex-shrink-0">⚑ Flagged</span>}
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <p className="font-bold text-slate-900 text-base">{lead.first_name} {lead.last_name}</p>
+                      {isAuditFlagged && <span className="text-xs font-bold text-amber-700 bg-amber-200 px-2 py-0.5 rounded flex-shrink-0">⚑ Flagged</span>}
+                      {isUnvisited && <span className="text-xs font-bold text-blue-700 bg-blue-200 px-2 py-0.5 rounded flex-shrink-0">NEW</span>}
                     </div>
-                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5 truncate">
-                      <MapPin className="h-3 w-3 flex-shrink-0" /> <span className="truncate">{lead.property_address}</span>
+                    <p className="text-sm text-slate-600 flex items-center gap-1 mb-2">
+                      <MapPin className="h-4 w-4 flex-shrink-0" /> {lead.property_address}
                     </p>
                     {lead.phone && (
-                      <a href={`tel:${lead.phone}`} className="text-xs text-blue-600 font-semibold flex items-center gap-1 mt-1.5">
-                        <Phone className="h-3 w-3" /> {lead.phone}
+                      <a 
+                        href={`tel:${lead.phone}`} 
+                        onClick={e => e.stopPropagation()}
+                        className="text-sm text-blue-600 font-bold flex items-center gap-1 py-1.5 px-2 bg-blue-100 rounded-lg w-fit">
+                        <Phone className="h-4 w-4" /> {lead.phone}
                       </a>
                     )}
                   </div>
-                  <div className="flex-shrink-0">
+                  <div className="flex-shrink-0 text-right">
                     {lastVisit ? (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
-                        <CheckCircle className="h-3 w-3" /> Attempted
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                        <CheckCircle className="h-4 w-4" /> Done
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-700">
-                        <Clock className="h-3 w-3" /> Pending
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-red-100 text-red-700 animate-pulse">
+                        <Clock className="h-4 w-4" /> Pending
                       </span>
                     )}
                   </div>
                 </div>
 
                 {lastVisit && (
-                  <div className="bg-slate-50 rounded-lg px-3 py-2 mb-2 sm:mb-3 text-xs">
-                    <p className="font-bold text-slate-700 mb-0.5">
+                  <div className="bg-white rounded-lg px-3 py-2.5 mb-3 text-xs border border-slate-200">
+                    <p className="font-bold text-slate-700 mb-1">
                       Last: {new Date(lastVisit.visit_date).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                     </p>
-                    <p className="text-slate-600 truncate">
+                    <p className="text-slate-600">
                       <strong>{(lead.attempt_outcome || lastVisit.status || "").replace(/_/g, " ")}</strong>
                       {lead.visit_duration_seconds && <span className="text-slate-400 ml-1">· {lead.visit_duration_seconds}s</span>}
-                      {lastVisit.notes && ` — ${lastVisit.notes.slice(0, 40)}…`}
                     </p>
+                    {lastVisit.notes && <p className="text-slate-500 mt-1">📝 {lastVisit.notes.slice(0, 60)}</p>}
                     {lastVisit.door_photo_url && (
-                      <img src={lastVisit.door_photo_url} alt="Property" className="w-full rounded-lg h-20 object-cover border border-slate-200 mt-2" />
+                      <img src={lastVisit.door_photo_url} alt="Property" className="w-full rounded-lg h-24 object-cover border border-slate-200 mt-2" />
                     )}
                   </div>
                 )}
 
-                <div className="flex gap-2">
-                  <button onClick={() => { setSelectedLead(lead); setShowLogger(true); }}
-                    className="flex-1 py-3 sm:py-2.5 rounded-lg font-bold text-sm text-white transition active:opacity-80"
-                    style={{ background: NAVY }}>
-                    + Log Door Attempt
-                  </button>
+                <div className="pt-2 border-t border-slate-200">
+                  <p className="text-xs font-bold text-slate-500 text-center py-2">Tap card to log door attempt</p>
                 </div>
               </div>
             );

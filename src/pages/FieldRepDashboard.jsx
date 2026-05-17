@@ -85,30 +85,49 @@ export default function FieldRepDashboard() {
     );
   }
 
+  const unvisitedCount = leads.filter(l => !visits.some(v => v.lead_id === l.id)).length;
+  const todayCount = visits.filter(v => new Date(v.visit_date).toDateString() === new Date().toDateString()).length;
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <FieldRepHeader rep={rep} onLogout={handleLogout} />
 
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4 pb-24">
         <div className="max-w-4xl mx-auto space-y-4">
-          {/* Tabs */}
-          <div className="flex gap-2 border-b border-slate-200 bg-white rounded-t-lg px-4">
+          {/* Quick Stats Bar - Mobile Prominent */}
+          <div className="grid grid-cols-3 gap-2 bg-white rounded-xl p-3 border border-slate-200 sticky top-0 z-10">
+            <div className="text-center">
+              <p className="text-2xl font-black text-slate-800">{unvisitedCount}</p>
+              <p className="text-xs font-bold text-slate-500 mt-0.5">Unvisited</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-black text-green-700">{todayCount}</p>
+              <p className="text-xs font-bold text-slate-500 mt-0.5">Today</p>
+            </div>
+            <div className="text-center">
+              <p className="text-2xl font-black text-blue-700">{leads.length}</p>
+              <p className="text-xs font-bold text-slate-500 mt-0.5">Assigned</p>
+            </div>
+          </div>
+
+          {/* Tabs - Full Width on Mobile */}
+          <div className="flex gap-1 bg-white rounded-xl border border-slate-200 p-1 overflow-x-auto">
             {[
-              { id: "leads", label: "Assigned Leads" },
-              { id: "checklist", label: "Daily Checklist" },
-              { id: "import", label: "Import Leads" },
+              { id: "leads", label: "📍 Leads", emoji: true },
+              { id: "checklist", label: "✅ Checklist", emoji: true },
+              { id: "import", label: "📥 Import", emoji: true },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 text-sm font-bold rounded-t-lg transition ${
+                className={`flex-1 px-3 py-2.5 text-xs sm:text-sm font-bold rounded-lg transition whitespace-nowrap ${
                   activeTab === tab.id
-                    ? "bg-white text-slate-900 border-b-2"
-                    : "text-slate-500 hover:text-slate-700"
+                    ? "text-white"
+                    : "text-slate-600 hover:text-slate-800"
                 }`}
                 style={
                   activeTab === tab.id
-                    ? { borderBottomColor: NAVY }
+                    ? { background: NAVY }
                     : undefined
                 }
               >
@@ -118,7 +137,7 @@ export default function FieldRepDashboard() {
           </div>
 
           {/* Content */}
-          <div className="bg-white rounded-b-lg p-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
             {loading ? (
               <div className="flex justify-center py-12">
                 <div className="w-6 h-6 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin" />
@@ -145,6 +164,13 @@ export default function FieldRepDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Floating CTA for Leads Tab */}
+      {activeTab === "leads" && unvisitedCount > 0 && (
+        <div className="fixed bottom-6 left-4 right-4 z-20 px-4 py-3 rounded-full bg-red-500 text-white font-bold text-sm shadow-lg text-center">
+          🔴 {unvisitedCount} unvisited — start logging
+        </div>
+      )}
     </div>
   );
 }
