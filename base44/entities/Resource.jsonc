@@ -53,7 +53,16 @@
         "role": "admin"
       }
     },
-    "read": {},
+    "read": {
+      "$or": [
+        {
+          "user_condition": {
+            "authenticated": true
+          }
+        },
+        {}
+      ]
+    },
     "update": {
       "user_condition": {
         "role": "admin"

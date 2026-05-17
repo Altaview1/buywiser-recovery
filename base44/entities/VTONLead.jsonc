@@ -225,34 +225,35 @@
     "state"
   ],
   "rls": {
-    "create": {},
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
     "read": {
       "$or": [
         {
-          "data.email": "{{user.email}}"
+          "created_by": "{{user.email}}"
+        },
+        {
+          "data.assigned_advisor": "{{user.email}}"
         },
         {
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.assigned_advisor": "{{user.email}}"
         }
       ]
     },
     "update": {
       "$or": [
         {
-          "data.email": "{{user.email}}"
+          "data.assigned_advisor": "{{user.email}}"
         },
         {
           "user_condition": {
             "role": "admin"
           }
-        },
-        {
-          "data.assigned_advisor": "{{user.email}}"
         }
       ]
     },

@@ -5,41 +5,39 @@
     "referrer_email": {
       "type": "string",
       "format": "email",
-      "description": "Email of the user who shared the referral link"
+      "description": "Email of person making the referral"
     },
     "referred_email": {
       "type": "string",
       "format": "email",
-      "description": "Email of the new user who signed up via the referral link"
+      "description": "Email of person being referred"
+    },
+    "referred_name": {
+      "type": "string",
+      "description": "Name of referred person"
     },
     "referral_code": {
       "type": "string",
-      "description": "Unique referral code generated for the referrer"
+      "description": "Unique referral code for tracking"
     },
     "status": {
       "type": "string",
       "enum": [
         "pending",
-        "completed",
-        "cancelled"
+        "claimed",
+        "completed"
       ],
       "default": "pending",
-      "description": "Status of the referral (pending signup, completed, or cancelled)"
+      "description": "Status of the referral"
     },
-    "tokens_awarded": {
-      "type": "number",
-      "default": 50,
-      "description": "Number of bonus tokens awarded upon completion"
-    },
-    "completed_date": {
+    "notes": {
       "type": "string",
-      "format": "date-time",
-      "description": "When the referred user completed their signup"
+      "description": "Internal notes"
     }
   },
   "required": [
     "referrer_email",
-    "referral_code"
+    "referred_email"
   ],
   "rls": {
     "create": {},
@@ -47,6 +45,9 @@
       "$or": [
         {
           "data.referrer_email": "{{user.email}}"
+        },
+        {
+          "data.referred_email": "{{user.email}}"
         },
         {
           "user_condition": {
@@ -59,6 +60,9 @@
       "$or": [
         {
           "data.referrer_email": "{{user.email}}"
+        },
+        {
+          "data.referred_email": "{{user.email}}"
         },
         {
           "user_condition": {

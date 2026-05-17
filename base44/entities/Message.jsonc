@@ -46,21 +46,17 @@
     "create": {
       "$or": [
         {
-          "created_by": "{{user.email}}"
-        },
-        {
           "data.sender_email": "{{user.email}}"
         },
         {
-          "data.sender_role": "admin"
+          "user_condition": {
+            "role": "admin"
+          }
         }
       ]
     },
     "read": {
       "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
         {
           "data.sender_email": "{{user.email}}"
         },
@@ -72,16 +68,9 @@
       ]
     },
     "update": {
-      "$or": [
-        {
-          "created_by": "{{user.email}}"
-        },
-        {
-          "user_condition": {
-            "role": "admin"
-          }
-        }
-      ]
+      "user_condition": {
+        "role": "admin"
+      }
     },
     "delete": {
       "user_condition": {
