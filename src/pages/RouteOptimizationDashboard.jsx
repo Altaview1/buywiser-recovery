@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Circle, Popup, useMap } from 'react-le
 import L from 'leaflet';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, MapPin, Zap, Users, Navigation, TrendingUp, RefreshCw, ChevronDown } from 'lucide-react';
+import { AlertCircle, MapPin, Zap, Users, Navigation, TrendingUp, RefreshCw, ChevronDown, Navigation2 } from 'lucide-react';
 
 const ClusterIcon = L.icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
@@ -175,6 +175,38 @@ export default function RouteOptimizationDashboard() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const generateGoogleMapsUrl = () => {
+    if (!optimizedRoute || !optimizedRoute.optimized_route) return '';
+    
+    const routes = optimizedRoute.optimized_route.slice(0, 25); // Google Maps limit
+    if (routes.length === 0) return '';
+
+    const origin = encodeURIComponent(`${routes[0].lat},${routes[0].lng}`);
+    const destination = encodeURIComponent(`${routes[routes.length - 1].lat},${routes[routes.length - 1].lng}`);
+    
+    const waypoints = routes.slice(1, -1)
+      .map(r => encodeURIComponent(`${r.lat},${r.lng}`))
+      .join('|');
+
+    const baseUrl = 'https://www.google.com/maps/dir/';
+    return waypoints 
+      ? `${baseUrl}${origin}/${waypoints}/${destination}`
+      : `${baseUrl}${origin}/${destination}`;
+  };
+
+  const generateAppleMapsUrl = () => {
+    if (!optimizedRoute || !optimizedRoute.optimized_route) return '';
+    
+    const routes = optimizedRoute.optimized_route.slice(0, 10); // Apple Maps practical limit
+    if (routes.length === 0) return '';
+
+    const locations = routes
+      .map(r => `${r.lat},${r.lng}`)
+      .join('&destination=');
+
+    return `maps://maps.apple.com/?source=s&destination=${locations}&dirflg=d`;
   };
 
   useEffect(() => {
@@ -556,12 +588,30 @@ export default function RouteOptimizationDashboard() {
                     <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
                       <div className="flex items-center justify-between mb-3">
                         <p className="text-sm font-semibold text-purple-900">📍 Optimized Door-Knock Route</p>
-                        <button
-                          onClick={exportRouteToCSV}
-                          className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition flex items-center gap-1"
-                        >
-                          📥 Export CSV
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={generateGoogleMapsUrl()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1 bg-blue-600 text-white text-xs font-semibold rounded hover:bg-blue-700 transition flex items-center gap-1"
+                          >
+                            <MapPin className="h-3 w-3" /> Google Maps
+                          </a>
+                          <a
+                            href={generateAppleMapsUrl()}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1 bg-slate-600 text-white text-xs font-semibold rounded hover:bg-slate-700 transition flex items-center gap-1"
+                          >
+                            <Navigation2 className="h-3 w-3" /> Apple Maps
+                          </a>
+                          <button
+                            onClick={exportRouteToCSV}
+                            className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition flex items-center gap-1"
+                          >
+                            📥 Export CSV
+                          </button>
+                        </div>
                       </div>
                       <div className="grid grid-cols-3 gap-3 text-xs mb-3">
                         <div className="text-center">
