@@ -24,6 +24,11 @@ Deno.serve(async (req) => {
     }
 
     const lead = leads[0];
+    // Verify user owns or is assigned to this lead (via assigned_advisor)
+    if (lead.created_by !== user.email && lead.assigned_advisor !== user.email) {
+      return Response.json({ error: 'Forbidden: Not authorized for this lead' }, { status: 403 });
+    }
+
     let updates = {
       last_engagement: new Date().toISOString()
     };
@@ -49,7 +54,8 @@ Deno.serve(async (req) => {
       }).catch(err => console.error('Behavioral follow-up failed:', err));
     }
 
-    await base44.asServiceRole.entities.VTONLead.update(lead_id, updates);
+    // Use user-scoped update to enforce RLS permissions
+    await base44.entities.VTONLead.update(lead_id, updates);
 
     return Response.json({ success: true, message: 'Engagement tracked' });
   } catch (error) {
