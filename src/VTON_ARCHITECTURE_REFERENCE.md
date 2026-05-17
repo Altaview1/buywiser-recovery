@@ -27,11 +27,27 @@ The central record for every veteran prospect. Key fields:
 - **Scoring:** `contact_priority_score`, `estimated_benefit`
 - **Attribution:** `import_batch_id` (tracks which import session created this lead)
 
+### Secondary Entity: `ActivatorLead`
+Field activator lead management with Kanban pipeline tracking. Key fields:
+- `first_name`, `last_name`, `email`, `phone`
+- `property_address`, `property_type`, `estimated_price`, `estimated_equity`, `distress_score`, `listing_dom`
+- **Field Activation:** `rep_code`, `activator_id`, `activation_source` (IN_PERSON_ACTIVATION or LEAVE_BEHIND_ACTIVATION)
+- **Door Knock Tracking:** `knock_attempt_confirmed`, `attempt_outcome`, `visit_duration_seconds`, `proof_photo_url`
+- **Qualification:** `planning_to_buy`, `timeline`, `next_home_type`, `agent_commitment`, `lead_type`
+- **Status Fields:** `status` (SCANNED, VERIFIED, QUALIFIED, etc.), `benefit_review_status`
+- **Kanban Pipeline:** `pipeline_stage` (new, contacted, interested, meeting_set, closed) — visual drag-and-drop tracking
+- **Audit:** `audit_flag`, `appointment_scheduled`, `appointment_date`
+- **Interaction Tracking:** `interaction_notes` array (calls, emails, notes logged inline)
+
 ### Supporting Entities
 - `VTONMailConfig` — Stores the approved HTML letter template (one active record)
 - `VTONEmailLog` — Logs every email sent (type, status, lead reference)
 - `VTONOpportunity` — Partner-assigned opportunities derived from VTON leads (separate from leads)
 - `PropertyRadarDailySnapshot` — Daily counts of active CA VA listings (total pool + new listings)
+- `ActivatorPayment` — Payment records for field activators; created on verified door attempts ($15 per attempt)
+- `FieldActivator` — Field rep profiles with rep codes, contact info, tier tracking, earnings summary
+- `Visit` — Individual visit logs per lead (date, status, notes, callback timing)
+- `VisitAuditLog` — Audit trail of all visit record updates (for compliance tracking)
 
 ---
 
@@ -104,6 +120,14 @@ The central record for every veteran prospect. Key fields:
 - `createVerifiedDoorPayment` → creates `ActivatorPayment` record
 - Tiers: `FIELD_ACTIVATOR` → `SENIOR_FIELD_ACTIVATOR` (promotion at 15% in-person scan rate, 50+ doors)
 
+### Kanban Pipeline (`/lead-pipeline`)
+- **Visual drag-and-drop board** for `ActivatorLead` management
+- **Stages:** new → contacted → interested → meeting_set → closed
+- **Card details:** Lead name, address, estimated equity, interaction count
+- **Real-time updates:** Drop lead on column → `pipeline_stage` auto-updates
+- **Inline logging:** Click card → view/add calls, emails, notes in modal
+- **Purpose:** Replace spreadsheets; visualize follow-up flow and lead progression
+
 ---
 
 ## 6. Lead Intake Flow (`/vton-scan`)
@@ -161,6 +185,7 @@ Key functions triggered:
 | `/field-activator` | Field activator portal |
 | `/field-rep-dashboard` | Field rep management |
 | `/qr-scans` | QR scan activity dashboard |
+| `/lead-pipeline` | **NEW** Kanban board for ActivatorLead pipeline tracking (new → closed) |
 | `/management-dashboard` | Executive management view |
 
 ---

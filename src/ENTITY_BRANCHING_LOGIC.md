@@ -4,10 +4,12 @@ Three parallel user workflows: **Field Activator** (door-knocks), **Homeowner/Ad
 
 ---
 
-## USER FLOW 1: FIELD ACTIVATOR (ActivatorLead)
+## USER FLOW 1: FIELD ACTIVATOR (ActivatorLead + Kanban Pipeline)
 
 **User:** Field rep knocks on doors  
-**Entity:** ActivatorLead  
+**Primary Entity:** ActivatorLead  
+**Pipeline Field:** `pipeline_stage` (new, contacted, interested, meeting_set, closed)  
+**UI Location:** `/lead-pipeline` (drag-and-drop Kanban board)  
 **Origin:** QR scan at property address
 
 ```
@@ -18,21 +20,31 @@ SCANNED (initial QR capture)
            ├─ Payment Status → PENDING (if visit ≥ 45s)
            │                → PENDING_AUDIT (if visit < 45s)
            │
-           └─ Lead Status Flow:
-              ├─ VERIFIED (conversation occurred)
-              │  ├─ QUALIFIED (prospect interested)
-              │  │  ├─ SCHEDULED (appointment set)
-              │  │  │  ├─ COMPLETED
-              │  │  │  │  └─ CLOSED (outcome: converted/not_interested/callback_scheduled)
-              │  │  │  └─ NO_SHOW
-              │  │  │     └─ CLOSED
-              │  │  └─ CLOSED (not interested)
-              │  └─ CLOSED (no follow-up)
+           └─ KANBAN PIPELINE STAGE FLOW:
               │
-              └─ CLOSED (no answer, no verification)
+              ├─ new (initial lead capture)
+              │  └─ [Manual drag → contacted] (field rep reaches out)
+              │
+              ├─ contacted (call/email logged in interaction_notes)
+              │  └─ [Manual drag → interested] (prospect shows interest)
+              │
+              ├─ interested (prospect qualified)
+              │  └─ [Manual drag → meeting_set] (appointment scheduled)
+              │     └─ benefit_review_status transitions: NOT_SCHEDULED → SCHEDULED
+              │
+              ├─ meeting_set (appointment scheduled)
+              │  └─ [Manual drag → closed] (outcome logged)
+              │     └─ benefit_review_status: ATTENDED | NO_SHOW | CANCELLED
+              │
+              └─ closed (final outcome)
+                 ├─ Call logged (interaction_notes.type = 'call')
+                 ├─ Email logged (interaction_notes.type = 'email')
+                 └─ Notes logged (interaction_notes.type = 'note')
 ```
 
-**FA Reward:** Payment approval (admin) → $15 disbursed
+**FA Reward:** Payment approval (admin) → $15 disbursed  
+**Visual Tracking:** Drag-drop on Kanban board updates `pipeline_stage` in real-time  
+**Inline Logging:** Click card modal to add calls, emails, notes with timestamps
 
 ---
 
@@ -124,8 +136,27 @@ PENDING (standard door-knock)
 
 ## Summary by Role
 
-| Role | Entity | Success Metric | Failure Consequence |
-|------|--------|-----------------|-------------------|
-| **Field Activator** | ActivatorLead → ActivatorPayment | Door-knock verified ($15 earned) | No payment (suspicious pattern) |
-| **VTON Partner** | VTONOpportunity | Verified conversation (counter++) | Forfeited opportunity (48h timeout) |
-| **Admin** | ActivatorPayment | Approved & paid out | Rejected on audit flag |
+| Role | Entity | Success Metric | Pipeline Tracking | Failure Consequence |
+|------|--------|-----------------|-----------------|-------------------|
+| **Field Activator** | ActivatorLead → ActivatorPayment | Door-knock verified ($15 earned) | Kanban pipeline stages (new → closed) | No payment (suspicious pattern) |
+| **VTON Partner** | VTONOpportunity | Verified conversation (counter++) | Partner-specific view | Forfeited opportunity (48h timeout) |
+| **Admin** | ActivatorPayment | Approved & paid out | Payment oversight dashboard | Rejected on audit flag |
+
+---
+
+## Kanban Board (`/lead-pipeline`) — Architecture
+
+**Scope:** ActivatorLead lifecycle visualization  
+**Column Definitions:**
+
+| Stage | Status | Description | Typical Actions |
+|-------|--------|-------------|-----------------|
+| **New** | 🟦 Default | Freshly scanned lead from QR code | Review notes, check contact info |
+| **Contacted** | 🟦 Reached out | Field rep called or emailed | Log call outcome, note objections |
+| **Interested** | 🟦 Qualified | Prospect expressed interest in benefit review | Schedule appointment |
+| **Meeting Set** | 🟦 Appointment booked | Benefit review appointment confirmed | Track attendance, send reminders |
+| **Closed** | ✅ Terminal | Meeting completed OR prospect unqualified | Final outcome: attended/no-show/not interested |
+
+**Card Display:** Lead name · address · estimated equity · interaction count  
+**Drag-and-drop:** Updates `pipeline_stage` field instantly via Base44 SDK  
+**Modal (click card):** View/edit lead details, add calls/emails/notes, view history
