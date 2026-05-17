@@ -1,0 +1,22 @@
+{
+  "name": "PropertyRadarDailySnapshot",
+  "type": "object",
+  "properties": {
+    "snapshot_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of this snapshot (YYYY-MM-DD)"
+    },
+    "total_pool_count": {
+      "type": "number",
+      "description": "Total active CA VA listings with 1-90 DOM"
+    },
+    "new_listings_count": {
+      "type": "number",
+      "description": "New CA VA listings added in the last 24 hours (0-1 DOM)"
+    }
+  },
+  "required": [
+    "snapshot_date"
+  ]
+}
