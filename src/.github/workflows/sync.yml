@@ -1,0 +1,177 @@
+name: Sync Base44 → GitHub
+
+on:
+  schedule:
+    # Every Monday at 9 AM Bangkok time (1 AM UTC)
+    - cron: '0 1 * * 1'
+  
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Configure Git
+        run: |
+          git config --global user.name "buywiser-automation"
+          git config --global user.email "bennett@buywiser.com"
+      
+      - name: Pull latest changes
+        run: git pull origin main --rebase
+      
+      - name: Export from Base44 (Manual Step Required)
+        run: |
+          echo "⚠️  MANUAL STEP REQUIRED:"
+          echo "1. Go to your Base44 project dashboard"
+          echo "2. Settings → Export Project (or download via CLI)"
+          echo "3. Extract files to local 'buywiser-recovery' folder"
+          echo "4. Commit and push to GitHub"
+          echo ""
+          echo "Automated export coming soon — currently requires manual export."
+      
+      - name: Check for changes
+        id: check
+        run: |
+          if git status --porcelain | grep -q .; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit changes
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git add .
+          git commit -m "Sync [$(date -I)]: Base44 → GitHub recovery backup
+          
+          - Synced all VTON functions and pages
+          - Synced all SmartBuy functions and pages
+          - Synced shared infrastructure and utilities
+          
+          Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      
+      - name: Push to main
+        if: steps.check.outputs.has_changes == 'true'
+        run: git push origin main
+      
+      - name: Push to vton-dev
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git checkout -B vton-dev origin/vton-dev || git checkout -b vton-dev
+          git rebase main
+          git push origin vton-dev --force-with-lease
+      
+      - name: Push to smartbuy-dev
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          git checkout -B smartbuy-dev origin/smartbuy-dev || git checkout -b smartbuy-dev
+          git rebase main
+          git push origin smartbuy-dev --force-with-lease
+      
+      - name: Success notification
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          echo "✅ Sync completed successfully"
+          echo "📦 Changes pushed to:"
+          echo "  - main branch"
+          echo "  - vton-dev branch"
+          echo "  - smartbuy-dev branch"
+      
+      - name: No changes notification
+        if: steps.check.outputs.has_changes == 'false'
+        run: echo "✓ No changes detected — repository is up to date"
+
+  # Security scan: Check for secrets, API keys, etc.
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - name: Scan for secrets
+        run: |
+          echo "🔐 Security Scan: Checking for secrets..."
+          
+          # Check for common secret patterns
+          if grep -r "API_KEY\|SECRET\|PASSWORD\|TOKEN" --include="*.js" --include="*.jsx" --include="*.json"; then
+            echo "⚠️  WARNING: Potential secrets found"
+            echo "Ensure these are environment variables, not hardcoded!"
+            exit 1
+          fi
+          
+          echo "✅ No hardcoded secrets detected"
+      
+      - name: Validate JSON schemas
+        run: |
+          echo "🧪 Validating JSON entity schemas..."
+          for file in vton/entities/*.json smartbuy/entities/*.json shared/entities/*.json; do
+            if [ -f "$file" ]; then
+              jq empty "$file" && echo "✓ $file" || (echo "✗ $file is invalid" && exit 1)
+            fi
+          done
+          echo "✅ All schemas are valid"
+
+  # Validation: Ensure file structure is correct
+  validate-structure:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      
+      - name: Check folder structure
+        run: |
+          echo "📁 Validating repository structure..."
+          
+          REQUIRED_FOLDERS=(
+            "vton/pages"
+            "vton/components"
+            "vton/functions"
+            "vton/entities"
+            "vton/docs"
+            "smartbuy/pages"
+            "smartbuy/components"
+            "smartbuy/functions"
+            "smartbuy/entities"
+            "shared/functions"
+            "shared/components"
+            "shared/entities"
+            "app"
+            ".github/workflows"
+          )
+          
+          for folder in "${REQUIRED_FOLDERS[@]}"; do
+            if [ ! -d "$folder" ]; then
+              echo "✗ Missing folder: $folder"
+              exit 1
+            fi
+            echo "✓ $folder"
+          done
+          
+          echo "✅ All required folders present"
+      
+      - name: Check for mixing (VTON in SmartBuy, etc.)
+        run: |
+          echo "🔍 Checking for campaign cross-contamination..."
+          
+          # VTON functions shouldn't be in SmartBuy folder
+          if grep -r "vton" smartbuy/functions/ 2>/dev/null; then
+            echo "✗ VTON code found in SmartBuy folder!"
+            exit 1
+          fi
+          
+          # SmartBuy functions shouldn't be in VTON folder
+          if grep -r "smartbuy" vton/functions/ 2>/dev/null; then
+            echo "✗ SmartBuy code found in VTON folder!"
+            exit 1
+          fi
+          
+          echo "✅ Campaign separation is clean"
