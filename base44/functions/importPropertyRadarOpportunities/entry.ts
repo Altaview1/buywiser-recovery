@@ -51,7 +51,7 @@ Deno.serve(async (req) => {
           Criteria: [
             { name: "State", value: ["CA"] },
             { name: "FirstLoanType", value: ["V"] },
-            { name: "DaysOnMarket", value: [[1, 12]] },
+            { name: "DaysOnMarket", value: [[1, 90]] },
             { name: "ListingStatus", value: ["Active"] }
           ]
         })
@@ -60,11 +60,15 @@ Deno.serve(async (req) => {
 
     const responseText = await searchResponse.text();
 
+    console.log('PropertyRadar HTTP status:', searchResponse.status);
+    console.log('PropertyRadar raw response text:', responseText.substring(0, 500));
+
     if (!searchResponse.ok) {
       throw new Error(`PropertyRadar API error: ${searchResponse.status} - ${responseText}`);
     }
 
     const apiData = JSON.parse(responseText);
+    console.log('PropertyRadar raw response:', JSON.stringify({ resultCount: apiData.resultCount, resultsLength: (apiData.results || []).length, firstResult: (apiData.results || [])[0] || null }));
     let properties = apiData.results || [];
 
     // Client-side filtering for owner contact info
