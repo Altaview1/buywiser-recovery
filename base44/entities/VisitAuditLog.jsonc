@@ -1,0 +1,67 @@
+{
+  "name": "VisitAuditLog",
+  "type": "object",
+  "properties": {
+    "visit_id": {
+      "type": "string",
+      "description": "ID of the Visit record that was updated"
+    },
+    "admin_email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email of the administrator who made the change"
+    },
+    "changed_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of field names that were changed"
+    },
+    "old_values": {
+      "type": "object",
+      "description": "Previous values of changed fields"
+    },
+    "new_values": {
+      "type": "object",
+      "description": "New values of changed fields"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the update occurred"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional notes about the change"
+    }
+  },
+  "required": [
+    "visit_id",
+    "admin_email",
+    "changed_fields",
+    "timestamp"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
