@@ -2,77 +2,80 @@
   "name": "Report",
   "type": "object",
   "properties": {
+    "title": {
+      "type": "string",
+      "description": "Report title"
+    },
     "user_email": {
       "type": "string",
       "format": "email",
-      "description": "Email of the user who purchased the report"
+      "description": "Email of the user who created/owns the report"
     },
-    "property_address": {
-      "type": "string",
-      "description": "Property address evaluated"
-    },
-    "property_url": {
-      "type": "string",
-      "description": "Zillow/Redfin/listing URL for the property"
-    },
-    "report_type": {
+    "type": {
       "type": "string",
       "enum": [
-        "property_valuation",
-        "market_intelligence",
-        "risk_assessment",
-        "investment_analysis"
+        "performance",
+        "financial",
+        "activity",
+        "custom"
       ],
-      "description": "Type of HouseCanary report"
+      "description": "Type of report"
     },
-    "tokens_spent": {
-      "type": "number",
-      "description": "Tokens spent on this report"
-    },
-    "report_url": {
+    "content": {
       "type": "string",
-      "description": "URL to download the report PDF or file"
+      "description": "Report content or summary"
     },
-    "report_data": {
-      "type": "object",
-      "description": "JSON data from HouseCanary report (valuation, comps, risk scores, etc.)"
-    },
-    "purchase_date": {
+    "period": {
       "type": "string",
-      "format": "date-time",
-      "description": "When the report was purchased"
+      "description": "Report period (e.g., 'Monthly', 'Q1 2026')"
     },
-    "status": {
-      "type": "string",
-      "enum": [
-        "pending",
-        "completed",
-        "failed"
-      ],
-      "default": "pending",
-      "description": "Report generation status"
-    },
-    "notes": {
-      "type": "string",
-      "description": "User notes about the property or report"
+    "is_public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the report is shareable with others"
     }
   },
   "required": [
-    "user_email",
-    "property_address",
-    "report_type",
-    "tokens_spent"
+    "title",
+    "user_email"
   ],
   "rls": {
     "create": {},
     "read": {
-      "data.user_email": "{{user.email}}"
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "update": {
-      "data.user_email": "{{user.email}}"
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "delete": {
-      "data.user_email": "{{user.email}}"
+      "$or": [
+        {
+          "data.user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     }
   }
 }

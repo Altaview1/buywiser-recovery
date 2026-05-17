@@ -6,8 +6,12 @@ const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
 
-    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'bennett@buywiser.com';
+    const adminEmail = Deno.env.get('OFFICE_ADMIN_EMAIL') || Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 
     // Fetch all data in parallel
     const [leads, emailLogs] = await Promise.all([
