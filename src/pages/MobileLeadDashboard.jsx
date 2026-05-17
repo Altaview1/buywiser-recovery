@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle, MapPin, CheckCircle, Clock, X, Loader2, ChevronLeft, Map } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, CheckCircle, Clock, X, Loader2, ChevronLeft, Map, Download } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -211,6 +211,45 @@ export default function MobileLeadDashboard() {
     window.location.href = `sms:${phone}`;
   };
 
+  const handleExportCSV = () => {
+    if (leadsWithCoords.length === 0) {
+      alert('No leads with location data to export');
+      return;
+    }
+
+    // CSV header
+    const headers = ['Name', 'Address', 'Phone', 'Email', 'Status', 'Latitude', 'Longitude', 'Equity'];
+    
+    // CSV rows
+    const rows = leadsWithCoords.map(lead => [
+      `${lead.first_name} ${lead.last_name}`,
+      lead.property_address,
+      lead.phone || '',
+      lead.email || '',
+      lead.pipeline_stage || 'new',
+      lead.lat,
+      lead.lng,
+      lead.estimated_equity || '',
+    ]);
+
+    // Build CSV content
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
+    ].join('\n');
+
+    // Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `leads-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
@@ -283,7 +322,7 @@ export default function MobileLeadDashboard() {
           </div>
         </div>
 
-        {/* View Tabs */}
+        {/* View Tabs & Export */}
         <div className="flex gap-2 mb-3">
           <button
             onClick={() => setView('list')}
@@ -305,6 +344,15 @@ export default function MobileLeadDashboard() {
           >
             🗺️ Map
           </button>
+          {view === 'map' && (
+            <button
+              onClick={handleExportCSV}
+              disabled={leadsWithCoords.length === 0}
+              className="px-3 py-2.5 rounded-lg font-bold text-sm bg-green-500 text-white hover:bg-green-600 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            >
+              <Download className="h-4 w-4" />
+            </button>
+          )}
         </div>
 
         {/* Status Filter */}
