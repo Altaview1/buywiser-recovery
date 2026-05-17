@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, Cell } from "recharts";
 import { TrendingUp, MapPin, Phone, Clock, CheckCircle, LogOut, RefreshCw } from "lucide-react";
+import LeadAndActivatorMap from "@/components/LeadAndActivatorMap";
 
 const NAVY = "#0B1F3B";
 
@@ -173,6 +174,9 @@ export default function ManagementDashboard() {
             })}
           </div>
         </div>
+
+        {/* Map View */}
+        <LeadAndActivatorMap />
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
