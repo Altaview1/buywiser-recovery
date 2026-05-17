@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Phone, Mail, MapPin, Clock, DollarSign, TrendingUp, Send, Copy, CheckCircle2 } from 'lucide-react';
+import { X, Phone, Mail, MapPin, Clock, DollarSign, TrendingUp, Send, Copy, CheckCircle2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 
@@ -7,6 +7,9 @@ export default function LeadDetailModal({ lead, onClose }) {
   const [actionInProgress, setActionInProgress] = useState(null);
   const [copied, setCopied] = useState(null);
   const [sent, setSent] = useState(false);
+  const [noteText, setNoteText] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [notes, setNotes] = useState(lead.interaction_notes || []);
 
   const handleCopyPhone = async () => {
     if (lead.phone) {
@@ -45,8 +48,31 @@ export default function LeadDetailModal({ lead, onClose }) {
 
   const handleCall = async () => {
     if (!lead.phone) return;
-    // Trigger SMS as fallback if call not available in browser
     window.location.href = `tel:${lead.phone}`;
+  };
+
+  const handleAddNote = async (type = 'note') => {
+    if (!noteText.trim()) return;
+    setSaving(true);
+    try {
+      const newNote = {
+        timestamp: new Date().toISOString(),
+        type,
+        content: noteText
+      };
+      const updatedNotes = [...notes, newNote];
+      await base44.asServiceRole.entities.ActivatorLead.update(lead.id, {
+        interaction_notes: updatedNotes
+      });
+      setNotes(updatedNotes);
+      setNoteText('');
+      if (type !== 'note') setSent(true);
+      setTimeout(() => setSent(false), 2000);
+    } catch (err) {
+      console.error('Error saving note:', err);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -170,6 +196,63 @@ export default function LeadDetailModal({ lead, onClose }) {
             <p className="text-sm font-semibold text-slate-900 mt-1">{lead.status}</p>
           </div>
         )}
+
+        {/* Interaction History */}
+        <div className="mt-6 border-t border-slate-200 pt-4">
+          <h3 className="text-sm font-bold text-slate-900 mb-3">Follow-up History</h3>
+          
+          {/* Notes List */}
+          {notes.length > 0 && (
+            <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+              {[...notes].reverse().map((note, idx) => (
+                <div key={idx} className="p-2 bg-slate-50 rounded border border-slate-200 text-xs">
+                  <div className="flex items-center gap-1 mb-1">
+                    <span className={`inline-block w-2 h-2 rounded-full ${
+                      note.type === 'call' ? 'bg-blue-500' :
+                      note.type === 'email' ? 'bg-amber-500' :
+                      'bg-slate-400'
+                    }`} />
+                    <span className="font-semibold text-slate-700 capitalize">{note.type}</span>
+                    <span className="text-slate-400 ml-auto">
+                      {new Date(note.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="text-slate-600">{note.content}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add Note Input */}
+          <div className="space-y-2">
+            <textarea
+              value={noteText}
+              onChange={(e) => setNoteText(e.target.value)}
+              placeholder="Add a follow-up note..."
+              className="w-full text-xs p-2 border border-slate-200 rounded bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+              rows="2"
+            />
+            <div className="flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleAddNote('note')}
+                disabled={!noteText.trim() || saving}
+                className="flex-1 text-xs h-auto py-1"
+              >
+                <Plus className="h-3 w-3 mr-1" /> Add Note
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => handleAddNote('call')}
+                disabled={!noteText.trim() || saving}
+                className="flex-1 text-xs h-auto py-1 bg-blue-600 hover:bg-blue-700"
+              >
+                <Phone className="h-3 w-3 mr-1" /> Log Call
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

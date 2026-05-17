@@ -186,6 +186,35 @@
     "lng": {
       "type": "number",
       "description": "Longitude coordinate for map display"
+    },
+    "interaction_notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "call",
+              "email",
+              "note"
+            ]
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "timestamp",
+          "type",
+          "content"
+        ]
+      },
+      "description": "Timeline of calls, emails, and notes for follow-up tracking"
     }
   },
   "required": [
