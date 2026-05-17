@@ -13,9 +13,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    // Fetch all activator leads with valid coordinates
+    // Fetch activator leads listed ≤90 days with valid coordinates
     const allLeads = await base44.asServiceRole.entities.ActivatorLead.list();
-    const leadsWithCoords = allLeads.filter(l => l.lat && l.lng);
+    const ninetyDaysAgo = new Date();
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
+    
+    const leadsWithCoords = allLeads.filter(l => {
+      if (!l.lat || !l.lng) return false;
+      if (!l.listing_date) return false;
+      const listingDate = new Date(l.listing_date);
+      return listingDate >= ninetyDaysAgo && listingDate <= new Date();
+    });
 
     if (leadsWithCoords.length < 3) {
       return Response.json({ 

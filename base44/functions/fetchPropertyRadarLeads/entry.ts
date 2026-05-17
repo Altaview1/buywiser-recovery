@@ -21,8 +21,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'PROPERTY_RADAR_API_KEY not configured' }, { status: 500 });
     }
 
-    // Fetch leads from PropertyRadar API
-    // Note: Adjust endpoint and parameters based on PropertyRadar API docs
+    // Fetch leads from PropertyRadar API - CA, active listings, 0-90 days on market
     const response = await fetch('https://api.propertyradar.com/prcore/v1/properties', {
       headers: {
         'Authorization': `Bearer ${PROPERTY_RADAR_API_KEY}`,
@@ -30,11 +29,12 @@ Deno.serve(async (req) => {
       },
       method: 'POST',
       body: JSON.stringify({
-        limit: 100,
+        limit: 1000,
         offset: 0,
         filters: {
           state: 'CA',
           listing_status: 'active',
+          days_on_market: { min: 0, max: 90 },
           veteran_friendly: true
         }
       })

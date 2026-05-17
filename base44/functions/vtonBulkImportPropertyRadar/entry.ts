@@ -88,22 +88,35 @@ Deno.serve(async (req) => {
         });
 
         // Note: Direct mail is queued but won't send until approved in dashboard
-        // Mail approval status is set to 'pending_approval' by default
-        results.campaign_triggered++;
+         // Mail approval status is set to 'pending_approval' by default
+         results.campaign_triggered++;
 
-      } catch (err) {
-        results.errors.push({
-          lead: rawLead,
-          error: err.message
+        } catch (err) {
+         results.errors.push({
+           lead: rawLead,
+           error: err.message
+         });
+        }
+        }
+
+        // Sync all created leads to META custom audience for targeting
+        if (results.created > 0) {
+        try {
+         await base44.functions.invoke('syncMetaCustomAudience', {
+           batch_id: importBatchId,
+           lead_count: results.created
+         });
+        } catch (metaErr) {
+         console.error('META sync error:', metaErr.message);
+         // Don't fail the import if META sync fails
+        }
+        }
+
+        return Response.json({
+        status: 'success',
+        import_summary: results,
+        message: `Imported ${results.created} leads, ${results.duplicates} duplicates, ${results.campaign_triggered} campaigns triggered, synced to META`
         });
-      }
-    }
-
-    return Response.json({
-      status: 'success',
-      import_summary: results,
-      message: `Imported ${results.created} leads, ${results.duplicates} duplicates, ${results.campaign_triggered} campaigns triggered`
-    });
 
   } catch (error) {
     console.error('Bulk import error:', error);
