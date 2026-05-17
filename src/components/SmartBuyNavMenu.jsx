@@ -12,6 +12,7 @@ const SMARTBUY_SECTIONS = [
       { label: 'Token Rewind (Savings Guarantee)', path: '/token-rewind' },
       { label: 'Token Available FAQ', path: '/token-available-faq' },
       { label: 'My Profile', path: '/my-profile' },
+      { label: '🎁 Refer a Friend — Earn $500', path: '/referral' },
     ]
   },
   {
