@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { MapContainer, TileLayer, Marker, Circle, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,18 +24,79 @@ const RouteIcon = L.icon({
   shadowSize: [34, 34],
 });
 
+const ActivatorIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+
+// Heatmap layer component
+function HeatmapLayer({ leads, showHeatmap }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (!showHeatmap || !leads || leads.length === 0) return;
+
+    // Create heatmap layer using canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Initialize leaflet-heat if available, otherwise use simple gradient overlay
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.min.js';
+    script.onload = () => {
+      const heatData = leads
+        .filter(l => l.lat && l.lng)
+        .map(l => [l.lat, l.lng, 1]); // intensity = 1 for all leads
+      
+      if (window.L && window.L.heatLayer && heatData.length > 0) {
+        const heatLayer = window.L.heatLayer(heatData, {
+          radius: 30,
+          blur: 25,
+          maxZoom: 17,
+          gradient: {
+            0.0: '#0000ff',
+            0.33: '#00ff00',
+            0.67: '#ffff00',
+            1.0: '#ff0000'
+          }
+        });
+        heatLayer.addTo(map);
+        
+        return () => {
+          map.removeLayer(heatLayer);
+        };
+      }
+    };
+    document.head.appendChild(script);
+  }, [showHeatmap, leads, map]);
+
+  return null;
+}
+
 export default function RouteOptimizationDashboard() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCluster, setSelectedCluster] = useState(null);
   const [expandedCluster, setExpandedCluster] = useState(null);
+  const [showHeatmap, setShowHeatmap] = useState(true);
+  const [showActivators, setShowActivators] = useState(true);
+
+  const [activators, setActivators] = useState([]);
 
   useEffect(() => {
     const runAnalysis = async () => {
       try {
-        const response = await base44.functions.invoke('analyzeLeadClusters', {});
-        setAnalysis(response.data);
+        const [analysisRes, activatorsRes] = await Promise.all([
+          base44.functions.invoke('analyzeLeadClusters', {}),
+          base44.asServiceRole.entities.FieldActivator.filter({ status: 'active' })
+        ]);
+        setAnalysis(analysisRes.data);
+        setActivators(activatorsRes || []);
         setLoading(false);
       } catch (err) {
         console.error('Analysis error:', err);
@@ -157,6 +218,40 @@ export default function RouteOptimizationDashboard() {
           ))}
         </div>
 
+        {/* Map Controls */}
+        <Card className="p-4">
+          <div className="flex items-center gap-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={showHeatmap} 
+                onChange={(e) => setShowHeatmap(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-300"
+              />
+              <span className="text-sm font-medium text-slate-900">Lead Density Heatmap</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={showActivators} 
+                onChange={(e) => setShowActivators(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-300"
+              />
+              <span className="text-sm font-medium text-slate-900">Active Activators</span>
+            </label>
+            <div className="ml-auto flex items-center gap-3 text-xs">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <span className="text-slate-600">Low Density</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                <span className="text-slate-600">High Density</span>
+              </div>
+            </div>
+          </div>
+        </Card>
+
         {/* Map */}
         <Card className="overflow-hidden">
           <MapContainer 
@@ -168,6 +263,9 @@ export default function RouteOptimizationDashboard() {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               attribution='&copy; OpenStreetMap contributors'
             />
+
+            {/* Heatmap Layer */}
+            {showHeatmap && <HeatmapLayer leads={analysis?.clusters?.flatMap(c => c.suggested_route) || []} showHeatmap={showHeatmap} />}
 
             {analysis?.clusters?.map((cluster, idx) => (
               <React.Fragment key={`cluster-${idx}`}>
@@ -215,6 +313,25 @@ export default function RouteOptimizationDashboard() {
                   </Marker>
                 ))}
               </React.Fragment>
+            ))}
+
+            {/* Active Activators */}
+            {showActivators && activators.map((activator) => (
+              <Marker
+                key={`activator-${activator.id}`}
+                position={[34.05, -118.24]}
+                icon={ActivatorIcon}
+              >
+                <Popup>
+                  <div className="text-sm">
+                    <p className="font-bold">{activator.name}</p>
+                    <p className="text-xs text-slate-600">{activator.assigned_area || 'Area TBD'}</p>
+                    <Badge className="mt-2 bg-orange-100 text-orange-800">
+                      {activator.total_scans} scans
+                    </Badge>
+                  </div>
+                </Popup>
+              </Marker>
             ))}
           </MapContainer>
         </Card>
