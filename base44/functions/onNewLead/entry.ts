@@ -18,9 +18,13 @@ Deno.serve(async (req) => {
     const date = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles', dateStyle: 'medium', timeStyle: 'short' });
 
     // 1. Notify admin
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     await base44.asServiceRole.integrations.Core.SendEmail({
       from_name: 'BuyWiser Leads',
-      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
+      to: adminEmail,
       subject: `🔔 New Lead: ${address}`,
       body: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">

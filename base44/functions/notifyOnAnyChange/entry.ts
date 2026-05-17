@@ -2,8 +2,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
-const PARTNER_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+if (!ADMIN_EMAIL) {
+  throw new Error('ADMIN_NOTIFICATION_EMAIL environment variable is required');
+}
 const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
 const TWILIO_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
 const TWILIO_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
@@ -146,15 +148,15 @@ Deno.serve(async (req) => {
     console.log(`Attempting SMS to ${ADMIN_PHONE}: ${smsBody}`);
     await sendSMS(ADMIN_PHONE, smsBody);
 
-    // Send email to partner using unified email address
+    // Send email to partner if they have an email
     if (partnerEmail && partnerEmail !== 'unassigned') {
       await resend.emails.send({
         from: 'BuyWiser <notifications@buywiser.com>',
-        to: PARTNER_EMAIL,
+        to: partnerEmail,
         subject,
         text: adminBody.replace('Log in to the dashboard', 'Log in to your partner dashboard'),
       });
-      console.log(`Email sent to partner address: ${PARTNER_EMAIL}`);
+      console.log(`Email sent to partner: ${partnerEmail}`);
     }
 
     // Send SMS to partner if applicable
