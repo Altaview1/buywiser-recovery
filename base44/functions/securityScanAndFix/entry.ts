@@ -97,36 +97,8 @@ Deno.serve(async (req) => {
       notes: `Weekly security scan completed: ${criticalFunctions.length} functions reviewed`
     });
 
-    // Send email report
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      from_name: 'Security Monitor',
-      to: adminEmail,
-      subject: `🔒 Weekly Security Scan Report — ${scanReport.status}`,
-      body: `
-        <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f8fafc;padding:24px;border-radius:8px;">
-          <div style="background:#0f172a;color:#fff;padding:16px;border-radius:6px;margin-bottom:20px;">
-            <h2 style="margin:0;font-size:18px;">🔒 Security Scan Report</h2>
-            <p style="margin:4px 0 0;font-size:12px;color:#cbd5e1;">${new Date(timestamp).toLocaleDateString()}</p>
-          </div>
-
-          <div style="background:#ecfdf5;border-left:4px solid #10b981;padding:16px;margin-bottom:20px;border-radius:4px;">
-            <p style="margin:0;font-weight:700;color:#047857;">✅ All Systems Secure</p>
-            <p style="margin:8px 0 0;font-size:13px;color:#065f46;">Scanned ${scanReport.totalFunctionsScanned} backend functions with zero critical issues.</p>
-          </div>
-
-          <div style="border:1px solid #e2e8f0;border-radius:6px;padding:16px;margin-bottom:20px;">
-            <h3 style="margin:0 0 12px;font-size:14px;color:#1e293b;">Scan Summary</h3>
-            <table style="width:100%;font-size:13px;">
-              <tr><td style="padding:6px 0;color:#64748b;">Functions Scanned</td><td style="font-weight:600;">${scanReport.totalFunctionsScanned}</td></tr>
-              <tr><td style="padding:6px 0;color:#64748b;">Issues Found</td><td style="font-weight:600;color:#10b981;">0</td></tr>
-              <tr><td style="padding:6px 0;color:#64748b;">Issues Auto-Fixed</td><td style="font-weight:600;">0</td></tr>
-            </table>
-          </div>
-
-          <p style="margin:0;font-size:12px;color:#64748b;">Next scan: ${new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString()}</p>
-        </div>
-      `
-    });
+    // Log scan completion (email reporting handled separately via automation if needed)
+    console.log(`[SECURITY_SCAN] Status: ${scanReport.status} | Functions: ${scanReport.totalFunctionsScanned} | Issues: ${scanReport.issuesFound}`);
 
     return Response.json({
       success: true,
