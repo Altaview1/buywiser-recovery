@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Phone, Mail, MapPin, Clock, DollarSign, TrendingUp, Send, Copy, CheckCircle2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
+import TemplateSelector from './TemplateSelector';
 
 export default function LeadDetailModal({ lead, onClose }) {
   const [actionInProgress, setActionInProgress] = useState(null);
@@ -10,6 +11,7 @@ export default function LeadDetailModal({ lead, onClose }) {
   const [noteText, setNoteText] = useState('');
   const [saving, setSaving] = useState(false);
   const [notes, setNotes] = useState(lead.interaction_notes || []);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(null);
 
   const handleCopyPhone = async () => {
     if (lead.phone) {
@@ -27,23 +29,30 @@ export default function LeadDetailModal({ lead, onClose }) {
     }
   };
 
-  const handleSendEmail = async () => {
+  const handleSendEmailWithTemplate = (emailBody, template) => {
     if (!lead.email) return;
     setActionInProgress('email');
-    try {
-      await base44.integrations.Core.SendEmail({
-        to: lead.email,
-        subject: `Your Property Review - ${lead.address}`,
-        body: `Hello,\n\nWe noticed your property at ${lead.address} in ${lead.city}, ${lead.state} is listed with VA financing. We'd like to discuss refinance options that could benefit you.\n\nBest regards`
-      });
+    
+    const lines = emailBody.split('\n');
+    const subjectLine = lines[0].replace('Subject: ', '').trim();
+    const bodyContent = lines.slice(2).join('\n');
+
+    base44.integrations.Core.SendEmail({
+      to: lead.email,
+      subject: subjectLine || `Your Property Review - ${lead.address}`,
+      body: bodyContent
+    })
+    .then(() => {
       setSent(true);
+      setShowTemplateSelector(null);
+      handleAddNote('email');
       setTimeout(() => setSent(false), 3000);
-    } catch (err) {
+    })
+    .catch(err => {
       console.error('Email send error:', err);
       alert('Failed to send email');
-    } finally {
-      setActionInProgress(null);
-    }
+    })
+    .finally(() => setActionInProgress(null));
   };
 
   const handleCall = async () => {
@@ -74,6 +83,17 @@ export default function LeadDetailModal({ lead, onClose }) {
       setSaving(false);
     }
   };
+
+  if (showTemplateSelector) {
+    return (
+      <TemplateSelector
+        lead={lead}
+        templateType={showTemplateSelector}
+        onSelect={handleSendEmailWithTemplate}
+        onClose={() => setShowTemplateSelector(null)}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
@@ -180,7 +200,7 @@ export default function LeadDetailModal({ lead, onClose }) {
         {/* Send Email Button */}
         {lead.email && (
           <Button
-            onClick={handleSendEmail}
+            onClick={() => setShowTemplateSelector('email')}
             disabled={actionInProgress === 'email'}
             className="w-full gap-2 bg-blue-600 hover:bg-blue-700 text-white"
           >

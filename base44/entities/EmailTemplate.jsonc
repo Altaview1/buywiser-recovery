@@ -1,0 +1,70 @@
+{
+  "name": "EmailTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Template name (e.g., 'Initial Outreach', 'Follow-up')"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "email",
+        "call"
+      ],
+      "description": "Template type"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Email subject line"
+    },
+    "body": {
+      "type": "string",
+      "description": "Template content with placeholders like {{first_name}}, {{property_address}}, {{equity}}"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "initial_outreach",
+        "follow_up",
+        "nurture",
+        "appointment_reminder",
+        "objection_handler"
+      ],
+      "description": "Template category"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this template is available for use"
+    },
+    "order": {
+      "type": "number",
+      "default": 0,
+      "description": "Display order"
+    }
+  },
+  "required": [
+    "name",
+    "type",
+    "body"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
