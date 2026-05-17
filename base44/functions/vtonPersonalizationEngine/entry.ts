@@ -47,13 +47,16 @@ function personalize(template, lead) {
 
 Deno.serve(async (req) => {
   try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
     const { lead_id, template, template_type } = await req.json();
 
     if (!lead_id || !template) {
       return Response.json({ error: 'Missing lead_id or template' }, { status: 400 });
     }
-
-    const base44 = createClientFromRequest(req);
     const leads = await base44.entities.VTONLead.filter({ id: lead_id });
 
     if (leads.length === 0) {

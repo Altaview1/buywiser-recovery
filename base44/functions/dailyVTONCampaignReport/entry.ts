@@ -11,7 +11,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Admin access required' }, { status: 403 });
     }
 
-    const adminEmail = Deno.env.get('OFFICE_ADMIN_EMAIL') || Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 
     // Fetch all data in parallel
     const [leads, emailLogs] = await Promise.all([
