@@ -2,9 +2,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+if (!ADMIN_EMAIL) {
+  throw new Error('ADMIN_NOTIFICATION_EMAIL environment variable is required');
+}
 const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
-const CALENDLY_URL = Deno.env.get('CALENDLY_URL') || 'https://calendly.com/bennett-13/pre-consultation-call-with-bennett-liss-ceo-of-buywiser';
+if (!ADMIN_PHONE) {
+  throw new Error('BENNETT_PHONE environment variable is required');
+}
+const CALENDLY_URL = Deno.env.get('CALENDLY_URL');
+if (!CALENDLY_URL) {
+  throw new Error('CALENDLY_URL environment variable is required');
+}
 
 function formatPhone(phone) {
   if (!phone) return null;

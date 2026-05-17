@@ -146,7 +146,10 @@ Deno.serve(async (req) => {
     }
 
     // Send notification email to admin
-    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'bennett@buywiser.com';
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {

@@ -5,14 +5,18 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  * Called from frontend when user interacts with benefit page
  */
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const payload = await req.json();
-    const { lead_id, event_type } = payload; // event_type: 'visit', 'click', 'email_open', etc.
+   try {
+     const base44 = createClientFromRequest(req);
+     const user = await base44.auth.me();
+     if (!user) {
+       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+     }
+     const payload = await req.json();
+     const { lead_id, event_type } = payload; // event_type: 'visit', 'click', 'email_open', etc.
 
-    if (!lead_id) {
-      return Response.json({ error: 'No lead_id provided' }, { status: 400 });
-    }
+     if (!lead_id) {
+       return Response.json({ error: 'No lead_id provided' }, { status: 400 });
+     }
 
     const leads = await base44.asServiceRole.entities.VTONLead.filter({ id: lead_id });
     if (!leads.length) {

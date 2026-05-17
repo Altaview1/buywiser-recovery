@@ -9,14 +9,30 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
    try {
      const base44 = createClientFromRequest(req);
-     // Webhook from WAAV — validate WAAV_WEBHOOK_SECRET for security
+     // Webhook from WAAV — validate HMAC-SHA256 signature for security
      const secret = Deno.env.get('WAAV_WEBHOOK_SECRET');
-     if (secret) {
-       const signature = req.headers.get('x-waav-signature');
-       const body = await req.text();
-       // TODO: Implement HMAC-SHA256 signature validation if signature provided
+     if (!secret) {
+       return Response.json({ error: 'WAAV_WEBHOOK_SECRET not configured' }, { status: 403 });
      }
-     const body = await req.json();
+     
+     const signature = req.headers.get('x-waav-signature');
+     if (!signature) {
+       return Response.json({ error: 'Missing signature header' }, { status: 403 });
+     }
+
+     const bodyText = await req.text();
+     const encoder = new TextEncoder();
+     const data = encoder.encode(bodyText);
+     const secretBytes = encoder.encode(secret);
+     const key = await crypto.subtle.importKey('raw', secretBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+     const computed = await crypto.subtle.sign('HMAC', key, data);
+     const computedHex = Array.from(new Uint8Array(computed)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+     if (computedHex !== signature) {
+       return Response.json({ error: 'Invalid signature' }, { status: 403 });
+     }
+
+     const body = JSON.parse(bodyText);
 
     const { lead_id, event_type, data } = body;
 
