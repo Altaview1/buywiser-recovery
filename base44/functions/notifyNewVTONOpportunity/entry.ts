@@ -5,7 +5,7 @@ const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 // Admin contact info
 const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
-const ADMIN_PHONE = Deno.env.get('TWILIO_FROM_NUMBER') ? '+18183002642' : null;
+const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
 
 // Format phone for SMS
 function formatPhone(phone) {
