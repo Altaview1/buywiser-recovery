@@ -61,17 +61,21 @@ Deno.serve(async (req) => {
     const testLead = await base44.entities.VTONLead.create(testLeadData);
     console.log(`Created test lead: ${testLead.id}`);
 
-    // Load sender address from environment with fallback defaults
+    // Load sender address from environment
     const fromAddress = {
-      name: Deno.env.get('LOB_FROM_NAME') || 'Buywiser Home Loans',
+      name: Deno.env.get('LOB_FROM_NAME'),
       company: Deno.env.get('LOB_FROM_COMPANY'),
-      address_line1: Deno.env.get('LOB_FROM_ADDRESS_LINE1') || '12640 Riverside Drive',
+      address_line1: Deno.env.get('LOB_FROM_ADDRESS_LINE1'),
       address_line2: Deno.env.get('LOB_FROM_ADDRESS_LINE2'),
-      address_city: Deno.env.get('LOB_FROM_CITY') || 'North Hollywood',
-      address_state: Deno.env.get('LOB_FROM_STATE') || 'CA',
-      address_zip: Deno.env.get('LOB_FROM_ZIP') || '91607',
-      address_country: Deno.env.get('LOB_FROM_COUNTRY') || 'US'
+      address_city: Deno.env.get('LOB_FROM_CITY'),
+      address_state: Deno.env.get('LOB_FROM_STATE'),
+      address_zip: Deno.env.get('LOB_FROM_ZIP'),
+      address_country: Deno.env.get('LOB_FROM_COUNTRY')
     };
+    
+    if (!fromAddress.name || !fromAddress.address_line1 || !fromAddress.address_city || !fromAddress.address_state || !fromAddress.address_zip) {
+      return Response.json({ error: 'Lob sender address not fully configured in environment variables' }, { status: 500 });
+    }
 
     // Send letter to test lead using Lob API v1 format
     const letterResponse = await fetch('https://api.lob.com/v1/letters', {
