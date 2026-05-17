@@ -3,10 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const { event, data } = await req.json();
 
     if (!data || !data.quiz_passed) {
@@ -17,7 +14,7 @@ Deno.serve(async (req) => {
 
     await base44.integrations.Core.SendEmail({
       from_name: 'VTON',
-      to: 'bennett@buywiser.com',
+      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
       subject: `New Partner Quiz Completed: ${partner.name}`,
       body: `
 <!DOCTYPE html>

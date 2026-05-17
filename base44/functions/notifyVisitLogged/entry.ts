@@ -3,10 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const { visit, lead, activator } = await req.json();
 
     if (!visit || !lead || !activator) {
@@ -88,7 +85,7 @@ Deno.serve(async (req) => {
 
     // Send email to Bennett
     await base44.integrations.Core.SendEmail({
-      to: 'bennett@buywiser.com',
+      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
       subject: `Field Visit Logged: ${fullName} - ${statusLabel}`,
       body: emailBody,
       from_name: 'Field Activation Manager',

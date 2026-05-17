@@ -3,10 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const payload = await req.json();
     const lead = payload.data;
 
@@ -20,10 +17,10 @@ Deno.serve(async (req) => {
     const source = lead.utm_source || 'web';
     const date = new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles', dateStyle: 'medium', timeStyle: 'short' });
 
-    // 1. Notify Bennett
+    // 1. Notify admin
     await base44.asServiceRole.integrations.Core.SendEmail({
       from_name: 'BuyWiser Leads',
-      to: 'bennett@buywiser.com',
+      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
       subject: `🔔 New Lead: ${address}`,
       body: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">

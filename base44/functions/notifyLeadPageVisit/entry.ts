@@ -3,10 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Public page visit tracking — no auth required
     const { lead_id } = await req.json();
 
     if (!lead_id) {
@@ -27,7 +24,7 @@ Deno.serve(async (req) => {
 
     // Send email notification to admin/user
     await base44.integrations.Core.SendEmail({
-      to: 'bennett@buywiser.com',
+      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
       subject: `🔗 Veteran Clicked Their Personalized Link - ${lead.first_name} ${lead.last_name}`,
       body: `
         <h2>Lead Engagement Alert</h2>

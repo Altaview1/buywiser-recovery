@@ -31,11 +31,7 @@ async function sendSMS(to, body) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    // Entity automation — validated user, uses service role for operations
+    // Entity automation — no user auth needed
     const { event, data } = await req.json();
 
     if (!data || (event.type !== 'create' && event.type !== 'update')) {
@@ -43,7 +39,7 @@ Deno.serve(async (req) => {
     }
 
     const lead = data;
-    const adminEmail = 'bennett@buywiser.com';
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 
     // Get partner email if assigned
     let partner = null;

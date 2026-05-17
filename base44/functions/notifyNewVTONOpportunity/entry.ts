@@ -4,7 +4,7 @@ import { Resend } from 'npm:resend@3.2.0';
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 // Admin contact info
-const ADMIN_EMAIL = 'bennett@buywiser.com';
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 const ADMIN_PHONE = Deno.env.get('TWILIO_FROM_NUMBER') ? '+18183002642' : null;
 
 // Format phone for SMS
@@ -46,10 +46,7 @@ async function sendSMS(to, message) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const body = await req.json();
 
     // Support both automation payload format {event, data} and direct test format {id, ...}

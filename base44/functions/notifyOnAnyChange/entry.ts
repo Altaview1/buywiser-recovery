@@ -2,8 +2,8 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import { Resend } from 'npm:resend@3.2.0';
 
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
-const ADMIN_EMAIL = 'bennett@buywiser.com';
-const PARTNER_EMAIL = 'bennett@buywiser.com';
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+const PARTNER_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
 const TWILIO_SID = Deno.env.get('TWILIO_ACCOUNT_SID');
 const TWILIO_TOKEN = Deno.env.get('TWILIO_AUTH_TOKEN');
@@ -42,10 +42,7 @@ async function sendSMS(to, body) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const payload = await req.json();
     const { event, data } = payload;
 
