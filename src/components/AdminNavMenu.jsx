@@ -29,6 +29,7 @@ const CAMPAIGN_GROUPS = [
           { label: 'VTON Email History', path: '/vton-email-history' },
           { label: 'VTON Lob Errors', path: '/vton-lob-errors' },
           { label: 'PropertyRadar Dashboard', path: '/property-radar' },
+          { label: '🗺️ VTON Architecture Map', path: '/vton-architecture' },
           { label: 'Prospects Dashboard', path: '/prospects' },
           { label: 'Partner Leads', path: '/partner-leads' },
         ]
