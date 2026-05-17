@@ -28,10 +28,7 @@ const STANDARD_BRANDING_HTML = `
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Entity automation — no user auth needed
     const { event, data } = await req.json();
 
     if (!data || event.type !== 'create') {

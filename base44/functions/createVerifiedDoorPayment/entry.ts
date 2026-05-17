@@ -6,10 +6,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  * Anti-gaming: flags short visits for admin review
  */
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    // Called by entity automation (service role) or authenticated admin
-    const body = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     // Called by entity automation — no user auth needed
+     const body = await req.json();
     const lead_id = body.lead_id || body.event?.entity_id;
 
     if (!lead_id) {

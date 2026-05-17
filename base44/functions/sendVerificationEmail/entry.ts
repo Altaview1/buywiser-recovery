@@ -1,13 +1,10 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const { email, firstName, code } = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     // Public endpoint for email verification — no auth required
+     const { email, firstName, code } = await req.json();
 
     if (!email || !code) {
       return Response.json({ error: "Missing required fields" }, { status: 400 });

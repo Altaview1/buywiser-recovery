@@ -12,13 +12,13 @@ function formatPhone(phone) {
 }
 
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const { message, phone } = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     const user = await base44.auth.me();
+     if (!user) {
+       return Response.json({ error: 'Unauthorized — SMS requires authenticated user' }, { status: 401 });
+     }
+     const { message, phone } = await req.json();
 
     const accountSid = Deno.env.get("TWILIO_ACCOUNT_SID");
     const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");

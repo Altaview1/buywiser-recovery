@@ -2,13 +2,10 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 // Triggered by entity automation on SmartBuyLead create
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const payload = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     // Entity automation — no user auth needed
+     const payload = await req.json();
 
     // Support both direct invocation and entity automation payload
     const lead = payload.data || payload;

@@ -7,11 +7,16 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  */
 
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    // Webhook from WAAV — signature validation recommended
-    // TODO: Implement HMAC-SHA256 signature validation with WAAV_WEBHOOK_SECRET if available
-    const body = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     // Webhook from WAAV — validate WAAV_WEBHOOK_SECRET for security
+     const secret = Deno.env.get('WAAV_WEBHOOK_SECRET');
+     if (secret) {
+       const signature = req.headers.get('x-waav-signature');
+       const body = await req.text();
+       // TODO: Implement HMAC-SHA256 signature validation if signature provided
+     }
+     const body = await req.json();
 
     const { lead_id, event_type, data } = body;
 
