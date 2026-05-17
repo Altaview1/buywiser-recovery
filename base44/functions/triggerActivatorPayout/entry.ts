@@ -3,6 +3,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    // Entity automation — no user auth needed, uses service role
     const body = await req.json();
 
     // Supports being called directly OR from entity automation

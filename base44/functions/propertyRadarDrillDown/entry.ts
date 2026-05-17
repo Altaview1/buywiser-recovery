@@ -1,5 +1,6 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
+// Admin-only: drill-down queries for PropertyRadar dashboard
 /**
  * Drill-down query for PropertyRadar dashboard.
  * Accepts { metric: "new_listings" | "total_pool" } and returns
@@ -33,6 +34,11 @@ async function queryCount(apiKey, domRange) {
 
 Deno.serve(async (req) => {
   try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
     const PROPERTY_RADAR_API_KEY = Deno.env.get('PROPERTY_RADAR_API_KEY');
     if (!PROPERTY_RADAR_API_KEY) {
       return Response.json({ error: 'PROPERTY_RADAR_API_KEY not configured' }, { status: 500 });

@@ -34,6 +34,7 @@ async function sendSMS(to, body) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    // Entity automation — no user auth needed, uses service role
     const payload = await req.json();
 
     const { event, data } = payload;

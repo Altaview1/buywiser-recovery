@@ -21,6 +21,10 @@ const STAGE_EMOJIS = {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user) {
+      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const { lead_id, completed_stage, lead_data } = await req.json();
 
     if (!lead_id || !completed_stage || !lead_data) {

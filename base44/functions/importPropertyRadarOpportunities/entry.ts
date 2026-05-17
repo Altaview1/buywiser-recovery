@@ -11,6 +11,10 @@ Deno.serve(async (req) => {
   try {
     console.log('=== importPropertyRadarOpportunities START ===');
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
 
     const PROPERTY_RADAR_API_KEY = Deno.env.get('PROPERTY_RADAR_API_KEY');
     if (!PROPERTY_RADAR_API_KEY) {

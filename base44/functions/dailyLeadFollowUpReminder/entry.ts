@@ -6,6 +6,10 @@ const STALE_DAYS = 7;
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
 
     const cutoff = new Date(Date.now() - STALE_DAYS * 24 * 60 * 60 * 1000);
 

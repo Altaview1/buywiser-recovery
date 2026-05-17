@@ -6,6 +6,10 @@ const OFFICE_EMAIL = 'bennett@buywiser.com';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+    if (!user || user.role !== 'admin') {
+      return Response.json({ error: 'Admin access required' }, { status: 403 });
+    }
 
     // Get all opportunities still in "assigned" or "review_window" status
     const opps = await base44.asServiceRole.entities.VTONOpportunity.filter(
