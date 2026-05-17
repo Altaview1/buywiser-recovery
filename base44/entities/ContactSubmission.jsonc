@@ -1,0 +1,95 @@
+{
+  "name": "ContactSubmission",
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "First name of the person submitting"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Last name of the person submitting"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "description": "Email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number"
+    },
+    "comments": {
+      "type": "string",
+      "description": "Comments or message"
+    },
+    "form_type": {
+      "type": "string",
+      "enum": [
+        "contact",
+        "application",
+        "quick_quote"
+      ],
+      "description": "Type of form submitted"
+    },
+    "loan_type": {
+      "type": "string",
+      "description": "Type of loan (Purchase, Refinance, etc.)"
+    },
+    "credit_score": {
+      "type": "string",
+      "description": "Credit score range"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "qualified",
+        "closed"
+      ],
+      "default": "new",
+      "description": "Status of the submission"
+    },
+    "how_heard": {
+      "type": "string",
+      "description": "How they heard about the company"
+    }
+  },
+  "required": [
+    "first_name",
+    "email"
+  ],
+  "rls": {
+    "create": {},
+    "read": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
