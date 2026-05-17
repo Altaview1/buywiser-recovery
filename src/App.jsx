@@ -68,6 +68,7 @@ import AdminLogin from './pages/AdminLogin';
 import PrivacyPolicy2 from './pages/PrivacyPolicy2';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PropertyRadarDashboard from './pages/PropertyRadarDashboard';
+import VTONArchitectureMap from './pages/VTONArchitectureMap';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -166,6 +167,7 @@ function App() {
           <Route path="/vton-personalized" element={<VTONPersonalizedLanding />} />
           <Route path="/privacy" element={<PrivacyPolicy2 />} />
           <Route path="/property-radar" element={<PropertyRadarDashboard />} />
+          <Route path="/vton-architecture" element={<VTONArchitectureMap />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
