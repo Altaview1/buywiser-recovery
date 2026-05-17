@@ -138,6 +138,45 @@ export default function RouteOptimizationDashboard() {
     }
   };
 
+  const exportRouteToCSV = () => {
+    if (!optimizedRoute || !optimizedRoute.optimized_route) return;
+
+    const routes = optimizedRoute.optimized_route;
+    const headers = ['Stop #', 'Name', 'Address', 'Latitude', 'Longitude', 'City', 'State', 'Zip'];
+    
+    const rows = routes.map((lead, idx) => [
+      idx + 1,
+      lead.name || lead.first_name || 'Lead',
+      lead.property_address || lead.address || '',
+      lead.lat,
+      lead.lng,
+      lead.city || '',
+      lead.state || '',
+      lead.zip_code || ''
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => 
+        row.map(cell => 
+          typeof cell === 'string' && cell.includes(',') 
+            ? `"${cell}"` 
+            : cell
+        ).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `optimized-route-${new Date().getTime()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   useEffect(() => {
     const runAnalysis = async () => {
       try {
@@ -515,7 +554,15 @@ export default function RouteOptimizationDashboard() {
                   {/* Route Optimization Results */}
                   {optimizedRoute && (
                     <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                      <p className="text-sm font-semibold text-purple-900 mb-3">📍 Optimized Door-Knock Route</p>
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-semibold text-purple-900">📍 Optimized Door-Knock Route</p>
+                        <button
+                          onClick={exportRouteToCSV}
+                          className="px-3 py-1 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition flex items-center gap-1"
+                        >
+                          📥 Export CSV
+                        </button>
+                      </div>
                       <div className="grid grid-cols-3 gap-3 text-xs mb-3">
                         <div className="text-center">
                           <p className="text-purple-600 font-medium">Total Distance</p>
