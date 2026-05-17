@@ -70,6 +70,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import PropertyRadarDashboard from './pages/PropertyRadarDashboard';
 import VTONArchitectureMap from './pages/VTONArchitectureMap';
 import ReferralProgram from './pages/ReferralProgram';
+import RouteOptimizationDashboard from './pages/RouteOptimizationDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -170,6 +171,7 @@ function App() {
           <Route path="/property-radar" element={<PropertyRadarDashboard />} />
           <Route path="/vton-architecture" element={<VTONArchitectureMap />} />
           <Route path="/referral" element={<ReferralProgram />} />
+          <Route path="/route-optimization" element={<RouteOptimizationDashboard />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
