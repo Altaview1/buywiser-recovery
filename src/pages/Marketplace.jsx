@@ -3,6 +3,7 @@ import { Search, Zap, ChevronDown, ChevronUp, Sparkles, RotateCcw, Clock, CheckC
 import { SERVICES, TRANSACTION_PHASES, PHASE_SMART_SUGGESTIONS } from "@/components/smartbuy/marketplace/marketplaceData";
 import ServiceCard from "@/components/smartbuy/marketplace/ServiceCard";
 import ClosingCostVisualizer from "@/components/smartbuy/marketplace/ClosingCostVisualizer";
+import SmartBuyNavMenu from "@/components/SmartBuyNavMenu";
 
 const STAGE_COLOR_MAP = {
   emerald: { ring: "ring-teal-500/40", bg: "bg-teal-500/10", border: "border-teal-500/30", text: "text-teal-700", dot: "bg-teal-500", badge: "bg-teal-500/20 border-teal-500/30 text-teal-700" },
@@ -174,6 +175,7 @@ export default function Marketplace() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 via-white to-orange-50 text-slate-900">
+      <SmartBuyNavMenu />
 
       {/* ── Header ── */}
       <div className="border-b border-yellow-200 bg-gradient-to-r from-yellow-100 to-orange-100 sticky top-0 z-40 backdrop-blur-sm">

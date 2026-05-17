@@ -20,6 +20,7 @@ import SmartBuyFAQ from "../components/smartbuy/SmartBuyFAQ";
 import SmartBuyVideoPlaceholder from "../components/smartbuy/SmartBuyVideoPlaceholder";
 import SavingsMeterHero from "../components/smartbuy/SavingsMeterHero";
 import StageCompletionPopup from "../components/smartbuy/StageCompletionPopup";
+import SmartBuyNavMenu from "../components/SmartBuyNavMenu";
 
 const DEFAULT_PRICE = 750000;
 
@@ -118,6 +119,7 @@ export default function SmartBuy() {
 
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans">
+      <SmartBuyNavMenu />
       <UnlockModal
         isOpen={unlockOpen}
         onClose={() => setUnlockOpen(false)}

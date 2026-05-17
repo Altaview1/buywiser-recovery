@@ -50,29 +50,9 @@ const CAMPAIGN_GROUPS = [
       },
     ]
   },
-  {
-    id: 'smartbuy',
-    label: '🏡 SmartBuy Campaign',
-    color: 'bg-emerald-900',
-    badge: 'Buyer Rebate Pipeline',
-    badgeColor: 'bg-emerald-700 text-emerald-100',
-    sections: [
-      {
-        label: 'Buyer Pages',
-        links: [
-          { label: 'SmartBuy Home', path: '/smartbuy' },
-          { label: 'SmartBuy Workflow', path: '/smartbuy-workflow' },
-          { label: 'Buyer Cash Back', path: '/cashback' },
-          { label: 'Marketplace', path: '/marketplace' },
-          { label: 'Our Experts', path: '/our-experts' },
-          { label: 'Token Rewind', path: '/token-rewind' },
-          { label: 'Token Available FAQ', path: '/token-available-faq' },
-          { label: 'My Profile', path: '/my-profile' },
-        ]
-      },
-    ]
-  },
 ];
+// NOTE: SmartBuy/Buyer pipeline has its own separate SmartBuyNavMenu component (emerald).
+// Do NOT add SmartBuy links here — the two campaigns must stay completely separate.
 
 const NAV_SECTIONS = [
   {

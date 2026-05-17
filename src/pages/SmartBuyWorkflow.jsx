@@ -5,6 +5,7 @@ import TourStage from "@/components/smartbuy/workflow/TourStage";
 import ConsultationStage from "@/components/smartbuy/workflow/ConsultationStage";
 import OfferStage from "@/components/smartbuy/workflow/OfferStage";
 import { usePageTitle } from "@/lib/usePageTitle";
+import SmartBuyNavMenu from "@/components/SmartBuyNavMenu";
 
 export default function SmartBuyWorkflow() {
   usePageTitle("SmartBuy™ Guided Workflow | BuyWiser");
@@ -27,6 +28,7 @@ export default function SmartBuyWorkflow() {
 
   return (
     <div className="min-h-screen bg-white">
+      <SmartBuyNavMenu />
       <ProgressBar currentStage={currentStage} />
 
       {currentStage === "search" && (

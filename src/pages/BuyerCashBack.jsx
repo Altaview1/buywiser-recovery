@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { ArrowRight, CheckCircle, Home, Search, DollarSign, Shield, Star, Phone } from "lucide-react";
 import RebateLeadForm from "../components/buyerrebate/RebateLeadForm";
 import RebateFAQ from "../components/buyerrebate/RebateFAQ";
+import SmartBuyNavMenu from "../components/SmartBuyNavMenu";
 
 const HOW_IT_WORKS = [
   {
@@ -92,6 +93,7 @@ export default function BuyerCashBack() {
 
   return (
     <div className="min-h-screen bg-white font-sans">
+      <SmartBuyNavMenu />
 
       {/* ── Nav ── */}
       <header className="px-4 sm:px-6 py-4 bg-white border-b border-slate-100 sticky top-0 z-50">
