@@ -74,6 +74,18 @@ Deno.serve(async (req) => {
     // Create Basic Auth header (Deno-compatible)
     const credentials = Buffer.from(lobApiKey + ':').toString('base64');
 
+    // Load sender address from environment with fallback defaults
+    const fromAddress = {
+      name: Deno.env.get('LOB_FROM_NAME') || 'Buywiser Home Loans',
+      company: Deno.env.get('LOB_FROM_COMPANY'),
+      address_line1: Deno.env.get('LOB_FROM_ADDRESS_LINE1') || '12640 Riverside Drive',
+      address_line2: Deno.env.get('LOB_FROM_ADDRESS_LINE2'),
+      address_city: Deno.env.get('LOB_FROM_CITY') || 'North Hollywood',
+      address_state: Deno.env.get('LOB_FROM_STATE') || 'CA',
+      address_zip: Deno.env.get('LOB_FROM_ZIP') || '91607',
+      address_country: Deno.env.get('LOB_FROM_COUNTRY') || 'US'
+    };
+
     // Create FormData with the HTML content
     const formData = new FormData();
     formData.append('to[name]', `${first_name || ''} ${last_name || ''}`.trim() || 'Homeowner');
@@ -81,11 +93,13 @@ Deno.serve(async (req) => {
     formData.append('to[address_city]', city);
     formData.append('to[address_state]', state);
     formData.append('to[address_zip]', zip_code);
-    formData.append('from[name]', Deno.env.get('LOB_FROM_NAME'));
-    formData.append('from[address_line1]', Deno.env.get('LOB_FROM_ADDRESS_LINE1'));
-    formData.append('from[address_city]', Deno.env.get('LOB_FROM_CITY'));
-    formData.append('from[address_state]', Deno.env.get('LOB_FROM_STATE'));
-    formData.append('from[address_zip]', Deno.env.get('LOB_FROM_ZIP'));
+    formData.append('from[name]', fromAddress.name);
+    formData.append('from[company]', fromAddress.company);
+    formData.append('from[address_line1]', fromAddress.address_line1);
+    formData.append('from[address_line2]', fromAddress.address_line2);
+    formData.append('from[address_city]', fromAddress.address_city);
+    formData.append('from[address_state]', fromAddress.address_state);
+    formData.append('from[address_zip]', fromAddress.address_zip);
     formData.append('color', 'false');
     formData.append('use_type', 'marketing');
 

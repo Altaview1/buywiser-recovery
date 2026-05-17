@@ -66,6 +66,18 @@ Deno.serve(async (req) => {
     // Encode HTML as base64 for Lob API
     const base64Html = btoa(finalLetterHtml);
 
+    // Load sender address from environment with fallback defaults
+    const fromAddress = {
+      name: Deno.env.get('LOB_FROM_NAME') || 'Buywiser Home Loans',
+      company: Deno.env.get('LOB_FROM_COMPANY'),
+      address_line1: Deno.env.get('LOB_FROM_ADDRESS_LINE1') || '12640 Riverside Drive',
+      address_line2: Deno.env.get('LOB_FROM_ADDRESS_LINE2'),
+      address_city: Deno.env.get('LOB_FROM_CITY') || 'North Hollywood',
+      address_state: Deno.env.get('LOB_FROM_STATE') || 'CA',
+      address_zip: Deno.env.get('LOB_FROM_ZIP') || '91607',
+      address_country: Deno.env.get('LOB_FROM_COUNTRY') || 'US'
+    };
+
     // Create letter via Lob API
     const lobResponse = await fetch('https://api.lob.com/v1/letters', {
       method: 'POST',
@@ -79,11 +91,13 @@ Deno.serve(async (req) => {
         'to[address_city]': city,
         'to[address_state]': state,
         'to[address_zip]': zip_code,
-        'from[name]': Deno.env.get('LOB_FROM_NAME'),
-        'from[address_line1]': Deno.env.get('LOB_FROM_ADDRESS_LINE1'),
-        'from[address_city]': Deno.env.get('LOB_FROM_CITY'),
-        'from[address_state]': Deno.env.get('LOB_FROM_STATE'),
-        'from[address_zip]': Deno.env.get('LOB_FROM_ZIP'),
+        'from[name]': fromAddress.name,
+        'from[company]': fromAddress.company,
+        'from[address_line1]': fromAddress.address_line1,
+        'from[address_line2]': fromAddress.address_line2,
+        'from[address_city]': fromAddress.address_city,
+        'from[address_state]': fromAddress.address_state,
+        'from[address_zip]': fromAddress.address_zip,
         'html': base64Html,
         'color': 'false',
       }).toString(),

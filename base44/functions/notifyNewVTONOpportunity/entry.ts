@@ -4,8 +4,8 @@ import { Resend } from 'npm:resend@3.2.0';
 const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
 
 // Admin contact info
-const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
-const ADMIN_PHONE = Deno.env.get('BENNETT_PHONE');
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+const ADMIN_PHONE = Deno.env.get('TWILIO_PHONE_NUMBER');
 
 // Format phone for SMS
 function formatPhone(phone) {
