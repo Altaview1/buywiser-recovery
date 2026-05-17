@@ -70,26 +70,56 @@ function DOMBucketModal({ bucket, onClose }) {
                 };
                 const badge = getDOMBadge(lead.domDays);
                 return (
-                  <button
+                  <div
                     key={lead.id}
-                    onClick={() => setSelectedLead(lead)}
-                    className="w-full text-left p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-all group"
+                    className="p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-all"
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-semibold text-slate-900">{lead.name}</p>
-                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badge.bg} ${badge.text}`}>
-                            {badge.label}
-                          </span>
+                    <button
+                      onClick={() => setSelectedLead(lead)}
+                      className="w-full text-left group"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                            <p className="font-semibold text-slate-900">{lead.name}</p>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badge.bg} ${badge.text}`}>
+                              {badge.label}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-500 flex items-center gap-1">
+                            <MapPin className="h-3 w-3" /> {lead.address}
+                          </p>
                         </div>
-                        <p className="text-xs text-slate-500 flex items-center gap-1">
-                          <MapPin className="h-3 w-3" /> {lead.address}
-                        </p>
+                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors mt-1 flex-shrink-0" />
                       </div>
-                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors mt-1 flex-shrink-0" />
+                    </button>
+                    
+                    {/* Quick Action Buttons */}
+                    <div className="flex gap-2 mt-2 pt-2 border-t border-slate-200">
+                      {lead.phone && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.location.href = `tel:${lead.phone}`;
+                          }}
+                          className="flex-1 px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 rounded transition flex items-center justify-center gap-1"
+                        >
+                          <Phone className="h-3 w-3" /> Call
+                        </button>
+                      )}
+                      {lead.email && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.location.href = `mailto:${lead.email}`;
+                          }}
+                          className="flex-1 px-2 py-1 text-xs font-semibold bg-amber-100 text-amber-700 hover:bg-amber-200 rounded transition flex items-center justify-center gap-1"
+                        >
+                          <Mail className="h-3 w-3" /> Email
+                        </button>
+                      )}
                     </div>
-                  </button>
+                  </div>
                 );
               })}
             </div>
