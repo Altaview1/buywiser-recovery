@@ -2,8 +2,9 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 /**
  * PropertyRadar to VTONOpportunity Daily Import
- * POST /v1/properties — filters for active CA listings with VA loan indicators
- * Bearer token auth
+ * Uses the LimitedREI fieldset + PhoneAvailability/EmailAvailability flags.
+ * Actual phone/email are purchased separately via the Persons API — leads missing
+ * contact availability are tagged in crm_notes for manual enrichment.
  */
 
 Deno.serve(async (req) => {
@@ -16,28 +17,16 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'PROPERTY_RADAR_API_KEY not configured' }, { status: 500 });
     }
 
-    // Parse optional body params (e.g. manual trigger with custom limit)
     let bodyParams = {};
     try { bodyParams = await req.json(); } catch (_) {}
     const limit = bodyParams.limit || 50;
-    const purchase = bodyParams.purchase ?? 1; // Live mode — actually returns records (counts toward export quota)
+    const purchase = bodyParams.purchase ?? 1;
 
-    // Search PropertyRadar for active CA listings with VA loans
-    // Note: We request owner contact fields but filter by available criteria only
-    // Owner email/phone filtering is not available via API criteria, so we'll filter results in code
-    const fields = [
-      "RadarID", "Address", "City", "State", "ZipFive",
-      "Owner", "OwnerFirstName", "OwnerLastName",
-      "OwnerPhone", "OwnerEmail",
-      "AVM", "AvailableEquity", "TotalLoanBalance",
-      "ListingPrice", "DaysOnMarket", "ListingStatus",
-      "DistressScore", "PType",
-      "FirstPurpose", "FirstLenderOriginal",
-      "Latitude", "Longitude"
-    ];
-    
-    // Build Fields query parameters
-    const fieldsQuery = fields.map(f => `Fields=${encodeURIComponent(f)}`).join('&');
+    // Use the Card fieldset — includes RadarID, Address, City, State, ZipFive, PType, Owner,
+    // AVM, AvailableEquity, TotalLoanBalance, DistressScore, isListedForSale, inForeclosure, etc.
+    // We combine with GridOptional (adds DaysOnMarket, ListingPrice, FirstPurpose, FirstLenderOriginal)
+    // and the Grid fieldset (adds PhoneAvailability, EmailAvailability)
+    const fieldsQuery = 'Fields=Card&Fields=Grid&Fields=GridOptional';
 
     const searchResponse = await fetch(
       `https://api.propertyradar.com/v1/properties?Purchase=${purchase}&Limit=${limit}&${fieldsQuery}`,
@@ -59,17 +48,20 @@ Deno.serve(async (req) => {
     );
 
     const responseText = await searchResponse.text();
-
     console.log('PropertyRadar HTTP status:', searchResponse.status);
-    console.log('PropertyRadar raw response text:', responseText.substring(0, 500));
+    console.log('PropertyRadar raw response (first 800 chars):', responseText.substring(0, 800));
 
     if (!searchResponse.ok) {
       throw new Error(`PropertyRadar API error: ${searchResponse.status} - ${responseText}`);
     }
 
     const apiData = JSON.parse(responseText);
-    console.log('PropertyRadar raw response:', JSON.stringify({ resultCount: apiData.resultCount, resultsLength: (apiData.results || []).length, firstResult: (apiData.results || [])[0] || null }));
-    let properties = apiData.results || [];
+    const firstResult = (apiData.results || [])[0] || null;
+    console.log('First result keys:', firstResult ? Object.keys(firstResult).join(', ') : 'none');
+    console.log('First result sample:', JSON.stringify(firstResult));
+    console.log('totalResultCount:', apiData.totalResultCount, '| returned:', (apiData.results || []).length);
+
+    const properties = apiData.results || [];
 
     if (properties.length === 0) {
       return Response.json({
@@ -92,7 +84,7 @@ Deno.serve(async (req) => {
       existingOpps.map(o => (o.property_address || '').toLowerCase().trim())
     );
 
-    const results = { total: properties.length, created: 0, needsEnrichment: 0, duplicates: 0, skipped: 0, errors: [] };
+    const results = { total: properties.length, created: 0, needsEnrichment: 0, duplicates: 0, errors: [] };
     let partnerIndex = 0;
 
     for (const prop of properties) {
@@ -106,31 +98,33 @@ Deno.serve(async (req) => {
         const assignedPartner = partners[partnerIndex % partners.length];
         partnerIndex++;
 
-        // Detect VA loan: FirstPurpose often contains "VA" for VA-originated loans
         const firstPurpose = (prop.FirstPurpose || '').toUpperCase();
         const vaLoanConfirmed = firstPurpose.includes('VA') || firstPurpose.includes('VETERAN');
 
-        // Build homeowner name
         const ownerName = prop.OwnerFirstName && prop.OwnerLastName
           ? `${prop.OwnerFirstName} ${prop.OwnerLastName}`.trim()
           : (prop.Owner || '').trim();
 
-        // Calculate priority
         const distressScore = parseFloat(prop.DistressScore) || 0;
         const dom = parseFloat(prop.DaysOnMarket) || 0;
         const priority = distressScore >= 70 || dom >= 90 ? 'high'
           : distressScore >= 40 || dom >= 60 ? 'medium' : 'low';
 
-        const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
-        const hasEmail = (prop.OwnerEmail || '').trim().length > 0;
-        const needsEnrichment = !hasPhone || !hasEmail;
-        const missingFields = [!hasPhone && 'phone', !hasEmail && 'email'].filter(Boolean).join(', ');
+        // PhoneAvailability / EmailAvailability: true means contact data exists and can be purchased
+        const phoneAvailable = prop.PhoneAvailability === true || prop.PhoneAvailability === 1;
+        const emailAvailable = prop.EmailAvailability === true || prop.EmailAvailability === 1;
+        const needsEnrichment = !phoneAvailable || !emailAvailable;
+        const missingFields = [!phoneAvailable && 'phone', !emailAvailable && 'email'].filter(Boolean).join(', ');
 
-        const opportunity = await base44.asServiceRole.entities.VTONOpportunity.create({
+        const enrichmentTag = needsEnrichment
+          ? ` | ⚠️ NEEDS ENRICHMENT: ${missingFields} not available`
+          : ` | ✅ Phone & email available — purchase via Persons API`;
+
+        await base44.asServiceRole.entities.VTONOpportunity.create({
           partner_email: assignedPartner.email,
           homeowner_name: ownerName,
-          homeowner_phone: (prop.OwnerPhone || '').trim(),
-          homeowner_email: (prop.OwnerEmail || '').trim(),
+          homeowner_phone: '',
+          homeowner_email: '',
           property_address: address,
           city: prop.City || '',
           state: prop.State || 'CA',
@@ -143,7 +137,7 @@ Deno.serve(async (req) => {
           listing_status: mapListingStatus(prop.ListingStatus || 'active'),
           opportunity_status: 'assigned',
           priority,
-          crm_notes: `Auto-imported from PropertyRadar on ${new Date().toISOString().split('T')[0]} | RadarID: ${prop.RadarID || 'N/A'} | Distress: ${distressScore} | DOM: ${dom}${needsEnrichment ? ` | ⚠️ NEEDS ENRICHMENT: missing ${missingFields}` : ''}`,
+          crm_notes: `Auto-imported from PropertyRadar on ${new Date().toISOString().split('T')[0]} | RadarID: ${prop.RadarID || 'N/A'} | Distress: ${distressScore} | DOM: ${dom}${enrichmentTag}`,
           qr_scanned: false,
           needs_reassignment: false
         });
@@ -151,19 +145,6 @@ Deno.serve(async (req) => {
         existingAddresses.add(address.toLowerCase());
         results.created++;
         if (needsEnrichment) results.needsEnrichment++;
-
-        // Notify partner
-        try {
-          await base44.functions.invoke('notifyNewVTONOpportunity', {
-            opportunity_id: opportunity.id,
-            property_address: opportunity.property_address,
-            homeowner_name: opportunity.homeowner_name,
-            estimated_price: opportunity.estimated_price,
-            partner_email: opportunity.partner_email
-          });
-        } catch (notifyErr) {
-          console.warn('Notification failed for', address, notifyErr.message);
-        }
 
       } catch (err) {
         results.errors.push({ property: prop.Address || 'Unknown', error: err.message });
@@ -188,7 +169,7 @@ Deno.serve(async (req) => {
       status: 'success',
       message: `Imported ${results.created} new opportunities (${results.needsEnrichment} need contact enrichment). ${results.duplicates} duplicates skipped.`,
       details: results,
-      note: purchase === 0 ? 'PREVIEW MODE — set purchase=1 to actually import and be billed' : 'LIVE MODE — records billed to PropertyRadar account'
+      note: purchase === 0 ? 'PREVIEW MODE — no records billed' : 'LIVE MODE — records billed to PropertyRadar account'
     });
 
   } catch (error) {
