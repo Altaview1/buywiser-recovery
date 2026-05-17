@@ -36,9 +36,13 @@ Deno.serve(async (req) => {
     const partnerName = partners.length > 0 ? partners[0].name : partnerEmail;
     const territory = partners.length > 0 && partners[0].territory ? partners[0].territory : '—';
 
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     await base44.asServiceRole.integrations.Core.SendEmail({
       from_name: 'VTON Alert',
-      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
+      to: adminEmail,
       subject: `${statusLabel}: ${homeowner} — ${addr}`,
       body: `
         <div style="font-family:sans-serif;max-width:600px;margin:0 auto;color:#1e293b;">

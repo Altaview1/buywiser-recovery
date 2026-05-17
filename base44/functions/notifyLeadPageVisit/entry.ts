@@ -23,8 +23,12 @@ Deno.serve(async (req) => {
     });
 
     // Send email notification to admin/user
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     await base44.integrations.Core.SendEmail({
-      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
+      to: adminEmail,
       subject: `🔗 Veteran Clicked Their Personalized Link - ${lead.first_name} ${lead.last_name}`,
       body: `
         <h2>Lead Engagement Alert</h2>

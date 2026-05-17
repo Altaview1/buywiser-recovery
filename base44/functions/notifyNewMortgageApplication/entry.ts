@@ -38,8 +38,12 @@ Submitted:       ${new Date().toLocaleString('en-US', { timeZone: 'America/Los_A
 Review this application in the admin dashboard.
     `.trim();
 
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     await base44.asServiceRole.integrations.Core.SendEmail({
-      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
+      to: adminEmail,
       subject: `New Mortgage Application — ${name}`,
       body,
     });

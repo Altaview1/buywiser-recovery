@@ -64,8 +64,12 @@ Deno.serve(async (req) => {
     }
 
     // Send email alert via Base44
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
     await base44.asServiceRole.integrations.Core.SendEmail({
-      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
+      to: adminEmail,
       from_name: "BuyWiser Alerts",
       subject: `🔔 New Veteran Inquiry: ${name} — ${phone}`,
       body: emailBody,

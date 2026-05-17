@@ -22,10 +22,10 @@ Deno.serve(async (req) => {
 
      const bodyText = await req.text();
      const encoder = new TextEncoder();
-     const data = encoder.encode(bodyText);
+     const bodyBytes = encoder.encode(bodyText);
      const secretBytes = encoder.encode(secret);
      const key = await crypto.subtle.importKey('raw', secretBytes, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
-     const computed = await crypto.subtle.sign('HMAC', key, data);
+     const computed = await crypto.subtle.sign('HMAC', key, bodyBytes);
      const computedHex = Array.from(new Uint8Array(computed)).map(b => b.toString(16).padStart(2, '0')).join('');
 
      if (computedHex !== signature) {

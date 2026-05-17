@@ -27,7 +27,10 @@ Deno.serve(async (req) => {
     if (!data) return Response.json({ status: 'skipped' });
 
     const lead = data;
-    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
 
     const address = [lead.property_address, lead.city, lead.state, lead.zip_code].filter(Boolean).join(', ');
     const name = [lead.first_name, lead.last_name].filter(Boolean).join(' ') || 'Unknown';

@@ -39,7 +39,10 @@ Deno.serve(async (req) => {
     }
 
     const lead = data;
-    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+    const adminEmail = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+    if (!adminEmail) {
+      return Response.json({ error: 'ADMIN_NOTIFICATION_EMAIL not configured' }, { status: 500 });
+    }
 
     // Get partner email if assigned
     let partner = null;

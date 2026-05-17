@@ -1,6 +1,9 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const OFFICE_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
+const OFFICE_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL');
+if (!OFFICE_EMAIL) {
+  throw new Error('ADMIN_NOTIFICATION_EMAIL environment variable is required');
+}
 
 Deno.serve(async (req) => {
   try {
