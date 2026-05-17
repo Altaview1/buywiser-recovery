@@ -1,6 +1,24 @@
 const isNode = typeof window === 'undefined';
 const windowObj = isNode ? { localStorage: new Map() } : window;
-const storage = windowObj.localStorage;
+
+// Detect incognito mode and provide fallback storage
+let storage = windowObj.localStorage;
+if (!isNode) {
+	try {
+		const test = '__incognito_test__';
+		storage.setItem(test, test);
+		storage.removeItem(test);
+	} catch (e) {
+		// Incognito mode blocks localStorage — use in-memory fallback
+		const memoryStore = new Map();
+		storage = {
+			getItem: (key) => memoryStore.get(key) || null,
+			setItem: (key, value) => memoryStore.set(key, String(value)),
+			removeItem: (key) => memoryStore.delete(key),
+			clear: () => memoryStore.clear()
+		};
+	}
+}
 
 const toSnakeCase = (str) => {
 	return str.replace(/([A-Z])/g, '_$1').toLowerCase();
