@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 import twilio from 'npm:twilio@4.19.3';
 
-const ADMIN_EMAIL = "bennett@buywiser.com";
+const ADMIN_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 const ADMIN_PHONE = Deno.env.get("BENNETT_PHONE");
 const TWILIO_SID = Deno.env.get("TWILIO_ACCOUNT_SID");
 const TWILIO_TOKEN = Deno.env.get("TWILIO_AUTH_TOKEN");

@@ -28,10 +28,7 @@ async function sendSMS(to, body) {
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // Called by entity automation — no user auth required
     const payload = await req.json();
     const { event, data: lead } = payload;
 

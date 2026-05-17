@@ -81,11 +81,11 @@ Deno.serve(async (req) => {
     formData.append('to[address_city]', city);
     formData.append('to[address_state]', state);
     formData.append('to[address_zip]', zip_code);
-    formData.append('from[name]', 'Buywiser Home Loans');
-    formData.append('from[address_line1]', '12640 Riverside Drive');
-    formData.append('from[address_city]', 'North Hollywood');
-    formData.append('from[address_state]', 'CA');
-    formData.append('from[address_zip]', '91607');
+    formData.append('from[name]', Deno.env.get('LOB_FROM_NAME') || 'Buywiser Home Loans');
+    formData.append('from[address_line1]', Deno.env.get('LOB_FROM_ADDRESS_LINE1') || '12640 Riverside Drive');
+    formData.append('from[address_city]', Deno.env.get('LOB_FROM_CITY') || 'North Hollywood');
+    formData.append('from[address_state]', Deno.env.get('LOB_FROM_STATE') || 'CA');
+    formData.append('from[address_zip]', Deno.env.get('LOB_FROM_ZIP') || '91607');
     formData.append('color', 'false');
     formData.append('use_type', 'marketing');
 

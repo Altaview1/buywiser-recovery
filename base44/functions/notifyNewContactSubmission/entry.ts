@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
 
     // Send email alert via Base44
     await base44.asServiceRole.integrations.Core.SendEmail({
-      to: "bennett@buywiser.com",
+      to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
       from_name: "BuyWiser Alerts",
       subject: `🔔 New Veteran Inquiry: ${name} — ${phone}`,
       body: emailBody,

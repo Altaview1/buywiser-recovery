@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const FORFEIT_HOURS = 48;
-const OFFICE_EMAIL = 'bennett@buywiser.com';
+const OFFICE_EMAIL = Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com';
 
 Deno.serve(async (req) => {
   try {

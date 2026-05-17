@@ -3,10 +3,6 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
     const { buyerName, buyerPhone, serviceName, expert, note, tokenCost, poolRemaining } = await req.json();
 
     const smsBody = [
@@ -55,7 +51,7 @@ Deno.serve(async (req) => {
     // Send SMS and email in parallel
     await Promise.all([
       base44.asServiceRole.integrations.Core.SendEmail({
-        to: 'bennett@buywiser.com',
+        to: Deno.env.get('ADMIN_NOTIFICATION_EMAIL') || 'admin@buywiser.com',
         from_name: 'SmartBuy™ Alerts',
         subject: `🔓 Unlock Request — ${buyerName} needs ${serviceName}`,
         body: emailBody,

@@ -25,7 +25,17 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'No approved partner found' }, { status: 404 });
     }
 
-    return Response.json({ success: true, partner });
+    // Return only non-sensitive fields to avoid information disclosure
+    return Response.json({ success: true, partner: {
+      id: partner.id,
+      name: partner.name,
+      email: partner.email,
+      status: partner.status,
+      territory: partner.territory,
+      photo_url: partner.photo_url,
+      title: partner.title,
+      calendar_url: partner.calendar_url,
+    }});
   } catch (error) {
     console.error('Partner verification error:', error.message);
     return Response.json({ error: error.message }, { status: 500 });
