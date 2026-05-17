@@ -54,6 +54,7 @@ export default function Layout({ children, currentPageName }) {
     { label: 'Field Operations', icon: MapPin, path: '/field-rep-dashboard' },
     { label: 'QR Scan Dashboard', icon: QrCode, path: '/qr-scans' },
     { label: 'Management', icon: Users, path: '/management-dashboard' },
+    { label: 'Route Optimization', icon: MapPin, path: '/route-optimization' },
   ];
 
   const partnerLinks = [
