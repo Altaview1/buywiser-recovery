@@ -239,3 +239,4 @@ Key functions triggered:
 - [ ] **Scoring:** Priority score (veteran signals) → _SmartBuy: Buyer readiness score (pre-approval, timeline, property link)_
 - [ ] **Dashboard:** `/vton-campaign` pattern → _SmartBuy: `/smartbuy-workflow` + admin view TBD_
 - [ ] **Savings tracking:** N/A in VTON → _SmartBuy: SAVE-o-Meter, token pool, stage completion_
+- [ ] **Referral program:** N/A in VTON → _SmartBuy: `/referral` page already built — dual-sided $500 closing credit per completed transaction. Refer a friend → both earn $500 added to their SmartBuy™ savings pool at closing. No cap. LinkedIn + X share buttons with pre-filled copy, direct email invite, and unique referral link generation. See `components/smartbuy/ReferralSection.jsx` and `pages/ReferralProgram.jsx`. Accessible via SmartBuy emerald nav menu._
