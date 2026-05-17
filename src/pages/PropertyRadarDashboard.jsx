@@ -61,26 +61,37 @@ function DOMBucketModal({ bucket, onClose }) {
             </div>
 
             <div className="space-y-2">
-              {leads.map((lead) => (
-                <button
-                  key={lead.id}
-                  onClick={() => setSelectedLead(lead)}
-                  className="w-full text-left p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-all group"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="font-semibold text-slate-900">{lead.name}</p>
-                      <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {lead.address}
-                      </p>
-                      <p className="text-xs text-slate-600 mt-1 flex items-center gap-1">
-                        <Clock className="h-3 w-3" /> {lead.domDays} days on market
-                      </p>
+              {leads.map((lead) => {
+                const getDOMBadge = (days) => {
+                  if (days <= 7) return { bg: 'bg-blue-100', text: 'text-blue-800', label: '🔥 HOT' };
+                  if (days <= 14) return { bg: 'bg-green-100', text: 'text-green-800', label: '✨ NEW' };
+                  if (days <= 30) return { bg: 'bg-amber-100', text: 'text-amber-800', label: days + 'd' };
+                  return { bg: 'bg-slate-100', text: 'text-slate-700', label: days + 'd' };
+                };
+                const badge = getDOMBadge(lead.domDays);
+                return (
+                  <button
+                    key={lead.id}
+                    onClick={() => setSelectedLead(lead)}
+                    className="w-full text-left p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-all group"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-semibold text-slate-900">{lead.name}</p>
+                          <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${badge.bg} ${badge.text}`}>
+                            {badge.label}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 flex items-center gap-1">
+                          <MapPin className="h-3 w-3" /> {lead.address}
+                        </p>
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors mt-1 flex-shrink-0" />
                     </div>
-                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors mt-1" />
-                  </div>
-                </button>
-              ))}
+                  </button>
+                );
+              })}
             </div>
 
             {leads.length === 0 && (
