@@ -1,6 +1,79 @@
 import { useState, useRef, useEffect } from 'react';
 import { Menu, X, ChevronRight } from 'lucide-react';
 
+// Campaigns are intentionally split — VTON and SmartBuy are SEPARATE pipelines. Do not mix.
+const CAMPAIGN_GROUPS = [
+  {
+    id: 'vton',
+    label: '🎖️ VTON Campaign',
+    color: 'bg-blue-900',
+    badge: 'Veteran Seller Pipeline',
+    badgeColor: 'bg-blue-700 text-blue-100',
+    sections: [
+      {
+        label: 'Veteran Outreach',
+        links: [
+          { label: 'VTON Scan (Lead Intake)', path: '/vton-scan' },
+          { label: 'VTON Benefit Booking', path: '/vton-benefit' },
+          { label: 'VTON Personalized Landing', path: '/vton-personalized' },
+          { label: 'VTON Testimonials', path: '/vton-testimonials' },
+          { label: 'VTON QR Scan Test', path: '/vton-qr-scan-test' },
+        ]
+      },
+      {
+        label: 'VTON Admin',
+        links: [
+          { label: 'VTON Campaign Dashboard', path: '/vton-campaign' },
+          { label: 'VTON Mail Dashboard', path: '/vton-mail-dashboard' },
+          { label: 'VTON Letter Template Review', path: '/vton-letter-review' },
+          { label: 'VTON Email History', path: '/vton-email-history' },
+          { label: 'VTON Lob Errors', path: '/vton-lob-errors' },
+          { label: 'PropertyRadar Dashboard', path: '/property-radar' },
+          { label: 'Prospects Dashboard', path: '/prospects' },
+          { label: 'Partner Leads', path: '/partner-leads' },
+        ]
+      },
+      {
+        label: 'VTON Partners & Field',
+        links: [
+          { label: 'Partner Dashboard', path: '/partner' },
+          { label: 'Agent QR Dashboard', path: '/agent-qr' },
+          { label: 'Personalized Benefit', path: '/b' },
+          { label: 'Field Activator Portal', path: '/field-activator' },
+          { label: 'Field Activator Dashboard', path: '/activator' },
+          { label: 'Field Rep Dashboard', path: '/field-rep-dashboard' },
+          { label: 'FA Onboarding', path: '/fa-onboarding' },
+          { label: 'QR Scan Dashboard', path: '/qr-scans' },
+          { label: 'Sales Coach', path: '/sales-coach' },
+          { label: 'Resources', path: '/resources' },
+        ]
+      },
+    ]
+  },
+  {
+    id: 'smartbuy',
+    label: '🏡 SmartBuy Campaign',
+    color: 'bg-emerald-900',
+    badge: 'Buyer Rebate Pipeline',
+    badgeColor: 'bg-emerald-700 text-emerald-100',
+    sections: [
+      {
+        label: 'Buyer Pages',
+        links: [
+          { label: 'SmartBuy Home', path: '/smartbuy' },
+          { label: 'SmartBuy Workflow', path: '/smartbuy-workflow' },
+          { label: 'Buyer Cash Back', path: '/cashback' },
+          { label: 'Marketplace', path: '/marketplace' },
+          { label: 'Our Experts', path: '/our-experts' },
+          { label: 'Token Rewind', path: '/token-rewind' },
+          { label: 'Token Available FAQ', path: '/token-available-faq' },
+          { label: 'My Profile', path: '/my-profile' },
+        ]
+      },
+    ]
+  },
+];
+
 const NAV_SECTIONS = [
   {
     label: '🏠 Public Site',
@@ -22,69 +95,13 @@ const NAV_SECTIONS = [
     ]
   },
   {
-    label: '🎖️ VTON / Veteran',
-    links: [
-      { label: 'VTON Scan (Lead Intake)', path: '/vton-scan' },
-      { label: 'VTON Benefit Booking', path: '/vton-benefit' },
-      { label: 'VTON Personalized Landing', path: '/vton-personalized' },
-      { label: 'VTON Testimonials', path: '/vton-testimonials' },
-      { label: 'VTON QR Scan Test', path: '/vton-qr-scan-test' },
-    ]
-  },
-  {
-    label: '⚙️ Admin Portals',
+    label: '⚙️ Admin',
     links: [
       { label: 'Admin Login', path: '/admin-login' },
       { label: 'Admin Dashboard', path: '/activator-admin' },
       { label: 'Admin Settings', path: '/admin-settings' },
-      { label: 'VTON Campaign Dashboard', path: '/vton-campaign' },
-      { label: 'VTON Mail Dashboard', path: '/vton-mail-dashboard' },
-      { label: 'VTON Letter Template Review', path: '/vton-letter-review' },
-      { label: 'VTON Email History', path: '/vton-email-history' },
-      { label: 'VTON Lob Errors', path: '/vton-lob-errors' },
       { label: 'Leads Dashboard', path: '/leads' },
-      { label: 'Prospects Dashboard', path: '/prospects' },
-      { label: 'Partner Leads', path: '/partner-leads' },
       { label: 'Management Dashboard', path: '/management-dashboard' },
-      { label: 'PropertyRadar Dashboard', path: '/property-radar' },
-    ]
-  },
-  {
-    label: '🤝 Partners',
-    links: [
-      { label: 'Partner Dashboard', path: '/partner' },
-      { label: 'Agent QR Dashboard', path: '/agent-qr' },
-      { label: 'Personalized Benefit', path: '/b' },
-    ]
-  },
-  {
-    label: '📍 Field Activators',
-    links: [
-      { label: 'Field Activator Portal', path: '/field-activator' },
-      { label: 'Field Activator Dashboard', path: '/activator' },
-      { label: 'Field Rep Dashboard', path: '/field-rep-dashboard' },
-      { label: 'FA Onboarding', path: '/fa-onboarding' },
-      { label: 'QR Scan Dashboard', path: '/qr-scans' },
-      { label: 'Sales Coach', path: '/sales-coach' },
-      { label: 'Resources', path: '/resources' },
-    ]
-  },
-  {
-    label: '🏡 SmartBuy / Buyer',
-    links: [
-      { label: 'SmartBuy', path: '/smartbuy' },
-      { label: 'SmartBuy Workflow', path: '/smartbuy-workflow' },
-      { label: 'Buyer Cash Back', path: '/cashback' },
-      { label: 'Marketplace', path: '/marketplace' },
-      { label: 'Our Experts', path: '/our-experts' },
-      { label: 'Token Rewind', path: '/token-rewind' },
-      { label: 'Token Available FAQ', path: '/token-available-faq' },
-      { label: 'My Profile', path: '/my-profile' },
-    ]
-  },
-  {
-    label: '📋 Other',
-    links: [
       { label: 'Portal Hub', path: '/portals' },
       { label: 'Mortgage AI', path: '/MortgageAI' },
       { label: 'Apply Now', path: '/Apply' },
@@ -111,6 +128,32 @@ export default function AdminNavMenu() {
     setOpen(false);
   };
 
+  const renderSection = (section, accentClass) => (
+    <div key={section.label}>
+      <button
+        onClick={() => setExpandedSection(expandedSection === section.label ? null : section.label)}
+        className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-bold text-slate-500 uppercase tracking-widest hover:bg-slate-50 transition"
+      >
+        <span>{section.label}</span>
+        <ChevronRight className={`h-3.5 w-3.5 transition-transform ${expandedSection === section.label ? 'rotate-90' : ''}`} />
+      </button>
+      {expandedSection === section.label && (
+        <div className="bg-slate-50 border-t border-b border-slate-100">
+          {section.links.map((link) => (
+            <button
+              key={link.path}
+              onClick={() => navigate(link.path)}
+              className={`w-full text-left px-6 py-2 text-sm text-slate-700 transition ${accentClass}`}
+            >
+              {link.label}
+              <span className="ml-1 text-xs text-slate-400">{link.path}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div ref={ref} className="fixed bottom-6 right-6 z-[9999]">
       {/* Menu panel */}
@@ -124,33 +167,28 @@ export default function AdminNavMenu() {
             </button>
           </div>
 
-          <div className="py-1">
-            {NAV_SECTIONS.map((section) => (
-              <div key={section.label}>
-                <button
-                  onClick={() => setExpandedSection(expandedSection === section.label ? null : section.label)}
-                  className="w-full flex items-center justify-between px-4 py-2.5 text-xs font-bold text-slate-500 uppercase tracking-widest hover:bg-slate-50 transition"
-                >
-                  <span>{section.label}</span>
-                  <ChevronRight className={`h-3.5 w-3.5 transition-transform ${expandedSection === section.label ? 'rotate-90' : ''}`} />
-                </button>
-                {expandedSection === section.label && (
-                  <div className="bg-slate-50 border-t border-b border-slate-100">
-                    {section.links.map((link) => (
-                      <button
-                        key={link.path}
-                        onClick={() => navigate(link.path)}
-                        className="w-full text-left px-6 py-2 text-sm text-slate-700 hover:bg-blue-50 hover:text-blue-700 transition"
-                      >
-                        {link.label}
-                        <span className="ml-1 text-xs text-slate-400">{link.path}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
+          {/* General sections */}
+          <div className="py-1 border-b border-slate-200">
+            {NAV_SECTIONS.map((section) => renderSection(section, 'hover:bg-blue-50 hover:text-blue-700'))}
           </div>
+
+          {/* Campaign groups — visually separated */}
+          <div className="px-4 py-2 bg-amber-50 border-b border-amber-200">
+            <p className="text-[10px] font-black uppercase tracking-widest text-amber-700">⚠️ Separate Campaigns — Do Not Mix</p>
+          </div>
+
+          {CAMPAIGN_GROUPS.map((group) => (
+            <div key={group.id} className="border-b border-slate-200 last:border-0">
+              <div className={`${group.color} px-4 py-2.5 flex items-center justify-between`}>
+                <span className="text-white font-bold text-sm">{group.label}</span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${group.badgeColor}`}>{group.badge}</span>
+              </div>
+              {group.sections.map((section) => {
+                const accent = group.id === 'vton' ? 'hover:bg-blue-50 hover:text-blue-700' : 'hover:bg-emerald-50 hover:text-emerald-700';
+                return renderSection(section, accent);
+              })}
+            </div>
+          ))}
         </div>
       )}
 
