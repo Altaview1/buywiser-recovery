@@ -73,6 +73,7 @@ import ReferralProgram from './pages/ReferralProgram';
 import RouteOptimizationDashboard from './pages/RouteOptimizationDashboard';
 import StaffingNeedsReport from './pages/StaffingNeedsReport';
 import LeadPipelineBoard from './pages/LeadPipelineBoard';
+import MobileLeadDashboard from './pages/MobileLeadDashboard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -176,6 +177,7 @@ function App() {
           <Route path="/route-optimization" element={<RouteOptimizationDashboard />} />
           <Route path="/staffing-report" element={<StaffingNeedsReport />} />
           <Route path="/lead-pipeline" element={<LeadPipelineBoard />} />
+          <Route path="/mobile-leads" element={<MobileLeadDashboard />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />
