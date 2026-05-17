@@ -72,6 +72,7 @@ import VTONArchitectureMap from './pages/VTONArchitectureMap';
 import ReferralProgram from './pages/ReferralProgram';
 import RouteOptimizationDashboard from './pages/RouteOptimizationDashboard';
 import StaffingNeedsReport from './pages/StaffingNeedsReport';
+import LeadPipelineBoard from './pages/LeadPipelineBoard';
 
 const LayoutWrapper = ({ children, currentPageName }) => (
   <Layout currentPageName={currentPageName}>{children}</Layout>
@@ -174,6 +175,7 @@ function App() {
           <Route path="/referral" element={<ReferralProgram />} />
           <Route path="/route-optimization" element={<RouteOptimizationDashboard />} />
           <Route path="/staffing-report" element={<StaffingNeedsReport />} />
+          <Route path="/lead-pipeline" element={<LeadPipelineBoard />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/prospects" element={<ProspectsDashboard />} />
           <Route path="/partner-leads" element={<PartnerLeadsDashboard />} />

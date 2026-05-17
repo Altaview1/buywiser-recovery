@@ -58,6 +58,18 @@
       ],
       "default": "SCANNED"
     },
+    "pipeline_stage": {
+      "type": "string",
+      "enum": [
+        "new",
+        "contacted",
+        "interested",
+        "meeting_set",
+        "closed"
+      ],
+      "default": "new",
+      "description": "Kanban board pipeline stage"
+    },
     "activation_source": {
       "type": "string",
       "enum": [
