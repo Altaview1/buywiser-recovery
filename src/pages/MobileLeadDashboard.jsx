@@ -1,15 +1,27 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Phone, MessageCircle, MapPin, CheckCircle, Clock, X, Loader2, ChevronLeft } from 'lucide-react';
+import { Phone, MessageCircle, MapPin, CheckCircle, Clock, X, Loader2, ChevronLeft, Map } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 
 const NAVY = '#0B1F3B';
 const STATUSES = ['new', 'contacted', 'interested', 'meeting_set', 'closed'];
 const STATUS_COLORS = {
-  new: { bg: 'bg-slate-100', text: 'text-slate-700', label: '🆕 New' },
-  contacted: { bg: 'bg-blue-100', text: 'text-blue-700', label: '📞 Contacted' },
-  interested: { bg: 'bg-green-100', text: 'text-green-700', label: '✨ Interested' },
-  meeting_set: { bg: 'bg-amber-100', text: 'text-amber-700', label: '📅 Meeting Set' },
-  closed: { bg: 'bg-purple-100', text: 'text-purple-700', label: '✅ Closed' },
+  new: { bg: 'bg-slate-100', text: 'text-slate-700', label: '🆕 New', color: '#64748b' },
+  contacted: { bg: 'bg-blue-100', text: 'text-blue-700', label: '📞 Contacted', color: '#3b82f6' },
+  interested: { bg: 'bg-green-100', text: 'text-green-700', label: '✨ Interested', color: '#22c55e' },
+  meeting_set: { bg: 'bg-amber-100', text: 'text-amber-700', label: '📅 Meeting Set', color: '#f59e0b' },
+  closed: { bg: 'bg-purple-100', text: 'text-purple-700', label: '✅ Closed', color: '#a855f7' },
+};
+
+// Custom map markers by status
+const createStatusMarker = (status) => {
+  const color = STATUS_COLORS[status]?.color || '#64748b';
+  return L.divIcon({
+    html: `<div style="width: 32px; height: 32px; background-color: ${color}; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">📍</div>`,
+    iconSize: [32, 32],
+    className: 'custom-marker',
+  });
 };
 
 function LeadCard({ lead, onStatusChange, onCall, onSMS }) {
@@ -143,6 +155,7 @@ export default function MobileLeadDashboard() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [refreshing, setRefreshing] = useState(false);
+  const [view, setView] = useState('list'); // 'list' or 'map'
 
   useEffect(() => {
     initRep();
@@ -225,12 +238,18 @@ export default function MobileLeadDashboard() {
     );
   }
 
+  const unvisitedCount = leads.filter(l => !l.knock_attempt_confirmed).length;
   const filteredLeads =
     filter === 'all'
       ? leads
       : leads.filter(l => (l.pipeline_stage || 'new') === filter);
-
-  const unvisitedCount = leads.filter(l => !l.knock_attempt_confirmed).length;
+  const leadsWithCoords = filteredLeads.filter(l => l.lat && l.lng);
+  const centerLat = leadsWithCoords.length > 0 
+    ? leadsWithCoords.reduce((sum, l) => sum + l.lat, 0) / leadsWithCoords.length
+    : 34.0522;
+  const centerLng = leadsWithCoords.length > 0 
+    ? leadsWithCoords.reduce((sum, l) => sum + l.lng, 0) / leadsWithCoords.length
+    : -118.2437;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 to-slate-50">
@@ -264,57 +283,135 @@ export default function MobileLeadDashboard() {
           </div>
         </div>
 
-        {/* Status Filter */}
-        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scroll-smooth">
-          {['all', 'new', 'contacted', 'interested', 'meeting_set', 'closed'].map(status => {
-            const info = STATUS_COLORS[status];
-            return (
-              <button
-                key={status}
-                onClick={() => setFilter(status)}
-                className={`px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
-                  filter === status
-                    ? `${info.bg} ${info.text} ring-2 ring-offset-2 ring-slate-300`
-                    : 'bg-white border border-slate-200 text-slate-600'
-                }`}
-              >
-                {status === 'all' ? 'All' : info.label}
-              </button>
-            );
-          })}
+        {/* View Tabs */}
+        <div className="flex gap-2 mb-3">
+          <button
+            onClick={() => setView('list')}
+            className={`flex-1 py-2.5 rounded-lg font-bold text-sm transition ${
+              view === 'list'
+                ? 'bg-slate-900 text-white'
+                : 'bg-white border border-slate-300 text-slate-600'
+            }`}
+          >
+            📋 List
+          </button>
+          <button
+            onClick={() => setView('map')}
+            className={`flex-1 py-2.5 rounded-lg font-bold text-sm transition ${
+              view === 'map'
+                ? 'bg-slate-900 text-white'
+                : 'bg-white border border-slate-300 text-slate-600'
+            }`}
+          >
+            🗺️ Map
+          </button>
         </div>
-      </div>
 
-      {/* Leads List */}
-      <div className="px-4 py-4 space-y-3 pb-8">
-        {refreshing && (
-          <div className="text-center py-2">
-            <Loader2 className="h-4 w-4 animate-spin inline text-slate-500" />
+        {/* Status Filter */}
+        {view === 'list' && (
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scroll-smooth">
+            {['all', 'new', 'contacted', 'interested', 'meeting_set', 'closed'].map(status => {
+              const info = STATUS_COLORS[status];
+              return (
+                <button
+                  key={status}
+                  onClick={() => setFilter(status)}
+                  className={`px-3 py-2 rounded-full text-xs font-bold whitespace-nowrap transition ${
+                    filter === status
+                      ? `${info.bg} ${info.text} ring-2 ring-offset-2 ring-slate-300`
+                      : 'bg-white border border-slate-200 text-slate-600'
+                  }`}
+                >
+                  {status === 'all' ? 'All' : info.label}
+                </button>
+              );
+            })}
           </div>
         )}
+      </div>
 
-        {filteredLeads.length === 0 ? (
-          <div className="text-center py-12 text-slate-400">
-            <p className="text-sm font-semibold">No leads in this status</p>
-            <button
-              onClick={() => setFilter('all')}
-              className="text-xs text-blue-600 font-bold mt-2"
+      {/* Content */}
+      {view === 'list' ? (
+        // List View
+        <div className="px-4 py-4 space-y-3 pb-8">
+          {refreshing && (
+            <div className="text-center py-2">
+              <Loader2 className="h-4 w-4 animate-spin inline text-slate-500" />
+            </div>
+          )}
+
+          {filteredLeads.length === 0 ? (
+            <div className="text-center py-12 text-slate-400">
+              <p className="text-sm font-semibold">No leads in this status</p>
+              <button
+                onClick={() => setFilter('all')}
+                className="text-xs text-blue-600 font-bold mt-2"
+              >
+                View all leads
+              </button>
+            </div>
+          ) : (
+            filteredLeads.map(lead => (
+              <LeadCard
+                key={lead.id}
+                lead={lead}
+                onStatusChange={() => fetchLeads(rep)}
+                onCall={handleCall}
+                onSMS={handleSMS}
+              />
+            ))
+          )}
+        </div>
+      ) : (
+        // Map View
+        <div className="h-[calc(100vh-280px)] relative">
+          {leadsWithCoords.length === 0 ? (
+            <div className="h-full flex items-center justify-center text-slate-400">
+              <div className="text-center">
+                <MapPin className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                <p className="text-sm font-semibold">No leads with location data</p>
+              </div>
+            </div>
+          ) : (
+            <MapContainer
+              center={[centerLat, centerLng]}
+              zoom={13}
+              style={{ height: '100%', width: '100%' }}
+              className="z-10"
             >
-              View all leads
-            </button>
-          </div>
-        ) : (
-          filteredLeads.map(lead => (
-            <LeadCard
-              key={lead.id}
-              lead={lead}
-              onStatusChange={() => fetchLeads(rep)}
-              onCall={handleCall}
-              onSMS={handleSMS}
-            />
-          ))
-        )}
-      </div>
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; OpenStreetMap contributors'
+              />
+              {leadsWithCoords.map(lead => (
+                <Marker
+                  key={lead.id}
+                  position={[lead.lat, lead.lng]}
+                  icon={createStatusMarker(lead.pipeline_stage || 'new')}
+                >
+                  <Popup className="text-xs">
+                    <div className="min-w-48">
+                      <p className="font-bold text-sm mb-1">{lead.first_name} {lead.last_name}</p>
+                      <p className="text-slate-600 text-xs mb-2">{lead.property_address}</p>
+                      {lead.phone && (
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="block px-2 py-1.5 bg-blue-600 text-white rounded text-xs font-bold text-center mb-1"
+                        >
+                          Call
+                        </a>
+                      )}
+                      <span className={`inline-block px-2 py-1 rounded text-xs font-bold ${STATUS_COLORS[lead.pipeline_stage || 'new'].bg} ${STATUS_COLORS[lead.pipeline_stage || 'new'].text}`}>
+                        {STATUS_COLORS[lead.pipeline_stage || 'new'].label}
+                      </span>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+            </MapContainer>
+          )}
+        </div>
+      )}
     </div>
   );
 }
