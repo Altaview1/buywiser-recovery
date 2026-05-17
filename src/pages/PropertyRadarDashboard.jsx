@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { Home, TrendingUp, RefreshCw, Calendar, X, Loader2, ChevronRight } from 'lucide-react';
+import { Home, TrendingUp, RefreshCw, Calendar, X, Loader2, ChevronRight, Phone, Mail, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import LeadDetailModal from '@/components/LeadDetailModal';
 
 const COLOR_MAP = {
   blue:   { bar: 'bg-blue-500',   text: 'text-blue-700',   bg: 'bg-blue-50',   border: 'border-blue-100' },
@@ -12,28 +13,39 @@ const COLOR_MAP = {
   red:    { bar: 'bg-red-500',    text: 'text-red-700',    bg: 'bg-red-50',    border: 'border-red-100' },
 };
 
-function DrillDownModal({ metric, onClose }) {
-  const [data, setData] = useState(null);
+function DOMBucketModal({ bucket, onClose }) {
+  const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedLead, setSelectedLead] = useState(null);
 
   useEffect(() => {
-    base44.functions.invoke('propertyRadarDrillDown', { metric })
-      .then(res => { setData(res.data); setLoading(false); })
-      .catch(err => { setError(err.message); setLoading(false); });
-  }, [metric]);
+    base44.functions.invoke('getVALoanListingsByDOM', { domBucket: bucket })
+      .then(res => { 
+        setLeads(res.data.leads || []); 
+        setLoading(false); 
+      })
+      .catch(err => { 
+        setError(err.message); 
+        setLoading(false); 
+      });
+  }, [bucket]);
+
+  if (selectedLead) {
+    return <LeadDetailModal lead={selectedLead} onClose={() => setSelectedLead(null)} />;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={onClose}>
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative" onClick={e => e.stopPropagation()}>
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto relative" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 sticky top-4">
           <X className="h-5 w-5" />
         </button>
 
         {loading && (
           <div className="flex flex-col items-center py-12 gap-3">
             <Loader2 className="h-7 w-7 animate-spin text-blue-500" />
-            <p className="text-slate-500 text-sm">Loading breakdown...</p>
+            <p className="text-slate-500 text-sm">Loading leads...</p>
           </div>
         )}
 
@@ -41,41 +53,39 @@ function DrillDownModal({ metric, onClose }) {
           <div className="py-8 text-center text-red-500 text-sm">{error}</div>
         )}
 
-        {data && !loading && (
+        {!loading && (
           <>
             <div className="mb-5">
-              <h2 className="text-lg font-bold text-slate-900">{data.title}</h2>
-              <p className="text-xs text-slate-500 mt-0.5">{data.subtitle}</p>
+              <h2 className="text-xl font-bold text-slate-900">VA Listings</h2>
+              <p className="text-xs text-slate-500 mt-0.5">{leads.length} properties · Click to view details</p>
             </div>
 
-            <div className="text-center mb-6">
-              <div className="text-5xl font-bold text-slate-900">{data.total.toLocaleString()}</div>
-              <div className="text-xs text-slate-400 mt-1">Total matching properties</div>
-            </div>
-
-            <div className="space-y-3">
-              {data.buckets.map((bucket) => {
-                const pct = data.total > 0 ? Math.round((bucket.count / data.total) * 100) : 0;
-                const c = COLOR_MAP[bucket.color] || COLOR_MAP.blue;
-                return (
-                  <div key={bucket.label} className={`rounded-xl border p-4 ${c.bg} ${c.border}`}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-slate-700">{bucket.label}</span>
-                      <span className={`text-lg font-bold ${c.text}`}>{bucket.count.toLocaleString()}</span>
+            <div className="space-y-2">
+              {leads.map((lead) => (
+                <button
+                  key={lead.id}
+                  onClick={() => setSelectedLead(lead)}
+                  className="w-full text-left p-3 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-all group"
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-semibold text-slate-900">{lead.name}</p>
+                      <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+                        <MapPin className="h-3 w-3" /> {lead.address}
+                      </p>
+                      <p className="text-xs text-slate-600 mt-1 flex items-center gap-1">
+                        <Clock className="h-3 w-3" /> {lead.domDays} days on market
+                      </p>
                     </div>
-                    <div className="w-full bg-white/60 rounded-full h-2">
-                      <div
-                        className={`${c.bar} h-2 rounded-full transition-all duration-500`}
-                        style={{ width: `${pct}%` }}
-                      />
-                    </div>
-                    <div className="text-right text-xs text-slate-400 mt-1">{pct}% of pool</div>
+                    <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-500 transition-colors mt-1" />
                   </div>
-                );
-              })}
+                </button>
+              ))}
             </div>
 
-            <p className="text-xs text-slate-400 text-center mt-4">Preview mode · No charge to PropertyRadar</p>
+            {leads.length === 0 && (
+              <div className="py-8 text-center text-slate-400 text-sm">No leads in this bucket</div>
+            )}
           </>
         )}
       </div>
@@ -84,34 +94,28 @@ function DrillDownModal({ metric, onClose }) {
 }
 
 export default function PropertyRadarDashboard() {
-  const [snapshots, setSnapshots] = useState([]);
+  const [domSummary, setDomSummary] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [latest, setLatest] = useState(null);
-  const [drillMetric, setDrillMetric] = useState(null); // 'new_listings' | 'total_pool'
+  const [selectedBucket, setSelectedBucket] = useState(null);
 
-  const loadSnapshots = async () => {
-    const data = await base44.entities.PropertyRadarDailySnapshot.list('-snapshot_date', 30);
-    const sorted = [...data].sort((a, b) => new Date(a.snapshot_date) - new Date(b.snapshot_date));
-    setSnapshots(sorted);
-    if (sorted.length > 0) setLatest(sorted[sorted.length - 1]);
-    setLoading(false);
+  useEffect(() => {
+    base44.functions.invoke('getVALoanListingsByDOM', {})
+      .then(res => { 
+        setDomSummary(res.data); 
+        setLoading(false); 
+      })
+      .catch(err => { 
+        console.error(err);
+        setLoading(false); 
+      });
+  }, []);
+
+  const handleRefresh = async () => {
+    setLoading(true);
+    await base44.functions.invoke('getVALoanListingsByDOM', {})
+      .then(res => setDomSummary(res.data))
+      .finally(() => setLoading(false));
   };
-
-  useEffect(() => { loadSnapshots(); }, []);
-
-  const handleRefreshNow = async () => {
-    setRefreshing(true);
-    await base44.functions.invoke('dailyPropertyRadarCount', {});
-    await loadSnapshots();
-    setRefreshing(false);
-  };
-
-  const chartData = snapshots.map(s => ({
-    date: new Date(s.snapshot_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-    'Total Pool': s.total_pool_count || 0,
-    'New Today': s.new_listings_count || 0,
-  }));
 
   if (loading) {
     return (
@@ -129,131 +133,70 @@ export default function PropertyRadarDashboard() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-              <Home className="h-6 w-6 text-blue-600" /> CA VA Listings Dashboard
+              <Home className="h-6 w-6 text-blue-600" /> CA VA Loan Listings
             </h1>
-            <p className="text-slate-500 text-sm mt-1">Active CA properties with VA loans · Updated daily</p>
+            <p className="text-slate-500 text-sm mt-1">Properties with actual VA financing · Organized by Days on Market</p>
           </div>
-          <Button onClick={handleRefreshNow} disabled={refreshing} variant="outline" className="gap-2">
-            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {refreshing ? 'Fetching...' : 'Refresh Now'}
+          <Button onClick={handleRefresh} disabled={loading} variant="outline" className="gap-2">
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            Refresh
           </Button>
         </div>
 
-        {/* Today's Stats — clickable cards */}
-        {latest && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {/* Date card — not clickable */}
-            <div className="bg-white rounded-xl border border-slate-200 p-5">
-              <div className="flex items-center gap-2 text-slate-500 text-xs uppercase tracking-wide mb-2">
-                <Calendar className="h-3.5 w-3.5" /> Latest Snapshot
-              </div>
-              <div className="text-2xl font-bold text-slate-800">
-                {new Date(latest.snapshot_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-              </div>
+        {/* Total Count */}
+        {domSummary && (
+          <div className="bg-white rounded-xl border border-slate-200 p-6 mb-8">
+            <div className="text-center">
+              <div className="text-5xl font-bold text-blue-700">{domSummary.total_va_listings}</div>
+              <p className="text-slate-500 text-sm mt-2">Active VA Loan Listings (0-90 days on market)</p>
             </div>
-
-            {/* New Listings — clickable */}
-            <button
-              onClick={() => setDrillMetric('new_listings')}
-              className="bg-blue-50 rounded-xl border border-blue-100 p-5 text-left hover:border-blue-300 hover:shadow-md transition-all group cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-blue-500 text-xs uppercase tracking-wide">
-                  <TrendingUp className="h-3.5 w-3.5" /> New Listings Today
-                </div>
-                <ChevronRight className="h-4 w-4 text-blue-300 group-hover:text-blue-500 transition-colors" />
-              </div>
-              <div className="text-4xl font-bold text-blue-700">{latest.new_listings_count ?? '—'}</div>
-              <div className="text-xs text-blue-400 mt-1">0–1 days on market · click to drill down</div>
-            </button>
-
-            {/* Total Pool — clickable */}
-            <button
-              onClick={() => setDrillMetric('total_pool')}
-              className="bg-green-50 rounded-xl border border-green-100 p-5 text-left hover:border-green-300 hover:shadow-md transition-all group cursor-pointer"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2 text-green-500 text-xs uppercase tracking-wide">
-                  <Home className="h-3.5 w-3.5" /> Total Active Pool
-                </div>
-                <ChevronRight className="h-4 w-4 text-green-300 group-hover:text-green-500 transition-colors" />
-              </div>
-              <div className="text-4xl font-bold text-green-700">{(latest.total_pool_count || 0).toLocaleString()}</div>
-              <div className="text-xs text-green-400 mt-1">1–90 days on market · click to drill down</div>
-            </button>
           </div>
         )}
 
-        {/* Chart */}
-        {chartData.length > 1 ? (
-          <div className="bg-white rounded-xl border border-slate-200 p-6 mb-6">
-            <h2 className="text-base font-semibold text-slate-800 mb-4">30-Day Trend</h2>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <defs>
-                  <linearGradient id="colorPool" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#16a34a" stopOpacity={0.15} />
-                    <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
-                  </linearGradient>
-                  <linearGradient id="colorNew" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis dataKey="date" tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                <YAxis tick={{ fontSize: 12, fill: '#94a3b8' }} />
-                <Tooltip />
-                <Legend />
-                <Area type="monotone" dataKey="Total Pool" stroke="#16a34a" fill="url(#colorPool)" strokeWidth={2} />
-                <Area type="monotone" dataKey="New Today" stroke="#2563eb" fill="url(#colorNew)" strokeWidth={2} />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div className="bg-white rounded-xl border border-slate-200 p-10 text-center text-slate-400 mb-6">
-            Chart will appear after a few days of data. Come back tomorrow!
+        {/* DOM Buckets */}
+        {domSummary && (
+          <div className="space-y-3">
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">Breakdown by Days on Market</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              {domSummary.summary.map((bucket) => {
+                const colorMap = {
+                  blue: 'bg-blue-50 border-blue-200 hover:border-blue-400',
+                  indigo: 'bg-indigo-50 border-indigo-200 hover:border-indigo-400',
+                  green: 'bg-green-50 border-green-200 hover:border-green-400',
+                  amber: 'bg-amber-50 border-amber-200 hover:border-amber-400',
+                  red: 'bg-red-50 border-red-200 hover:border-red-400',
+                };
+                const textMap = {
+                  blue: 'text-blue-700',
+                  indigo: 'text-indigo-700',
+                  green: 'text-green-700',
+                  amber: 'text-amber-700',
+                  red: 'text-red-700',
+                };
+                return (
+                  <button
+                    key={bucket.bucket}
+                    onClick={() => setSelectedBucket(bucket.bucket)}
+                    className={`rounded-xl border p-5 text-left transition-all cursor-pointer group ${colorMap[bucket.color]}`}
+                  >
+                    <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">{bucket.label}</p>
+                    <div className={`text-3xl font-bold ${textMap[bucket.color]}`}>{bucket.count}</div>
+                    <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
+                      {bucket.percentage}% of total <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* History Table */}
-        <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-800">Daily History</h2>
-          </div>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-slate-50 text-left">
-                <th className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Date</th>
-                <th className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">New Listings</th>
-                <th className="px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide text-right">Total Pool</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[...snapshots].reverse().map((s, i) => (
-                <tr key={s.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50'}>
-                  <td className="px-6 py-3 text-slate-700">
-                    {new Date(s.snapshot_date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
-                  </td>
-                  <td className="px-6 py-3 text-right font-semibold text-blue-700">{s.new_listings_count ?? '—'}</td>
-                  <td className="px-6 py-3 text-right font-semibold text-green-700">{(s.total_pool_count || 0).toLocaleString()}</td>
-                </tr>
-              ))}
-              {snapshots.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="px-6 py-10 text-center text-slate-400">No snapshots yet. Click "Refresh Now" to capture today's data.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <p className="text-xs text-slate-400 text-center mt-4">Filters: CA · VA Loan · Active Listings · Preview mode (no charge to PropertyRadar)</p>
+        <p className="text-xs text-slate-400 text-center mt-8">Key Criteria: CA State · VA Loan Present · Listing Status Active</p>
       </div>
 
-      {/* Drill-down modal */}
-      {drillMetric && (
-        <DrillDownModal metric={drillMetric} onClose={() => setDrillMetric(null)} />
+      {/* DOM Bucket drill-down modal */}
+      {selectedBucket && (
+        <DOMBucketModal bucket={selectedBucket} onClose={() => setSelectedBucket(null)} />
       )}
     </div>
   );

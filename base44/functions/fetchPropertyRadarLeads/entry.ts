@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
           state: 'CA',
           listing_status: 'active',
           days_on_market: { min: 0, max: 90 },
-          veteran_friendly: true
+          va_loan_present: true
         }
       })
     });
