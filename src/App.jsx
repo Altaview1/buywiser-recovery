@@ -25,6 +25,7 @@ import MortgageAI from './pages/MortgageAI';
 import BuywiserHome from './pages/BuywiserHome';
 import LeadsDashboard from './pages/LeadsDashboard';
 import FlagWatermark from './components/FlagWatermark';
+import AdminNavMenu from './components/AdminNavMenu';
 
 import PartnerDashboard from './pages/PartnerDashboard';
 import PersonalizedBenefit from './pages/PersonalizedBenefit';
@@ -143,6 +144,7 @@ function App() {
     <QueryClientProvider client={queryClientInstance}>
       <Router>
         <FlagWatermark />
+        <AdminNavMenu />
         <Routes>
           {/* Public portals — NO auth required */}
           <Route path="/" element={<BuywiserHome />} />
