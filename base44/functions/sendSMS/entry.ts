@@ -15,8 +15,8 @@ Deno.serve(async (req) => {
    try {
      const base44 = createClientFromRequest(req);
      const user = await base44.auth.me();
-     if (!user) {
-       return Response.json({ error: 'Unauthorized — SMS requires authenticated user' }, { status: 401 });
+     if (!user || user.role !== 'admin') {
+       return Response.json({ error: 'Admin access required for SMS dispatch' }, { status: 403 });
      }
      const { message, phone } = await req.json();
 

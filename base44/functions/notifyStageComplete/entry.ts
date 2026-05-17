@@ -27,6 +27,11 @@ Deno.serve(async (req) => {
      }
      const { lead_id, completed_stage, lead_data } = await req.json();
 
+     // Verify user is owner or admin
+     if (user.email !== lead_data.email && user.role !== 'admin') {
+      return Response.json({ error: 'Forbidden: Not authorized for this lead' }, { status: 403 });
+     }
+
     if (!lead_id || !completed_stage || !lead_data) {
       return Response.json(
         { error: "Missing required fields: lead_id, completed_stage, lead_data" },

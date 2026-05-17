@@ -8,13 +8,17 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
  */
 
 Deno.serve(async (req) => {
-  try {
-    const base44 = createClientFromRequest(req);
-    const { lead_id, event_type } = await req.json();
+   try {
+     const base44 = createClientFromRequest(req);
+     const user = await base44.auth.me();
+     if (!user || user.role !== 'admin') {
+       return Response.json({ error: 'Admin access required' }, { status: 403 });
+     }
+     const { lead_id, event_type } = await req.json();
 
-    if (!lead_id) {
-      return Response.json({ error: 'Missing lead_id' }, { status: 400 });
-    }
+     if (!lead_id) {
+       return Response.json({ error: 'Missing lead_id' }, { status: 400 });
+     }
 
     const leads = await base44.entities.VTONLead.filter({ id: lead_id });
     if (leads.length === 0) {

@@ -3,20 +3,25 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
+     const user = await base44.auth.me();
 
-    if (!user) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+     if (!user) {
+       return Response.json({ error: 'Unauthorized' }, { status: 401 });
+     }
 
-    const { lead_id } = await req.json();
+     const { lead_id } = await req.json();
 
-    if (!lead_id) {
-      return Response.json({ error: 'lead_id required' }, { status: 400 });
-    }
+     if (!lead_id) {
+       return Response.json({ error: 'lead_id required' }, { status: 400 });
+     }
 
-    // Fetch the specific lead
-    const lead = await base44.entities.VTONLead.get(lead_id);
+     // Fetch the specific lead
+     const lead = await base44.entities.VTONLead.get(lead_id);
+
+     // Verify user is authorized: owner, assigned advisor, or admin
+     if (lead.created_by !== user.email && lead.assigned_advisor !== user.email && user.role !== 'admin') {
+       return Response.json({ error: 'Forbidden: Not authorized for this lead' }, { status: 403 });
+     }
 
     if (!lead) {
       return Response.json({ error: 'Lead not found' }, { status: 404 });
