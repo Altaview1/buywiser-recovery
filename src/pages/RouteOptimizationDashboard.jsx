@@ -77,6 +77,40 @@ function HeatmapLayer({ leads, showHeatmap }) {
   return null;
 }
 
+// Route polyline component
+function RoutePolyline({ route }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!route || !route.polyline || route.polyline.length === 0) return;
+
+    const polyline = window.L.polyline(route.polyline, {
+      color: '#8b5cf6',
+      weight: 3,
+      opacity: 0.8,
+      dashArray: '5, 10'
+    });
+
+    polyline.addTo(map);
+
+    // Add numbered markers for route sequence
+    route.polyline.forEach((coord, idx) => {
+      const numberIcon = window.L.divIcon({
+        html: `<div style="background: #8b5cf6; color: white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">${idx + 1}</div>`,
+        iconSize: [24, 24],
+        className: ''
+      });
+      window.L.marker(coord, { icon: numberIcon }).addTo(map);
+    });
+
+    return () => {
+      map.removeLayer(polyline);
+    };
+  }, [route, map]);
+
+  return null;
+}
+
 export default function RouteOptimizationDashboard() {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -85,8 +119,24 @@ export default function RouteOptimizationDashboard() {
   const [expandedCluster, setExpandedCluster] = useState(null);
   const [showHeatmap, setShowHeatmap] = useState(true);
   const [showActivators, setShowActivators] = useState(true);
+  const [optimizedRoute, setOptimizedRoute] = useState(null);
+  const [routeLoading, setRouteLoading] = useState(false);
 
   const [activators, setActivators] = useState([]);
+
+  const handleOptimizeRoute = async (cluster) => {
+    setRouteLoading(true);
+    try {
+      const response = await base44.functions.invoke('optimizeActivatorRoute', {
+        cluster_leads: cluster.suggested_route
+      });
+      setOptimizedRoute(response.data);
+    } catch (err) {
+      console.error('Route optimization error:', err);
+    } finally {
+      setRouteLoading(false);
+    }
+  };
 
   useEffect(() => {
     const runAnalysis = async () => {
@@ -267,6 +317,9 @@ export default function RouteOptimizationDashboard() {
             {/* Heatmap Layer */}
             {showHeatmap && <HeatmapLayer leads={analysis?.clusters?.flatMap(c => c.suggested_route) || []} showHeatmap={showHeatmap} />}
 
+            {/* Optimized Route */}
+            {optimizedRoute && <RoutePolyline route={optimizedRoute} />}
+
             {analysis?.clusters?.map((cluster, idx) => (
               <React.Fragment key={`cluster-${idx}`}>
                 {/* Cluster Center */}
@@ -438,9 +491,18 @@ export default function RouteOptimizationDashboard() {
 
                   {/* Suggested Route */}
                   <div>
-                    <p className="font-semibold text-sm mb-3 text-slate-900 flex items-center gap-2">
-                      <Navigation className="h-4 w-4" /> Optimized Route (First 10)
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-semibold text-sm text-slate-900 flex items-center gap-2">
+                        <Navigation className="h-4 w-4" /> Optimized Route (First 10)
+                      </p>
+                      <button
+                        onClick={() => handleOptimizeRoute(cluster)}
+                        disabled={routeLoading}
+                        className="px-3 py-1 bg-purple-600 text-white text-xs font-semibold rounded hover:bg-purple-700 disabled:opacity-50 transition"
+                      >
+                        {routeLoading ? '🔄' : '🗺️ Optimize'}
+                      </button>
+                    </div>
                     <div className="space-y-1 max-h-40 overflow-y-auto">
                       {cluster.suggested_route.map((stop, sIdx) => (
                         <div key={sIdx} className="text-xs p-1.5 bg-white rounded text-slate-700 border border-slate-200">
@@ -449,6 +511,28 @@ export default function RouteOptimizationDashboard() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Route Optimization Results */}
+                  {optimizedRoute && (
+                    <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                      <p className="text-sm font-semibold text-purple-900 mb-3">📍 Optimized Door-Knock Route</p>
+                      <div className="grid grid-cols-3 gap-3 text-xs mb-3">
+                        <div className="text-center">
+                          <p className="text-purple-600 font-medium">Total Distance</p>
+                          <p className="text-lg font-bold text-slate-900">{optimizedRoute.total_distance_km} km</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-purple-600 font-medium">Est. Time</p>
+                          <p className="text-lg font-bold text-slate-900">{optimizedRoute.estimated_hours} hrs</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-purple-600 font-medium">Stops</p>
+                          <p className="text-lg font-bold text-slate-900">{optimizedRoute.stop_count}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-purple-700">Purple dashed line with numbers on map shows the efficient door-knock sequence</p>
+                    </div>
+                  )}
                 </div>
               )}
             </Card>
