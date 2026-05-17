@@ -71,19 +71,11 @@ Deno.serve(async (req) => {
     console.log('PropertyRadar raw response:', JSON.stringify({ resultCount: apiData.resultCount, resultsLength: (apiData.results || []).length, firstResult: (apiData.results || [])[0] || null }));
     let properties = apiData.results || [];
 
-    // Client-side filtering for owner contact info
-    // PropertyRadar API doesn't support email/phone criteria, so we filter here
-    properties = properties.filter(prop => {
-      const hasEmail = (prop.OwnerEmail || '').trim().length > 0;
-      const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
-      return hasEmail || hasPhone;
-    });
-
     if (properties.length === 0) {
       return Response.json({
         status: 'success',
-        message: 'No properties with owner contact info after PropertyRadar API call',
-        resultCount: apiData.resultCount || 0,
+        message: 'No properties returned from PropertyRadar API',
+        totalResultCount: apiData.totalResultCount || 0,
         imported: 0
       });
     }
@@ -100,7 +92,7 @@ Deno.serve(async (req) => {
       existingOpps.map(o => (o.property_address || '').toLowerCase().trim())
     );
 
-    const results = { total: properties.length, created: 0, duplicates: 0, skipped: 0, errors: [] };
+    const results = { total: properties.length, created: 0, needsEnrichment: 0, duplicates: 0, skipped: 0, errors: [] };
     let partnerIndex = 0;
 
     for (const prop of properties) {
@@ -129,6 +121,11 @@ Deno.serve(async (req) => {
         const priority = distressScore >= 70 || dom >= 90 ? 'high'
           : distressScore >= 40 || dom >= 60 ? 'medium' : 'low';
 
+        const hasPhone = (prop.OwnerPhone || '').trim().length > 0;
+        const hasEmail = (prop.OwnerEmail || '').trim().length > 0;
+        const needsEnrichment = !hasPhone || !hasEmail;
+        const missingFields = [!hasPhone && 'phone', !hasEmail && 'email'].filter(Boolean).join(', ');
+
         const opportunity = await base44.asServiceRole.entities.VTONOpportunity.create({
           partner_email: assignedPartner.email,
           homeowner_name: ownerName,
@@ -146,13 +143,14 @@ Deno.serve(async (req) => {
           listing_status: mapListingStatus(prop.ListingStatus || 'active'),
           opportunity_status: 'assigned',
           priority,
-          crm_notes: `Auto-imported from PropertyRadar on ${new Date().toISOString().split('T')[0]} | RadarID: ${prop.RadarID || 'N/A'} | Distress: ${distressScore} | DOM: ${dom}`,
+          crm_notes: `Auto-imported from PropertyRadar on ${new Date().toISOString().split('T')[0]} | RadarID: ${prop.RadarID || 'N/A'} | Distress: ${distressScore} | DOM: ${dom}${needsEnrichment ? ` | ⚠️ NEEDS ENRICHMENT: missing ${missingFields}` : ''}`,
           qr_scanned: false,
           needs_reassignment: false
         });
 
         existingAddresses.add(address.toLowerCase());
         results.created++;
+        if (needsEnrichment) results.needsEnrichment++;
 
         // Notify partner
         try {
@@ -188,7 +186,7 @@ Deno.serve(async (req) => {
 
     return Response.json({
       status: 'success',
-      message: `Imported ${results.created} new opportunities. ${results.duplicates} duplicates skipped.`,
+      message: `Imported ${results.created} new opportunities (${results.needsEnrichment} need contact enrichment). ${results.duplicates} duplicates skipped.`,
       details: results,
       note: purchase === 0 ? 'PREVIEW MODE — set purchase=1 to actually import and be billed' : 'LIVE MODE — records billed to PropertyRadar account'
     });
