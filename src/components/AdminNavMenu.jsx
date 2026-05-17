@@ -43,6 +43,7 @@ const CAMPAIGN_GROUPS = [
           { label: 'Field Activator Portal', path: '/field-activator' },
           { label: 'Field Activator Dashboard', path: '/activator' },
           { label: 'Field Rep Dashboard', path: '/field-rep-dashboard' },
+          { label: '📱 Mobile Leads Dashboard', path: '/mobile-leads' },
           { label: 'FA Onboarding', path: '/fa-onboarding' },
           { label: 'QR Scan Dashboard', path: '/qr-scans' },
           { label: 'Sales Coach', path: '/sales-coach' },
