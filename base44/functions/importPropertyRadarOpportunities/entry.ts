@@ -22,11 +22,10 @@ Deno.serve(async (req) => {
     const limit = bodyParams.limit || 50;
     const purchase = bodyParams.purchase ?? 1;
 
-    // Use the Card fieldset — includes RadarID, Address, City, State, ZipFive, PType, Owner,
-    // AVM, AvailableEquity, TotalLoanBalance, DistressScore, isListedForSale, inForeclosure, etc.
-    // We combine with GridOptional (adds DaysOnMarket, ListingPrice, FirstPurpose, FirstLenderOriginal)
-    // and the Grid fieldset (adds PhoneAvailability, EmailAvailability)
-    const fieldsQuery = 'Fields=Card&Fields=Grid&Fields=GridOptional';
+    // Comma-separated Fields works! But combined fieldsets must be <= 50 fields total.
+    // Grid (14 fields): PType Address City SqFt AVM AvailableEquity Owner PhoneAvailability EmailAvailability DistressScore + flags
+    // Individual extras we need: RadarID State ZipFive FirstPurpose FirstLoanType ListingPrice DaysOnMarket TotalLoanBalance OwnerFirstName OwnerLastName
+    const fieldsQuery = 'Fields=Grid,RadarID,State,ZipFive,FirstPurpose,FirstLoanType,ListingPrice,DaysOnMarket,TotalLoanBalance,OwnerFirstName,OwnerLastName';
 
     const searchResponse = await fetch(
       `https://api.propertyradar.com/v1/properties?Purchase=${purchase}&Limit=${limit}&${fieldsQuery}`,
@@ -57,8 +56,6 @@ Deno.serve(async (req) => {
 
     const apiData = JSON.parse(responseText);
     const firstResult = (apiData.results || [])[0] || null;
-    console.log('First result keys:', firstResult ? Object.keys(firstResult).join(', ') : 'none');
-    console.log('First result sample:', JSON.stringify(firstResult));
     console.log('totalResultCount:', apiData.totalResultCount, '| returned:', (apiData.results || []).length);
 
     const properties = apiData.results || [];
